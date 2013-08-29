@@ -1,7 +1,14 @@
 <?php
 
-namespace Cops\Core;
+namespace Cops\Model;
 
-class Controller {
+use Cops;
+
+/**
+ * Common controller model
+ * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
+ */
+class Controller
+{
 
 }
