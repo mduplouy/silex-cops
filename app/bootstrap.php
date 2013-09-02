@@ -18,6 +18,9 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     ),
 ));
 
+// Define used models as services
+$app['core'] = new \Cops\Model\Common;
+
 // Load twig
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../themes/default',

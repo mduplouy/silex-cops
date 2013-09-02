@@ -1,9 +1,13 @@
-
 body {
-    background:#CCC;
+    background:#fff;
 }
 
 #main {
     width:98%;
-    border:1px black solid;
+    margin:2em auto 0 auto;
 }
+
+    #header {
+        background:#eee;
+        padding:1em;
+    }

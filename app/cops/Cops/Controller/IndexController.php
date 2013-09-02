@@ -35,8 +35,13 @@ class IndexController
      */
     public function indexAction(\Silex\Application $app)
     {
+
+        $book = $app['core']->getModel('Book');
+        //$latestBooks = $book(null)->getLatest($app);
+
         return $app['twig']->render('homepage.html', array(
             'pageTitle' => 'toto',
+            'latestBooks' => $book->getLatest()
         ));
 
         $sql = "SELECT * FROM authors";
