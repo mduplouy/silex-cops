@@ -1,22 +1,30 @@
 <!doctype html>
 <html>
     <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta name="viewport" content="width=device-width" />
-
-        <link rel="shortcut icon" href="/assets/favicon.ico" />
-
-        <link rel="stylesheet" type="text/css" href="css/main.css" media="all" />
-
-        <title>SilexCops - {{pageTitle}}</title>
+        {% include 'head.html' %}
+        {# beforeHeadEnd placeholder #}
+        {% block beforeHeadEnd %}{% endblock %}
     </head>
 
     <body>
+        {# afterBodyStart placeholder #}
+        {% block afterBodyStart %}{% endblock %}
 
-        <div class="main">
+        <div id="main">
+            {%include 'header.html' %}
+
+            {% block mainBody %}
+
+            {% endblock %}
+
+            {%include 'footer.html' %}
         </div>
 
+        {# beforeBodyEnd placeholder #}
+        <script type="text/javascript" src="/assets/jquery-2.0.0.min.js"></script>
+        <script type="text/javascript" src="/assets/default/js/jquery-ui-1.10.3.custom.min.js"></script>
+        {% block beforeBodyEnd %}
+        {% endblock %}
     </body>
 
 </html>

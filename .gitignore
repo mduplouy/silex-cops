@@ -1,2 +1,5 @@
 .project
-
+composer.phar
+.settings
+.buildpath
+data/*

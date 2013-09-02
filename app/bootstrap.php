@@ -7,6 +7,9 @@ require_once __DIR__.'/../vendor/autoload.php';
 $app = new Silex\Application();
 $app['debug'] = true;
 
+// Parse configuration
+$app['config'] = parse_ini_file(__DIR__.'/cops/config.ini', true);
+
 // Load doctrine DBAL
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'db.options' => array(

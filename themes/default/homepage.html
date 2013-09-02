@@ -1,6 +1,49 @@
 {% extends "layout.html" %}
 
 
-{% block head %}
+{% block mainBody %}
+ 
+    <div class="js-accordion">
+        <h3>Last added books</h3>
+        <div class="books latest">
+            <ul>
+                <li>book #1</li>
+                <li>book #1</li>
+                <li>book #1</li>
+                <li>book #1</li>
+                <li>book #1</li>
+            </ul>
+        </div>
+        <h3>Access by Series</h3>
+        <div class="books series">
+        
+        </div>
+        <h3>Access by Author</h3>
+        <div class="books author">
+        
+        </div>
+    </div>
 
+
+    <div class="book-quick-access">
+    
+    </div> 
+{% endblock %}
+
+
+{% block beforeBodyEnd %}
+<script type="text/javascript">
+app = {
+    init: function()
+    {
+        jQuery('.js-accordion').accordion(
+            { collapsible: true }
+        );
+    }
+}
+
+jQuery(document).ready(function(){
+    app.init();
+});
+</script>
 {% endblock %}

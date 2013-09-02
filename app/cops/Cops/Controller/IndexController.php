@@ -43,10 +43,6 @@ class IndexController
         $posts = $app['db']->fetchAll($sql);
         var_dump($posts);
 
-        $sql = "SELECT * FROM authors";
-        $posts = $app['db']->fetchAll($sql);
-        var_dump($posts);
-
         $sql = "SELECT name FROM sqlite_master
             WHERE type='table'
             ORDER BY name;";
