@@ -18,14 +18,14 @@ class Book extends Common
 {
     /**
      * Resource name
-     * @const string
+     * @var string
      */
     protected $_resourceName = 'Resource\\Book';
 
     /**
      * Get the latest added books
      *
-     * @return array
+     * @return array Array of Book object
      */
     public function getLatest()
     {

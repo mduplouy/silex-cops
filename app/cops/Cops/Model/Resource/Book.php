@@ -9,8 +9,6 @@
  */
 namespace Cops\Model\Resource;
 
-use PDO;
-
 /**
  * Book resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>

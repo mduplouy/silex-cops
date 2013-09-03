@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Cops\Model;
 
 /**
@@ -21,7 +20,7 @@ class Controller
      *
      * @param string $model
      *
-     * @return \Silex\Application
+     * @return \Cops\Model\Common
      */
     protected function getModel($model)
     {

@@ -11,3 +11,9 @@ body {
         background:#eee;
         padding:1em;
     }
+
+.books.series ul li {
+    display:inline-block;
+    float:left;
+    margin:1em;
+}

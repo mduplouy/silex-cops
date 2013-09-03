@@ -60,7 +60,8 @@ class Core
      * Simple object loader
      *
      * @param string $className
-     * @return mixed
+     *
+     * @return \Cops\Model\Common
      */
     public function getModel($className)
     {
@@ -71,6 +72,11 @@ class Core
         return $this->_objecInstance[$className];
     }
 
+    /**
+     * Resource object loader
+     *
+     * @return \Cops\Model\Resource\Common
+     */
     public function getResource()
     {
         if (empty($this->_resourceName)) {
@@ -80,16 +86,6 @@ class Core
             $this->_resource = $this->getModel($this->_resourceName);
         }
         return $this->_resource;
-    }
-
-    /**
-     * Config getter
-     *
-     * @return \Cops\Model\Config
-     */
-    public static function getConfig()
-    {
-        return self::$_app['config'];
     }
 
     /**
@@ -103,13 +99,25 @@ class Core
     }
 
     /**
+     * Config getter
+     *
+     * @return \Cops\Model\Config
+     */
+    public static function getConfig()
+    {
+        $app = self::getApp();
+        return $app['config'];
+    }
+
+    /**
      * DBAL connection getter
      *
      * @return Doctrine\DBAL\Connection
      */
     public static function getDb()
     {
-        return self::$_app['db'];
+        $app = self::getApp();
+        return $app['db'];
     }
 
 }

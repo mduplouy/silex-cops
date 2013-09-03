@@ -24,7 +24,9 @@ class IndexController
      * Connect method to dynamically add routes
      *
      * @see \Silex\ControllerProviderInterface::connect()
+     *
      * @param \Application $app Application instance
+     *
      * @return ControllerCollection ControllerCollection instance
      */
     public function connect(\Silex\Application $app)
@@ -39,14 +41,15 @@ class IndexController
      * Display the homepage
      *
      * @param \Silex\Application $app
+     *
      * @return string
      */
     public function indexAction(\Silex\Application $app)
     {
         return $app['twig']->render('homepage.html', array(
             'pageTitle' => 'toto',
-            'latestBooks' => $this->getModel('Book')->getLatest()
+            'latestBooks' => $this->getModel('Book')->getLatest(),
+            'seriesAggregated' => $this->getModel('Serie')->getAggregatedList()
         ));
     }
-
 }

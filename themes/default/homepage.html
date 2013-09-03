@@ -1,8 +1,6 @@
 {% extends "layout.html" %}
 
-
 {% block mainBody %}
-
     <div class="js-accordion">
         <h3>Last added books</h3>
         <div class="books latest">
@@ -22,11 +20,15 @@
         <h3>Access by Series</h3>
         <div class="books series">
             <ul>
-                <li>book #1</li>
-                <li>book #1</li>
-                <li>book #1</li>
-                <li>book #1</li>
-                <li>book #1</li>
+                {% for letter in 'A'..'Z' %}
+                <li>
+                {% if seriesAggregated[letter] %}
+                    {{letter}} ({{seriesAggregated[letter]}})
+                {% else %}
+                    {{letter}}
+                {% endif %}
+                </li>
+                {% endfor %}
             </ul>
         </div>
         <h3>Access by Author</h3>
@@ -54,7 +56,7 @@ app = {
     init: function()
     {
         jQuery('.js-accordion').accordion(
-            { collapsible: true }
+            { collapsible: false }
         );
     }
 }

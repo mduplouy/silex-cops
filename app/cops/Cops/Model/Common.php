@@ -26,6 +26,7 @@ class Common extends Core
      * Constructor
      *
      * @param array $dataArray
+     *
      * @return \Cops\Model\Core
      */
     public function __construct($dataArray=null)
@@ -41,8 +42,8 @@ class Common extends Core
      *
      * @param   string $method
      * @param   array $args
-     * @return  mixed
      *
+     * @return  mixed
      */
     public function __call($method, $args)
     {
