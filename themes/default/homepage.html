@@ -2,16 +2,21 @@
 
 
 {% block mainBody %}
- 
+
     <div class="js-accordion">
         <h3>Last added books</h3>
         <div class="books latest">
             <ul>
-                <li>book #1</li>
-                <li>book #1</li>
-                <li>book #1</li>
-                <li>book #1</li>
-                <li>book #1</li>
+                {% for book in latestBooks %}
+                <li>
+                    {% if book.getSerieName() %}
+                        {{book.getSerieName()}} T.{{book.getSerieIndex()}}
+                        -
+                    {% endif %}
+                    {{book.getTitle()}}
+                    - {{book.getAuthor()}} ({{book.getYear()}})
+                </li>
+                {% endfor %}
             </ul>
         </div>
         <h3>Access by Series</h3>
@@ -22,7 +27,7 @@
                 <li>book #1</li>
                 <li>book #1</li>
                 <li>book #1</li>
-            </ul>        
+            </ul>
         </div>
         <h3>Access by Author</h3>
         <div class="books author">
@@ -32,14 +37,14 @@
                 <li>book #1</li>
                 <li>book #1</li>
                 <li>book #1</li>
-            </ul>        
+            </ul>
         </div>
     </div>
 
 
     <div class="book-quick-access">
-    
-    </div> 
+
+    </div>
 {% endblock %}
 
 

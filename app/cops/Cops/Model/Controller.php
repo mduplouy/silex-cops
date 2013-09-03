@@ -1,8 +1,14 @@
 <?php
+/*
+ * This file is part of Silex Cops. Licensed under WTFPL
+ *
+ * (c) Mathieu Duplouy <mathieu.duplouy@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Cops\Model;
-
-use Cops;
 
 /**
  * Common controller model
@@ -10,5 +16,16 @@ use Cops;
  */
 class Controller
 {
-
+    /**
+     * Model getter for controllers
+     *
+     * @param string $model
+     *
+     * @return \Silex\Application
+     */
+    protected function getModel($model)
+    {
+        $app = \Cops\Model\Core::getApp();
+        return $app['core']->getModel($model);
+    }
 }

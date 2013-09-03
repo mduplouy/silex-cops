@@ -1,5 +1,8 @@
+# Misc
 .project
-composer.phar
 .settings
 .buildpath
-data/*
+composer.phar
+
+# data
+/data/*

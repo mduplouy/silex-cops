@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of Silex Cops. Licensed under WTFPL
+ *
+ * (c) Mathieu Duplouy <mathieu.duplouy@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Cops\Controller;
 
 use Silex\Application;
@@ -35,25 +43,10 @@ class IndexController
      */
     public function indexAction(\Silex\Application $app)
     {
-
-        $book = $app['core']->getModel('Book');
-        //$latestBooks = $book(null)->getLatest($app);
-
         return $app['twig']->render('homepage.html', array(
             'pageTitle' => 'toto',
-            'latestBooks' => $book->getLatest()
+            'latestBooks' => $this->getModel('Book')->getLatest()
         ));
-
-        $sql = "SELECT * FROM authors";
-        $posts = $app['db']->fetchAll($sql);
-        var_dump($posts);
-
-        $sql = "SELECT name FROM sqlite_master
-            WHERE type='table'
-            ORDER BY name;";
-
-        $posts = $app['db']->fetchAll($sql);
-
     }
 
 }
