@@ -30,6 +30,10 @@ class Serie extends Common
     {
         $series = array();
         foreach($this->getResource()->getAggregatedList() as $serie) {
+            // Force non alpha to #
+            if (!preg_match('/[A-Z]/', $serie['first_letter'])) {
+                $serie['first_letter'] = '#';
+            }
             $series[$serie['first_letter']] = $serie['nb_serie'];
         }
         return $series;

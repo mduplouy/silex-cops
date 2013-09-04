@@ -34,15 +34,10 @@ class Core
     private static $_app;
 
     /**
-     * Model namespace for loading
-     * @var string
-     */
-    const MODEL_NAMESPACE = ''; //'\\Cops\\Model\\';
-
-    /**
      * Constructor
      *
      * @param \Silex\Application $app
+     *
      * @param string $configFilePath
      */
     public function __construct(\Silex\Application $app, $configFilePath)
@@ -53,6 +48,28 @@ class Core
         if ($app['config']->getValue('debug')) {
             $app['debug'] = true;
         }
+
+        // Register mobile detect service
+        $app->register(new \Binfo\Silex\MobileDetectServiceProvider());
+
+        // Detect mobile user agent
+        if ($app['mobile_detect']->isMobile()) {
+            $app['config']->setTemplatePrefix($app['config']->getValue('mobile_theme'));
+        }
+
+        // Register twig service
+        $app->register(new \Silex\Provider\TwigServiceProvider(), array(
+            'twig.path' => BASE_DIR.'themes/'.$app['config']->getValue('theme'),
+        ));
+
+        // Register doctrine DBAL service
+        $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
+            'db.options' => array(
+                'driver'   => 'pdo_sqlite',
+                'path'     => BASE_DIR.$app['config']->getValue('data_dir').'/metadata.db',
+            ),
+        ));
+
         self::$_app = $app;
     }
 

@@ -42,4 +42,18 @@ class Book extends Common
         return $output;
     }
 
+    /**
+     * Load book
+     *
+     * @param int $bookId
+     *
+     * @return Cops\Model\Book
+     */
+    public function load($bookId)
+    {
+        $bookData = $this->getResource()->load($bookId);
+        $this->setData($bookData);
+        return $this;
+    }
+
 }

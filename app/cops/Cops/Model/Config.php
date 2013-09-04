@@ -24,7 +24,15 @@ class Config
     protected $_configValues = array(
         'theme' => 'default',
         'data_dir' => 'data',
+        'mobile_theme' => 'mobile',
     );
+
+    /**
+     * Template prefix used for mobile rendering
+     *
+     * @var string
+     */
+    protected $_templatePrefix = '';
 
     /**
      * Constructor
@@ -39,6 +47,7 @@ class Config
          if (is_array($confValues)) {
             $this->_configValues = array_merge($this->_configValues, $confValues);
          }
+
     }
 
     /**
@@ -56,4 +65,45 @@ class Config
         }
         return $confValue;
     }
+
+    /**
+     * Set a configuration value
+     *
+     * @param string $confKey
+     *
+     * @param mixed $confValue
+     *
+     * @return \Cops\Model\Config
+     */
+    public function setValue($confKey, $confValue)
+    {
+        $this->_configValues[$confKey] = $confValue;
+        return $this;
+    }
+
+    /**
+     * Template prefix setter
+     *
+     * @param string
+     *
+     * @return \Cops\Model\Config
+     */
+     public function setTemplatePrefix($value)
+     {
+         if (substr($value, 1) != DIRECTORY_SEPARATOR) {
+             $value .= DIRECTORY_SEPARATOR;
+         }
+         $this->_templatePrefix = $value;
+         return $this;
+     }
+
+    /**
+     * Template prefix getter
+     *
+     * @return string
+     */
+     public function getTemplatePrefix()
+     {
+         return $this->_templatePrefix;
+     }
 }

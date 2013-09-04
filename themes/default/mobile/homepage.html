@@ -1,0 +1,117 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+    {% include 'mobile/head.html' %}
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function(){
+          $.extend(  $.mobile , {
+            defaultPageTransition: 'none'
+          });
+        });
+    </script>
+    <script src="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+{% endblock %}
+
+{% block beforeBodyEnd %}{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block mainBody %}
+    <div data-role="page" data-theme="d" id="latest_added">
+
+        <div data-role="header">
+            <h1>Silex Cops HEADER</h1>
+        </div>
+
+        <div data-role="content">
+            <h3>Last added books</h3>
+            <div class="books latest">
+                <ul>
+                    {% for book in latestBooks %}
+                    <li><a href="{{ app.url_generator.generate('book_detail', {id: book.getId()}) }}" class="" title="{{ book.getTitle() }}">
+                        {% if book.getSerieName() %}
+                            {{book.getSerieName()}} T.{{book.getSerieIndex()}}
+                            -
+                        {% endif %}
+                        {{ book.getTitle() }}
+                        - {{ book.getAuthor() }} ({{ book.getYear() }})
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div style="clear:both;">
+                <a href="#home_series">Go to series</a>
+                <a href="#home_authors">Go to authors</a>
+            </div>
+
+        </div>
+
+        <div data-role="footer">
+            <h1>Silex Cops FOOTER</h1>
+        </div>
+
+    </div>
+
+    <div data-role="page" data-theme="d" id="home_series">
+
+        <div data-role="header">
+            <h1>Silex Cops HEADER</h1>
+        </div>
+
+        <div data-role="content">
+
+            <h3>Access by Series ({{ countSeries }})</h3>
+            <div class="books series">
+                <ul class="aggregated">
+                    {% for letter in letters %}
+                    <li>
+                    {% if seriesAggregated[letter] is defined %}
+                        <strong>{{ letter }}</strong>
+                    {% else %}
+                        {{ letter }}
+                    {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div style="clear:both;">
+                <a href="#home_authors">Go to authors</a>
+                <a href="#latest_added">Go to Home</a>
+            </div>
+        </div>
+
+        <div data-role="footer">
+            <h1>Silex Cops FOOTER</h1>
+        </div>
+
+    </div>
+
+    <div data-role="page" data-theme="d" id="home_authors">
+        <div data-role="header">
+            <h1>Silex Cops HEADER</h1>
+        </div>
+        <div data-role="content">
+            <h3>Access by Author ({{ countAuthors }})</h3>
+            <div class="books authors">
+                <ul class="aggregated">
+                    {% for letter in letters %}
+                    <li>
+                    {% if authorsAggregated[letter] is defined %}
+                        <strong>{{ letter }}</strong>
+                    {% else %}
+                        {{ letter }}
+                    {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div data-role="footer">
+            <h1>Silex Cops FOOTER</h1>
+        </div>
+    </div>
+
+{% endblock %}

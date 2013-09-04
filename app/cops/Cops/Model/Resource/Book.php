@@ -16,10 +16,29 @@ namespace Cops\Model\Resource;
 class Book extends \Cops\Model\Resource
 {
     /**
-     * Table name
-     * @var string
+     * Load a book data
+     *
+     * @param int $bookId
+     *
+     * @return array();
      */
-    private $_tableName = 'books';
+    public function load($bookId)
+    {
+        $sql = 'SELECT * FROM books WHERE id = ?';
+
+        $output = $this->getConnection()
+            ->fetchAssoc(
+                $sql,
+                array(
+                    $bookId
+                )
+            );
+
+        if (empty($output)) {
+            throw new \Exception('Product not found');
+        }
+        return $output;
+    }
 
     /**
      * Load latest added books from database
@@ -49,7 +68,7 @@ class Book extends \Cops\Model\Resource
             LEFT OUTER JOIN books_ratings_link ON books_ratings_link.book = main.id
             LEFT OUTER JOIN ratings ON ratings.id = books_ratings_link.rating
             ORDER BY main.timestamp DESC
-            LIMIT 10';
+            LIMIT 5';
 
         return $db->fetchAll($sql);
     }

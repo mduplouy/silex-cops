@@ -9,32 +9,22 @@
  */
 
 ini_set('date.timezone', 'Europe/Paris');
+define('BASE_DIR', __DIR__.'/../');
 
 require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
+$app['debug'] = true;
 
-// Define core model as a shared service
-// Also loads and set configuration
-$app['core'] = $app->share(function ($app) {
-    return new \Cops\Model\Core($app, __DIR__.'/cops/config.ini');
-});
-
-// Load twig
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/../themes/'.$app['core']->getConfig()->getValue('theme'),
-));
-
-// Load doctrine DBAL
-$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
-    'db.options' => array(
-        'driver'   => 'pdo_sqlite',
-        'path'     => __DIR__.'/../'.$app['core']->getConfig()->getValue('data_dir').'/metadata.db',
-    ),
-));
+// Define core model
+// Load configuration & set service providers
+$app['core'] =  new Cops\Model\Core($app, __DIR__.'/cops/config.ini');
 
 // Set the mount points for the controllers
-$app->mount('/', new \Cops\Controller\IndexController());
-$app->mount('/book/', new \Cops\Controller\BookController());
+$app->mount('/', new Cops\Controller\IndexController());
+$app->mount('book/', new Cops\Controller\BookController());
+
+// Register url generator service
+$app->register(new Cops\Provider\UrlGeneratorServiceProvider());
 
 return $app;

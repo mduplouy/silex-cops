@@ -32,7 +32,8 @@ class IndexController
     public function connect(\Silex\Application $app)
     {
         $controller = $app['controllers_factory'];
-        $controller->match("/", get_called_class().'::indexAction');
+        $controller->match("/", get_called_class().'::indexAction')
+            ->bind('homepage');
         return $controller;
     }
 
@@ -46,10 +47,25 @@ class IndexController
      */
     public function indexAction(\Silex\Application $app)
     {
-        return $app['twig']->render('homepage.html', array(
+        $serieList = $this->getModel('Serie')->getAggregatedList();
+        $countSeries = 0;
+        foreach($serieList as $nbSerie) {
+            $countSeries += $nbSerie;
+        }
+
+        $authorList = $this->getModel('Author')->getAggregatedList();
+        $countAuthors = 0;
+        foreach($authorList as $nbAuthor) {
+            $countAuthors += $nbAuthor;
+        }
+
+        return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html', array(
             'pageTitle' => 'toto',
             'latestBooks' => $this->getModel('Book')->getLatest(),
-            'seriesAggregated' => $this->getModel('Serie')->getAggregatedList()
+            'seriesAggregated' => $serieList,
+            'countSeries' => $countSeries,
+            'authorsAggregated' => $authorList,
+            'countAuthors' => $countAuthors,
         ));
     }
 }

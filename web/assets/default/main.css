@@ -12,8 +12,15 @@ body {
         padding:1em;
     }
 
-.books.series ul li {
+/**
+ * Serie block on homepage
+ */
+.books ul.aggregated li {
     display:inline-block;
     float:left;
     margin:1em;
+    color:#ccc;
 }
+    .books ul.aggregated li strong {
+        color:#000;
+    }

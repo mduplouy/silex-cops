@@ -17,5 +17,7 @@ return array(
     'Pimple' => array($vendorDir . '/pimple/pimple/lib'),
     'Doctrine\\DBAL' => array($vendorDir . '/doctrine/dbal/lib'),
     'Doctrine\\Common' => array($vendorDir . '/doctrine/common/lib'),
+    'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
     'Cops\\' => array($baseDir . '/app/cops'),
+    'Binfo\\Silex' => array($vendorDir . '/jbinfo/mobile-detect-service-provider/src'),
 );

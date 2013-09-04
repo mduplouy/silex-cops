@@ -1,7 +1,10 @@
+{% set letters = ['#']|merge('A'..'Z') %}
 <!doctype html>
 <html>
     <head>
-        {% include 'head.html' %}
+        {% block head %}
+            {% include 'head.html' %}
+        {% endblock %}
         {# beforeHeadEnd placeholder #}
         {% block beforeHeadEnd %}{% endblock %}
     </head>
@@ -11,19 +14,22 @@
         {% block afterBodyStart %}{% endblock %}
 
         <div id="main">
-            {%include 'header.html' %}
-
-            {% block mainBody %}
-
+            {% block header %}
+                {% include 'header.html' %}
             {% endblock %}
 
-            {%include 'footer.html' %}
+            {% block mainBody %}
+            {% endblock %}
+
+            {% block footer %}
+                {%include 'footer.html' %}
+            {% endblock %}
         </div>
 
         {# beforeBodyEnd placeholder #}
+        {% block beforeBodyEnd %}
         <script type="text/javascript" src="/assets/jquery-2.0.0.min.js"></script>
         <script type="text/javascript" src="/assets/default/js/jquery-ui-1.10.3.custom.min.js"></script>
-        {% block beforeBodyEnd %}
         {% endblock %}
     </body>
 

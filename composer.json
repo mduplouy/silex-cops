@@ -2,7 +2,8 @@
     "require": {
         "silex/silex"  : "~1.0",
         "doctrine/dbal": "2.2.*",
-        "twig/twig": ">=1.8,<2.0-dev"
+        "twig/twig": ">=1.8,<2.0-dev",
+        "jbinfo/mobile-detect-service-provider": "1.0.*@dev"
     },
     "autoload": {
         "psr-0": {"Cops\\": "app/cops"}

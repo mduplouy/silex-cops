@@ -31,11 +31,13 @@ class BookController
     {
         $controller = $app['controllers_factory'];
         $controller->get('/{id}', __CLASS__.'::detailAction')
-            ->assert('id' ,'\d+');
+            ->assert('id' ,'\d+')
+            ->bind('book_detail');
 
         $controller->get('/list/{page}', __CLASS__.'::listAction')
             ->assert('page', '\d+')
-            ->value('page', 1);
+            ->value('page', 1)
+            ->bind('book_list');
 
         return $controller;
     }
@@ -43,11 +45,20 @@ class BookController
     /**
      * Show details of a book
      *
+     * @param \Silex\Application $app
+     *
      * @param int $id BookId
+     *
+     * @return string
      */
-    public function detailAction($id)
+    public function detailAction(\Silex\Application $app, $id)
     {
-        return __FUNCTION__.$id;
+        $book = $this->getModel('Book')->load($id);
+
+        return $app['twig']->render($app['config']->getTemplatePrefix().'book.html', array(
+            'pageTitle' => $book->getTitle(),
+            'book' => $book,
+        ));
     }
 
     public function listAction($page)
