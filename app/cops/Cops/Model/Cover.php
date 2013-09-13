@@ -45,11 +45,9 @@ class Cover extends Core
     public function __construct(Book $book)
     {
         if ($book->getHasCover()) {
-            $this->_coverFile = sprintf(BASE_DIR.DS.'%s'.DS.'%s'.DS.'%s (%d)'.DS.'cover.jpg',
+            $this->_coverFile = sprintf(BASE_DIR.'%s'.DS.'%s'.DS.'cover.jpg',
                 $this->getConfig()->getValue('data_dir'),
-                $book->getAuthorSort(),
-                $book->getSort(),
-                $book->getId()
+                $book->getPath()
             );
 
             $this->_thumbnailPath = sprintf(DS.'assets'.DS.'books'.DS.'%d'.DS.'%d.jpg',
@@ -57,7 +55,7 @@ class Cover extends Core
                 $book->getId()
             );
 
-            $this->_thumbnailFile = BASE_DIR.DS.$this->getConfig()->getValue('public_dir').$this->_thumbnailPath;
+            $this->_thumbnailFile = BASE_DIR.$this->getConfig()->getValue('public_dir').$this->_thumbnailPath;
         }
     }
 
@@ -68,7 +66,7 @@ class Cover extends Core
      */
     public function getThumbnailPath()
     {
-        if (file_exists($this->_coverFile)) {
+        if (file_exists($this->_thumbnailFile)) {
             return $this->_thumbnailPath;
         } elseif ($this->_coverFile && !file_exists(BASE_DIR.$this->_thumbnailPath)) {
 
@@ -89,9 +87,10 @@ class Cover extends Core
      */
     protected function _generateThumbnail()
     {
-        $processorType = $this->getConfig()->getValue('image_processor');
-
-        $processor = $this->getModel('ImageProcessorFactory', $processorType)->getInstance();
+        $processor = $this->getModel(
+            'ImageProcessor\ImageProcessorFactory',
+            $this->getConfig()->getValue('image_processor')
+        )->getInstance();
 
         $processor->generateThumbnail($this->_coverFile, $this->_thumbnailFile);
 

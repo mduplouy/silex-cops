@@ -24,8 +24,8 @@ class Config
     protected $_configValues = array(
         'theme'                 => 'default',
 
-        'public_dir'            => '/web',
-        'data_dir'              => '/data',
+        'public_dir'            => 'web',
+        'data_dir'              => 'data',
 
         'mobile_theme'          => 'mobile',
 

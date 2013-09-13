@@ -24,7 +24,10 @@ class Book extends \Cops\Model\Resource
      */
     public function load($bookId)
     {
-        $sql = 'SELECT * FROM books WHERE id = ?';
+        $sql = 'SELECT
+            *
+            FROM books AS main
+            WHERE main.id = ?';
 
         $output = $this->getConnection()
             ->fetchAssoc(
