@@ -49,6 +49,10 @@ class Common extends Core
     {
         $dataKey = $this->_getDataKeyFromMethod($method);
 
+        if (method_exists($this, $method)) {
+            return call_user_func_array(array($this, $method), $args);
+        }
+
         switch (substr($method, 0, 3)) {
             case 'get' :
                 if (array_key_exists($dataKey, $this->_data)) {

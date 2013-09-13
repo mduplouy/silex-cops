@@ -2,6 +2,14 @@
 
 {% block mainBody %}
 
-book detail !
+{#
+    {dump(book)}}
+#}
+
+{{ book.getTitle() }} - {{ book.getAuthorSort() }} {{ book.getPubdate()|date("m/d/Y") }}
+
+{% if book.getCover().getThumbnailPath() %}
+    <img src="{{ book.getCover().getThumbnailPath() }}" />
+{% endif %}
 
 {% endblock %}

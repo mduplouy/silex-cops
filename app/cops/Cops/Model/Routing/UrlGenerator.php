@@ -148,7 +148,6 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
             $url = $app['request']->getScriptName().$url;
         }
 
-
         return $url;
     }
 }

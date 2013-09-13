@@ -22,9 +22,19 @@ class Config
      * @var array
      */
     protected $_configValues = array(
-        'theme' => 'default',
-        'data_dir' => 'data',
-        'mobile_theme' => 'mobile',
+        'theme'                 => 'default',
+
+        'public_dir'            => '/web',
+        'data_dir'              => '/data',
+
+        'mobile_theme'          => 'mobile',
+
+        'use_rewrite'           => false,
+
+        'cover_file'            => 'cover.jpg',
+        'image_processor'       => 'gd',
+        'cover_width'           => 320,
+        'cover_height'          => 240,
     );
 
     /**
@@ -90,8 +100,8 @@ class Config
      */
      public function setTemplatePrefix($value)
      {
-         if (substr($value, 1) != DIRECTORY_SEPARATOR) {
-             $value .= DIRECTORY_SEPARATOR;
+         if (substr($value, 1) != DS) {
+             $value .= DS;
          }
          $this->_templatePrefix = $value;
          return $this;

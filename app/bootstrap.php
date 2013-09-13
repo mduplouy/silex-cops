@@ -10,6 +10,7 @@
 
 ini_set('date.timezone', 'Europe/Paris');
 define('BASE_DIR', __DIR__.'/../');
+define('DS', DIRECTORY_SEPARATOR);
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -19,6 +20,9 @@ $app['debug'] = true;
 // Define core model
 // Load configuration & set service providers
 $app['core'] =  new Cops\Model\Core($app, __DIR__.'/cops/config.ini');
+
+$app['image_gd'] = new Cops\Model\ImageProcessor\Gd();
+$app['image_imagick'] = new Cops\Model\ImageProcessor\Imagick();
 
 // Set the mount points for the controllers
 $app->mount('/', new Cops\Controller\IndexController());

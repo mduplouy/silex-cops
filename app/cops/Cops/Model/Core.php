@@ -77,14 +77,19 @@ class Core
      * Simple object loader
      *
      * @param string $className
+     * @param array $args
      *
      * @return \Cops\Model\Common
      */
-    public function getModel($className)
+    public function getModel($className, $args = array())
     {
         if (!isset($this->_objecInstance[$className])) {
             $fullClassName = __NAMESPACE__.'\\'.$className;
-            $this->_objecInstance[$className] = new $fullClassName;
+            $obj = new \ReflectionClass($fullClassName);
+            if (!is_array($args)) {
+                $args = array($args);
+            }
+            $this->_objecInstance[$className] = $obj->newInstanceArgs($args);
         }
         return $this->_objecInstance[$className];
     }

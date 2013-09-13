@@ -30,7 +30,7 @@ class Book extends \Cops\Model\Resource
             ->fetchAssoc(
                 $sql,
                 array(
-                    $bookId
+                    (int) $bookId
                 )
             );
 

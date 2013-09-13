@@ -9,6 +9,8 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\Core;
+
 /**
  * Book model class
  *
@@ -21,6 +23,12 @@ class Book extends Common
      * @var string
      */
     protected $_resourceName = 'Resource\\Book';
+
+    /**
+     * A Cover object instance
+     * @var \Cops\Model\Cover
+     */
+    protected $_cover;
 
     /**
      * Get the latest added books
@@ -56,4 +64,16 @@ class Book extends Common
         return $this;
     }
 
+    /**
+     * Cover object getter
+     *
+     * @return Cops\Model\Cover | null
+     */
+    public function getCover()
+    {
+        if (is_null($this->_cover) && $this->getHasCover()) {
+            $this->_cover = $this->getModel('Cover', $this);
+        }
+        return $this->_cover;
+    }
 }

@@ -24,7 +24,9 @@ class BookController
      * Connect method to dynamically add routes
      *
      * @see \Silex\ControllerProviderInterface::connect()
+     *
      * @param \Application $app Application instance
+     *
      * @return ControllerCollection ControllerCollection instance
      */
     public function connect(\Silex\Application $app)
