@@ -23,6 +23,7 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
      */
     protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens)
     {
+
         $variables = array_flip($variables);
         $mergedParams = array_replace($defaults, $this->context->getParameters(), $parameters);
 

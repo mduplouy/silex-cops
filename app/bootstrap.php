@@ -22,15 +22,8 @@ $app['debug'] = true;
 // Load configuration & set service providers
 $app['core'] =  new Cops\Model\Core($app, __DIR__.'/cops/config.ini');
 
-// Set image adapters to create thumbnails
-$app['image_gd'] = function() { return new Cops\Model\ImageProcessor\Adapter\Gd(); };
-$app['image_imagick'] = function() { return new Cops\Model\ImageProcessor\Adapter\Imagick(); };
-
 // Set the mount points for the controllers
 $app->mount('/', new Cops\Controller\IndexController());
 $app->mount('book/', new Cops\Controller\BookController());
-
-// Register url generator service
-$app->register(new Cops\Provider\UrlGeneratorServiceProvider());
 
 return $app;

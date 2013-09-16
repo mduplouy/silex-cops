@@ -11,13 +11,14 @@
 namespace Cops\Provider;
 
 use Silex\Application;
+use Silex\ServiceProviderInterface;
 use Cops\Model\Routing\UrlGenerator;
 
 /**
- * Overridend UrlGeneratorServiceProvider
+ * UrlGeneratorServiceProvider
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class UrlGeneratorServiceProvider extends \Silex\Provider\UrlGeneratorServiceProvider
+class UrlGeneratorServiceProvider implements ServiceProviderInterface
 {
 
     public function register(Application $app)
@@ -26,5 +27,9 @@ class UrlGeneratorServiceProvider extends \Silex\Provider\UrlGeneratorServicePro
             $app->flush();
             return new UrlGenerator($app['routes'], $app['request_context']);
         });
+    }
+
+    public function boot(Application $app)
+    {
     }
 }
