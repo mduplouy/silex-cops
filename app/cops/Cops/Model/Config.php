@@ -54,6 +54,9 @@ class Config
     public function __construct($configFilePath)
     {
          $confValues = parse_ini_file($configFilePath, false);
+
+         var_dump($confValues);
+
          if (is_array($confValues)) {
             $this->_configValues = array_merge($this->_configValues, $confValues);
          }

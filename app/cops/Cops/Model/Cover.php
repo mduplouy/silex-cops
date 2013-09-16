@@ -11,6 +11,7 @@ namespace Cops\Model;
 
 use Cops\Model\Book;
 use Cops\Model\Core;
+use Cops\Exception\ImageProcessor\AdapterException;
 
 /**
  * Cover model class
@@ -93,7 +94,6 @@ class Cover extends Core
         )->getInstance();
 
         $processor->generateThumbnail($this->_coverFile, $this->_thumbnailFile);
-
     }
 
 }
