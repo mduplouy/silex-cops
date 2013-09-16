@@ -9,7 +9,6 @@
  */
 namespace Cops\Model\ImageProcessor;
 
-use Cops\Model\ImageProcessor\ImageProcessorInterface;
 use Cops\Model\Core;
 
 /**
@@ -17,7 +16,7 @@ use Cops\Model\Core;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class ImageProcessorAbstract implements ImageProcessorInterface
+abstract class ImageProcessorAbstract
 {
     /**
      * Image width
@@ -30,15 +29,6 @@ abstract class ImageProcessorAbstract implements ImageProcessorInterface
      * @var int
      */
     protected $_height;
-
-    /**
-     * Generate a thumbnail
-     *
-     * @param string $src Source file
-     * @param string $dst Target file
-     * @param array  $param Options
-     */
-    abstract public function generateThumbnail($src, $dst, array $params);
 
     /**
      * Width getter

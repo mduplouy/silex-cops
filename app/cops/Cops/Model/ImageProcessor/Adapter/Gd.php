@@ -10,15 +10,16 @@
 namespace Cops\Model\ImageProcessor\Adapter;
 
 use Cops\Model\Core;
-use Cops\Model\ImageProcessor\ImageProcessorInterface;
 use Cops\Model\ImageProcessor\ImageProcessorAbstract;
+use Cops\Model\ImageProcessor\ImageProcessorInterface;
+use Cops\Exception\ImageProcessor\AdapterException;
 
 /**
  * GD Image processing class
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Gd extends ImageProcessorAbstract
+class Gd extends ImageProcessorAbstract implements ImageProcessorInterface
 {
     /**
      * Image resource
@@ -31,6 +32,18 @@ class Gd extends ImageProcessorAbstract
      * @var string
      */
     const DEFAULT_QUALITY = 80;
+
+    /**
+     * Constructor
+     *
+     * @throws \Cops\Exception\ImageProcessor\AdapterException
+     */
+    public function __construct()
+    {
+        if (!extension_loaded('gd')) {
+            throw new AdapterException('Please install php-gd before using it');
+        }
+    }
 
     /**
      * Generate a thumbnail for image
