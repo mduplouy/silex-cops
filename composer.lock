@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "46ed2dc183003d7567cb7015d7ce99b4",
+    "hash": "9b6f8bf853557218595ab0f80eb30a0c",
     "packages": [
         {
             "name": "doctrine/common",
@@ -126,58 +126,6 @@
                 "queryobject"
             ],
             "time": "2012-04-13 07:56:12"
-        },
-        {
-            "name": "jbinfo/mobile-detect-service-provider",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jbinfo/MobileDetectServiceProvider.git",
-                "reference": "60df9d8eaa8aaec32f3b31659308b89dec7eb92d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jbinfo/MobileDetectServiceProvider/zipball/60df9d8eaa8aaec32f3b31659308b89dec7eb92d",
-                "reference": "60df9d8eaa8aaec32f3b31659308b89dec7eb92d",
-                "shasum": ""
-            },
-            "require": {
-                "mobiledetect/mobiledetectlib": "~2",
-                "php": ">=5.3.0",
-                "silex/silex": "1.0.*@dev"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Binfo\\Silex": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Lhassan Baazzi",
-                    "email": "baazzilhassan@gmail.com",
-                    "homepage": "http://jbinfo.io/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A mobile detect ServiceProvider for Silex, based on Mobile-Detect library.",
-            "homepage": "https://github.com/binfo/MobileDetectServiceProvider",
-            "keywords": [
-                "mobile",
-                "mobile detect",
-                "php mobile detect",
-                "silex"
-            ],
-            "time": "2013-04-02 16:17:41"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -317,57 +265,58 @@
         },
         {
             "name": "silex/silex",
-            "version": "v1.0.1",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Silex.git",
-                "reference": "3b037f3ae61d1e0d728bbf18a51662d2b2c66e41"
+                "reference": "a4d3f85ffbd6946b69f142f2965f56cb35ee95ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Silex/zipball/3b037f3ae61d1e0d728bbf18a51662d2b2c66e41",
-                "reference": "3b037f3ae61d1e0d728bbf18a51662d2b2c66e41",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/a4d3f85ffbd6946b69f142f2965f56cb35ee95ea",
+                "reference": "a4d3f85ffbd6946b69f142f2965f56cb35ee95ea",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "pimple/pimple": "1.*",
-                "symfony/event-dispatcher": ">=2.1,<2.4-dev",
-                "symfony/http-foundation": ">=2.1,<2.4-dev",
-                "symfony/http-kernel": ">=2.1,<2.4-dev",
-                "symfony/routing": ">=2.1,<2.4-dev"
+                "symfony/event-dispatcher": ">=2.3,<2.4-dev",
+                "symfony/http-foundation": ">=2.3,<2.4-dev",
+                "symfony/http-kernel": ">=2.3,<2.4-dev",
+                "symfony/routing": ">=2.3,<2.4-dev"
             },
             "require-dev": {
                 "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
                 "monolog/monolog": "~1.4,>=1.4.1",
+                "phpunit/phpunit": "~3.7",
                 "swiftmailer/swiftmailer": "5.*",
-                "symfony/browser-kit": ">=2.1,<2.4-dev",
-                "symfony/config": ">=2.1,<2.4-dev",
-                "symfony/css-selector": ">=2.1,<2.4-dev",
-                "symfony/dom-crawler": ">=2.1,<2.4-dev",
-                "symfony/finder": ">=2.1,<2.4-dev",
-                "symfony/form": ">=2.1.4,<2.4-dev",
-                "symfony/locale": ">=2.1,<2.4-dev",
-                "symfony/monolog-bridge": ">=2.1,<2.4-dev",
-                "symfony/options-resolver": ">=2.1,<2.4-dev",
-                "symfony/process": ">=2.1,<2.4-dev",
-                "symfony/security": ">=2.1,<2.4-dev",
-                "symfony/serializer": ">=2.1,<2.4-dev",
-                "symfony/translation": ">=2.1,<2.4-dev",
-                "symfony/twig-bridge": ">=2.1,<2.4-dev",
-                "symfony/validator": ">=2.1,<2.4-dev",
+                "symfony/browser-kit": ">=2.3,<2.4-dev",
+                "symfony/config": ">=2.3,<2.4-dev",
+                "symfony/css-selector": ">=2.3,<2.4-dev",
+                "symfony/dom-crawler": ">=2.3,<2.4-dev",
+                "symfony/finder": ">=2.3,<2.4-dev",
+                "symfony/form": ">=2.3,<2.4-dev",
+                "symfony/locale": ">=2.3,<2.4-dev",
+                "symfony/monolog-bridge": ">=2.3,<2.4-dev",
+                "symfony/options-resolver": ">=2.3,<2.4-dev",
+                "symfony/process": ">=2.3,<2.4-dev",
+                "symfony/security": ">=2.3,<2.4-dev",
+                "symfony/serializer": ">=2.3,<2.4-dev",
+                "symfony/translation": ">=2.3,<2.4-dev",
+                "symfony/twig-bridge": ">=2.3,<2.4-dev",
+                "symfony/validator": ">=2.3,<2.4-dev",
                 "twig/twig": ">=1.8.0,<2.0-dev"
             },
             "suggest": {
-                "symfony/browser-kit": ">=2.1,<2.4-dev",
-                "symfony/css-selector": ">=2.1,<2.4-dev",
-                "symfony/dom-crawler": ">=2.1,<2.4-dev",
-                "symfony/form": ">= 2.1.4,<2.4-dev"
+                "symfony/browser-kit": ">=2.3,<2.4-dev",
+                "symfony/css-selector": ">=2.3,<2.4-dev",
+                "symfony/dom-crawler": ">=2.3,<2.4-dev",
+                "symfony/form": ">=2.3,<2.4-dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -395,7 +344,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-07-04 06:25:40"
+            "time": "2013-07-04 07:15:36"
         },
         {
             "name": "symfony/debug",
@@ -743,9 +692,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "jbinfo/mobile-detect-service-provider": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": [
 
     ],

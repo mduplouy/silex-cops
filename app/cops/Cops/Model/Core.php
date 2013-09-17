@@ -50,7 +50,7 @@ class Core
         }
 
         // Register mobile detect service
-        $app->register(new \Binfo\Silex\MobileDetectServiceProvider());
+        $app->register(new \Cops\Provider\MobileDetectServiceProvider());
 
         // Detect mobile user agent
         if ($app['mobile_detect']->isMobile()) {
