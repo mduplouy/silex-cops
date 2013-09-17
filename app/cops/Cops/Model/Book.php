@@ -71,7 +71,7 @@ class Book extends Common
      */
     public function getCover()
     {
-        if (is_null($this->_cover) && $this->getHasCover()) {
+        if (is_null($this->_cover)) {
             $this->_cover = $this->getModel('Cover', $this);
         }
         return $this->_cover;

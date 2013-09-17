@@ -41,7 +41,27 @@ class Imagick extends ImageProcessorAbstract implements ImageProcessorInterface
      */
     public function generateThumbnail($src, $dest, array $params=array())
     {
+        if (isset($params['width'])) {
+            $this->setWidth($params['width']);
+        }
+        if (isset($params['height'])) {
+            $this->setHeight($params['height']);
+        }
+
         $imagick = new \Imagick($src);
+        $imagick->setImageResolution (92, 92);
+        $imagick->setImageCompression(\Imagick::COMPRESSION_ZIP);
+        $imagick->setImageCompressionQuality(85);
+        $imagick->stripImage();
+        $imagick->resizeImage(
+            $this->getWidth(),
+            0,
+            \Imagick::FILTER_SINC,
+            0,
+            false
+        );
+
+        $imagick->writeImage($dest);
     }
 
     public function resize($width=null, $height=null)
