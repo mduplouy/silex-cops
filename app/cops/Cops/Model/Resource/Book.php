@@ -9,11 +9,14 @@
  */
 namespace Cops\Model\Resource;
 
+use Cops\Model\Resource;
+use Cops\Model\Core;
+
 /**
  * Book resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Book extends \Cops\Model\Resource
+class Book extends Resource
 {
     /**
      * Load a book data
@@ -50,8 +53,6 @@ class Book extends \Cops\Model\Resource
      */
     public function getLatest(\Cops\Model\Book $bookObj)
     {
-        $db = $this->getConnection();
-
         $sql = 'SELECT
             main.id,
             main.title,
@@ -71,8 +72,14 @@ class Book extends \Cops\Model\Resource
             LEFT OUTER JOIN books_ratings_link ON books_ratings_link.book = main.id
             LEFT OUTER JOIN ratings ON ratings.id = books_ratings_link.rating
             ORDER BY main.timestamp DESC
-            LIMIT 5';
+            LIMIT ?';
 
-        return $db->fetchAll($sql);
+        return $this->getConnection()
+            ->fetchAll($sql,
+                array(
+                    Core::getConfig()->getValue('last_added')
+                )
+            );
+
     }
 }

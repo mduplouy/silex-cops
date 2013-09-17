@@ -21,17 +21,26 @@ class Config
      *
      * @var array
      */
-    protected $_configValues = array(
-        'theme'                 => 'default',
+    private $_configValues = array(
+        // common
+        'last_added'            => 10,
 
+        // web
+        'theme'                 => 'default',
+        'mobile_theme'          => 'mobile',
+
+        // path
         'public_dir'            => 'web',
         'data_dir'              => 'data',
 
-        'mobile_theme'          => 'mobile',
+        // email
+        'sender'                => 'php',
 
+        // misc
+        'debug'                 => false,
         'use_rewrite'           => false,
 
-        'cover_file'            => 'cover.jpg',
+        // cover
         'image_processor'       => 'gd',
         'cover_width'           => 320,
         'cover_height'          => 240,
