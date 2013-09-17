@@ -73,6 +73,17 @@ class Core
         // Register url generator service
         $app->register(new \Cops\Provider\UrlGeneratorServiceProvider());
 
+        // Register translator
+        $app->register(new \Silex\Provider\TranslationServiceProvider(), array(
+            'locale' => $app['config']->getValue('default_lang'),
+        ));
+        $app['translator'] = $app->share($app->extend('translator', function($translator) {
+            $translator->addLoader('yaml', new \Symfony\Component\Translation\Loader\YamlFileLoader());
+            $translator->addResource('yaml', BASE_DIR.'locales/en.yml', 'en');
+            $translator->addResource('yaml', BASE_DIR.'locales/fr.yml', 'fr');
+            return $translator;
+        }));
+
         // Set image adapters to create thumbnails
         $app['image_gd'] = function() {
             return new \Cops\Model\ImageProcessor\Adapter\Gd();

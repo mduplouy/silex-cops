@@ -2,7 +2,7 @@
 
 {% block mainBody %}
     <div class="js-accordion">
-        <h3>Last added books</h3>
+        <h3>{{"Last added books"|trans}}</h3>
         <div class="books latest">
             <ul>
                 {% for book in latestBooks %}
@@ -18,7 +18,7 @@
                 {% endfor %}
             </ul>
         </div>
-        <h3>Access by Series ({{ countSeries }})</h3>
+        <h3>{{"Access by Series"|trans}} ({{ countSeries }})</h3>
         <div class="books series">
             <ul class="aggregated">
                 {% for letter in letters %}
@@ -32,7 +32,7 @@
                 {% endfor %}
             </ul>
         </div>
-        <h3>Access by Author ({{ countAuthors }})</h3>
+        <h3>{{"Access by Author"|trans}} ({{ countAuthors }})</h3>
         <div class="books authors">
             <ul class="aggregated">
                 {% for letter in letters %}

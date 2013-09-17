@@ -60,7 +60,7 @@ class IndexController
         }
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html', array(
-            'pageTitle' => 'toto',
+            'pageTitle' => $app['translator']->trans('Homepage'),
             'latestBooks' => $this->getModel('Book')->getLatest(),
             'seriesAggregated' => $serieList,
             'countSeries' => $countSeries,
