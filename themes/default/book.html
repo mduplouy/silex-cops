@@ -1,15 +1,28 @@
 {% extends "layout.html" %}
 
+{% set date_format = "m/d/Y"|trans %}
+
 {% block mainBody %}
 
-{#
-    {dump(book)}}
-#}
+<div id="book_detail">
 
-{{ book.getTitle() }} - {{ book.getAuthorSort() }} {{ book.getPubdate()|date("m/d/Y") }}
+    <div id="cover">
+        {% if book.getCover().getThumbnailPath() %}
+            <img src="{{ book.getCover().getThumbnailPath() }}" />
+        {% endif %}
+    </div>
 
-{% if book.getCover().getThumbnailPath() %}
-    <img src="{{ book.getCover().getThumbnailPath() }}" />
-{% endif %}
+    <div id="infos">
+        <h1>{{ book.getTitle() }}</h1>
+        <p>{{"Author:"|trans}} <span class="bold">{{ book.getAuthorSort() }}</span></p>
+        <p>{{"Serie:"|trans}} <span class="bold">{{ book.getSerie().getName()}}</span></p>
+        <p>{{"Publication date:"|trans}} <span class="bold">{{ book.getPubdate()|date(date_format) }}</span></p>
+    </div>
+
+    <div id="serie">
+
+    </div>
+
+</div>
 
 {% endblock %}

@@ -1,6 +1,14 @@
+/**
+ * Tag declaration
+ */
 body {
     background:#fff;
 }
+
+/**
+ * Generic styles
+ */
+.bold { font-weight:600; }
 
 #main {
     width:98%;
@@ -24,3 +32,31 @@ body {
     .books ul.aggregated li strong {
         color:#000;
     }
+
+/**
+ * Book detail blocks
+ */
+#book_detail {
+    overflow:auto;
+    margin:0 4px;
+    padding:1em;
+    border-left:#EEE 1px solid;
+    border-right:#EEE 1px solid;
+}
+    #book_detail h1 {
+        font-size:1.36em;
+        text-align:left;
+    }
+    #book_detail #cover {
+        float:left;
+        margin:0 32px;
+    }
+
+/**
+ * Footer block
+ */
+#footer {
+    font-size:0.81em;
+    text-align:center;
+    background:#eee;
+}
