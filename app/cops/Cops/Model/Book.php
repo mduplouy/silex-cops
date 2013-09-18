@@ -31,6 +31,12 @@ class Book extends Common
     protected $_cover;
 
     /**
+     * A Serie object instance
+     * @var \Cops\Model\Serie
+     */
+    protected $_serie;
+
+    /**
      * Get the latest added books
      *
      * @return array Array of Book object
@@ -59,15 +65,13 @@ class Book extends Common
      */
     public function load($bookId)
     {
-        $bookData = $this->getResource()->load($bookId);
-        $this->setData($bookData);
-        return $this;
+        return $this->getResource()->load($bookId, $this);
     }
 
     /**
      * Cover object getter
      *
-     * @return Cops\Model\Cover | null
+     * @return Cops\Model\Cover
      */
     public function getCover()
     {
@@ -75,5 +79,18 @@ class Book extends Common
             $this->_cover = $this->getModel('Cover', $this);
         }
         return $this->_cover;
+    }
+
+    /**
+     * Serie object getter
+     *
+     * @return Cops\Model\Serie
+     */
+    public function getSerie()
+    {
+        if (is_null($this->_serie)) {
+            $this->_serie = $this->getModel('Serie', $this);
+        }
+        return $this->_serie;
     }
 }

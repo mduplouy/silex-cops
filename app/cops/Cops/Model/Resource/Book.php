@@ -21,29 +21,42 @@ class Book extends Resource
     /**
      * Load a book data
      *
-     * @param int $bookId
+     * @param  int             $bookId
+     * @param  Cops\Model\Book $book
      *
-     * @return array();
+     * @return Cops\Model\Book;
      */
-    public function load($bookId)
+    public function load($bookId, $book)
     {
         $sql = 'SELECT
-            *
+            main.*,
+            series.id AS serie_id,
+            series.name AS serie_name
             FROM books AS main
+            LEFT OUTER JOIN books_series_link ON books_series_link.book = main.id
+            LEFT OUTER JOIN series ON series.id = books_series_link.series
             WHERE main.id = ?';
 
         $output = $this->getConnection()
             ->fetchAssoc(
                 $sql,
                 array(
-                    (int) $bookId
+                    (int) $bookId,
                 )
             );
 
         if (empty($output)) {
             throw new \Exception('Product not found');
         }
-        return $output;
+
+        if (!empty($output['serie_id'])) {
+            $serie = $book->getSerie()
+                ->setId($output['serie_id'])
+                ->setName($output['serie_name']);
+        }
+        unset($output['serie_id'], $output['serie_name']);
+
+        return $book->setData($output);
     }
 
     /**
@@ -77,9 +90,8 @@ class Book extends Resource
         return $this->getConnection()
             ->fetchAll($sql,
                 array(
-                    Core::getConfig()->getValue('last_added')
+                    Core::getConfig()->getValue('last_added'),
                 )
             );
-
     }
 }
