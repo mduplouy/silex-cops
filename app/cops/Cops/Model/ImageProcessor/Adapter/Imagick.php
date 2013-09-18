@@ -52,20 +52,14 @@ class Imagick extends ImageProcessorAbstract implements ImageProcessorInterface
         $imagick->setImageResolution (92, 92);
         $imagick->setImageCompression(\Imagick::COMPRESSION_ZIP);
         $imagick->setImageCompressionQuality(85);
-        $imagick->stripImage();
-        $imagick->resizeImage(
+        $imagick->thumbnailImage(
             $this->getWidth(),
-            0,
-            \Imagick::FILTER_SINC,
-            0,
+            $this->getHeight(),
+            true,
             false
         );
-
+        $imagick->stripImage();
         $imagick->writeImage($dest);
     }
 
-    public function resize($width=null, $height=null)
-    {
-        return $this;
-    }
 }

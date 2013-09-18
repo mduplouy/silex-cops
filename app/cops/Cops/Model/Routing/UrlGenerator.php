@@ -146,7 +146,10 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
         // Check for mod_rewrite config then prepend script name to url
         if (Core::getConfig()->getValue('use_rewrite') !== true) {
             $app = Core::getApp();
-            $url = $app['request']->getScriptName().$url;
+            $scriptName = $app['request']->getScriptName();
+            if (strpos($url, $scriptName) === false) {
+                $url = $app['request']->getScriptName().$url;
+            }
         }
 
         return $url;

@@ -80,8 +80,4 @@ class Gd extends ImageProcessorAbstract implements ImageProcessorInterface
         imagejpeg($targetImage, $dest, self::DEFAULT_QUALITY);
     }
 
-    public function resize($width=null, $height=null)
-    {
-        return $this;
-    }
 }
