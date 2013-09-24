@@ -29,9 +29,9 @@
     <div id="serie">
         {{"Other books in this serie:"|trans}} <br />
         <ul>
-        {% for serieBook in serieBooks %}
+            {% for serieBook in serieBooks %}
             <li>{% include 'book_link.html' with {'book': serieBook, 'showAuthor': false} %}</li>
-        {% endfor %}
+            {% endfor %}
         </ul>
     </div>
         {% endif %}
