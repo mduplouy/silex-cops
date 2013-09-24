@@ -13,8 +13,14 @@ namespace Cops\Model;
  * Base resource class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Resource
+abstract class Resource
 {
+    /**
+     * Base select statement for loading
+     * @var string
+     */
+    protected $_baseSelect;
+
     /**
      * Get the DB connection instance
      *
@@ -23,5 +29,15 @@ class Resource
     public function getConnection()
     {
         return \Cops\Model\Core::getDb();
+    }
+
+    /**
+     * Base select getter
+     *
+     * @return string
+     */
+    public function getBaseSelect()
+    {
+        return $this->_baseSelect;
     }
 }

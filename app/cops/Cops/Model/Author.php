@@ -17,10 +17,22 @@ namespace Cops\Model;
 class Author extends Common
 {
     /**
-     * Resource name
+     * Object ID
+     * @var int
+     */
+    protected $id;
+
+    /**
+     * Author name
      * @var string
      */
-    protected $_resourceName = 'Resource\\Author';
+    protected $name;
+
+    /**
+     * Sort name
+     * @var string
+     */
+    protected $sort;
 
     /**
      * Get the latest added books

@@ -22,8 +22,8 @@ class Core
     protected $_modelInstance = array();
 
     /**
-     * Resource access
-     * @var mixed
+     * Resource instance
+     * @var \Cops\Model\Resource
      */
     protected $_resource;
 
@@ -106,8 +106,13 @@ class Core
     public function getModel($className, $args = array())
     {
         if (!isset($this->_objecInstance[$className])) {
-            $fullClassName = __NAMESPACE__.'\\'.$className;
+            $fullClassName = $className;
+            if (!class_exists($fullClassName)) {
+                $fullClassName = __NAMESPACE__.'\\'.$className;
+            }
+
             $obj = new \ReflectionClass($fullClassName);
+
             if (!is_array($args)) {
                 $args = array($args);
             }
@@ -123,13 +128,24 @@ class Core
      */
     public function getResource()
     {
-        if (empty($this->_resourceName)) {
-            throw new \Exception('No resource name set');
-        }
         if (is_null($this->_resource)) {
-            $this->_resource = $this->getModel($this->_resourceName);
+            $this->_resource = $this->getModel(get_called_class().'\\Resource');
         }
         return $this->_resource;
+    }
+
+    /**
+     * Collection object loader
+     *
+     * @return \Cops\Model\Collection
+     */
+    public function getCollection()
+    {
+        $fullClassName = get_called_class().'\\Collection';
+        if (!class_exists($fullClassName)) {
+            $fullClassName = __NAMESPACE__.'\\'.$className;
+        }
+        return new $fullClassName($this);
     }
 
     /**

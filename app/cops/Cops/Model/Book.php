@@ -19,10 +19,52 @@ use Cops\Model\Core;
 class Book extends Common
 {
     /**
-     * Resource name
+     * Object ID
+     * @var int
+     */
+    protected $id;
+
+    /**
+     * Publication date
      * @var string
      */
-    protected $_resourceName = 'Resource\\Book';
+    protected $pubdate;
+
+    /**
+     * Title
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * Has cover
+     * @var bool
+     */
+    protected $hasCover;
+
+    /**
+     * Data path
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * Rating
+     * @var string
+     */
+    protected $rating;
+
+    /**
+     * Serie index
+     * @var string
+     */
+    protected $seriesIndex;
+
+    /**
+     * An Author object instance
+     * @var \Cops\Model\Author
+     */
+    protected $_author;
 
     /**
      * A Cover object instance
@@ -39,21 +81,11 @@ class Book extends Common
     /**
      * Get the latest added books
      *
-     * @return array Array of Book object
+     * @return \Cops\Model\Collection  Collection of Book
      */
     public function getLatest()
     {
-        $output = array();
-        foreach($this->getResource()->getLatest($this) as $bookData) {
-            // Remove html code from the comments
-            $bookData['comment'] = strip_tags($bookData['comment']);
-
-            $book = clone($this);
-            $book->setData($bookData);
-
-            $output[] = $book;
-        }
-        return $output;
+        return $this->getResource()->getLatestCollection($this, $this->getCollection());
     }
 
     /**
@@ -61,7 +93,7 @@ class Book extends Common
      *
      * @param int $bookId
      *
-     * @return Cops\Model\Book
+     * @return \Cops\Model\Book
      */
     public function load($bookId)
     {
@@ -69,9 +101,22 @@ class Book extends Common
     }
 
     /**
+     * Has cover setter
+     *
+     * @param book $hasCover
+     *
+     * @return \Cops\Model\Book
+     */
+    public function setHasCover($hasCover)
+    {
+        $this->hasCover = (bool) $hasCover;
+        return $this;
+    }
+
+    /**
      * Cover object getter
      *
-     * @return Cops\Model\Cover
+     * @return \Cops\Model\Cover
      */
     public function getCover()
     {
@@ -84,13 +129,46 @@ class Book extends Common
     /**
      * Serie object getter
      *
-     * @return Cops\Model\Serie
+     * @return \Cops\Model\Serie
      */
     public function getSerie()
     {
         if (is_null($this->_serie)) {
-            $this->_serie = $this->getModel('Serie', $this);
+            $this->_serie = $this->getModel('Serie');
         }
         return $this->_serie;
+    }
+
+    /**
+     * Author object getter
+     *
+     * @return \Cops\Model\Author
+     */
+    public function getAuthor()
+    {
+        if (is_null($this->_author)) {
+            $this->_author = $this->getModel('Author');
+        }
+        return $this->_author;
+    }
+
+    /**
+     * Get other books from author
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function getOtherBooksFromAuthor()
+    {
+        return $this->getResource()->getOtherBooksFromAuthor($this->getAuthor()->getId(), $this);
+    }
+
+    /**
+     * Get other books from serie
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function getOtherBooksFromSerie()
+    {
+        return $this->getResource()->getOtherBooksFromSerie($this->getSerie()->getId(), $this);
     }
 }

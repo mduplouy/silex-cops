@@ -52,6 +52,13 @@ body {
         margin:0 32px;
     }
 
+    #book_detail #serie ul,
+    #book_detail #author ul {
+        display:block;
+        float:left;
+        margin-top:0.25em;
+    }
+
 /**
  * Footer block
  */

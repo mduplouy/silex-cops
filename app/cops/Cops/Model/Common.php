@@ -14,7 +14,7 @@ namespace Cops\Model;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Common extends Core
+abstract class Common extends Core
 {
     /**
      * Data storage
@@ -47,22 +47,22 @@ class Common extends Core
      */
     public function __call($method, $args)
     {
-        $dataKey = $this->_getDataKeyFromMethod($method);
-
         if (method_exists($this, $method)) {
             return call_user_func_array(array($this, $method), $args);
         }
 
+        $propKey = $this->_getPropNameFromMethod($method);
+
         switch (substr($method, 0, 3)) {
             case 'get' :
-                if (array_key_exists($dataKey, $this->_data)) {
-                    return $this->_data[$dataKey];
+                if (property_exists($this, $propKey)) {
+                    return $this->$propKey;
                 } else {
                     return null;
                 }
 
             case 'set' :
-                $this->_data[$dataKey] = $args[0];
+                $this->$propKey = $args[0];
                 return $this;
         }
         throw new \Exception('Invalid method name : '.get_called_class().'::'.$method);
@@ -79,21 +79,23 @@ class Common extends Core
     {
         foreach($dataArray as $prop => $value) {
             $prop = $this->_getDataKeyFromProperty($prop);
-            $this->_data[$prop] = $value;
+            if (property_exists($this, $prop)) {
+                $this->$prop = $value;
+            }
         }
         return $this;
     }
 
     /**
-     * Get the data key from setter method name
+     * Get the property name from setter method name
      *
      * @param string $method
      *
      * @return string
      */
-    protected function _getDataKeyFromMethod($method)
+    protected function _getPropNameFromMethod($method)
     {
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', substr($method, 3))));
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', substr($method, 3)))));
     }
 
     /**
@@ -105,6 +107,6 @@ class Common extends Core
      */
     protected function _getDataKeyFromProperty($prop)
     {
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $prop)));
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $prop))));
     }
 }

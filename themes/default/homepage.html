@@ -6,15 +6,7 @@
         <div class="books latest">
             <ul>
                 {% for book in latestBooks %}
-                <li><a href="{{ app.url_generator.generate('book_detail', {id: book.getId()}) }}" class="tooltip" title="{{ book.getTitle() }}">
-                    {% if book.getSerieName() %}
-                        {{book.getSerieName()}} T.{{book.getSerieIndex()}}
-                        -
-                    {% endif %}
-                    {{ book.getTitle() }}
-                    - {{ book.getAuthor() }} ({{ book.getYear() }})
-                    </a>
-                </li>
+                <li>{% include 'book_link.html' with {'book': book, 'showAuthor': true, 'class': 'tooltip'} %}</li>
                 {% endfor %}
             </ul>
         </div>

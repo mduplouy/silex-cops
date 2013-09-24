@@ -59,8 +59,9 @@ class BookController
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'book.html', array(
             'pageTitle' => $book->getTitle(),
-            'book' => $book,
+            'book' => $book
         ));
+
     }
 
     public function listAction($page)

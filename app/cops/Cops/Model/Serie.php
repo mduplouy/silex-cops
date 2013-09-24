@@ -16,6 +16,24 @@ namespace Cops\Model;
 class Serie extends Common
 {
     /**
+     * Object ID
+     * @var int
+     */
+    protected $id;
+
+    /**
+     * Serie name
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * Sort name
+     * @var string
+     */
+    protected $sort;
+
+    /**
      * Resource name
      * @var string
      */
