@@ -171,4 +171,14 @@ class Book extends Common
     {
         return $this->getResource()->getOtherBooksFromSerie($this->getSerie()->getId(), $this);
     }
+
+    /**
+     * Empty singleton properties on clone
+     */
+    public function __clone()
+    {
+        $this->_serie = null;
+        $this->_author = null;
+        $this->_cover = null;
+    }
 }

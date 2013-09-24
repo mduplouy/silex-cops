@@ -116,7 +116,7 @@ class Core
             if (!is_array($args)) {
                 $args = array($args);
             }
-            $this->_objecInstance[$className] = $obj->newInstanceArgs($args);
+            return $obj->newInstanceArgs($args);
         }
         return $this->_objecInstance[$className];
     }
@@ -180,4 +180,11 @@ class Core
         return $app['db'];
     }
 
+    /**
+     * Empty singleton properties on clone
+     */
+    public function __clone()
+    {
+        $this->_objecInstance = array();
+    }
 }
