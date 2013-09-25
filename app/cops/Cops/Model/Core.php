@@ -79,7 +79,6 @@ class Core
         ));
         $app['translator'] = $app->share($app->extend('translator', function($translator) {
             $translator->addLoader('yaml', new \Symfony\Component\Translation\Loader\YamlFileLoader());
-            $translator->addResource('yaml', BASE_DIR.'locales/en.yml', 'en');
             $translator->addResource('yaml', BASE_DIR.'locales/fr.yml', 'fr');
             return $translator;
         }));
