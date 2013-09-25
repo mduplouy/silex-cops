@@ -9,6 +9,8 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\Core;
+
 /**
  * Base resource class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
@@ -28,7 +30,7 @@ abstract class Resource
      */
     public function getConnection()
     {
-        return \Cops\Model\Core::getDb();
+        return Core::getDb();
     }
 
     /**

@@ -50,7 +50,7 @@ class Resource extends \Cops\Model\Resource
      */
     public function load($bookId, \Cops\Model\Book $book)
     {
-        $sql = $this->_baseSelect . '
+        $sql = $this->getBaseSelect() . '
             WHERE
             main.id = ?';
 
@@ -72,14 +72,14 @@ class Resource extends \Cops\Model\Resource
     /**
      * Load latest added books from database
      *
-     * @param \Cops\Model\Book             $book
-     * @param \Cops\Model\Collection       $collection
+     * @param \Cops\Model\Book       $book
+     * @param \Cops\Model\Collection $collection
      *
      * @return \Cops\Model\Book\Collection
      */
     public function getLatestCollection(\Cops\Model\Book $book)
     {
-        $sql = $this->_baseSelect. '
+        $sql = $this->getBaseSelect(). '
             ORDER BY main.timestamp DESC
             LIMIT :limit';
 
@@ -104,10 +104,12 @@ class Resource extends \Cops\Model\Resource
      *
      * @param int              $authorId
      * @param \Cops\Model\Book $book
+     *
+     * @return \Cops\Model\Book\Collection
      */
     public function getOtherBooksFromAuthor($authorId, \Cops\Model\Book $book)
     {
-        $sql = $this->_baseSelect. '
+        $sql = $this->getBaseSelect(). '
             WHERE
             authors.id = :author_id
             AND main.id != :book_id';
@@ -149,10 +151,12 @@ class Resource extends \Cops\Model\Resource
      *
      * @param int              $serieId
      * @param \Cops\Model\Book $book
+     *
+     * @return \Cops\Model\Book\Collection
      */
     public function getOtherBooksFromSerie($serieId, \Cops\Model\Book $book)
     {
-        $sql = $this->_baseSelect. '
+        $sql = $this->getBaseSelect(). '
             WHERE
             series.id = :serie_id
             AND main.id != :book_id
@@ -186,7 +190,7 @@ class Resource extends \Cops\Model\Resource
      * Set data after select statement
      *
      * @param \Cops\Model\Book $book   The book instance
-     * @param array           $result The result array from select stmt
+     * @param array            $result The result array from select stmt
      *
      * @return \Cops\Model\Book;
      */
