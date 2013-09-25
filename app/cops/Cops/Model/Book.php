@@ -10,6 +10,7 @@
 namespace Cops\Model;
 
 use Cops\Model\Core;
+use Cops\Model\Book\FileInterface
 
 /**
  * Book model class
@@ -77,6 +78,12 @@ class Book extends Common
      * @var \Cops\Model\Serie
      */
     protected $_serie;
+
+    /**
+     * A file adapter instance
+     * @var \Cops\Model\Book\FileInterface
+     */
+    protected $_file;
 
     /**
      * Get the latest added books
