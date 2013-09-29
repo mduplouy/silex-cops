@@ -10,7 +10,7 @@
 namespace Cops\Model;
 
 use Cops\Model\Core;
-use Cops\Model\Book\FileInterface
+use Cops\Model\Book\FileInterface;
 
 /**
  * Book model class
