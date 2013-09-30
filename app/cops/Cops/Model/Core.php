@@ -83,14 +83,6 @@ class Core
             return $translator;
         }));
 
-        // Set image adapters to create thumbnails
-        $app['image_gd'] = function() {
-            return new \Cops\Model\ImageProcessor\Adapter\Gd();
-        };
-        $app['image_imagick'] = function() {
-            return new \Cops\Model\ImageProcessor\Adapter\Imagick();
-        };
-
         self::$_app = $app;
     }
 

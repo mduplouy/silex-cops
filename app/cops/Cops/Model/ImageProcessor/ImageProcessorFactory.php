@@ -19,8 +19,26 @@ use Cops\Model\Core;
 class ImageProcessorFactory
 {
     /**
+     * Instance types
+     */
+    const TYPE_GD       = 'gd';
+    const TYPE_IMAGICK  = 'imagick';
+
+    /**
+     * Instance type storage
+     * @var array
+     */
+    private $_instanceTypeStorage;
+
+    /**
+     * Instance type
+     * @var string
+     */
+    private $_instanceType;
+
+    /**
      * Processor instance
-     * @var \Cops\Model\Image\ImageProcessorInterface
+     * @var array
      */
     protected $_instance;
 
@@ -31,20 +49,35 @@ class ImageProcessorFactory
      */
     public function __construct($processingType='gd')
     {
-        $this->_processingType = $processingType;
+        $this->_instanceType = $processingType;
+
+        $this->_instanceTypeStorage = array(
+            self::TYPE_GD      => self::TYPE_GD,
+            self::TYPE_IMAGICK => self::TYPE_IMAGICK,
+        );
     }
 
     /**
+     * Instance getter
      *
+     * @return \Cops\Model\Image\ImageProcessorInterface
      */
     public function getInstance()
     {
-        if (isset($this->_instance)) {
-            return $this->_instance;
+        if (!isset($this->_instanceTypeStorage[$this->_instanceType])) {
+            // @todo add custom exception
+            throw new \Exception(
+                sprintf(
+                    'No model configured for the %s image processor',
+                    $this->_instanceType
+                )
+            );
         }
 
-        $app = Core::getApp();
-        $this->_instance = $app['image_'.$this->_processingType];
-        return $this->_instance;
+        if (!isset($this->_instance[$this->_instanceType])) {
+            $className = '\\Cops\\Model\\ImageProcessor\\Adapter\\'.ucfirst($this->_instanceType);
+            $this->_instance[$this->_instanceType] = new $className;
+        }
+        return $this->_instance[$this->_instanceType];
     }
 }
