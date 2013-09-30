@@ -17,12 +17,6 @@ namespace Cops\Model;
 abstract class Common extends Core
 {
     /**
-     * Data storage
-     * @var array
-     */
-    protected $_data = array();
-
-    /**
      * Constructor
      *
      * @param array $dataArray

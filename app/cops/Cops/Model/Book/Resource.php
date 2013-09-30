@@ -50,6 +50,9 @@ class Resource extends \Cops\Model\Resource
      */
     public function load($bookId, \Cops\Model\Book $book)
     {
+        /**
+         * Load book common informations
+         */
         $sql = $this->getBaseSelect() . '
             WHERE
             main.id = ?';
@@ -66,7 +69,28 @@ class Resource extends \Cops\Model\Resource
             throw new \Exception('Product not found');
         }
 
-        return $this->_setDataAfterSelect($book, $result);
+        $this->_setDataAfterSelect($book, $result);
+
+        /**
+         * Load book file informations
+         */
+        $bookFiles = $this->getConnection()->fetchAll('SELECT
+            book,
+            format,
+            uncompressed_size,
+            name
+            FROM data
+            WHERE book = ?',
+            array((int) $bookId)
+        );
+
+        foreach($bookFiles as $bookFile) {
+            $file = $book->getFile($bookFile['format']);
+            $file->setData($bookFile);
+            $file->setDirectory($book->getPath());
+        }
+
+        return $book;
     }
 
     /**

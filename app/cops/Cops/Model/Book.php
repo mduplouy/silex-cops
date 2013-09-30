@@ -10,7 +10,7 @@
 namespace Cops\Model;
 
 use Cops\Model\Core;
-use Cops\Model\Book\FileInterface;
+use Cops\Model\BookFile\BookFileFactory;
 
 /**
  * Book model class
@@ -80,8 +80,8 @@ class Book extends Common
     protected $_serie;
 
     /**
-     * A file adapter instance
-     * @var \Cops\Model\Book\FileInterface
+     * An array of file adapter instance
+     * @var array
      */
     protected $_file;
 
@@ -160,6 +160,20 @@ class Book extends Common
     }
 
     /**
+     * File adapter getter
+     *
+     * @return \Cops\Model\Book\FileInterface
+     */
+    public function getFile($fileType=BookFileFactory::TYPE_EPUB)
+    {
+        if (!isset($this->_file[$fileType])) {
+            $this->_file[$fileType] = $this->getModel('BookFile\\BookFileFactory', $fileType)
+                ->getInstance();
+        }
+        return $this->_file[$fileType];
+    }
+
+    /**
      * Get other books from author
      *
      * @return \Cops\Model\Book\Collection
@@ -187,5 +201,6 @@ class Book extends Common
         $this->_serie = null;
         $this->_author = null;
         $this->_cover = null;
+        $this->_file = array();
     }
 }

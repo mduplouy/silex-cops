@@ -19,5 +19,39 @@ use Cops\Model\BookFile\BookFileInterface;
  */
 abstract class BookFileAbstract extends Common implements BookFileInterface
 {
+    /**
+     * Bookfile format
+     * @var string
+     */
+    protected $format;
+
+    /**
+     * File size in bytes
+     * @var int
+     */
+    protected $uncompressedSize = 0;
+
+    /**
+     * File name without extension
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * File storage directory
+     * @var string
+     */
+    protected $directory;
+
     abstract public function getFilePath();
+
+    /**
+     * Get file name with extension
+     *
+     * @return string
+     */
+    public function getFileName()
+    {
+        return $this->name.'.'.strtolower($this->format);
+    }
 }
