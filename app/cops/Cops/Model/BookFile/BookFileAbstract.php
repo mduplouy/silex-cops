@@ -9,6 +9,7 @@
  */
 namespace Cops\Model\BookFile;
 
+use Cops\Model\Core;
 use Cops\Model\Common;
 use Cops\Model\BookFile\BookFileInterface;
 
@@ -21,29 +22,49 @@ abstract class BookFileAbstract extends Common implements BookFileInterface
 {
     /**
      * Bookfile format
+     *
      * @var string
      */
     protected $format;
 
     /**
      * File size in bytes
+     *
      * @var int
      */
     protected $uncompressedSize = 0;
 
     /**
      * File name without extension
+     *
      * @var string
      */
     protected $name;
 
     /**
-     * File storage directory
+     * File storage directory5
+     *
      * @var string
      */
     protected $directory;
 
-    abstract public function getFilePath();
+    /**
+     * Get the file path
+     *
+     * @return string
+     */
+    public function getFilePath()
+    {
+        $filePath = BASE_DIR
+            . Core::getConfig()->getValue('data_dir') . DS
+            . $this->directory . DS
+            . $this->name . '.'
+            . strtolower($this->format);
+
+        if (file_exists($filePath)) {
+            return $filePath;
+        }
+    }
 
     /**
      * Get file name with extension
@@ -54,4 +75,20 @@ abstract class BookFileAbstract extends Common implements BookFileInterface
     {
         return $this->name.'.'.strtolower($this->format);
     }
+
+    /**
+     * Get translated human readable file size
+     *
+     * @return string
+     */
+    public function getFormattedSize()
+    {
+        $app = Core::getApp();
+
+        $size = $this->uncompressedSize;
+        $label = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB' );
+        for ($i = 0; $size >= 1024 && $i < ( count( $label ) -1 ); $size /= 1024, $i++);
+        return round( $size, $i-1 ) . ' ' . $app['translator']->trans($label[$i]);
+    }
+
 }

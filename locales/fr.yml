@@ -1,10 +1,17 @@
 m/d/Y: d/m/Y
+B: o
+KB: Ko
+MB: Mo
+GB: Go
+TB: To
+PB: Po
 Access by Author: Accès par auteur
 Access by Series: Accès par série
 Author:: Auteur :
+Download in %s format (%s): Télécharger au format %s (%s)
+Download whole serie (%s books) as archive:: Télécharger toute la série (%s livres) sous forme d'archive
 Homepage: Accueil
 Last added books: Derniers livres ajoutés
 Other books from this author:: Autres livres de cet auteur :
 Other books in this serie:: Autres livres de cette série :
 Publication date:: Date de publication :
-

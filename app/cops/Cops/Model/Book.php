@@ -83,7 +83,7 @@ class Book extends Common
      * An array of file adapter instance
      * @var array
      */
-    protected $_file;
+    protected $_file = array();
 
     /**
      * Get the latest added books
@@ -171,6 +171,16 @@ class Book extends Common
                 ->getInstance();
         }
         return $this->_file[$fileType];
+    }
+
+    /**
+     * Files getter
+     *
+     * @return array An array of fileInterface instance
+     */
+    public function getFiles()
+    {
+        return $this->_file;
     }
 
     /**

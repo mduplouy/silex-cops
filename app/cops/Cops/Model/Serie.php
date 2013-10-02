@@ -56,4 +56,10 @@ class Serie extends Common
         }
         return $series;
     }
+
+    public function getNumberOfBooks()
+    {
+        return 2;
+    }
+
 }

@@ -19,8 +19,13 @@ use Cops\Model\BookFile\BookFileInterface;
  */
 class Pdf extends BookFileAbstract implements BookFileInterface
 {
-    public function getFilePath()
+    /**
+     * Get content type header for download
+     *
+     * @return string
+     */
+    public function getContentTypeHeader()
     {
-        return '';
+        return 'application/pdf';
     }
 }

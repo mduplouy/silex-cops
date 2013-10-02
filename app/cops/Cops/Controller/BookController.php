@@ -11,6 +11,7 @@ namespace Cops\Controller;
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Cops\Model\BookFile\BookFileFactory;
 
 /**
  * Book controller class
@@ -41,15 +42,18 @@ class BookController
             ->value('page', 1)
             ->bind('book_list');
 
+        $controller->get('/download/{id}/{format}', __CLASS__.'::downloadAction')
+            ->assert('id', '\d+')
+            ->bind('book_download');
+
         return $controller;
     }
 
     /**
      * Show details of a book
      *
-     * @param \Silex\Application $app
-     *
-     * @param int $id BookId
+     * @param \Silex\Application $app Silex app instance
+     * @param int                $id  BookId
      *
      * @return string
      */
@@ -62,6 +66,29 @@ class BookController
             'book' => $book
         ));
 
+    }
+
+    /**
+     * Download book file
+     *
+     * @param int    $id     The book ID
+     * @param string $format The book file format
+     *
+     * @return void
+     */
+    public function downloadAction($id, $format=BookFileFactory::TYPE_EPUB)
+    {
+        $book = $this->getModel('Book')->load($id);
+
+        $bookFile = $book->getFile(strtoupper($format));
+
+        if ($file = $bookFile->getFilePath()) {
+            header('Content-type: '.$bookFile->getContentTypeHeader());
+            header('Content-disposition:attachment;filename="'.$bookFile->getFileName().'"');
+            header('Content-Transfer-Encoding: binary');
+            readfile($file);
+        }
+        exit;
     }
 
     public function listAction($page)

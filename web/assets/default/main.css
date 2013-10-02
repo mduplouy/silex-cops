@@ -9,6 +9,7 @@ body {
  * Generic styles
  */
 .bold { font-weight:600; }
+.small { font-size:0.78em; }
 
 #main {
     width:98%;
