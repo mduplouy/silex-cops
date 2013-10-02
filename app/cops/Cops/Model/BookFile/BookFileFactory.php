@@ -10,6 +10,7 @@
 namespace Cops\Model\BookFile;
 
 use Cops\Model\Core;
+use Cops\Exception\BookFile\AdapterException;
 
 /**
  * Book file factory
@@ -61,8 +62,7 @@ class BookFileFactory
     public function getInstance()
     {
         if (!isset($this->_instanceTypeStorage[$this->_instanceType])) {
-            // @todo add custom exception
-            throw new \Exception(
+            throw new AdapterException(
                 sprintf(
                     'No model configured for the %s book file format',
                     $this->_instanceType

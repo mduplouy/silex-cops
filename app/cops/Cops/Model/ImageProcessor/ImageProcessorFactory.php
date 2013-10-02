@@ -9,8 +9,9 @@
  */
 namespace Cops\Model\ImageProcessor;
 
-use Cops\Model\ImageProcessor\ImageProcessorInterface;
 use Cops\Model\Core;
+use Cops\Model\ImageProcessor\ImageProcessorInterface;
+use Cops\Exception\ImageProcessor\AdapterException;
 
 /**
  * Image processor factory
@@ -65,8 +66,7 @@ class ImageProcessorFactory
     public function getInstance()
     {
         if (!isset($this->_instanceTypeStorage[$this->_instanceType])) {
-            // @todo add custom exception
-            throw new \Exception(
+            throw new AdapterException(
                 sprintf(
                     'No model configured for the %s image processor',
                     $this->_instanceType
