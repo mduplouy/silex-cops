@@ -9,7 +9,7 @@
  */
 namespace Cops\Model\BookFile\Adapter;
 
-use Cops\Model\BookFile\BookFileAbstract;
+use Cops\Model\BookFileAbstract;
 use Cops\Model\BookFile\BookFileInterface;
 
 /**

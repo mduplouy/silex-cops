@@ -42,7 +42,7 @@ class SerieController
     }
 
     /**
-     * Download book file
+     * Download all serie books as archive file
      *
      * @param int    $id     The serie ID
      * @param string $format The archive file format (zip|tar.gz)
@@ -51,9 +51,24 @@ class SerieController
      */
     public function downloadAction($id, $format)
     {
-        $serie = $this->getModel('Serie');
+        $serie = $this->getModel('Serie')->load($id);
 
-        echo 'Not implemented yet';
+        $serieBooks = $this->getModel('BookFile')->getCollectionBySerieId($serie->getId());
+
+        $archive = $this->getModel('Archive\\ArchiveFactory', $format)
+            ->getInstance()
+            ->addFiles($serieBooks)
+            ->generateArchive();
+
+        // @Todo fix this
+        ob_end_flush();
+        header('Content-type: application/zip');
+        header('Content-disposition:attachment;filename="'.$serie->getName().'.zip"');
+        header('Content-Transfer-Encoding: binary');
+        header("Content-length: " . filesize($archive));
+        readfile($archive);
+
+        unlink($archive);
         exit;
     }
 

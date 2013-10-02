@@ -92,7 +92,7 @@ class Book extends Common
      */
     public function getLatest()
     {
-        return $this->getResource()->getLatestCollection($this, $this->getCollection());
+        return $this->getResource()->getLatestCollection($this);
     }
 
     /**
@@ -201,6 +201,18 @@ class Book extends Common
     public function getOtherBooksFromSerie()
     {
         return $this->getResource()->getOtherBooksFromSerie($this->getSerie()->getId(), $this);
+    }
+
+    /**
+     * Get collection from serie ID
+     *
+     * @param int $serieId
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function getCollectionBySerieId($serieId)
+    {
+        return $this->getResource()->loadBySerieId($serieId, $this);
     }
 
     /**

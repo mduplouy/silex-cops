@@ -9,12 +9,48 @@
  */
 namespace Cops\Model\Serie;
 
+use Cops\Model\Exception\SerieException;
+use Cops\Model\Core;
+use \PDO;
+
 /**
  * Serie resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
 class Resource extends \Cops\Model\Resource
 {
+    protected $_baseSelect = 'SELECT
+        main.*
+        FROM series AS main';
+
+    /**
+     * Load a serie data
+     *
+     * @param  int               $serieId
+     * @param  \Cops\Model\Serie $serie
+     *
+     * @return \Cops\Model\Serie;
+     */
+    public function load($serieId, \Cops\Model\Serie $serie)
+    {
+        $result = $this->getConnection()
+            ->fetchAssoc(
+                $this->getBaseSelect(). ' WHERE id = ?',
+                array(
+                    (int) $serieId,
+                )
+            );
+
+        if (empty($result)) {
+            throw new SerieException(sprintf(
+                'Serie width id %s not found',
+                $serieId
+            ));
+        }
+
+        return $serie->setData($result);
+    }
+
     /**
      * Get aggregated series by first letter
      *

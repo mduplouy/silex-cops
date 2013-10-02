@@ -34,10 +34,22 @@ class Serie extends Common
     protected $sort;
 
     /**
-     * Resource name
-     * @var string
+     * Books collection
+     * @var \Cops\Model\Book\Collection
      */
-    protected $_resourceName = 'Resource\\Serie';
+    private $_books;
+
+    /**
+     * Load serie
+     *
+     * @param int $serieId
+     *
+     * @return \Cops\Model\Serie
+     */
+    public function load($serieId)
+    {
+        return $this->getResource()->load($serieId, $this);
+    }
 
     /**
      * Get aggregated series by first letter
@@ -55,6 +67,12 @@ class Serie extends Common
             $series[$serie['first_letter']] = $serie['nb_serie'];
         }
         return $series;
+    }
+
+    public function getAllBooks()
+    {
+        $book = $this->getModel('Book')->getCollectionBySerieId($this->getId());
+
     }
 
     public function getNumberOfBooks()

@@ -9,6 +9,7 @@
  */
 namespace Cops\Model\Book;
 
+use Cops\Model\Exception\BookException;
 use Cops\Model\Core;
 use \PDO;
 
@@ -66,7 +67,10 @@ class Resource extends \Cops\Model\Resource
             );
 
         if (empty($result)) {
-            throw new \Exception('Product not found');
+            throw new BookException(sprintf(
+                'Product width id %s not found',
+                $bookId
+            ));
         }
 
         $this->_setDataAfterSelect($book, $result);
@@ -97,7 +101,6 @@ class Resource extends \Cops\Model\Resource
      * Load latest added books from database
      *
      * @param \Cops\Model\Book       $book
-     * @param \Cops\Model\Collection $collection
      *
      * @return \Cops\Model\Book\Collection
      */
@@ -200,7 +203,40 @@ class Resource extends \Cops\Model\Resource
         $collection = $book->getCollection();
 
         foreach($stmt as $result) {
+            $myBook = clone($book);
+            $this->_setDataAfterSelect($myBook, $result);
 
+            $collection->add($myBook);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Load books by serie ID
+     *
+     * @param int              $serieId
+     * @param \Cops\Model\Book $book
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function loadBySerieId($serieId, \Cops\Model\Book $book)
+    {
+        $sql = $this->getBaseSelect(). '
+            WHERE
+            series.id = :serie_id
+            ORDER BY series_index, title';
+
+        $stmt = $this->getConnection()
+            ->prepare($sql);
+
+        $stmt->bindValue(':serie_id', $serieId);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $collection = $book->getCollection();
+
+        foreach($stmt as $result) {
             $myBook = clone($book);
             $this->_setDataAfterSelect($myBook, $result);
 

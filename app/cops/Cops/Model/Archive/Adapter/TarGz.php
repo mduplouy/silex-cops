@@ -7,25 +7,25 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Cops\Model\BookFile\Adapter;
+namespace Cops\Model\Archive\Adapter;
 
-use Cops\Model\BookFileAbstract;
-use Cops\Model\BookFile\BookFileInterface;
+use Cops\Model\ArchiveAbstract;
+use Cops\Model\Archive\ArchiveInterface;
 
 /**
- * Epub model adapter class
+ * Archive adapter for tar.gz file
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Epub extends BookFileAbstract implements BookFileInterface
+class TarGz extends ArchiveAbstract implements ArchiveInterface
 {
     /**
-     * Get content type header for download
+     * Generate archive
      *
-     * @return string
+     * @return string The path to archive file
      */
-    public function getContentTypeHeader()
+    public function generateArchive()
     {
-        return 'application/epub+zip';
+        die('not implemented yet');
     }
 }
