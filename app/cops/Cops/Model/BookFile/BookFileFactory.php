@@ -71,7 +71,9 @@ class BookFileFactory
         }
 
         if (!isset($this->_instance[$this->_instanceType])) {
-            $className = '\\Cops\\Model\\BookFile\\Adapter\\'.ucfirst(strtolower($this->_instanceType));
+            $className = '\\Cops\\Model\\BookFile\\Adapter\\' .
+                ucfirst(strtolower($this->_instanceType));
+
             $this->_instance[$this->_instanceType] = new $className;
         }
         return $this->_instance[$this->_instanceType];
