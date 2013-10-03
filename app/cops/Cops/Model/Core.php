@@ -9,11 +9,13 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\CoreInterface;
+
 /**
  * Core class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Core
+class Core implements CoreInterface
 {
     /**
      * Model object instance registry

@@ -9,9 +9,12 @@
  */
 namespace Cops\Model\BookFile;
 
+use Cops\Model\BookFile;
 use Cops\Model\Exception\BookFileException;
 use Cops\Model\Core;
+use Cops\Model\Collection;
 use \PDO;
+use \Doctrine\DBAL\Driver\PDOStatement;
 
 /**
  * BookFile resource model
@@ -22,41 +25,70 @@ class Resource extends \Cops\Model\Resource
     /**
      * Get book files by serie ID
      *
-     * @param int                  $serieId
-     * @param \Cops\Model\BookFile $bookFile
+     * @param  int      $serieId
+     * @param  BookFile $bookFile
      *
-     * @return \Cops\Model\BookFile\Collection
+     * @return Collection
      */
-    public function getCollectionBySerieId($serieId, $bookFile)
+    public function getCollectionBySerieId($serieId, BookFile $bookFile)
+    {
+        $stmt = $this->_getCollectionByType('series', 'series', $serieId);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        return $this->_feedCollection($bookFile, $stmt);
+    }
+
+    /**
+     * Get book files by Author ID
+     *
+     * @param  int      $authorId
+     * @param  BookFile $bookFile
+     *
+     * @return Collection
+     */
+    public function getCollectionByAuthorId($authorId, BookFile $bookFile)
+    {
+
+        $stmt = $this->_getCollectionByType('authors', 'author', $authorId);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        return $this->_feedCollection($bookFile, $stmt);
+    }
+
+    /**
+     * Retrieve a collection of book file (for books/series ...)
+     *
+     * @param  string $tableName
+     * @param  string $fieldName
+     * @param  string $fieldValue
+     *
+     * @return PDOStatement
+     */
+    private function _getCollectionByType($tableName, $fieldName, $fieldValue)
     {
         $sql = 'SELECT
             data.format,
             data.uncompressed_size,
             data.name,
             books.path as directory
-            FROM books_series_link
+            FROM books_%s_link
             INNER JOIN data ON
-                data.book = books_series_link.book
+                data.book = books_%s_link.book
             INNER JOIN books ON
                 books.id = data.book
-            WHERE books_series_link.series = :serie_id';
+            WHERE books_%s_link.%s = ?';
 
-        $stmt = $this->getConnection()
-            ->prepare($sql);
+        $sql = sprintf($sql,
+            $tableName,
+            $tableName,
+            $tableName,
+            $fieldName
+        );
 
-        $stmt->bindValue(':serie_id', $serieId);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-
-        $collection = $bookFile->getCollection();
-
-        foreach($stmt as $result) {
-            $myBookFile = clone($bookFile);
-
-            $myBookFile->setData($result);
-            $collection->add($myBookFile);
-        }
-
-        return $collection;
+        return $this->getConnection()
+            ->executeQuery($sql, array($fieldValue));
     }
+
 }

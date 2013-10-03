@@ -50,7 +50,16 @@ body {
     }
     #book_detail #cover {
         float:left;
-        margin:0 32px;
+        margin-left:32px;
+    }
+
+    #book_detail #infos {
+        margin-left:240px;
+    }
+
+    #book_detail #comments {
+        margin-bottom:12px;
+        font-size:0.96em;
     }
 
     #book_detail #serie ul,
@@ -59,6 +68,7 @@ body {
         float:left;
         margin-top:0.25em;
     }
+
 
 /**
  * Footer block

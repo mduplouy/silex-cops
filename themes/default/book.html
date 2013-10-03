@@ -15,17 +15,32 @@
 
     <div id="infos">
         <h1>{{ book.getTitle() }}</h1>
-        <p>{{"Author:"|trans}} <span class="bold">{{ book.getAuthor().getName() }}</span></p>
+
+        {% set author = book.getAuthor() %}
+        <p>{{"Author:"|trans}} <span class="bold">{{ book.getAuthor().getName() }}</span>
+        {% set nbBooks = author.getNumberOfBooks %}
+            {% if nbBooks > 1 %}
+            <br />
+            <span class="small">{{"Download author's books (%s) as archive:"|trans|format(nbBooks) }}
+            <a href="{{ app.url_generator.generate('author_download', {id: author.getId(), format: "zip"}) }}">zip</a> /
+            <a href="{{ app.url_generator.generate('author_download', {id: author.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+            {% endif %}
+        </p>
+
         <p>{{"Publication date:"|trans}} <span class="bold">{{ book.getPubdate()|date(date_format) }}</span></p>
 
-        {% if book.getSerie().getId() %}
-        <p>{{"Serie:"|trans}} <span class="bold">{{ book.getSerie().getName()}}</span><br />
-            <span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(book.getSerie().getNumberOfBooks()) }}
-            <a href="{{ app.url_generator.generate('serie_download', {id: book.getSerie().getId(), format: "zip"}) }}">zip</a> /
-            <a href="{{ app.url_generator.generate('serie_download', {id: book.getSerie().getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+        {% set serie = book.getSerie() %}
+        {% if serie.getId() %}
+        <p>{{"Serie:"|trans}} <span class="bold">{{ serie.getName()}}</span>
+            {% set nbBooks = serie.getNumberOfBooks() %}
+            {% if nbBooks > 1 %}
+            <br />
+            <span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(nbBooks) }}
+            <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: "zip"}) }}">zip</a> /
+            <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+            {% endif %}
         </p>
         {% endif %}
-
 
         {% if files %}
             {% for file in files %}
@@ -35,33 +50,42 @@
             {% endfor %}
         {% endif %}
 
-    </div>
+        <div id="comments">
+            {{ book.getComment()|raw }}
+        </div>
 
-    {% if book.getSerie().getId() %}
-        {% set serieBooks = book.getOtherBooksFromSerie() %}
-        {%if serieBooks|length > 0 %}
-    <div id="serie">
-        {{"Other books in this serie:"|trans}} <br />
-        <ul>
-            {% for serieBook in serieBooks %}
-            <li>{% include 'book_link.html' with {'book': serieBook, 'showAuthor': false} %}</li>
-            {% endfor %}
-        </ul>
-    </div>
+        {% if book.getSerie().getId() %}
+            {% set serieBooks = book.getOtherBooksFromSerie() %}
+            {%if serieBooks|length > 0 %}
+        <div id="serie">
+            {{"Other books in this serie:"|trans}} <br />
+            <ul>
+                {% for serieBook in serieBooks %}
+                <li>{% include 'book_link.html' with {'book': serieBook, 'showAuthor': false} %}</li>
+                {% endfor %}
+            </ul>
+        </div>
 
+            {% endif %}
         {% endif %}
-    {% endif %}
 
-    {% if authorBooks|length %}
-    <div id="author">
-        {{"Other books from this author:"|trans}} <br />
-        <ul>
-        {% for authorBook in authorBooks %}
-            <li>{% include 'book_link.html' with {'book': authorBook, 'showAuthor': false} %}</li>
-        {% endfor %}
-        </ul>
+        {% if authorBooks|length %}
+        <div id="author">
+            {{"Other books from this author:"|trans}} <br />
+            <ul>
+            {% for authorBook in authorBooks %}
+                <li>{% include 'book_link.html' with {'book': authorBook, 'showAuthor': false} %}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
     </div>
-    {% endif %}
+
+
+
+
+
 
 </div>
 {% endblock %}

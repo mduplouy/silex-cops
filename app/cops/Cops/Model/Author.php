@@ -35,6 +35,18 @@ class Author extends Common
     protected $sort;
 
     /**
+     * Load author data
+     *
+     * @param int $authorId
+     *
+     * @return \Cops\Model\Author
+     */
+    public function load($authorId)
+    {
+        return $this->getResource()->load($authorId, $this);
+    }
+
+    /**
      * Get the latest added books
      *
      * @return array Array of Book object
@@ -52,4 +64,13 @@ class Author extends Common
         return $output;
     }
 
+    /**
+     * Get number of books of author
+     *
+     * @return int
+     */
+    public function getNumberOfBooks()
+    {
+        return $this->getResource()->countBooks($this->getId());
+    }
 }

@@ -56,6 +56,12 @@ class Book extends Common
     protected $rating;
 
     /**
+     * Comment
+     * @var string
+     */
+    protected $comment;
+
+    /**
      * Serie index
      * @var string
      */
@@ -174,7 +180,7 @@ class Book extends Common
     }
 
     /**
-     * Files getter
+     * Get all files adapter
      *
      * @return array An array of fileInterface instance
      */

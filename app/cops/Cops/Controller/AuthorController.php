@@ -9,13 +9,59 @@
  */
 namespace Cops\Controller;
 
-use Cops;
-
 /**
  * Author controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class IndexController extends Cops\Model\Controller
+class AuthorController
+    extends \Cops\Model\Controller
+    implements \Silex\ControllerProviderInterface
 {
+    /**
+     * Connect method to dynamically add routes
+     *
+     * @see \Silex\ControllerProviderInterface::connect()
+     *
+     * @param \Application $app Application instance
+     *
+     * @return ControllerCollection ControllerCollection instance
+     */
+    public function connect(\Silex\Application $app)
+    {
+        $controller = $app['controllers_factory'];
 
+        $controller->get('/download/{id}/{format}', __CLASS__.'::downloadAction')
+            ->assert('id', '\d+')
+            ->bind('author_download');
+
+        return $controller;
+    }
+
+    /**
+     * Download all serie books as archive file
+     *
+     * @param int    $id     The serie ID
+     * @param string $format The archive file format (zip|tar.gz)
+     *
+     * @return void
+     */
+    public function downloadAction($id, $format)
+    {
+        $author = $this->getModel('Author')->load($id);
+
+        $authorBooks = $this->getModel('BookFile')->getCollectionByAuthorId($author->getId());
+
+        $archive = $this->getModel('Archive\\ArchiveFactory', $format)
+            ->getInstance()
+            ->addFiles($authorBooks)
+            ->generateArchive();
+
+        // @Todo fix this
+        ob_end_flush();
+        header('Content-type: application/zip');
+        header('Content-disposition:attachment;filename="'.$author->getName().'.zip"');
+        header('Content-Transfer-Encoding: binary');
+        header("Content-length: " . filesize($archive));
+        readfile($archive);
+    }
 }

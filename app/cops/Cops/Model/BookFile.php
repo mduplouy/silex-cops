@@ -33,4 +33,20 @@ class BookFile extends BookFileAbstract
             $this->getCollection()
         );
     }
+
+    /**
+     * Get book files by author ID
+     *
+     * @param int $authorId
+     *
+     * @return \Cops\Model\BookFile\Collection
+     */
+    public function getCollectionByAuthorId($authorId)
+    {
+        return $this->getResource()->getCollectionByAuthorId(
+            $authorId,
+            $this,
+            $this->getCollection()
+        );
+    }
 }

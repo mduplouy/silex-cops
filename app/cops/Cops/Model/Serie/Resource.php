@@ -52,6 +52,31 @@ class Resource extends \Cops\Model\Resource
     }
 
     /**
+     * Count book number in serie
+     *
+     * @param  int $serieId
+     *
+     * @return int
+     */
+    public function countBooks($serieId)
+    {
+        $sql = 'SELECT
+            COUNT(*) FROM series
+            INNER JOIN books_series_link ON series.id = books_series_link.series
+            INNER JOIN books ON books_series_link.book = books.id
+            WHERE series.id = ?';
+
+        return (int) $this->getConnection()
+            ->fetchColumn(
+                $sql,
+                array(
+                    (int) $serieId,
+                ),
+                0
+            );
+    }
+
+    /**
      * Get aggregated series by first letter
      *
      * @return array

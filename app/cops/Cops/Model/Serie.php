@@ -69,15 +69,24 @@ class Serie extends Common
         return $series;
     }
 
+    /**
+     * Get all books from serie
+     *
+     * @return \Cops\Model\Book\Collection
+     */
     public function getAllBooks()
     {
         $book = $this->getModel('Book')->getCollectionBySerieId($this->getId());
-
     }
 
+    /**
+     * Get number of books in serie
+     *
+     * @return int
+     */
     public function getNumberOfBooks()
     {
-        return 2;
+        return $this->getResource()->countBooks($this->getId());
     }
 
 }

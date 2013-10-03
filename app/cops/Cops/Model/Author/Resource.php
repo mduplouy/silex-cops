@@ -9,12 +9,46 @@
  */
 namespace Cops\Model\Author;
 
+use Cops\Exception\AuthorException;
+
 /**
  * Author resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
 class Resource extends \Cops\Model\Resource
 {
+    protected $_baseSelect = 'SELECT
+        main.*
+        FROM authors AS main';
+
+    /**
+     * Load an author data
+     *
+     * @param  int                $authorId
+     * @param  \Cops\Model\Author $author
+     *
+     * @return \Cops\Model\Serie;
+     */
+    public function load($authorId, \Cops\Model\Author $author)
+    {
+        $result = $this->getConnection()
+            ->fetchAssoc(
+                $this->getBaseSelect(). ' WHERE id = ?',
+                array(
+                    (int) $authorId,
+                )
+            );
+
+        if (empty($result)) {
+            throw new AuthorException(sprintf(
+                'Author width id %s not found',
+                $authorId
+            ));
+        }
+
+        return $author->setData($result);
+    }
+
     /**
      * Load aggregated list of authors
      *
@@ -32,5 +66,30 @@ class Resource extends \Cops\Model\Resource
             ORDER BY first_letter';
 
         return $db->fetchAll($sql);
+    }
+
+    /**
+     * Count book number written by author
+     *
+     * @param  int $authorId
+     *
+     * @return int
+     */
+    public function countBooks($authorId)
+    {
+        $sql = 'SELECT
+            COUNT(*) FROM authors
+            INNER JOIN books_authors_link ON authors.id = books_authors_link.author
+            INNER JOIN books ON books_authors_link.book = books.id
+            WHERE authors.id = ?';
+
+        return (int) $this->getConnection()
+            ->fetchColumn(
+                $sql,
+                array(
+                    (int) $authorId,
+                ),
+                0
+            );
     }
 }

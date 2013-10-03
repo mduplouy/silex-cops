@@ -10,6 +10,8 @@
 namespace Cops\Model;
 
 use Cops\Model\Core;
+use \Doctrine\DBAL\Driver\PDOStatement;
+use Cops\Model\CoreInterface;
 
 /**
  * Base resource class
@@ -41,5 +43,27 @@ abstract class Resource
     public function getBaseSelect()
     {
         return $this->_baseSelect;
+    }
+
+    /**
+     * Add items to collection
+     *
+     * @param  CoreInterface $object
+     * @param  PDOStatement  $stmt
+     *
+     * @return Collection
+     */
+    protected function _feedCollection(CoreInterface $object, PDOStatement $stmt)
+    {
+        $collection = $object->getCollection();
+
+        foreach($stmt as $result) {
+            $myObject = clone($object);
+
+            $myObject->setData($result);
+            $collection->add($myObject);
+        }
+
+        return $collection;
     }
 }
