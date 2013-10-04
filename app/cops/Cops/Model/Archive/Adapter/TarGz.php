@@ -35,8 +35,11 @@ class TarGz extends ArchiveAbstract implements ArchiveInterface
                 $phar->addFile($file->getFilePath(), $file->getFileName());
             }
         }
-        $phar->compress(\Phar::GZ);
-        return $archive;
+
+        file_put_contents($archive.'.gz' , gzencode(file_get_contents($archive)));
+        unlink($archive);
+
+        return $archive.'.gz';
     }
 
     /**
@@ -49,8 +52,9 @@ class TarGz extends ArchiveAbstract implements ArchiveInterface
      */
     public function sendHeaders($fileName, $fileSize)
     {
+        ob_end_flush();
         header('Content-type: application/x-gzip');
-        header('Content-disposition:attachment;filename="'.$fileName.'.tar.gz"');
+        header('Content-disposition: attachment; filename="'.$fileName.'.tar.gz"');
         header('Content-Transfer-Encoding: binary');
         header("Content-length: " . $fileSize);
     }

@@ -55,20 +55,15 @@ class SerieController
 
         $serieBooks = $this->getModel('BookFile')->getCollectionBySerieId($serie->getId());
 
-        $archive = $this->getModel('Archive\\ArchiveFactory', $format)
-            ->getInstance()
-            ->addFiles($serieBooks)
+        $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
+            ->getInstance();
+
+        $archive = $archiveClass->addFiles($serieBooks)
             ->generateArchive();
 
-        // @Todo fix this
-        ob_end_flush();
-        header('Content-type: application/zip');
-        header('Content-disposition:attachment;filename="'.$serie->getName().'.zip"');
-        header('Content-Transfer-Encoding: binary');
-        header("Content-length: " . filesize($archive));
+        $archiveClass->sendHeaders($serie->getName(), filesize($archive));
         readfile($archive);
 
-        unlink($archive);
         exit;
     }
 
