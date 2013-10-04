@@ -11,6 +11,8 @@ body {
 .bold { font-weight:600; }
 .small { font-size:0.78em; }
 
+.clear { clear:both; }
+
 #main {
     width:98%;
     margin:0.5em auto 0 auto;
