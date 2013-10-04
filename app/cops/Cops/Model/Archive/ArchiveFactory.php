@@ -22,8 +22,8 @@ class ArchiveFactory extends ArchiveAbstract
     /**
      * Archive type keys
      */
-    const TYPEKEY_ZIP   = 'ZIP';
-    const TYPEKEY_TARGZ = 'TARGZ';
+    const TYPEKEY_ZIP   = 'zip';
+    const TYPEKEY_TARGZ = 'tar.gz';
 
     /**
      * Archive types

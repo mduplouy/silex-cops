@@ -41,4 +41,21 @@ class Zip extends ArchiveAbstract implements ArchiveInterface
 
         return $archive;
     }
+
+    /**
+     * Send headers for download
+     *
+     * @param  string $fileName
+     * @param  string $fileSize
+     *
+     * @return void
+     */
+    public function sendHeaders($fileName, $fileSize)
+    {
+        ob_end_flush();
+        header('Content-type: application/zip');
+        header('Content-disposition:attachment;filename="'.$fileName.'.zip"');
+        header('Content-Transfer-Encoding: binary');
+        header("Content-length: " . $fileSize);
+    }
 }

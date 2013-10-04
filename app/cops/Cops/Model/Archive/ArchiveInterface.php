@@ -31,4 +31,14 @@ interface ArchiveInterface
      * @return \Cops\Model\Archive\ArchiveInterface
      */
     public function addFiles(\Cops\Model\BookFile\Collection $collection);
+
+    /**
+     * Send headers for download
+     *
+     * @param  string $fileName
+     * @param  string $fileSize
+     *
+     * @return void
+     */
+    public function sendHeaders($fileName, $fileSize);
 }

@@ -51,17 +51,13 @@ class AuthorController
 
         $authorBooks = $this->getModel('BookFile')->getCollectionByAuthorId($author->getId());
 
-        $archive = $this->getModel('Archive\\ArchiveFactory', $format)
-            ->getInstance()
-            ->addFiles($authorBooks)
+        $archiveClass = $this->getModel('Archive\\ArchiveFactory', array($format))
+            ->getInstance();
+
+        $archive = $archiveClass->addFiles($authorBooks)
             ->generateArchive();
 
-        // @Todo fix this
-        ob_end_flush();
-        header('Content-type: application/zip');
-        header('Content-disposition:attachment;filename="'.$author->getName().'.zip"');
-        header('Content-Transfer-Encoding: binary');
-        header("Content-length: " . filesize($archive));
+        $archiveClass->sendHeaders($author->getName(), filesize($archive));
         readfile($archive);
     }
 }

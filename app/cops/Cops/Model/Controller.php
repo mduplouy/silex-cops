@@ -19,12 +19,13 @@ class Controller
      * Model getter for controllers
      *
      * @param string $model
+     * @param array  $args
      *
      * @return \Cops\Model\Common
      */
-    protected function getModel($model)
+    protected function getModel($model, $args=array())
     {
         $app = \Cops\Model\Core::getApp();
-        return $app['core']->getModel($model);
+        return $app['core']->getModel($model, $args);
     }
 }

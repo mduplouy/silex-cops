@@ -10,6 +10,7 @@
 namespace Cops\Model;
 
 use Cops\Model\Core;
+use Cops\Model\BookFile\Collection as BookFileCollection;
 
 /**
  * Archive model class
@@ -38,7 +39,7 @@ abstract class ArchiveAbstract extends Core
      *
      * @return \Cops\Model\ArchiveInterface
      */
-    public function addFiles(\Cops\Model\BookFile\Collection $collection)
+    public function addFiles(BookFileCollection $collection)
     {
         $this->_files = $collection;
         return $this;
