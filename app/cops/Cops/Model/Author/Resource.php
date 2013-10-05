@@ -9,6 +9,7 @@
  */
 namespace Cops\Model\Author;
 
+use Cops\Model\Core;
 use Cops\Exception\AuthorException;
 
 /**
@@ -91,5 +92,46 @@ class Resource extends \Cops\Model\Resource
                 ),
                 0
             );
+    }
+
+    /**
+     * Retrieve collection based on first letter
+     *
+     * @param string|0           $letter
+     * @param \Cops\Model\Author $author
+     *
+     * @return \Cops\Model\Author\Collection
+     */
+    public function getCollectionByFirstLetter($letter, $author)
+    {
+        $collection = $author->getCollection();
+
+        $sql = $this->getBaseSelect();
+
+        if ($letter != '#') {
+            $sql .= ' WHERE UPPER(SUBSTR(sort, 1, 1)) = ?';
+            $params = array($letter);
+            $paramsType = array(\PDO::PARAM_STR);
+        } else {
+            $sql .= ' WHERE UPPER(SUBSTR(sort, 1, 1)) NOT IN (?)';
+            $params = array(Core::getLetters());
+            $paramsType = array(\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+        }
+        $sql .= ' ORDER BY sort';
+
+         $stmt = $this->getConnection()
+            ->executeQuery(
+                $sql,
+                $params,
+                $paramsType
+            )
+            ->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach($stmt as $result) {
+            $author = clone($author);
+            $author->setData($result);
+            $collection->add($author);
+        }
+        return $collection;
     }
 }

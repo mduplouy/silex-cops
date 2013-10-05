@@ -16,13 +16,16 @@
                 {% for letter in letters %}
                 <li>
                 {% if seriesAggregated[letter] is defined %}
-                    <strong>{{ letter }}</strong>
+                    {% set urlLetter = letter %}
+                    {% if letter == '#' %} {% set urlLetter = 0 %} {% endif %}
+                    <strong><a href="{{ app.url_generator.generate('serie_list', {'letter': urlLetter}) }}" title="{{ letter }}">{{ letter }}</a></strong>
                 {% else %}
                     {{ letter }}
                 {% endif %}
                 </li>
                 {% endfor %}
             </ul>
+            <div class="aggregated_content"></div>
         </div>
         <h3>{{"Access by Author"|trans}} ({{ countAuthors }})</h3>
         <div class="books authors">
@@ -30,13 +33,16 @@
                 {% for letter in letters %}
                 <li>
                 {% if authorsAggregated[letter] is defined %}
-                    <strong>{{ letter }}</strong>
+                    {% set urlLetter = letter %}
+                    {% if letter == '#' %} {% set urlLetter = 0 %} {% endif %}
+                    <strong><a href="{{ app.url_generator.generate('author_list', {'letter': urlLetter}) }}" title="{{ letter }}">{{ letter }}</a></strong>
                 {% else %}
                     {{ letter }}
                 {% endif %}
                 </li>
                 {% endfor %}
             </ul>
+            <div class="aggregated_content"></div>
         </div>
     </div>
 
@@ -59,6 +65,16 @@ app = {
 
         jQuery('a.tooltip').tooltip({
 
+        });
+
+        jQuery('.books .aggregated a').click(function(e) {
+            e.preventDefault();
+            var url = jQuery(this).attr('href');
+            jQuery(this).parents('div.books').find('.aggregated_content').load(
+                url,
+                function() {
+                }
+            );
         });
     }
 }

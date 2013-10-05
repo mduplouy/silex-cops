@@ -34,6 +34,12 @@ class AuthorController
             ->assert('id', '\d+')
             ->bind('author_download');
 
+        $controller->get('/list/{letter}/{page}', __CLASS__.'::listAction')
+            ->assert('letter', '\w+|0')
+            ->value('page', 1)
+            ->bind('author_list');
+
+
         return $controller;
     }
 
@@ -59,5 +65,26 @@ class AuthorController
 
         $archiveClass->sendHeaders($author->getName(), filesize($archive));
         readfile($archive);
+    }
+
+    /**
+     * List series action
+     *
+     * @param Silex\Application $app
+     * @param string|0          $letter
+     *
+     * @return string
+     */
+    public function listAction(\Silex\Application $app, $letter=0)
+    {
+        if ($letter === '0') {
+            $letter = '#';
+        }
+        $authors = $this->getModel('Author')->getCollectionByFirstLetter($letter);
+
+        return $app['twig']->render($app['config']->getTemplatePrefix().'author_list.html', array(
+            'letter' => $letter,
+            'authors' => $authors
+        ));
     }
 }

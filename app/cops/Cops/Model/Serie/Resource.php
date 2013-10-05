@@ -83,8 +83,6 @@ class Resource extends \Cops\Model\Resource
      */
     public function getAggregatedList()
     {
-        $db = $this->getConnection();
-
         $sql = 'SELECT
             DISTINCT UPPER(SUBSTR(sort, 1, 1)) AS first_letter,
             COUNT(*) AS nb_serie
@@ -92,6 +90,47 @@ class Resource extends \Cops\Model\Resource
             GROUP BY first_letter
             ORDER BY first_letter';
 
-        return $db->fetchAll($sql);
+        return $this->getConnection()->fetchAll($sql);
+    }
+
+    /**
+     * Retrieve collection based on first letter
+     *
+     * @param string|0           $letter
+     * @param \Cops\Model\Serie  $serie
+     *
+     * @return \Cops\Model\Serie\Collection
+     */
+    public function getCollectionByFirstLetter($letter, $serie)
+    {
+        $collection = $serie->getCollection();
+
+        $sql = $this->getBaseSelect();
+
+        if ($letter !== '#') {
+            $sql .= ' WHERE UPPER(SUBSTR(sort, 1, 1)) = ?';
+            $params = array($letter);
+            $paramsType = array(\PDO::PARAM_STR);
+        } else {
+            $sql .= ' WHERE UPPER(SUBSTR(sort, 1, 1)) NOT IN (?)';
+            $params = array(Core::getLetters());
+            $paramsType = array(\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+        }
+        $sql .= ' ORDER BY sort';
+
+         $stmt = $this->getConnection()
+            ->executeQuery(
+                $sql,
+                $params,
+                $paramsType
+            )
+            ->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach($stmt as $result) {
+            $serie = clone($serie);
+            $serie->setData($result);
+            $collection->add($serie);
+        }
+        return $collection;
     }
 }

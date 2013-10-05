@@ -73,4 +73,16 @@ class Author extends Common
     {
         return $this->getResource()->countBooks($this->getId());
     }
+
+    /**
+     * Get series filtered by first letter of serie name
+     *
+     * @param string|0 $letter
+     *
+     * @return \Cops\Model\Serie\Collection
+     */
+    public function getCollectionByFirstLetter($letter)
+    {
+        return $this->getResource()->getCollectionByFirstLetter($letter, $this);
+    }
 }

@@ -38,7 +38,33 @@ class SerieController
             ->assert('id', '\d+')
             ->bind('serie_download');
 
+        $controller->get('/list/{letter}/{page}', __CLASS__.'::listAction')
+            ->assert('letter', '\w+|0')
+            ->value('page', 1)
+            ->bind('serie_list');
+
         return $controller;
+    }
+
+    /**
+     * List series action
+     *
+     * @param Silex\Application $app
+     * @param string|0          $letter
+     *
+     * @return string
+     */
+    public function listAction(\Silex\Application $app, $letter=0)
+    {
+        if ($letter === '0') {
+            $letter = '#';
+        }
+        $series = $this->getModel('Serie')->getCollectionByFirstLetter($letter);
+
+        return $app['twig']->render($app['config']->getTemplatePrefix().'serie_list.html', array(
+            'letter' => $letter,
+            'series' => $series
+        ));
     }
 
     /**
