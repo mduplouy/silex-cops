@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+    {% include 'mobile/head.html' %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function(){
+          $.extend(  $.mobile , {
+            defaultPageTransition: 'none'
+          });
+        });
+    </script>
+    <script src="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+{% endblock %}
+
+{% block beforeBodyEnd %}{% endblock %}
+
+{% block footer %}{% endblock %}

@@ -1,21 +1,4 @@
-{% extends 'layout.html' %}
-
-{% block head %}
-    {% include 'mobile/head.html' %}
-    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript">
-        $(document).bind("mobileinit", function(){
-          $.extend(  $.mobile , {
-            defaultPageTransition: 'none'
-          });
-        });
-    </script>
-    <script src="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
-{% endblock %}
-
-{% block beforeBodyEnd %}{% endblock %}
-
-{% block footer %}{% endblock %}
+{% extends 'mobile/mobile.html' %}
 
 {% block mainBody %}
     <div data-role="page" data-theme="d" id="latest_added">
@@ -29,15 +12,7 @@
             <div class="books latest">
                 <ul>
                     {% for book in latestBooks %}
-                    <li><a href="{{ app.url_generator.generate('book_detail', {id: book.getId()}) }}" class="" title="{{ book.getTitle() }}">
-                        {% if book.getSerieName() %}
-                            {{book.getSerieName()}} T.{{book.getSerieIndex()}}
-                            -
-                        {% endif %}
-                        {{ book.getTitle() }}
-                        - {{ book.getAuthor() }} ({{ book.getYear() }})
-                        </a>
-                    </li>
+                    <li>{% include 'mobile/book_link.html' with {'book': book, 'showAuthor': true, 'class': 'small'} %}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -49,9 +24,7 @@
 
         </div>
 
-        <div data-role="footer">
-            <h1>Silex Cops FOOTER</h1>
-        </div>
+    {% include "mobile/footer.html" %}
 
     </div>
 
@@ -83,9 +56,7 @@
             </div>
         </div>
 
-        <div data-role="footer">
-            <h1>Silex Cops FOOTER</h1>
-        </div>
+    {% include "mobile/footer.html" %}
 
     </div>
 
@@ -109,9 +80,9 @@
                 </ul>
             </div>
         </div>
-        <div data-role="footer">
-            <h1>Silex Cops FOOTER</h1>
-        </div>
+
+    {% include "mobile/footer.html" %}
+
     </div>
 
 {% endblock %}

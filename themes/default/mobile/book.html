@@ -1,0 +1,83 @@
+{% extends "mobile/mobile.html" %}
+
+{% set date_format = "m/d/Y"|trans %}
+{% set authorBooks = book.getOtherBooksFromAuthor() %}
+{% set files = book.getFiles() %}
+
+{% block mainBody %}
+    <div data-role="page" data-theme="d" id="book_detail">
+
+        <div data-role="header">
+            <h1>{{ book.getTitle() }}</h1>
+        </div>
+
+        <div data-role="content">
+
+            {% set author = book.getAuthor() %}
+            <p>{{"Author:"|trans}} <span class="bold">{{ book.getAuthor().getName() }}</span></p>
+            <p>{{"Publication date:"|trans}} <span class="bold">{{ book.getPubdate()|date(date_format) }}</span></p>
+
+            <a href="#book_comment_{{ book.getId() }}" title="{{"See summary"|trans}}">{{"See summary"|trans}}</a>
+
+            {% set serie = book.getSerie() %}
+            {% if serie.getId() %}
+            <p>{{"Serie:"|trans}} <span class="bold">{{ serie.getName()}}</span></p>
+            {% endif %}
+
+            {% if files %}
+                {% for file in files %}
+                <p></p><a href="{{ app.url_generator.generate('book_download', {id: book.getId(), format: file.getFormat()}) }}" class="" title="{{ "Download"|trans }} {{file.getFormat()}}">
+                {{ "Download in %s format (%s)"|trans|format(file.getFormat(), file.getFormattedSize()) }}
+                </a></p>
+                {% endfor %}
+            {% endif %}
+
+            {% if book.getSerie().getId() %}
+                {% set serieBooks = book.getOtherBooksFromSerie() %}
+                {%if serieBooks|length > 0 %}
+            <div id="serie">
+                {{"Other books in this serie:"|trans}} <br />
+                <ul>
+                    {% for serieBook in serieBooks %}
+                    <li>{% include 'book_link.html' with {'book': serieBook, 'showAuthor': false} %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+                {% endif %}
+            <div class="clear"></div>
+            {% endif %}
+
+            {% if authorBooks|length %}
+            <div id="author">
+                {{"Other books from this author:"|trans}} <br />
+                <ul>
+                {% for authorBook in authorBooks %}
+                    <li>{% include 'book_link.html' with {'book': authorBook, 'showAuthor': false} %}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class="clear"></div>
+            {% endif %}
+
+        </div>
+
+        {% include "mobile/footer.html" %}
+
+    </div>
+
+    <div data-role="page" data-theme="d" id="book_comment_{{ book.getId() }}">
+        <div data-role="header">
+            <h1>{{ book.getTitle() }}</h1>
+        </div>
+
+        <div data-role="content">
+            <p><a href="#book_detail" title="{{"Back to book detail"|trans}}">{{"Back to book detail"|trans}}</a></p>
+
+            {{ book.getComment()|striptags }}
+        </div>
+
+        {% include "mobile/footer.html" %}
+
+    </div>
+
+{% endblock %}

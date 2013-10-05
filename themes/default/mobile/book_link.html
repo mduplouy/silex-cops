@@ -1,0 +1,11 @@
+{% if class is not defined %}
+    {% set class = '' %}
+{% endif %}
+<a href="{{ app.url_generator.generate('book_detail', {id: book.getId()}) }}" class="{{ class }}" title="{{ book.getTitle() }}">
+{% if book.getSerie().getId() %}
+    {{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()}}
+    -
+{% endif %}
+{{ book.getTitle() }}
+</a><span class="small">{% if showAuthor %}<br />{{ book.getAuthor().getName() }}{% endif %}
+ ({{ book.getPubdate()|date("Y") }})</span>
