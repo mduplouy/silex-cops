@@ -1,6 +1,8 @@
-<div class="clear">
-{% for author in authors %}
-    {{ author.getSort() }} <br />
+{% extends 'ajax.html' %}
 
-{% endfor %}
-</div>
+{% block mainContent %}
+    {% for author in authors %}
+        {{ author.getSort() }} <br />
+
+    {% endfor %}
+{% endblock %}

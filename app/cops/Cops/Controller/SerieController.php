@@ -34,7 +34,7 @@ class SerieController
     {
         $controller = $app['controllers_factory'];
 
-        $controller->get('/download/{id}/{format}', __CLASS__.'::downloadAction')
+        $controller->get('/download//{format}', __CLASS__.'::downloadAction')
             ->assert('id', '\d+')
             ->bind('serie_download');
 
@@ -63,7 +63,8 @@ class SerieController
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'serie_list.html', array(
             'letter' => $letter,
-            'series' => $series
+            'series' => $series,
+            'pageTitle' => sprintf($app['translator']->trans('Series beginning by %s'), $letter),
         ));
     }
 

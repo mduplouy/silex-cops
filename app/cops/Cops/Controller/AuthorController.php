@@ -84,7 +84,8 @@ class AuthorController
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author_list.html', array(
             'letter' => $letter,
-            'authors' => $authors
+            'authors' => $authors,
+            'pageTitle' => sprintf($app['translator']->trans('Authors beginning by %s'), $letter),
         ));
     }
 }

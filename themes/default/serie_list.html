@@ -1,7 +1,10 @@
+{% extends 'ajax.html' %}
 
-<div class="clear">
-{% for serie in series %}
-    {{ serie.getName() }} <br />
+{% block mainContent %}
+    {% for serie in series %}
+        {{ serie.getName() }} <br />
 
-{% endfor %}
-</div>
+    {% endfor %}
+{% endblock %}
+
+

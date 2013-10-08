@@ -19,7 +19,7 @@ $app = new Silex\Application();
 
 // Define core model, no closure to ensure loading
 // Load configuration & set service providers
-$app['core'] =  new Cops\Model\Core($app, __DIR__.'/cops/config.ini');
+$app['core'] =  new Cops\Model\Core(__DIR__.'/cops/config.ini', $app);
 
 // Set the mount points for the controllers
 $app->mount('/',       new Cops\Controller\IndexController());

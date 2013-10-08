@@ -8,6 +8,7 @@ PB: Po
 Access by Author: Accès par auteur
 Access by Series: Accès par série
 Author:: Auteur :
+Authors beginning by %s: Auteurs commençant par %s
 Download in %s format (%s): Télécharger au format %s (%s)
 Download author's books (%s) as archive:: Télécharger tous les livres de cet auteur (%s) comme archive
 Download whole serie (%s books) as archive:: Télécharger toute la série (%s livres) sous forme d'archive
@@ -16,3 +17,4 @@ Last added books: Derniers livres ajoutés
 Other books from this author:: Autres livres de cet auteur :
 Other books in this serie:: Autres livres de cette série :
 Publication date:: Date de publication :
+Series beginning by %s: Série(s) commençant par %s

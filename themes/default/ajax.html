@@ -1,0 +1,15 @@
+{% if app.request.isXmlHttpRequest() %}
+    {% set tplExtends = 'empty.html' %}
+    {% set contentClass = '' %}
+{% else %}
+    {% set tplExtends = 'homepage.html' %}
+    {% set contentClass = 'mainContent' %}
+{% endif %}
+
+{% extends tplExtends %}
+
+{% block mainBody %}
+<div class="clear {{ contentClass }}">
+    {% block mainContent %}{% endblock %}
+</div>
+{% endblock %}

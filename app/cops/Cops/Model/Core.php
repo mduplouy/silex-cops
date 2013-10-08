@@ -10,6 +10,8 @@
 namespace Cops\Model;
 
 use Cops\Model\CoreInterface;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Core class
@@ -42,7 +44,7 @@ class Core implements CoreInterface
      *
      * @param string $configFilePath
      */
-    public function __construct(\Silex\Application $app, $configFilePath)
+    public function __construct($configFilePath, Application $app)
     {
         // Always instanciate configuration, so no closure use
         $app['config'] = new \Cops\Model\Config($configFilePath);
@@ -71,6 +73,13 @@ class Core implements CoreInterface
                 'path'     => BASE_DIR.$app['config']->getValue('data_dir').'/metadata.db',
             ),
         ));
+
+        $app->before(function (Request $request) {
+            if ($request->isXmlHttpRequest()) {
+                $app = Core::getApp();
+                $app['isXmlHttpRequest'] = true;
+            }
+        });
 
         // Register url generator service
         $app->register(new \Cops\Provider\UrlGeneratorServiceProvider());

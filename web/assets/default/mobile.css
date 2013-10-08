@@ -1,6 +1,19 @@
 /**
+ * Generic styles
+ */
+.bold { font-weight:bold; }
+.small { font-size:0.78em; }
+
+.clear { clear:both; }
+
+/**
  * Serie & author block on homepage
  */
+.books ul {
+    list-style-type:none;
+    list-style-position:inside;
+    padding-left:8px;
+}
 .books ul.aggregated li {
     display:inline-block;
     float:left;
@@ -10,3 +23,19 @@
     .books ul.aggregated li strong {
         color:#000;
     }
+
+
+/**
+ * Book detail page
+ */
+#book_detail {
+    /* font-size:80%; */
+}
+#book_detail h2 {
+    font-size:medium;
+    padding:0;
+    margin:0;
+}
+#book_detail #comments {
+    /* font-size:70%; */
+}
