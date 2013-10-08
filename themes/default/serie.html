@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% set date_format = "m/d/Y"|trans %}
+
+{% block mainBody %}
+<div id="serie_detail" class="mainContent">
+    {{ serie.getName() }}
+    {% for book in serie.getAllBooks() %}
+        <div>
+            <h3>{{ book.getTitle() }}</h3>
+        <span class="small">{{ book.getComment()|striptags }}</span>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

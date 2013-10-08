@@ -2,7 +2,7 @@
 
 {% block mainContent %}
     {% for serie in series %}
-        {{ serie.getName() }} <br />
+        <a href="{{ app.url_generator.generate('serie_detail', {'id': serie.getId()}) }}" title="{{ serie.getName() }}">{{ serie.getName() }}</a><br />
 
     {% endfor %}
 {% endblock %}

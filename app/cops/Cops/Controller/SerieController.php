@@ -43,6 +43,10 @@ class SerieController
             ->value('page', 1)
             ->bind('serie_list');
 
+        $controller->get('/{id}', __CLASS__.'::detailAction')
+            ->assert('id', '\d+')
+            ->bind('serie_detail');
+
         return $controller;
     }
 
@@ -65,6 +69,22 @@ class SerieController
             'letter' => $letter,
             'series' => $series,
             'pageTitle' => sprintf($app['translator']->trans('Series beginning by %s'), $letter),
+        ));
+    }
+
+    /**
+     * Serie detail action
+     *
+     * @param Silex\Application $app
+     * @param id                $id
+     */
+    public function detailAction(\Silex\Application $app, $id)
+    {
+        $serie = $this->getModel('Serie')->load($id);
+
+        return $app['twig']->render($app['config']->getTemplatePrefix().'serie.html', array(
+            'serie'     => $serie,
+            'pageTitle' => $serie->getName(),
         ));
     }
 

@@ -76,7 +76,7 @@ class Serie extends Common
      */
     public function getAllBooks()
     {
-        $book = $this->getModel('Book')->getCollectionBySerieId($this->getId());
+        return $this->getModel('Book')->getCollectionBySerieId($this->getId());
     }
 
     /**
