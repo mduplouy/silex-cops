@@ -100,4 +100,17 @@ class Serie extends Common
     {
         return $this->getResource()->getCollectionByFirstLetter($letter, $this);
     }
+
+    /**
+     * Reset data on clone
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->id     = null;
+        $this->name   = null;
+        $this->sort   = null;
+        $this->_books = null;
+    }
 }

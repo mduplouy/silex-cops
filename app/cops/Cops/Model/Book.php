@@ -226,9 +226,16 @@ class Book extends Common
      */
     public function __clone()
     {
-        $this->_serie = null;
-        $this->_author = null;
-        $this->_cover = null;
-        $this->_file = array();
+        $this->id          = null;
+        $this->pubdate     = null;
+        $this->hasCover    = null;
+        $this->path        = null;
+        $this->rating      = null;
+        $this->comment     = null;
+        $this->seriesIndex = null;
+        $this->_serie      = null;
+        $this->_author     = null;
+        $this->_cover      = null;
+        $this->_file       = array();
     }
 }
