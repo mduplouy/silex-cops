@@ -222,6 +222,18 @@ class Book extends Common
     }
 
     /**
+     * Get collection from author ID
+     *
+     * @param int $authorId
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function getCollectionByAuthorId($authorId)
+    {
+        return $this->getResource()->loadByAuthorId($authorId, $this);
+    }
+
+    /**
      * Empty singleton properties on clone
      */
     public function __clone()

@@ -247,6 +247,40 @@ class Resource extends \Cops\Model\Resource
     }
 
     /**
+     * Load books by author ID
+     *
+     * @param int              $authorId
+     * @param \Cops\Model\Book $book
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function loadByAuthorId($authorId, \Cops\Model\Book $book)
+    {
+        $sql = $this->getBaseSelect(). '
+            WHERE
+            authors.id = :author_id
+            ORDER BY series_index, title';
+
+        $stmt = $this->getConnection()
+            ->prepare($sql);
+
+        $stmt->bindValue(':author_id', $authorId);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $collection = $book->getCollection();
+
+        foreach($stmt as $result) {
+            $myBook = clone($book);
+            $this->_setDataAfterSelect($myBook, $result);
+
+            $collection->add($myBook);
+        }
+
+        return $collection;
+    }
+
+    /**
      * Set data after select statement
      *
      * @param \Cops\Model\Book $book   The book instance

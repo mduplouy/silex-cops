@@ -39,6 +39,9 @@ class AuthorController
             ->value('page', 1)
             ->bind('author_list');
 
+        $controller->get('/{id}', __CLASS__.'::detailAction')
+            ->assert('id', '\d+')
+            ->bind('author_detail');
 
         return $controller;
     }
@@ -88,4 +91,21 @@ class AuthorController
             'pageTitle' => sprintf($app['translator']->trans('Authors beginning by %s'), $letter),
         ));
     }
+
+    /**
+     * Author detail action
+     *
+     * @param Silex\Application $app Application instance
+     * @param id                $id  Author ID
+     */
+    public function detailAction(\Silex\Application $app, $id)
+    {
+        $author = $this->getModel('Author')->load($id);
+
+        return $app['twig']->render($app['config']->getTemplatePrefix().'author.html', array(
+            'author'     => $author,
+            'pageTitle' => $author->getSort(),
+        ));
+    }
+
 }

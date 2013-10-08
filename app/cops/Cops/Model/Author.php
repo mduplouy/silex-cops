@@ -75,6 +75,16 @@ class Author extends Common
     }
 
     /**
+     * Get all books from author
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function getAllBooks()
+    {
+        return $this->getModel('Book')->getCollectionByAuthorId($this->getId());
+    }
+
+    /**
      * Get series filtered by first letter of serie name
      *
      * @param string|0 $letter
