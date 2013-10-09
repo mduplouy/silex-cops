@@ -77,6 +77,40 @@ body {
 
 
 /**
+ * Serie detail blocks
+ */
+#serie_detail {
+
+}
+    #serie_detail .cover {
+        float:left;
+        margin:5px 15px 5px 5px;
+    }
+    #serie_detail h3 {
+        margin:8px 0 6px 5px;
+        padding:9px 0 0 0;
+    }
+
+/**
+ * Author detail blocks
+ */
+/**
+ * Serie detail blocks
+ */
+#author_detail {
+
+}
+    #author_detail .cover {
+        float:left;
+        margin:5px 15px 5px 5px;
+    }
+    #author_detail h3 {
+        margin:8px 0 6px 5px;
+        padding:9px 0 0 0;
+    }
+
+
+/**
  * Footer block
  */
 #footer {

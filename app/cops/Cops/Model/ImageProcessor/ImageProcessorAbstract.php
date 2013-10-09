@@ -52,7 +52,7 @@ abstract class ImageProcessorAbstract
      */
     public function setWidth($width)
     {
-        $this->_width = (int) $_width;
+        $this->_width = (int) $width;
         return $this;
     }
 
@@ -78,7 +78,7 @@ abstract class ImageProcessorAbstract
      */
     public function setHeight($height)
     {
-        $this->_height = $_height;
+        $this->_height = $height;
         return $this;
     }
 }

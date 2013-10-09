@@ -39,34 +39,59 @@ class Cover extends Core
     protected $_thumbnailFile;
 
     /**
+     * Book path
+     * @var string
+     */
+    private $_bookPath;
+
+    /**
+     * Book ID
+     * @var int
+     */
+    private $_bookId;
+
+    /**
      * Constructor
      *
      * @param Cops\Model\Book $book
      */
     public function __construct(Book $book)
     {
+        $this->_bookPath = $book->getPath();
+        $this->_bookId = $book->getId();
+
         if ($book->getHasCover()) {
             $this->_coverFile = sprintf(BASE_DIR.'%s'.DS.'%s'.DS.'cover.jpg',
                 $this->getConfig()->getValue('data_dir'),
-                $book->getPath()
+                $this->_bookPath
             );
-
-            $this->_thumbnailPath = sprintf(DS.'assets'.DS.'books'.DS.'%d'.DS.'%d.jpg',
-                substr($book->getId(), -1),
-                $book->getId()
-            );
-
-            $this->_thumbnailFile = BASE_DIR.$this->getConfig()->getValue('public_dir').$this->_thumbnailPath;
         }
     }
 
     /**
      * Thumbnail path getter
      *
+     * @param int $width
+     * @param int $height
+     *
      * @return string
      */
-    public function getThumbnailPath()
+    public function getThumbnailPath($width=null, $height=null)
     {
+        if (empty($width) || empty($height)) {
+            $width = (int) $this->getConfig()->getValue('cover_width');
+            $height = (int) $this->getConfig()->getValue('cover_height');
+        }
+
+        $this->_thumbnailPath = sprintf(DS.'assets'.DS.'books'.DS.'%d'.DS.'%dx%d'.DS.'%d.jpg',
+            substr($this->_bookId, -1),
+            $width,
+            $height,
+            $this->_bookId
+        );
+
+        $this->_thumbnailFile = BASE_DIR.$this->getConfig()->getValue('public_dir').$this->_thumbnailPath;
+
         if (file_exists($this->_thumbnailFile)) {
             return $this->_thumbnailPath;
         } elseif ($this->_coverFile && !file_exists(BASE_DIR.$this->_thumbnailPath)) {
@@ -76,7 +101,7 @@ class Cover extends Core
                 mkdir(dirname($this->_thumbnailFile), 0777, true);
             }
 
-            $this->_generateThumbnail();
+            $this->_generateThumbnail($width, $height);
         }
         return $this->_thumbnailPath;
     }
@@ -86,14 +111,17 @@ class Cover extends Core
      *
      * @return void
      */
-    protected function _generateThumbnail()
+    protected function _generateThumbnail($width, $height)
     {
         $processor = $this->getModel(
             'ImageProcessor\ImageProcessorFactory',
             $this->getConfig()->getValue('image_processor')
         )->getInstance();
 
-        $processor->generateThumbnail($this->_coverFile, $this->_thumbnailFile);
+        $processor
+            ->setWidth($width)
+            ->setHeight($height)
+            ->generateThumbnail($this->_coverFile, $this->_thumbnailFile);
     }
 
 }

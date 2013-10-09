@@ -116,7 +116,7 @@ class Book extends Common
     /**
      * Has cover setter
      *
-     * @param book $hasCover
+     * @param bool $hasCover
      *
      * @return \Cops\Model\Book
      */
