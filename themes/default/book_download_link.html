@@ -1,0 +1,9 @@
+{% set files = book.getFiles() %}
+
+{% if files %}
+    {% for file in files %}
+    <p><a href="{{ app.url_generator.generate('book_download', {id: book.getId(), format: file.getFormat()}) }}" class="" title="{{ "Download"|trans }} {{file.getFormat()}}">
+    {{ "Download in %s format (%s)"|trans|format(file.getFormat(), file.getFormattedSize()) }}
+    </a></p>
+    {% endfor %}
+{% endif %}

@@ -5,6 +5,7 @@
 composer.phar
 
 # data
-/data/*
+data/*
 web/assets/books
 vendor
+

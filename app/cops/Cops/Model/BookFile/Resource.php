@@ -22,6 +22,14 @@ use \Doctrine\DBAL\Driver\PDOStatement;
  */
 class Resource extends \Cops\Model\Resource
 {
+    protected $_baseSelect = 'SELECT
+        main.id,
+        main.book,
+        main.format,
+        main.uncompressed_size,
+        main.name
+        FROM data as main';
+
     /**
      * Get book files by serie ID
      *
@@ -55,6 +63,42 @@ class Resource extends \Cops\Model\Resource
         $stmt->execute();
 
         return $this->_feedCollection($bookFile, $stmt);
+    }
+
+    /**
+     * Load bookfile data for a book collection
+     *
+     * @param  \Cops\Model\Book\Collection $collection
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function populateBookCollection(Collection $collection)
+    {
+        $bookIds = array();
+        foreach($collection as $book) {
+            $bookIds[] = $book->getId();
+        }
+
+        $sql = $this->getBaseSelect().'
+            WHERE main.book IN (?)';
+
+        $stmt = $this->getConnection()
+            ->executeQuery(
+                $sql,
+                array($bookIds),
+                array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
+            );
+        $stmt->setFetchMode(\PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        foreach($stmt as $row) {
+            $book = $collection->getById($row['book']);
+
+            $bookFile = $book->getFile($row['format']);
+            $bookFile->setDirectory($book->getPath());
+            $bookFile->setData($row);
+        }
+        return $collection;
     }
 
     /**

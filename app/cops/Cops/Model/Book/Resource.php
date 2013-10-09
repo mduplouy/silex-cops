@@ -220,12 +220,12 @@ class Resource extends \Cops\Model\Resource
      *
      * @return \Cops\Model\Book\Collection
      */
-    public function loadBySerieId($serieId, \Cops\Model\Book $book)
+    public function loadBySerieId($serieId, \Cops\Model\Book $book, $addFiles=true)
     {
         $sql = $this->getBaseSelect(). '
             WHERE
             series.id = :serie_id
-            ORDER BY series_index, title';
+            ORDER BY serie_name, series_index, title';
 
         $stmt = $this->getConnection()
             ->prepare($sql);
@@ -243,6 +243,11 @@ class Resource extends \Cops\Model\Resource
             $collection->add($myBook);
         }
 
+        // Load book files information
+        if ($addFiles === true) {
+            $this->_loadBookFiles($collection);
+        }
+
         return $collection;
     }
 
@@ -251,15 +256,16 @@ class Resource extends \Cops\Model\Resource
      *
      * @param int              $authorId
      * @param \Cops\Model\Book $book
+     * @param bool             $addFiles
      *
      * @return \Cops\Model\Book\Collection
      */
-    public function loadByAuthorId($authorId, \Cops\Model\Book $book)
+    public function loadByAuthorId($authorId, \Cops\Model\Book $book, $addFiles=true)
     {
         $sql = $this->getBaseSelect(). '
             WHERE
             authors.id = :author_id
-            ORDER BY series_index, title';
+            ORDER BY serie_name, series_index, title';
 
         $stmt = $this->getConnection()
             ->prepare($sql);
@@ -273,8 +279,12 @@ class Resource extends \Cops\Model\Resource
         foreach($stmt as $result) {
             $myBook = clone($book);
             $this->_setDataAfterSelect($myBook, $result);
-
             $collection->add($myBook);
+        }
+
+        // Load book files information
+        if ($addFiles === true) {
+            $this->_loadBookFiles($collection);
         }
 
         return $collection;
@@ -304,4 +314,16 @@ class Resource extends \Cops\Model\Resource
         return $book->setData($result);
     }
 
+    /**
+     * Load book files information
+     *
+     * @param  \Cops\Model\Book\Collection $bookCollection
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    private function _loadBookFiles($bookCollection)
+    {
+        $app = Core::getApp();
+        return $app['core']->getModel('BookFile')->populateBookCollection($bookCollection);
+    }
 }

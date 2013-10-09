@@ -7,8 +7,16 @@
     {{ serie.getName() }}
     {% for book in serie.getAllBooks() %}
         <div>
+            {% set thumbnail = book.getCover().getThumbnailPath(80, 120) %}
+            {% if thumbnail %}
+            <div class="cover">
+                <img src="{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
+            </div>
+            {% endif %}
             <h3>{{ book.getTitle() }}</h3>
-        <span class="small">{{ book.getComment()|striptags }}</span>
+            <span class="small">{{ book.getComment()|striptags }}</span>
+            {% include 'book_download_link.html' with {'book': book} %}
+            <div class="clear"></div>
         </div>
     {% endfor %}
 </div>

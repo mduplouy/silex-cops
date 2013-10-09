@@ -10,6 +10,7 @@
 namespace Cops\Model;
 
 use Cops\Model\BookFileAbstract;
+use Cops\Model\Book\Collection;
 
 /**
  * Book file abstract class
@@ -27,11 +28,7 @@ class BookFile extends BookFileAbstract
      */
     public function getCollectionBySerieId($serieId)
     {
-        return $this->getResource()->getCollectionBySerieId(
-            $serieId,
-            $this,
-            $this->getCollection()
-        );
+        return $this->getResource()->getCollectionBySerieId($serieId, $this);
     }
 
     /**
@@ -43,10 +40,29 @@ class BookFile extends BookFileAbstract
      */
     public function getCollectionByAuthorId($authorId)
     {
-        return $this->getResource()->getCollectionByAuthorId(
-            $authorId,
-            $this,
-            $this->getCollection()
-        );
+        return $this->getResource()->getCollectionByAuthorId($authorId, $this);
+    }
+
+    /**
+     * Add book files to a book collection
+     *
+     * @param  \Cops\Model\Book\Collection $collection
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function populateBookCollection(Collection $collection)
+    {
+        return $this->getResource()->populateBookCollection($collection, $this);
+    }
+
+    /**
+     * Reset data on cloning
+     */
+    public function __clone()
+    {
+        $this->format = null;
+        $this->uncompressedSize = 0;
+        $this->name = null;
+        $this->directory = null;
     }
 }

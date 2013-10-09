@@ -63,7 +63,17 @@ abstract class Collection implements \IteratorAggregate, \Countable
      */
     public function add($element)
     {
-        $this->_elements[] = $element;
+        $this->_elements[$element->getId()] = $element;
+    }
+
+    /**
+     * Get element by ID
+     *
+     * @param int $id
+     */
+    public function getById($id)
+    {
+        return $this->_elements[$id];
     }
 
     /**

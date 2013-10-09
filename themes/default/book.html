@@ -1,15 +1,14 @@
 {% extends "layout.html" %}
 
 {% set date_format = "m/d/Y"|trans %}
-{% set authorBooks = book.getOtherBooksFromAuthor() %}
-{% set files = book.getFiles() %}
 
 {% block mainBody %}
 <div id="book_detail" class="mainContent">
 
     <div id="cover">
-        {% if book.getCover().getThumbnailPath() %}
-            <img src="{{ book.getCover().getThumbnailPath() }}" />
+        {% set thumbnail = book.getCover().getThumbnailPath(160, 260) %}
+        {% if thumbnail %}
+            <img src="{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
         {% endif %}
     </div>
 
@@ -42,13 +41,7 @@
         </p>
         {% endif %}
 
-        {% if files %}
-            {% for file in files %}
-            <p></p><a href="{{ app.url_generator.generate('book_download', {id: book.getId(), format: file.getFormat()}) }}" class="" title="{{ "Download"|trans }} {{file.getFormat()}}">
-            {{ "Download in %s format (%s)"|trans|format(file.getFormat(), file.getFormattedSize()) }}
-            </a></p>
-            {% endfor %}
-        {% endif %}
+        {% include 'book_download_link.html' with {'book': book} %}
 
         <div id="comments">
             {{ book.getComment()|raw }}
@@ -69,6 +62,7 @@
         <div class="clear"></div>
         {% endif %}
 
+        {% set authorBooks = book.getOtherBooksFromAuthor() %}
         {% if authorBooks|length %}
         <div id="author">
             {{"Other books from this author:"|trans}} <br />
