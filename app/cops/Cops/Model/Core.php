@@ -165,7 +165,7 @@ class Core implements CoreInterface
     {
         $fullClassName = get_called_class().'\\Collection';
         if (!class_exists($fullClassName)) {
-            $fullClassName = __NAMESPACE__.'\\'.$className;
+            $fullClassName = __NAMESPACE__.'\\'.$fullClassName;
         }
         return new $fullClassName($this);
     }

@@ -42,10 +42,13 @@ class LoginController
 
     /**
      * Login default action, show the login form
+     *
+     * @param \Application $app Application instance
+     *
+     * @return string
      */
-    public function indexAction(\Silex\Application $app, Request $request)
+    public function indexAction(\Silex\Application $app)
     {
-
         return $app['twig']->render('form/login.html', array(
             'pageTitle'     => $app['translator']->trans('Please log in'),
         ));
