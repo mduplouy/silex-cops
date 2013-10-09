@@ -60,10 +60,13 @@ abstract class Collection implements \IteratorAggregate, \Countable
      * Add an element into collection
      *
      * @param mixed $element
+     *
+     * @return Cops\Model\Collection
      */
     public function add($element)
     {
         $this->_elements[$element->getId()] = $element;
+        return $this;
     }
 
     /**

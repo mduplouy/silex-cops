@@ -11,6 +11,7 @@ namespace Cops\Model\Book;
 
 use Cops\Model\Exception\BookException;
 use Cops\Model\Core;
+use Cops\Model\Book\Collection;
 use \PDO;
 
 /**
@@ -35,7 +36,7 @@ class Resource extends \Cops\Model\Resource
         FROM books AS main
         LEFT OUTER JOIN comments ON comments.book = main.id
         LEFT OUTER JOIN books_authors_link ON books_authors_link.book = main.id
-        LEFT OUTER JOIN authors ON authors.id = books_authors_link.author
+        LEFT JOIN authors ON authors.id = books_authors_link.author
         LEFT OUTER JOIN books_series_link ON books_series_link.book = main.id
         LEFT OUTER JOIN series ON series.id = books_series_link.series
         LEFT OUTER JOIN books_ratings_link ON books_ratings_link.book = main.id
@@ -58,49 +59,26 @@ class Resource extends \Cops\Model\Resource
             WHERE
             main.id = ?';
 
-        $result = $this->getConnection()
-            ->fetchAssoc(
-                $sql,
-                array(
-                    (int) $bookId,
-                )
-            );
+        $result = $this->getConnection()->fetchAssoc(
+            $sql,
+            array(
+                (int) $bookId,
+            )
+        );
 
         if (empty($result)) {
-            throw new BookException(sprintf(
-                'Product width id %s not found',
-                $bookId
-            ));
+            throw new BookException(sprintf('Product width id %s not found', $bookId));
         }
 
         $this->_setDataAfterSelect($book, $result);
 
-        /**
-         * Load book file informations
-         */
-        $bookFiles = $this->getConnection()->fetchAll('SELECT
-            book,
-            format,
-            uncompressed_size,
-            name
-            FROM data
-            WHERE book = ?',
-            array((int) $bookId)
-        );
-
-        foreach($bookFiles as $bookFile) {
-            $file = $book->getFile($bookFile['format']);
-            $file->setData($bookFile);
-            $file->setDirectory($book->getPath());
-        }
-
-        return $book;
+        return $this->_loadBookFiles($book);
     }
 
     /**
      * Load latest added books from database
      *
-     * @param \Cops\Model\Book       $book
+     * @param \Cops\Model\Book             $book
      *
      * @return \Cops\Model\Book\Collection
      */
@@ -245,7 +223,7 @@ class Resource extends \Cops\Model\Resource
 
         // Load book files information
         if ($addFiles === true) {
-            $this->_loadBookFiles($collection);
+            $this->_loadBookFilesForCollection($collection);
         }
 
         return $collection;
@@ -284,7 +262,7 @@ class Resource extends \Cops\Model\Resource
 
         // Load book files information
         if ($addFiles === true) {
-            $this->_loadBookFiles($collection);
+            $this->_loadBookFilesForCollection($collection);
         }
 
         return $collection;
@@ -315,13 +293,25 @@ class Resource extends \Cops\Model\Resource
     }
 
     /**
-     * Load book files information
+     * Load book files information for single book
+     *
+     * @param  \Cops\Model\Book $book
+     *
+     * @return \Cops\Model\Book
+     */
+    private function _loadBookFiles(\Cops\Model\Book $book) {
+        $app = Core::getApp();
+        return $app['core']->getModel('BookFile')->loadFromBook($book);
+    }
+
+    /**
+     * Load book files information for a book collection
      *
      * @param  \Cops\Model\Book\Collection $bookCollection
      *
      * @return \Cops\Model\Book\Collection
      */
-    private function _loadBookFiles($bookCollection)
+    private function _loadBookFilesForCollection(Collection $bookCollection)
     {
         $app = Core::getApp();
         return $app['core']->getModel('BookFile')->populateBookCollection($bookCollection);

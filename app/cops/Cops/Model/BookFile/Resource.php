@@ -113,6 +113,7 @@ class Resource extends \Cops\Model\Resource
     private function _getCollectionByType($tableName, $fieldName, $fieldValue)
     {
         $sql = 'SELECT
+            data.id,
             data.format,
             data.uncompressed_size,
             data.name,

@@ -196,10 +196,11 @@ class Core implements CoreInterface
     }
 
     /**
-     * Empty singleton properties on clone
+     * Empty properties on clone
      */
     public function __clone()
     {
         $this->_objecInstance = array();
+        $this->_resource = null;
     }
 }

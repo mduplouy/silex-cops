@@ -34,7 +34,7 @@ class SerieController
     {
         $controller = $app['controllers_factory'];
 
-        $controller->get('/download//{format}', __CLASS__.'::downloadAction')
+        $controller->get('/download/{id}/{format}', __CLASS__.'::downloadAction')
             ->assert('id', '\d+')
             ->bind('serie_download');
 

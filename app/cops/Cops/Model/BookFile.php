@@ -10,7 +10,8 @@
 namespace Cops\Model;
 
 use Cops\Model\BookFileAbstract;
-use Cops\Model\Book\Collection;
+use Cops\Model\Book;
+use Cops\Model\Book\Collection as BookCollection;
 
 /**
  * Book file abstract class
@@ -50,9 +51,23 @@ class BookFile extends BookFileAbstract
      *
      * @return \Cops\Model\Book\Collection
      */
-    public function populateBookCollection(Collection $collection)
+    public function populateBookCollection(BookCollection $collection)
     {
         return $this->getResource()->populateBookCollection($collection, $this);
+    }
+
+    /**
+     * Add book files to single book
+     *
+     * @param  \Cops\Model\Book $book
+     *
+     * @return \Cops\Model\Book
+     */
+    public function loadFromBook(Book $book)
+    {
+        $collection = $book->getCollection()->add($book);
+        $this->getResource()->populateBookCollection($collection, $this);
+        return $collection->getById($book->getId());
     }
 
     /**
@@ -64,5 +79,6 @@ class BookFile extends BookFileAbstract
         $this->uncompressedSize = 0;
         $this->name = null;
         $this->directory = null;
+        parent::__clone();
     }
 }

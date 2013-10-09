@@ -20,6 +20,12 @@ use Cops\Model\Common;
 abstract class BookFileAbstract extends Common
 {
     /**
+     * Bookfile ID
+     * @var int
+     */
+    protected $id;
+
+    /**
      * Bookfile format
      *
      * @var string

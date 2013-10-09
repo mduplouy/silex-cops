@@ -112,5 +112,6 @@ class Serie extends Common
         $this->name   = null;
         $this->sort   = null;
         $this->_books = null;
+        parent::__clone();
     }
 }

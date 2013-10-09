@@ -234,7 +234,7 @@ class Book extends Common
     }
 
     /**
-     * Empty singleton properties on clone
+     * Empty properties on clone
      */
     public function __clone()
     {
@@ -249,5 +249,6 @@ class Book extends Common
         $this->_author     = null;
         $this->_cover      = null;
         $this->_file       = array();
+        parent::__clone();
     }
 }
