@@ -60,7 +60,7 @@ class Cover extends Core
         $this->_bookPath = $book->getPath();
         $this->_bookId = $book->getId();
 
-        if ($book->getHasCover()) {
+        if ($book->hasCover()) {
             $this->_coverFile = sprintf(BASE_DIR.'%s'.DS.'%s'.DS.'cover.jpg',
                 $this->getConfig()->getValue('data_dir'),
                 $this->_bookPath
@@ -78,6 +78,10 @@ class Cover extends Core
      */
     public function getThumbnailPath($width=null, $height=null)
     {
+        if (is_null($this->_coverFile)) {
+            return false;
+        }
+
         if (empty($width) || empty($height)) {
             $width = (int) $this->getConfig()->getValue('cover_width');
             $height = (int) $this->getConfig()->getValue('cover_height');

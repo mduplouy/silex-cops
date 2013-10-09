@@ -7,6 +7,7 @@ TB: To
 PB: Po
 Access by Author: Accès par auteur
 Access by Series: Accès par série
+Administration: Administation
 Author:: Auteur :
 Authors beginning by %s: Auteurs commençant par %s
 Download in %s format (%s): Télécharger au format %s (%s)
@@ -18,3 +19,4 @@ Other books from this author:: Autres livres de cet auteur :
 Other books in this serie:: Autres livres de cette série :
 Publication date:: Date de publication :
 Series beginning by %s: Série(s) commençant par %s
+SilexCOPS is licensed under WFTPL license.: SilexCOPS est diffusé sous license "RIEN À BRANLER"

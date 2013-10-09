@@ -63,7 +63,10 @@ class Core implements CoreInterface
 
         // Register twig service
         $app->register(new \Silex\Provider\TwigServiceProvider(), array(
-            'twig.path' => BASE_DIR.'themes/'.$app['config']->getValue('theme'),
+            'twig.path' => array(
+                BASE_DIR.'themes/'.$app['config']->getValue('theme'),
+                __DIR__.'/../Templates',
+            )
         ));
 
         // Register doctrine DBAL service
@@ -74,12 +77,21 @@ class Core implements CoreInterface
             ),
         ));
 
-        $app->before(function (Request $request) {
-            if ($request->isXmlHttpRequest()) {
-                $app = Core::getApp();
-                $app['isXmlHttpRequest'] = true;
-            }
-        });
+        // Register security provider
+        $app->register(new \Silex\Provider\SecurityServiceProvider(), array(
+            'security.firewalls' => array(
+                'admin' => array(
+                    'pattern' => '^/admin/',
+                    'http' => true,
+                    'users' => array(
+                        'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg==')
+                    )
+                ),
+            )
+        ));
+
+        // Register session provider
+        $app->register(new \Silex\Provider\SessionServiceProvider());
 
         // Register url generator service
         $app->register(new \Cops\Provider\UrlGeneratorServiceProvider());
@@ -93,6 +105,14 @@ class Core implements CoreInterface
             $translator->addResource('yaml', BASE_DIR.'locales/fr.yml', 'fr');
             return $translator;
         }));
+
+        // Set the mount points for the controllers
+        $app->mount('/',        new \Cops\Controller\IndexController());
+        $app->mount('book/',    new \Cops\Controller\BookController());
+        $app->mount('serie/',   new \Cops\Controller\SerieController());
+        $app->mount('author/',  new \Cops\Controller\AuthorController());
+        $app->mount('admin/',   new \Cops\Controller\AdminController());
+        $app->mount('login/',   new \Cops\Controller\LoginController());
 
         self::$_app = $app;
     }

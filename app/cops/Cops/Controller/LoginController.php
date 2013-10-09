@@ -9,10 +9,13 @@
  */
 namespace Cops\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
- * Admin related controller
+ * Login controller
+ * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class AdminController
+class LoginController
     extends \Cops\Model\Controller
     implements \Silex\ControllerProviderInterface
 {
@@ -29,19 +32,22 @@ class AdminController
     {
         $controller = $app['controllers_factory'];
         $controller->get('/', __CLASS__.'::indexAction')
-            ->bind('admin_index');
+            ->bind('login_index');
+
+        $controller->post('/check', __CLASS__.'::indexAction')
+            ->bind('login_check');
 
         return $controller;
     }
 
     /**
-     * Admin home
+     * Login default action, show the login form
      */
-    public function indexAction(\Silex\Application $app)
+    public function indexAction(\Silex\Application $app, Request $request)
     {
-        return $app['twig']->render('admin.html', array(
-            'pageTitle'     => $app['translator']->trans('Administration'),
+
+        return $app['twig']->render('form/login.html', array(
+            'pageTitle'     => $app['translator']->trans('Please log in'),
         ));
     }
-
 }

@@ -21,10 +21,4 @@ $app = new Silex\Application();
 // Load configuration & set service providers
 $app['core'] =  new Cops\Model\Core(__DIR__.'/cops/config.ini', $app);
 
-// Set the mount points for the controllers
-$app->mount('/',       new Cops\Controller\IndexController());
-$app->mount('book/',   new Cops\Controller\BookController());
-$app->mount('serie/',  new Cops\Controller\SerieController());
-$app->mount('author/', new Cops\Controller\AuthorController());
-
 return $app;

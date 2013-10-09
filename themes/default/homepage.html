@@ -31,15 +31,13 @@
         <div class="books authors">
             <ul class="aggregated">
                 {% for letter in letters %}
-                <li>
-                {% if authorsAggregated[letter] is defined %}
-                    {% set urlLetter = letter %}
-                    {% if letter == '#' %} {% set urlLetter = 0 %} {% endif %}
-                    <strong><a href="{{ app.url_generator.generate('author_list', {'letter': urlLetter}) }}" title="{{ letter }}">{{ letter }}</a></strong>
-                {% else %}
-                    {{ letter }}
-                {% endif %}
-                </li>
+                    {% if authorsAggregated[letter] is defined %}
+                        {% set urlLetter = letter %}
+                        {% if letter == '#' %} {% set urlLetter = 0 %} {% endif %}
+                    <li><strong><a href="{{ app.url_generator.generate('author_list', {'letter': urlLetter}) }}" title="{{ letter }}">{{ letter }}</a></strong></li>
+                    {% else %}
+                    <li>{{ letter }}</li>
+                    {% endif %}
                 {% endfor %}
             </ul>
             <div class="aggregated_content"></div>

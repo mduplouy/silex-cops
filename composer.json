@@ -7,7 +7,8 @@
         "mobiledetect/mobiledetectlib": "~2",
         "symfony/translation": "~2.3",
         "symfony/config": "~2.3",
-        "symfony/yaml": "~2.3"
+        "symfony/yaml": "~2.3",
+        "symfony/security": "~2.3"
     },
     "autoload": {
         "psr-0": {"Cops\\": "app/cops"}

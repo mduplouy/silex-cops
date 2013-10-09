@@ -114,16 +114,13 @@ class Book extends Common
     }
 
     /**
-     * Has cover setter
+     * Has cover
      *
-     * @param bool $hasCover
-     *
-     * @return \Cops\Model\Book
+     * @return bool
      */
-    public function setHasCover($hasCover)
+    public function hasCover()
     {
-        $this->hasCover = (bool) $hasCover;
-        return $this;
+        return (bool) $this->hasCover;
     }
 
     /**
