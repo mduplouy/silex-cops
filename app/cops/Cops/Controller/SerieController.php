@@ -80,7 +80,12 @@ class SerieController
      */
     public function detailAction(\Silex\Application $app, $id)
     {
-        $serie = $this->getModel('Serie')->load($id);
+        try {
+            $serie = $this->getModel('Serie')->load($id);
+        } catch(\Cops\Exception\SerieException $e) {
+            return $app->redirect($app['url_generator']->generate('homepage'));
+        }
+
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'serie.html', array(
             'serie'     => $serie,

@@ -9,7 +9,7 @@
  */
 namespace Cops\Model\Serie;
 
-use Cops\Model\Exception\SerieException;
+use Cops\Exception\SerieException;
 use Cops\Model\Core;
 use \PDO;
 
@@ -28,6 +28,8 @@ class Resource extends \Cops\Model\Resource
      *
      * @param  int               $serieId
      * @param  \Cops\Model\Serie $serie
+     *
+     * @throws SerieException
      *
      * @return \Cops\Model\Serie;
      */

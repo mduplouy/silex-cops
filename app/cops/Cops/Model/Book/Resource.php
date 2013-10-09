@@ -9,7 +9,7 @@
  */
 namespace Cops\Model\Book;
 
-use Cops\Model\Exception\BookException;
+use Cops\Exception\BookException;
 use Cops\Model\Core;
 use Cops\Model\Book\Collection;
 use \PDO;

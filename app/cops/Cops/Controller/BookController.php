@@ -59,7 +59,11 @@ class BookController
      */
     public function detailAction(\Silex\Application $app, $id)
     {
-        $book = $this->getModel('Book')->load($id);
+        try {
+            $book = $this->getModel('Book')->load($id);
+        } catch(\Cops\Exception\BookException $e) {
+            return $app->redirect($app['url_generator']->generate('homepage'));
+        }
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'book.html', array(
             'pageTitle' => $book->getTitle(),
@@ -71,16 +75,33 @@ class BookController
     /**
      * Download book file
      *
-     * @param int    $id     The book ID
-     * @param string $format The book file format
+     * @param \Silex\Application $app    Silex app instance
+     * @param int                $id     The book ID
+     * @param string             $format The book file format
      *
      * @return void
      */
-    public function downloadAction($id, $format=BookFileFactory::TYPE_EPUB)
-    {
-        $book = $this->getModel('Book')->load($id);
+    public function downloadAction(
+        \Silex\Application $app,
+        $id,
+        $format=BookFileFactory::TYPE_EPUB
+    ) {
+        try {
+            $book = $this->getModel('Book')->load($id);
 
-        $bookFile = $book->getFile(strtoupper($format));
+            $bookFile = $book->getFile(strtoupper($format));
+
+        } catch(\Cops\Exception\BookFile\AdapterException $e) {
+            return $app->redirect(
+                $app['url_generator']->generate('book_detail', array(
+                    'id' => $book->getId()
+                )
+            ));
+        } catch(\Cops\Exception\BookException $e) {
+            return $app->redirect(
+                $app['url_generator']->generate('homepage'));
+        }
+
 
         if ($file = $bookFile->getFilePath()) {
             header('Content-type: '.$bookFile->getContentTypeHeader());
@@ -88,7 +109,7 @@ class BookController
             header('Content-Transfer-Encoding: binary');
             readfile($file);
         }
-        exit;
+        return true;
     }
 
     public function listAction($page)
