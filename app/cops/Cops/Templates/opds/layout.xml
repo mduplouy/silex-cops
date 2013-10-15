@@ -1,0 +1,21 @@
+{% block xml %}
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:opds="http://opds-spec.org/2010/catalog" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">
+    <title>{{ "Silex COPS - OPDS FEED" }}</title>
+    <id>{{ "Silex COPS - Home" }}</id>
+    <updated>{{ updated }}</updated>
+    <author>
+        <name>{{ "Mathieu Duplouy" }} </name>
+        <uri> {{ "mathieu.duplouy@gmail.com" }}</uri>
+        <email>{{ "https://github.com/mduplouy" }}</email>
+    </author>
+    <opds:language>fr</opds:language>
+    <link rel="start" href="{{ app.url_generator.generate('opds_home') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="{{"Home"|trans|escape}}"/>
+    <link rel="self" href="{{ app.request.getRequestUri() }}" type="application/atom+xml;profile=opds-catalog;kind=navigation" />
+    <link rel="search" href="{{ app.url_generator.generate('opds_search') }}" type="application/opensearchdescription+xml" title="{{"Search here"|trans|escape}}"/>
+
+{% block entry %}
+{% endblock %}
+
+</feed>
+{% endblock %}

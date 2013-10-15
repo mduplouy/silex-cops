@@ -1,0 +1,15 @@
+{% extends "opds/layout.xml" %}
+
+{% block entry %}
+    {% for letter, nbSeries in seriesAggregated %}
+        {% set urlLetter = letter %}
+        {% if letter == '#' %} {% set urlLetter = 0 %} {% endif %}
+    <entry>
+        <title>{{ letter }}</title>
+        <updated>{{ updated }}</updated>
+        <id>Silex-Cops:Series:Letter:{{ urlLetter }}</id>
+        <content type="text">{{ "%s series"|trans|format(nbSeries) }}</content>
+        <link href="{{ app.url_generator.generate('opds_series_alpha', {'letter': urlLetter}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+    </entry>
+    {% endfor %}
+{% endblock %}

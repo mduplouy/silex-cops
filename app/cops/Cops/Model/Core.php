@@ -113,6 +113,7 @@ class Core implements CoreInterface
         $app->mount('author/',  new \Cops\Controller\AuthorController());
         $app->mount('admin/',   new \Cops\Controller\AdminController());
         $app->mount('login/',   new \Cops\Controller\LoginController());
+        $app->mount('opds/',    new \Cops\Controller\OpdsController());
 
         self::$_app = $app;
     }
