@@ -28,8 +28,8 @@
 
         {# beforeBodyEnd placeholder #}
         {% block beforeBodyEnd %}
-        <script type="text/javascript" src="/assets/jquery-2.0.0.min.js"></script>
-        <script type="text/javascript" src="/assets/default/js/jquery-ui-1.10.3.custom.min.js"></script>
+        <script type="text/javascript" src="{{ app.request.basepath }}/assets/jquery-2.0.0.min.js"></script>
+        <script type="text/javascript" src="{{ app.request.basepath }}/assets/default/js/jquery-ui-1.10.3.custom.min.js"></script>
         {% endblock %}
     </body>
 

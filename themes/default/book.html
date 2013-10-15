@@ -8,7 +8,7 @@
     <div id="cover">
         {% set thumbnail = book.getCover().getThumbnailPath(160, 260) %}
         {% if thumbnail %}
-            <img src="{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
+            <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
         {% endif %}
     </div>
 

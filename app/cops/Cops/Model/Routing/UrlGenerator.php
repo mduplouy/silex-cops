@@ -147,8 +147,20 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
         if (Core::getConfig()->getValue('use_rewrite') !== true) {
             $app = Core::getApp();
             $scriptName = $app['request']->getScriptName();
+
             if (strpos($url, $scriptName) === false) {
-                $url = $app['request']->getScriptName().$url;
+
+                $basePath = $app['request']->getBasePath();
+                if ($basePath == '') {
+                    $url = $basePath.basename($scriptName).$url;
+                } else {
+                    $url = str_replace(
+                        $basePath,
+                        $basePath.DS.basename($scriptName),
+                        $url
+                    );
+                }
+
             }
         }
 
