@@ -26,7 +26,7 @@ class Zip extends ArchiveAbstract implements ArchiveInterface
      */
     public function generateArchive()
     {
-        $archive = tempnam(sys_get_temp_dir(), '').'.zip';
+        $archive = tempnam(sys_get_temp_dir(), '').$this->getExtension();
 
         $zip = new \ZipArchive;
         if ($zip->open($archive, \ZipArchive::CREATE)) {
@@ -43,19 +43,14 @@ class Zip extends ArchiveAbstract implements ArchiveInterface
     }
 
     /**
-     * Send headers for download
+     * Get file extension
      *
-     * @param  string $fileName
-     * @param  string $fileSize
+     * @implements ArchiveInterface
      *
-     * @return void
+     * @return string
      */
-    public function sendHeaders($fileName, $fileSize)
+    public function getExtension()
     {
-        ob_end_flush();
-        header('Content-type: application/zip');
-        header('Content-disposition:attachment;filename="'.$fileName.'.zip"');
-        header('Content-Transfer-Encoding: binary');
-        header("Content-length: " . $fileSize);
+        return '.zip';
     }
 }

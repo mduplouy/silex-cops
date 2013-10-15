@@ -33,12 +33,10 @@ interface ArchiveInterface
     public function addFiles(\Cops\Model\BookFile\Collection $collection);
 
     /**
-     * Send headers for download
+     * Get file extension
      *
-     * @param  string $fileName
-     * @param  string $fileSize
-     *
-     * @return void
+     * @return string
      */
-    public function sendHeaders($fileName, $fileSize);
+    public function getExtension();
+
 }

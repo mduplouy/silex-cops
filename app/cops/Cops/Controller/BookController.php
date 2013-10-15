@@ -11,6 +11,7 @@ namespace Cops\Controller;
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Cops\Model\BookFile\BookFileFactory;
 
 /**
@@ -102,14 +103,16 @@ class BookController
                 $app['url_generator']->generate('homepage'));
         }
 
-
         if ($file = $bookFile->getFilePath()) {
-            header('Content-type: '.$bookFile->getContentTypeHeader());
-            header('Content-disposition:attachment;filename="'.$bookFile->getFileName().'"');
-            header('Content-Transfer-Encoding: binary');
-            readfile($file);
+
+            return $app
+                ->sendFile($file)
+                ->setContentDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    $bookFile->getFileName()
+                );
         }
-        return true;
+        return $app->abort(404);
     }
 
     public function listAction($page)

@@ -10,7 +10,7 @@
 namespace Cops\Controller;
 
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Cops\Model\BookFile\BookFileFactory;
 
 /**
@@ -96,12 +96,13 @@ class SerieController
     /**
      * Download all serie books as archive file
      *
-     * @param int    $id     The serie ID
-     * @param string $format The archive file format (zip|tar.gz)
+     * @param Silex\Application $app
+     * @param int               $id     The serie ID
+     * @param string            $format The archive file format (zip|tar.gz)
      *
      * @return void
      */
-    public function downloadAction($id, $format)
+    public function downloadAction(\Silex\Application $app, $id, $format)
     {
         $serie = $this->getModel('Serie')->load($id);
 
@@ -113,10 +114,12 @@ class SerieController
         $archive = $archiveClass->addFiles($serieBooks)
             ->generateArchive();
 
-        $archiveClass->sendHeaders($serie->getName(), filesize($archive));
-        readfile($archive);
-
-        exit;
+        return $app
+            ->sendFile($archive)
+            ->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $serie->getName().$archiveClass->getExtension()
+            );
     }
 
 }

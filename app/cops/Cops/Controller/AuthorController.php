@@ -9,6 +9,8 @@
  */
 namespace Cops\Controller;
 
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
 /**
  * Author controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
@@ -49,12 +51,13 @@ class AuthorController
     /**
      * Download all serie books as archive file
      *
-     * @param int    $id     The serie ID
-     * @param string $format The archive file format (zip|tar.gz)
+     * @param \Silex\Application $app Application instance
+     * @param int                $id     The serie ID
+     * @param string             $format The archive file format (zip|tar.gz)
      *
      * @return void
      */
-    public function downloadAction($id, $format)
+    public function downloadAction(\Silex\Application $app, $id, $format)
     {
         $author = $this->getModel('Author')->load($id);
 
@@ -66,8 +69,12 @@ class AuthorController
         $archive = $archiveClass->addFiles($authorBooks)
             ->generateArchive();
 
-        $archiveClass->sendHeaders($author->getName(), filesize($archive));
-        readfile($archive);
+        return $app
+            ->sendFile($archive)
+            ->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $author->getName().$archiveClass->getExtension()
+            );
     }
 
     /**

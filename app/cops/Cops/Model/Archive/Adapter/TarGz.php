@@ -22,6 +22,8 @@ class TarGz extends ArchiveAbstract implements ArchiveInterface
     /**
      * Generate archive
      *
+     * @implements ArchiveInterface
+     *
      * @return string The path to archive file
      */
     public function generateArchive()
@@ -43,19 +45,15 @@ class TarGz extends ArchiveAbstract implements ArchiveInterface
     }
 
     /**
-     * Send headers for download
+     * Get file extension
      *
-     * @param  string $fileName
-     * @param  string $fileSize
+     * @implements ArchiveInterface
      *
-     * @return void
+     * @return string
      */
-    public function sendHeaders($fileName, $fileSize)
+    public function getExtension()
     {
-        ob_end_flush();
-        header('Content-type: application/x-gzip');
-        header('Content-disposition: attachment; filename="'.$fileName.'.tar.gz"');
-        header('Content-Transfer-Encoding: binary');
-        header("Content-length: " . $fileSize);
+        return '.tar.gz';
     }
+
 }
