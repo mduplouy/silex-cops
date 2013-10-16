@@ -35,6 +35,12 @@ class Author extends Common
     protected $sort;
 
     /**
+     * Number of books
+     * @var int
+     */
+    protected $bookCount;
+
+    /**
      * Load author data
      *
      * @param int $authorId
@@ -94,6 +100,19 @@ class Author extends Common
     public function getCollectionByFirstLetter($letter)
     {
         return $this->getResource()->getCollectionByFirstLetter($letter, $this);
+    }
+
+    /**
+     * Number of books getter
+     *
+     * @return int
+     */
+    public function getBookCount()
+    {
+        if (is_null($this->bookCount)) {
+            $this->bookCount = $this->getResource()->countBooks($this->getId());
+        }
+        return $this->bookCount;
     }
 
     /**

@@ -141,6 +141,14 @@ class OpdsController
         return $this->_checkXml($xml);
     }
 
+    /**
+     * Get the list of series beginning by a letter
+     *
+     * @param \Application $app    Application instance
+     * @param string       $letter First letter of serie's name
+     *
+     * @return string
+     */
     public function seriesAlphaAction(\Silex\Application $app, $letter)
     {
         if ($letter === '0') {

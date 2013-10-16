@@ -106,18 +106,25 @@ class Resource extends \Cops\Model\Resource
     {
         $collection = $author->getCollection();
 
-        $sql = $this->getBaseSelect();
+        $sql = 'SELECT
+            main.*,
+            COUNT(books.id) as book_count
+            FROM authors AS main
+            LEFT OUTER JOIN books_authors_link ON books_authors_link.author = main.id
+            LEFT OUTER JOIN books ON books_authors_link.book = books.id
+        ';
 
         if ($letter != '#') {
-            $sql .= ' WHERE UPPER(SUBSTR(sort, 1, 1)) = ?';
+            $sql .= ' WHERE UPPER(SUBSTR(main.sort, 1, 1)) = ?';
             $params = array($letter);
             $paramsType = array(\PDO::PARAM_STR);
         } else {
-            $sql .= ' WHERE UPPER(SUBSTR(sort, 1, 1)) NOT IN (?)';
+            $sql .= ' WHERE UPPER(SUBSTR(main.sort, 1, 1)) NOT IN (?)';
             $params = array(Core::getLetters());
             $paramsType = array(\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
         }
-        $sql .= ' ORDER BY sort';
+        $sql .= ' GROUP BY main.id
+        ORDER BY main.sort';
 
          $stmt = $this->getConnection()
             ->executeQuery(
@@ -128,6 +135,7 @@ class Resource extends \Cops\Model\Resource
             ->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach($stmt as $result) {
+
             $author = clone($author);
             $author->setData($result);
             $collection->add($author);
