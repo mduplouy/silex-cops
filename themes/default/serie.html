@@ -2,10 +2,20 @@
 
 {% set date_format = "m/d/Y"|trans %}
 
+{% set books = serie.getAllBooks() %}
+
 {% block mainBody %}
 <div id="serie_detail" class="mainContent">
     {{ serie.getName() }}
-    {% for book in serie.getAllBooks() %}
+
+    {% if books.count() > 1 %}
+        <br />
+        <span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(books.count()) }}
+        <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: "zip"}) }}">zip</a> /
+        <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+    {% endif %}
+
+    {% for book in books %}
         <div>
             {% set thumbnail = book.getCover().getThumbnailPath(80, 120) %}
             {% if thumbnail %}

@@ -1,11 +1,22 @@
 {% extends "layout.html" %}
 
 {% set date_format = "m/d/Y"|trans %}
+{% set books = author.getAllBooks() %}
 
 {% block mainBody %}
 <div id="author_detail" class="mainContent">
+
     {{ author.getName() }}
-    {% for book in author.getAllBooks() %}
+
+    {% if books.count() > 1 %}
+    <p>
+        <span class="small">{{"Download author's books (%s) as archive:"|trans|format(books.count()) }}
+        <a href="{{ app.url_generator.generate('author_download', {id: author.getId(), format: "zip"}) }}">zip</a> /
+        <a href="{{ app.url_generator.generate('author_download', {id: author.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+    </p>
+    {% endif %}
+
+    {% for book in books %}
         <div>
             {% set thumbnail = book.getCover().getThumbnailPath(80, 120) %}
             {% if thumbnail %}
