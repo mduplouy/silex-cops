@@ -107,13 +107,16 @@ class Core implements CoreInterface
         }));
 
         // Set the mount points for the controllers
-        $app->mount('/',        new \Cops\Controller\IndexController());
-        $app->mount('book/',    new \Cops\Controller\BookController());
-        $app->mount('serie/',   new \Cops\Controller\SerieController());
-        $app->mount('author/',  new \Cops\Controller\AuthorController());
-        $app->mount('admin/',   new \Cops\Controller\AdminController());
-        $app->mount('login/',   new \Cops\Controller\LoginController());
-        $app->mount('opds/',    new \Cops\Controller\OpdsController());
+        $app->mount('/',           new \Cops\Controller\IndexController());
+        $app->mount('book/',       new \Cops\Controller\BookController());
+        $app->mount('serie/',      new \Cops\Controller\SerieController());
+        $app->mount('author/',     new \Cops\Controller\AuthorController());
+
+        $app->mount('admin/',      new \Cops\Controller\AdminController());
+        $app->mount('admin/feed/', new \Cops\Controller\Admin\OpdsFeedController());
+
+        $app->mount('login/',      new \Cops\Controller\LoginController());
+        $app->mount('opds/',       new \Cops\Controller\OpdsController());
 
         self::$_app = $app;
     }
