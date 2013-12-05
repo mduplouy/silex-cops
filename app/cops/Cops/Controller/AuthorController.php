@@ -78,7 +78,7 @@ class AuthorController
     }
 
     /**
-     * List series action
+     * List author action
      *
      * @param Silex\Application $app
      * @param string|0          $letter

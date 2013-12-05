@@ -64,8 +64,11 @@ class Core implements CoreInterface
         // Register twig service
         $app->register(new \Silex\Provider\TwigServiceProvider(), array(
             'twig.path' => array(
-                BASE_DIR.'themes/'.$app['config']->getValue('theme'),
-                __DIR__.'/../Templates',
+                BASE_DIR . 'themes/' . $app['config']->getValue('theme'),
+                __DIR__ . '/../Templates',
+            ),
+            'twig.options' => array(
+                'cache' => realpath(BASE_DIR . 'cache'),
             )
         ));
 
@@ -73,7 +76,7 @@ class Core implements CoreInterface
         $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
             'db.options' => array(
                 'driver'   => 'pdo_sqlite',
-                'path'     => BASE_DIR.$app['config']->getValue('data_dir').'/metadata.db',
+                'path'     => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
             ),
         ));
 

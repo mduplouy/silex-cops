@@ -24,7 +24,9 @@
                 <img src="{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
             </div>
             {% endif %}
-            <h3>{{ book.getTitle() }}</h3>
+            <h3>{% if book.getSerie().getId() %}{{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} - {% endif %}
+                {{ book.getTitle() }}</h3>
+
             <span class="small">{{ book.getComment()|striptags }}</span>
             {% include 'book_download_link.html' with {'book': book} %}
             <div class="clear"></div>
