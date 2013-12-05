@@ -52,6 +52,16 @@ class Serie extends Common
     }
 
     /**
+     * Get the download-safe flavour of the serie name
+     *
+     * @return string
+     */
+    public function getDownloadSafeName()
+    {
+        return $this->removeAccents($this->getName());
+    }
+
+    /**
      * Get aggregated series by first letter
      *
      * @return array

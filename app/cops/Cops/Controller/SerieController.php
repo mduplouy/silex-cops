@@ -118,7 +118,7 @@ class SerieController
             ->sendFile($archive)
             ->setContentDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $serie->getName().$archiveClass->getExtension()
+                $serie->getDownloadSafeName().$archiveClass->getExtension()
             );
     }
 
