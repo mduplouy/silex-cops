@@ -2,6 +2,6 @@
 
 {% block mainContent %}
     {% for author in authors %}
-        <a href="{{ app.url_generator.generate('author_detail', {'id': author.getId()}) }}" title="{{ author.getName() }}">{{ author.getSort() }}</a><br />
+        <a href="{{ app.url_generator.generate('author_detail', {'id': author.getId()}) }}" title="{{ author.getName() }}">{{ author.getSort() }} ({{ author.getNumberOfBooks() }})</a><br />
     {% endfor %}
 {% endblock %}
