@@ -1,4 +1,21 @@
 {
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "grandt/phpepub",
+                "version": "dev-master",
+                "source": {
+                    "url": "https://github.com/Grandt/PHPePub",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "classmap": ["EPub.php", "EPub.HtmlEntities.php", "EPub.NCX.php", "EPub.OPF.php", "EPubChapterSplitter.php", "lib.uuid.php", "Logger.php", "Zip.php"]
+                }
+            }
+        }
+    ],
     "require": {
         "silex/silex"  : "~1.0",
         "doctrine/dbal": "2.2.*",
@@ -8,7 +25,8 @@
         "symfony/translation": "~2.3",
         "symfony/config": "~2.3",
         "symfony/yaml": "~2.3",
-        "symfony/security": "~2.3"
+        "symfony/security": "~2.3",
+        "grandt/phpepub": "@dev"
     },
     "autoload": {
         "psr-0": {"Cops\\": "app/cops"}
