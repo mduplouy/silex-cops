@@ -34,6 +34,12 @@ class Serie extends Common
     protected $sort;
 
     /**
+     * Number of books
+     * @var int
+     */
+    protected $bookCount;
+
+    /**
      * Books collection
      * @var \Cops\Model\Book\Collection
      */
@@ -96,7 +102,10 @@ class Serie extends Common
      */
     public function getNumberOfBooks()
     {
-        return $this->getResource()->countBooks($this->getId());
+        if (is_null($this->bookCount)) {
+            $this->bookCount = $this->getResource()->countBooks($this->getId());
+        }
+        return $this->bookCount;
     }
 
     /**

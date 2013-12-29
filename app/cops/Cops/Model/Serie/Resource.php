@@ -107,7 +107,12 @@ class Resource extends \Cops\Model\Resource
     {
         $collection = $serie->getCollection();
 
-        $sql = $this->getBaseSelect();
+        $sql = 'SELECT
+            main.*,
+            COUNT(series.series) AS book_count
+            FROM series AS main
+            INNER JOIN books_series_link AS series
+                ON (series.series = main.id)';
 
         if ($letter !== '#') {
             $sql .= ' WHERE UPPER(SUBSTR(sort, 1, 1)) = ?';
@@ -118,7 +123,7 @@ class Resource extends \Cops\Model\Resource
             $params = array(Core::getLetters());
             $paramsType = array(\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
         }
-        $sql .= ' ORDER BY sort';
+        $sql .= ' GROUP BY main.id ORDER BY sort';
 
          $stmt = $this->getConnection()
             ->executeQuery(
