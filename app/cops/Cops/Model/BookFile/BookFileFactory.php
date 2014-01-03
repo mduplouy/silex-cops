@@ -24,6 +24,7 @@ class BookFileFactory
      */
     const TYPE_EPUB = 'EPUB';
     const TYPE_PDF  = 'PDF';
+    const TYPE_MOBI = 'MOBI';
 
     /**
      * File types storage
@@ -50,6 +51,7 @@ class BookFileFactory
     {
         $this->_instanceTypeStorage[self::TYPE_EPUB] = self::TYPE_EPUB;
         $this->_instanceTypeStorage[self::TYPE_PDF]  = self::TYPE_PDF;
+        $this->_instanceTypeStorage[self::TYPE_MOBI] = self::TYPE_MOBI;
 
         $this->_instanceType = $fileType;
     }
