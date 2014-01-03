@@ -26,7 +26,8 @@
         "symfony/config": "~2.3",
         "symfony/yaml": "~2.3",
         "symfony/security": "~2.3",
-        "grandt/phpepub": "@dev"
+        "grandt/phpepub": "@dev",
+        "umpirsky/i18n-routing-service-provider": "dev-master"
     },
     "autoload": {
         "psr-0": {"Cops\\": "app/cops"}
