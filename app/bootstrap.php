@@ -15,7 +15,7 @@ define('DS', DIRECTORY_SEPARATOR);
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$app = new Silex\Application();
+$app = new \Cops\Model\Application();
 
 // Define core model, no closure to ensure loading
 // Load configuration & set service providers

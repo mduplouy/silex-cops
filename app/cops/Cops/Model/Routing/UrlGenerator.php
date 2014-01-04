@@ -10,6 +10,8 @@
 namespace Cops\Model\Routing;
 
 use Cops\Model\Core;
+use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 /**
  * Overrided the class to be able to deactive url rewriting

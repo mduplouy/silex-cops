@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "silex/silex"  : "~1.0",
+        "silex/silex"  : "~1.1",
         "doctrine/dbal": "2.2.*",
         "twig/twig": ">=1.8,<2.0-dev",
         "symfony/twig-bridge": "~2.3",
@@ -26,8 +26,7 @@
         "symfony/config": "~2.3",
         "symfony/yaml": "~2.3",
         "symfony/security": "~2.3",
-        "grandt/phpepub": "@dev",
-        "umpirsky/i18n-routing-service-provider": "dev-master"
+        "grandt/phpepub": "@dev"
     },
     "autoload": {
         "psr-0": {"Cops\\": "app/cops"}

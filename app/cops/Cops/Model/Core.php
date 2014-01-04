@@ -9,9 +9,12 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\Config;
 use Cops\Model\CoreInterface;
-use Silex\Application;
+use Cops\EventListener\LocaleListener;
+use Silex\Application as BaseApplication;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Core class
@@ -44,10 +47,10 @@ class Core implements CoreInterface
      *
      * @param string $configFilePath
      */
-    public function __construct($configFilePath, Application $app)
+    public function __construct($configFilePath, BaseApplication $app)
     {
         // Always instanciate configuration, so no closure use
-        $app['config'] = new \Cops\Model\Config($configFilePath);
+        $app['config'] = new Config($configFilePath);
 
         if ($app['config']->getValue('debug')) {
             $app['debug'] = true;
@@ -100,26 +103,42 @@ class Core implements CoreInterface
         $app->register(new \Cops\Provider\UrlGeneratorServiceProvider());
 
         // Register translator
-        $app->register(new \Silex\Provider\TranslationServiceProvider(), array(
-            'locale' => $app['config']->getValue('default_lang'),
-        ));
+        $app->register(new \Cops\Provider\TranslationServiceProvider(array(
+            'default' => $app['config']->getValue('default_lang')
+        )));
+
         $app['translator'] = $app->share($app->extend('translator', function($translator) {
             $translator->addLoader('yaml', new \Symfony\Component\Translation\Loader\YamlFileLoader());
-            $translator->addResource('yaml', BASE_DIR.'locales/fr.yml', 'fr');
+
+            foreach (array('messages', 'routes') as $domain) {
+                $translator->addResource('yaml', BASE_DIR.'locales/fr/'.$domain.'.yml', 'fr', $domain);
+                $translator->addResource('yaml', BASE_DIR.'locales/en/'.$domain.'.yml', 'en', $domain);
+            }
+
             return $translator;
         }));
 
+        $app->get('/', function (Request $request) use ($app) {
+            // redirect to /default_lang/
+            $redirect = $app['url_generator']->generate('homepage', array(
+                '_locale' => $app['config']->getValue('default_lang')
+            ));
+            return $app->redirect($redirect, 301);
+        });
+
         // Set the mount points for the controllers
-        $app->mount('/',           new \Cops\Controller\IndexController());
-        $app->mount('book/',       new \Cops\Controller\BookController());
-        $app->mount('serie/',      new \Cops\Controller\SerieController());
-        $app->mount('author/',     new \Cops\Controller\AuthorController());
+        $app->mount('/',            new \Cops\Controller\IndexController());
+        $app->mount('/book/',       new \Cops\Controller\BookController());
+        $app->mount('/serie/',      new \Cops\Controller\SerieController());
+        $app->mount('/author/',     new \Cops\Controller\AuthorController());
 
-        $app->mount('admin/',      new \Cops\Controller\AdminController());
-        $app->mount('admin/feed/', new \Cops\Controller\Admin\OpdsFeedController());
+        $app->mount('/admin/',      new \Cops\Controller\AdminController());
+        $app->mount('/admin/feed/', new \Cops\Controller\Admin\OpdsFeedController());
 
-        $app->mount('login/',      new \Cops\Controller\LoginController());
-        $app->mount('opds/',       new \Cops\Controller\OpdsController());
+        $app->mount('/login/',       new \Cops\Controller\LoginController());
+        $app->mount('/opds/',        new \Cops\Controller\OpdsController());
+
+
 
         self::$_app = $app;
     }
