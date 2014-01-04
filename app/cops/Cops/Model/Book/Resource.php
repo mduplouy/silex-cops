@@ -269,6 +269,49 @@ class Resource extends \Cops\Model\Resource
     }
 
     /**
+     * Load books by tag ID
+     *
+     * @param int              $tagId
+     * @param \Cops\Model\Book $book
+     * @param bool             $addFiles
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function loadByTagId($tagId, \Cops\Model\Book $book, $addFiles=false)
+    {
+        $sql = $this->getBaseSelect(). '
+            INNER JOIN books_tags_link ON (
+                main.id = books_tags_link.book
+            )
+            INNER JOIN tags ON ( tags.id = books_tags_link.tag)
+            WHERE
+            tags.id = :tag_id
+            ORDER BY serie_name, series_index, title';
+
+        $stmt = $this->getConnection()
+            ->prepare($sql);
+
+        $stmt->bindValue(':tag_id', $tagId);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $collection = $book->getCollection();
+
+        foreach($stmt as $result) {
+            $myBook = clone($book);
+            $this->_setDataAfterSelect($myBook, $result);
+            $collection->add($myBook);
+        }
+
+        // Load book files information
+        if ($addFiles === true) {
+            $this->_loadBookFilesForCollection($collection);
+        }
+
+        return $collection;
+    }
+
+    /**
      * Set data after select statement
      *
      * @param \Cops\Model\Book $book   The book instance

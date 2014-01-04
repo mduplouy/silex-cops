@@ -231,6 +231,18 @@ class Book extends Common
     }
 
     /**
+     * Get collection from tag ID
+     *
+     * @param int $tagId
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function getCollectionByTagId($tagId)
+    {
+        return $this->getResource()->loadByTagId($tagId, $this);
+    }
+
+    /**
      * Empty properties on clone
      */
     public function __clone()
