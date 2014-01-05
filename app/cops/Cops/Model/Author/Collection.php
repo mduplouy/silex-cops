@@ -10,10 +10,29 @@
 
 namespace Cops\Model\Author;
 
+use Cops\Model\CollectionAbstract;
+
 /**
  * Author collection model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Collection extends \Cops\Model\Collection implements \IteratorAggregate, \Countable
+class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
 {
+    /**
+     * Get collection based on first letter
+     *
+     * @param str $letter
+     *
+     * @return Collection
+     */
+    public function getByFirstLetter($letter)
+    {
+        $resource = $this->getResource();
+
+        foreach($resource->loadByFirstLetter($letter) as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+        return $this;
+
+    }
 }

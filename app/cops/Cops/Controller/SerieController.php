@@ -12,6 +12,7 @@ namespace Cops\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Cops\Model\BookFile\BookFileFactory;
+use Cops\Exception\SerieException;
 
 /**
  * Serie controller class
@@ -63,7 +64,7 @@ class SerieController
         if ($letter === '0') {
             $letter = '#';
         }
-        $series = $this->getModel('Serie')->getCollectionByFirstLetter($letter);
+        $series = $this->getModel('Serie')->getCollection()->getByFirstLetter($letter);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'serie_list.html', array(
             'letter' => $letter,
@@ -82,10 +83,9 @@ class SerieController
     {
         try {
             $serie = $this->getModel('Serie')->load($id);
-        } catch(\Cops\Exception\SerieException $e) {
+        } catch(SerieException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
-
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'serie.html', array(
             'serie'     => $serie,
@@ -106,7 +106,7 @@ class SerieController
     {
         $serie = $this->getModel('Serie')->load($id);
 
-        $serieBooks = $this->getModel('BookFile')->getCollectionBySerieId($serie->getId());
+        $serieBooks = $this->getModel('BookFile')->getCollection()->getBySerieId($serie->getId());
 
         $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
             ->getInstance();

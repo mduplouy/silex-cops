@@ -9,7 +9,13 @@
  */
 namespace Cops\Model;
 
-abstract class Collection implements \IteratorAggregate, \Countable
+use Cops\Model\Common;
+
+/**
+ * Collection abstract class
+ * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
+ */
+abstract class CollectionAbstract implements \IteratorAggregate, \Countable
 {
     /**
      * Collection elements
@@ -18,20 +24,36 @@ abstract class Collection implements \IteratorAggregate, \Countable
     private $_elements = array();
 
     /**
-     * Object resource
-     * @var \Cops\Model\Resource
+     * Object entity model instance
+     * @var Cops\Model\Common
+     */
+    private $_entity;
+
+    /**
+     * Object model resource instance
+     * @var Cops\Model\Resource
      */
     private $_resource;
 
     /**
      * Constructor
      *
-     * @param \Cops\Model\Common $obj Related instance for collection
-     *
+     * @param Common $entity Related entity instance for collection
      */
-    public function __construct(\Cops\Model\Common $obj)
+    public function __construct(Common $entity)
     {
-        $this->_resource = $obj->getResource();
+        $this->_entity = $entity;
+        $this->_resource = $entity->getResource();
+    }
+
+    /**
+     * Entity model getter
+     *
+     * @return \Cops\Model\Common
+     */
+    public function getEntity()
+    {
+        return $this->_entity;
     }
 
     /**

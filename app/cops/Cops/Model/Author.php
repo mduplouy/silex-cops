@@ -49,7 +49,9 @@ class Author extends Common
      */
     public function load($authorId)
     {
-        return $this->getResource()->load($authorId, $this);
+        return $this->setData(
+            $this->getResource()->load($authorId)
+        );
     }
 
     /**
@@ -90,19 +92,9 @@ class Author extends Common
      */
     public function getAllBooks()
     {
-        return $this->getModel('Book')->getCollectionByAuthorId($this->getId());
-    }
-
-    /**
-     * Get series filtered by first letter of serie name
-     *
-     * @param string|0 $letter
-     *
-     * @return \Cops\Model\Serie\Collection
-     */
-    public function getCollectionByFirstLetter($letter)
-    {
-        return $this->getResource()->getCollectionByFirstLetter($letter, $this);
+        return $this->getModel('Book')->getCollection()
+            ->getByAuthorId($this->getId())
+            ->addBookFiles();
     }
 
     /**

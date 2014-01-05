@@ -61,7 +61,7 @@ class AuthorController
     {
         $author = $this->getModel('Author')->load($id);
 
-        $authorBooks = $this->getModel('BookFile')->getCollectionByAuthorId($author->getId());
+        $authorBooks = $this->getModel('BookFile')->getCollection()->getByAuthorId($author->getId());
 
         $archiveClass = $this->getModel('Archive\\ArchiveFactory', array($format))
             ->getInstance();
@@ -90,7 +90,7 @@ class AuthorController
         if ($letter === '0') {
             $letter = '#';
         }
-        $authors = $this->getModel('Author')->getCollectionByFirstLetter($letter);
+        $authors = $this->getModel('Author')->getCollection()->getByFirstLetter($letter);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author_list.html', array(
             'letter' => $letter,

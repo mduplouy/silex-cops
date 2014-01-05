@@ -9,18 +9,16 @@
  */
 namespace Cops\Model\BookFile;
 
-use Cops\Model\BookFile;
-use Cops\Model\Exception\BookFileException;
-use Cops\Model\Core;
 use Cops\Model\Collection;
+use Cops\Model\Book\Collection as BookCollection;
+use Cops\Model\Resource as BaseResource;
 use \PDO;
-use \Doctrine\DBAL\Driver\PDOStatement;
 
 /**
  * BookFile resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Resource extends \Cops\Model\Resource
+class Resource extends BaseResource
 {
     protected $_baseSelect = 'SELECT
         main.id,
@@ -31,38 +29,33 @@ class Resource extends \Cops\Model\Resource
         FROM data as main';
 
     /**
-     * Get book files by serie ID
+     * Get book files data by serie ID
      *
      * @param  int      $serieId
-     * @param  BookFile $bookFile
      *
-     * @return Collection
+     * @return PDOStatement
      */
-    public function getCollectionBySerieId($serieId, BookFile $bookFile)
+    public function loadBySerieId($serieId)
     {
         $stmt = $this->_getCollectionByType('series', 'series', $serieId);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
-
-        return $this->_feedCollection($bookFile, $stmt);
+        return $stmt;
     }
 
     /**
-     * Get book files by Author ID
+     * Get book files data by Author ID
      *
-     * @param  int      $authorId
-     * @param  BookFile $bookFile
+     * @param  int          $authorId
      *
-     * @return Collection
+     * @return PDOStatement
      */
-    public function getCollectionByAuthorId($authorId, BookFile $bookFile)
+    public function loadByAuthorId($authorId)
     {
-
         $stmt = $this->_getCollectionByType('authors', 'author', $authorId);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
-
-        return $this->_feedCollection($bookFile, $stmt);
+        return $stmt;
     }
 
     /**
@@ -72,7 +65,7 @@ class Resource extends \Cops\Model\Resource
      *
      * @return \Cops\Model\Book\Collection
      */
-    public function populateBookCollection(Collection $collection)
+    public function populateBookCollection(BookCollection $collection)
     {
         $bookIds = array();
         foreach($collection as $book) {

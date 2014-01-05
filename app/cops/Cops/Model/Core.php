@@ -11,8 +11,15 @@ namespace Cops\Model;
 
 use Cops\Model\Config;
 use Cops\Model\CoreInterface;
+use Cops\Provider\MobileDetectServiceProvider;
+use Cops\Provider\UrlGeneratorServiceProvider;
+use Cops\Provider\ImageProcessorServiceProvider;
 use Cops\EventListener\LocaleListener;
 use Silex\Application as BaseApplication;
+use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\DoctrineServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
+use Silex\Provider\SessionServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -57,7 +64,10 @@ class Core implements CoreInterface
         }
 
         // Register mobile detect service
-        $app->register(new \Cops\Provider\MobileDetectServiceProvider());
+        $app->register(new MobileDetectServiceProvider());
+
+        // Image processor service
+        $app->register(new ImageProcessorServiceProvider());
 
         // Detect mobile user agent
         if ($app['mobile_detect']->isMobile()) {
@@ -65,7 +75,7 @@ class Core implements CoreInterface
         }
 
         // Register twig service
-        $app->register(new \Silex\Provider\TwigServiceProvider(), array(
+        $app->register(new TwigServiceProvider(), array(
             'twig.path' => array(
                 BASE_DIR . 'themes/' . $app['config']->getValue('theme'),
                 __DIR__ . '/../Templates',
@@ -76,7 +86,7 @@ class Core implements CoreInterface
         ));
 
         // Register doctrine DBAL service
-        $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
+        $app->register(new DoctrineServiceProvider(), array(
             'db.options' => array(
                 'driver'   => 'pdo_sqlite',
                 'path'     => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
@@ -84,7 +94,7 @@ class Core implements CoreInterface
         ));
 
         // Register security provider
-        $app->register(new \Silex\Provider\SecurityServiceProvider(), array(
+        $app->register(new SecurityServiceProvider(), array(
             'security.firewalls' => array(
                 'admin' => array(
                     'pattern' => '^/admin/',
@@ -95,6 +105,8 @@ class Core implements CoreInterface
                 ),
             )
         ));
+
+        $app->register(new \Cops\Provider\SearchServiceProvider());
 
         // Register session provider
         $app->register(new \Silex\Provider\SessionServiceProvider());
@@ -131,6 +143,7 @@ class Core implements CoreInterface
         $app->mount('/book/',       new \Cops\Controller\BookController());
         $app->mount('/serie/',      new \Cops\Controller\SerieController());
         $app->mount('/author/',     new \Cops\Controller\AuthorController());
+        $app->mount('/search/',     new \Cops\Controller\SearchController());
 
         $app->mount('/admin/',      new \Cops\Controller\AdminController());
         $app->mount('/admin/feed/', new \Cops\Controller\Admin\OpdsFeedController());
@@ -138,7 +151,7 @@ class Core implements CoreInterface
         $app->mount('/login/',       new \Cops\Controller\LoginController());
         $app->mount('/opds/',        new \Cops\Controller\OpdsController());
 
-
+        $app['core'] = $this;
 
         self::$_app = $app;
     }
@@ -158,7 +171,11 @@ class Core implements CoreInterface
             if (!class_exists($fullClassName)) {
                 $fullClassName = __NAMESPACE__.'\\'.$className;
             }
-
+            if (!class_exists($fullClassName)) {
+                throw new \InvalidArgumentException(
+                    sprintf('Could not get model %s, class does not exists', $fullClassName)
+                );
+            }
             $obj = new \ReflectionClass($fullClassName);
 
             if (!is_array($args)) {
@@ -177,7 +194,7 @@ class Core implements CoreInterface
     public function getResource()
     {
         if (is_null($this->_resource)) {
-            $this->_resource = $this->getModel(get_called_class().'\\Resource');
+            $this->_resource = $this->getModel(get_called_class().'\\Resource', $this);
         }
         return $this->_resource;
     }
@@ -192,6 +209,11 @@ class Core implements CoreInterface
         $fullClassName = get_called_class().'\\Collection';
         if (!class_exists($fullClassName)) {
             $fullClassName = __NAMESPACE__.'\\'.$fullClassName;
+        }
+        if (!class_exists($fullClassName)) {
+            throw new \RuntimeException(
+                sprintf('Requested collection %s does not exists', $fullClassName)
+            );
         }
         return new $fullClassName($this);
     }

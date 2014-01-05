@@ -81,6 +81,7 @@ class Config
         if (isset($this->_configValues[$confKey])) {
             $confValue = $this->_configValues[$confKey];
         }
+
         return $confValue;
     }
 

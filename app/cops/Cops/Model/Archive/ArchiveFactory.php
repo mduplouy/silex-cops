@@ -79,7 +79,7 @@ class ArchiveFactory extends ArchiveAbstract
         }
 
         if (!isset($this->_instance[$this->_instanceType])) {
-            $className = '\\Cops\\Model\\Archive\\Adapter\\' .
+            $className = __NAMESPACE__.'\\Adapter\\' .
                 $this->_instanceTypeStorage[$this->_instanceType];
 
             $this->_instance[$this->_instanceType] = new $className;

@@ -94,11 +94,11 @@ class Book extends Common
     /**
      * Get the latest added books
      *
-     * @return \Cops\Model\Collection  Collection of Book
+     * @return \Cops\Model\Book\Collection  Collection of Book
      */
     public function getLatest()
     {
-        return $this->getResource()->getLatestCollection($this);
+        return $this->getCollection()->getLatest();
     }
 
     /**
@@ -110,7 +110,30 @@ class Book extends Common
      */
     public function load($bookId)
     {
-        return $this->getResource()->load($bookId, $this);
+        $result = $this->getResource()->load($bookId);
+
+        $this->setData($result);
+
+        if (!empty($result['author_id'])) {
+            $this->getAuthor()->setData(array(
+                'id'   => $result['author_id'],
+                'name' => $result['author_name'],
+                'sort' => $result['author_sort'],
+            ));
+        }
+
+        if (!empty($result['serie_id'])) {
+            $this->getSerie()->setData(array(
+                'id'   => $result['serie_id'],
+                'name' => $result['serie_name'],
+                'sort' => $result['serie_sort'],
+            ));
+        }
+
+        // @TODO, change this
+        $this->getModel('BookFile')->loadFromBook($this);
+
+        return $this;
     }
 
     /**
@@ -184,62 +207,6 @@ class Book extends Common
     public function getFiles()
     {
         return $this->_file;
-    }
-
-    /**
-     * Get other books from author
-     *
-     * @return \Cops\Model\Book\Collection
-     */
-    public function getOtherBooksFromAuthor()
-    {
-        return $this->getResource()->getOtherBooksFromAuthor($this->getAuthor()->getId(), $this);
-    }
-
-    /**
-     * Get other books from serie
-     *
-     * @return \Cops\Model\Book\Collection
-     */
-    public function getOtherBooksFromSerie()
-    {
-        return $this->getResource()->getOtherBooksFromSerie($this->getSerie()->getId(), $this);
-    }
-
-    /**
-     * Get collection from serie ID
-     *
-     * @param int $serieId
-     *
-     * @return \Cops\Model\Book\Collection
-     */
-    public function getCollectionBySerieId($serieId)
-    {
-        return $this->getResource()->loadBySerieId($serieId, $this);
-    }
-
-    /**
-     * Get collection from author ID
-     *
-     * @param int $authorId
-     *
-     * @return \Cops\Model\Book\Collection
-     */
-    public function getCollectionByAuthorId($authorId)
-    {
-        return $this->getResource()->loadByAuthorId($authorId, $this);
-    }
-
-    /**
-     * Get collection from tag ID
-     *
-     * @param int $tagId
-     *
-     * @return \Cops\Model\Book\Collection
-     */
-    public function getCollectionByTagId($tagId)
-    {
-        return $this->getResource()->loadByTagId($tagId, $this);
     }
 
     /**

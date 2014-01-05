@@ -10,7 +10,8 @@
 namespace Cops\Model;
 
 use Cops\Model\Core;
-use \Doctrine\DBAL\Driver\PDOStatement;
+use Cops\Model\Common;
+use Doctrine\DBAL\Driver\PDOStatement;
 use Cops\Model\CoreInterface;
 
 /**
@@ -24,6 +25,42 @@ abstract class Resource
      * @var string
      */
     protected $_baseSelect;
+
+    /**
+     * Entity model instance
+     * @var Common
+     */
+    private $_entity;
+
+    /**
+     * Constructor
+     */
+    public function __construct(Common $entity)
+    {
+        $this->_entity = $entity;
+    }
+
+    /**
+     * Model getter
+     *
+     * @param string $model
+     * @return Common
+     */
+    public function getModel($model)
+    {
+        $app = Core::getApp();
+        return $app['core']->getModel($model);
+    }
+
+    /**
+     * Entity model getter
+     *
+     * @return Cops\Model\Common
+     */
+    public function getEntity()
+    {
+        return $this->_entity;
+    }
 
     /**
      * Get the DB connection instance
@@ -46,24 +83,16 @@ abstract class Resource
     }
 
     /**
-     * Add items to collection
+     * Set data to entity from statement result
      *
-     * @param  CoreInterface $object
-     * @param  PDOStatement  $stmt
+     * @param array $result
      *
-     * @return Collection
+     * @return Common
      */
-    protected function _feedCollection(CoreInterface $object, PDOStatement $stmt)
+    public function setDataFromStatement($result)
     {
-        $collection = $object->getCollection();
-
-        foreach($stmt as $result) {
-            $myObject = clone($object);
-
-            $myObject->setData($result);
-            $collection->add($myObject);
-        }
-
-        return $collection;
+        $entity = clone($this->getEntity());
+        return $entity->setData($result);
     }
+
 }

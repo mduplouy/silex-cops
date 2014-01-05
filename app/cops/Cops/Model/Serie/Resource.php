@@ -27,13 +27,12 @@ class Resource extends \Cops\Model\Resource
      * Load a serie data
      *
      * @param  int               $serieId
-     * @param  \Cops\Model\Serie $serie
      *
      * @throws SerieException
      *
-     * @return \Cops\Model\Serie;
+     * @return array
      */
-    public function load($serieId, \Cops\Model\Serie $serie)
+    public function load($serieId)
     {
         $result = $this->getConnection()
             ->fetchAssoc(
@@ -50,7 +49,7 @@ class Resource extends \Cops\Model\Resource
             ));
         }
 
-        return $serie->setData($result);
+        return $result;
     }
 
     /**
@@ -96,17 +95,14 @@ class Resource extends \Cops\Model\Resource
     }
 
     /**
-     * Retrieve collection based on first letter
+     * Retrieve data based on first letter
      *
-     * @param string|0           $letter
-     * @param \Cops\Model\Serie  $serie
+     * @param string        $letter
      *
-     * @return \Cops\Model\Serie\Collection
+     * @return PDOStatement
      */
-    public function getCollectionByFirstLetter($letter, $serie)
+    public function loadByFirstLetter($letter)
     {
-        $collection = $serie->getCollection();
-
         $sql = 'SELECT
             main.*,
             COUNT(series.series) AS book_count
@@ -133,11 +129,6 @@ class Resource extends \Cops\Model\Resource
             )
             ->fetchAll(\PDO::FETCH_ASSOC);
 
-        foreach($stmt as $result) {
-            $serie = clone($serie);
-            $serie->setData($result);
-            $collection->add($serie);
-        }
-        return $collection;
+        return $stmt;
     }
 }

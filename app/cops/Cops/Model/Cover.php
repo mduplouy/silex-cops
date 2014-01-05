@@ -117,12 +117,9 @@ class Cover extends Core
      */
     protected function _generateThumbnail($width, $height)
     {
-        $processor = $this->getModel(
-            'ImageProcessor\ImageProcessorFactory',
-            $this->getConfig()->getValue('image_processor')
-        )->getInstance();
+        $app = self::getApp();
 
-        $processor
+        $app['image_processor']
             ->setWidth($width)
             ->setHeight($height)
             ->generateThumbnail($this->_coverFile, $this->_thumbnailFile);

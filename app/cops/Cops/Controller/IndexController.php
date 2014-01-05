@@ -47,6 +47,10 @@ class IndexController
      */
     public function indexAction(\Silex\Application $app)
     {
+        $latestBooks = $this->getModel('Book')
+            ->getCollection()
+            ->getLatest($app['config']->getValue('last_added'));
+
         $serieList = $this->getModel('Serie')->getAggregatedList();
         $countSeries = 0;
         foreach($serieList as $nbSerie) {
@@ -61,11 +65,12 @@ class IndexController
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html', array(
             'pageTitle' => $app['translator']->trans('Homepage'),
-            'latestBooks' => $this->getModel('Book')->getLatest(),
+            'latestBooks' => $latestBooks,
             'seriesAggregated' => $serieList,
             'countSeries' => $countSeries,
             'authorsAggregated' => $authorList,
             'countAuthors' => $countAuthors,
+            'countTags' => 0,
         ));
     }
 }

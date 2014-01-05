@@ -54,7 +54,9 @@ class Serie extends Common
      */
     public function load($serieId)
     {
-        return $this->getResource()->load($serieId, $this);
+        return $this->setData(
+            $this->getResource()->load($serieId)
+        );
     }
 
     /**
@@ -92,7 +94,9 @@ class Serie extends Common
      */
     public function getAllBooks()
     {
-        return $this->getModel('Book')->getCollectionBySerieId($this->getId());
+        return $this->getModel('Book')->getCollection()
+            ->getBySerieId($this->getId())
+            ->addBookFiles();
     }
 
     /**
@@ -106,18 +110,6 @@ class Serie extends Common
             $this->bookCount = $this->getResource()->countBooks($this->getId());
         }
         return $this->bookCount;
-    }
-
-    /**
-     * Get series filtered by first letter of serie name
-     *
-     * @param string|0 $letter
-     *
-     * @return \Cops\Model\Serie\Collection
-     */
-    public function getCollectionByFirstLetter($letter)
-    {
-        return $this->getResource()->getCollectionByFirstLetter($letter, $this);
     }
 
     /**

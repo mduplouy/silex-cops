@@ -9,8 +9,6 @@
  */
 namespace Cops\Model\ImageProcessor;
 
-use Cops\Model\Core;
-use Cops\Model\ImageProcessor\ImageProcessorInterface;
 use Cops\Exception\ImageProcessor\AdapterException;
 
 /**
@@ -48,7 +46,7 @@ class ImageProcessorFactory
      *
      * @param string $processingType
      */
-    public function __construct($processingType='gd')
+    public function __construct($processingType = self::TYPE_GD)
     {
         $this->_instanceType = $processingType;
 
@@ -61,7 +59,7 @@ class ImageProcessorFactory
     /**
      * Instance getter
      *
-     * @return \Cops\Model\Image\ImageProcessorInterface
+     * @return ImageProcessorInterface
      */
     public function getInstance()
     {
@@ -75,7 +73,7 @@ class ImageProcessorFactory
         }
 
         if (!isset($this->_instance[$this->_instanceType])) {
-            $className = '\\Cops\\Model\\ImageProcessor\\Adapter\\'.ucfirst($this->_instanceType);
+            $className = __NAMESPACE__.'\\Adapter\\'.ucfirst($this->_instanceType);
             $this->_instance[$this->_instanceType] = new $className;
         }
         return $this->_instance[$this->_instanceType];

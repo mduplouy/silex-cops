@@ -10,13 +10,14 @@
 namespace Cops\Model\Author;
 
 use Cops\Model\Core;
+use Cops\Model\Resource as BaseResource;
 use Cops\Exception\AuthorException;
 
 /**
  * Author resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Resource extends \Cops\Model\Resource
+class Resource extends BaseResource
 {
     protected $_baseSelect = 'SELECT
         main.*
@@ -25,12 +26,11 @@ class Resource extends \Cops\Model\Resource
     /**
      * Load an author data
      *
-     * @param  int                $authorId
-     * @param  \Cops\Model\Author $author
+     * @param  int    $authorId
      *
-     * @return \Cops\Model\Serie;
+     * @return array
      */
-    public function load($authorId, \Cops\Model\Author $author)
+    public function load($authorId)
     {
         $result = $this->getConnection()
             ->fetchAssoc(
@@ -47,7 +47,7 @@ class Resource extends \Cops\Model\Resource
             ));
         }
 
-        return $author->setData($result);
+        return $result;
     }
 
     /**
@@ -95,17 +95,14 @@ class Resource extends \Cops\Model\Resource
     }
 
     /**
-     * Retrieve collection based on first letter
+     * Load based on first letter
      *
-     * @param string|0           $letter
-     * @param \Cops\Model\Author $author
+     * @param string        $letter
      *
-     * @return \Cops\Model\Author\Collection
+     * @return PDOStatement
      */
-    public function getCollectionByFirstLetter($letter, $author)
+    public function loadByFirstLetter($letter)
     {
-        $collection = $author->getCollection();
-
         $sql = 'SELECT
             main.*,
             COUNT(books.id) as book_count
@@ -134,12 +131,6 @@ class Resource extends \Cops\Model\Resource
             )
             ->fetchAll(\PDO::FETCH_ASSOC);
 
-        foreach($stmt as $result) {
-
-            $author = clone($author);
-            $author->setData($result);
-            $collection->add($author);
-        }
-        return $collection;
+        return $stmt;
     }
 }

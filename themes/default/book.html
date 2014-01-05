@@ -48,7 +48,7 @@
         </div>
 
         {% if book.getSerie().getId() %}
-            {% set serieBooks = book.getOtherBooksFromSerie() %}
+            {% set serieBooks = book.getCollection().getOtherBooksFromSerie() %}
             {%if serieBooks|length > 0 %}
         <div id="serie">
             {{"Other books in this serie:"|trans}} <br />
@@ -62,7 +62,7 @@
         <div class="clear"></div>
         {% endif %}
 
-        {% set authorBooks = book.getOtherBooksFromAuthor() %}
+        {% set authorBooks = book.getCollection().getOtherBooksFromAuthor() %}
         {% if authorBooks|length %}
         <div id="author">
             {{"Other books from this author:"|trans}} <br />

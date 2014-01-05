@@ -9,16 +9,17 @@
  */
 namespace Cops\Model\Book;
 
+use Cops\Model\Resource as BaseResource;
 use Cops\Exception\BookException;
 use Cops\Model\Core;
 use Cops\Model\Book\Collection;
-use \PDO;
+use PDO;
 
 /**
  * Book resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Resource extends \Cops\Model\Resource
+class Resource extends BaseResource
 {
     protected $_baseSelect = 'SELECT
         main.*,
@@ -48,9 +49,9 @@ class Resource extends \Cops\Model\Resource
      * @param  int              $bookId
      * @param  \Cops\Model\Book $book
      *
-     * @return \Cops\Model\Book;
+     * @return array;
      */
-    public function load($bookId, \Cops\Model\Book $book)
+    public function load($bookId)
     {
         /**
          * Load book common informations
@@ -69,20 +70,17 @@ class Resource extends \Cops\Model\Resource
         if (empty($result)) {
             throw new BookException(sprintf('Product width id %s not found', $bookId));
         }
-
-        $this->_setDataAfterSelect($book, $result);
-
-        return $this->_loadBookFiles($book);
+        return $result;
     }
 
     /**
      * Load latest added books from database
      *
-     * @param \Cops\Model\Book             $book
+     * @param  int          $nb  Number of items to load
      *
-     * @return \Cops\Model\Book\Collection
+     * @return PDOStatement
      */
-    public function getLatestCollection(\Cops\Model\Book $book)
+    public function loadLatest($nb)
     {
         $sql = $this->getBaseSelect(). '
             ORDER BY main.timestamp DESC
@@ -91,154 +89,48 @@ class Resource extends \Cops\Model\Resource
         $stmt = $this->getConnection()
             ->prepare($sql);
 
-        $stmt->bindValue(':limit', Core::getConfig()->getValue('last_added'));
+        $stmt->bindValue(':limit', (int) $nb);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
 
-        $collection = $book->getCollection();
-
-        foreach($stmt as $result) {
-            $myBook = clone($book);
-            $collection->add($this->_setDataAfterSelect($myBook, $result));
-        }
-        return $collection;
+        return $stmt;
     }
 
     /**
-     * Get other books from author
+     * Load books by serie ID
      *
-     * @param int              $authorId
-     * @param \Cops\Model\Book $book
+     * @param  int          $serieId
      *
-     * @return \Cops\Model\Book\Collection
+     * @return PDOStatement
      */
-    public function getOtherBooksFromAuthor($authorId, \Cops\Model\Book $book)
-    {
-        $sql = $this->getBaseSelect(). '
-            WHERE
-            authors.id = :author_id
-            AND main.id != :book_id';
-
-        $serieId = $book->getSerie()->getId();
-        if (!is_null($serieId)) {
-            $sql .= ' AND series.id != :serie_id';
-        }
-
-        $sql .= ' ORDER BY serie_name, series_index, title';
-        $sql .= ' LIMIT :limit';
-
-        $stmt = $this->getConnection()
-            ->prepare($sql);
-
-        $stmt->bindValue(':author_id', $authorId);
-        $stmt->bindValue(':book_id', $book->getId());
-        if (!is_null($serieId)) {
-            $stmt->bindValue(':serie_id', $serieId);
-        }
-        $stmt->bindValue(':limit', 25);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-
-        $collection = $book->getCollection();
-
-        foreach($stmt as $result) {
-            $myBook = clone($book);
-            $this->_setDataAfterSelect($myBook, $result);
-
-            $collection->add($myBook);
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Get other books from serie
-     *
-     * @param int              $serieId
-     * @param \Cops\Model\Book $book
-     *
-     * @return \Cops\Model\Book\Collection
-     */
-    public function getOtherBooksFromSerie($serieId, \Cops\Model\Book $book)
+    public function loadBySerieId($serieId)
     {
         $sql = $this->getBaseSelect(). '
             WHERE
             series.id = :serie_id
-            AND main.id != :book_id
             ORDER BY serie_name, series_index, title
             LIMIT :limit';
 
         $stmt = $this->getConnection()
             ->prepare($sql);
 
-        $stmt->bindValue(':book_id', $book->getId());
-        $stmt->bindValue(':serie_id', $serieId);
+        $stmt->bindValue(':serie_id', (int) $serieId);
         $stmt->bindValue(':limit', 25);
-
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
 
-        $collection = $book->getCollection();
-
-        foreach($stmt as $result) {
-            $myBook = clone($book);
-            $this->_setDataAfterSelect($myBook, $result);
-
-            $collection->add($myBook);
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Load books by serie ID
-     *
-     * @param int              $serieId
-     * @param \Cops\Model\Book $book
-     *
-     * @return \Cops\Model\Book\Collection
-     */
-    public function loadBySerieId($serieId, \Cops\Model\Book $book, $addFiles=true)
-    {
-        $sql = $this->getBaseSelect(). '
-            WHERE
-            series.id = :serie_id
-            ORDER BY serie_name, series_index, title';
-
-        $stmt = $this->getConnection()
-            ->prepare($sql);
-
-        $stmt->bindValue(':serie_id', $serieId);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-
-        $collection = $book->getCollection();
-
-        foreach($stmt as $result) {
-            $myBook = clone($book);
-            $this->_setDataAfterSelect($myBook, $result);
-
-            $collection->add($myBook);
-        }
-
-        // Load book files information
-        if ($addFiles === true) {
-            $this->_loadBookFilesForCollection($collection);
-        }
-
-        return $collection;
+        return $stmt;
     }
 
     /**
      * Load books by author ID
      *
      * @param int              $authorId
-     * @param \Cops\Model\Book $book
      * @param bool             $addFiles
      *
-     * @return \Cops\Model\Book\Collection
+     * @return PDOStatement
      */
-    public function loadByAuthorId($authorId, \Cops\Model\Book $book, $addFiles=true)
+    public function loadByAuthorId($authorId)
     {
         $sql = $this->getBaseSelect(). '
             WHERE
@@ -252,32 +144,17 @@ class Resource extends \Cops\Model\Resource
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
 
-        $collection = $book->getCollection();
-
-        foreach($stmt as $result) {
-            $myBook = clone($book);
-            $this->_setDataAfterSelect($myBook, $result);
-            $collection->add($myBook);
-        }
-
-        // Load book files information
-        if ($addFiles === true) {
-            $this->_loadBookFilesForCollection($collection);
-        }
-
-        return $collection;
+        return $stmt;
     }
 
     /**
-     * Load books by tag ID
+     * Load books collection by tag ID
      *
      * @param int              $tagId
-     * @param \Cops\Model\Book $book
-     * @param bool             $addFiles
      *
-     * @return \Cops\Model\Book\Collection
+     * @return PDOStatement
      */
-    public function loadByTagId($tagId, \Cops\Model\Book $book, $addFiles=false)
+    public function loadByTagId($tagId)
     {
         $sql = $this->getBaseSelect(). '
             INNER JOIN books_tags_link ON (
@@ -291,72 +168,66 @@ class Resource extends \Cops\Model\Resource
         $stmt = $this->getConnection()
             ->prepare($sql);
 
-        $stmt->bindValue(':tag_id', $tagId);
+        $stmt->bindValue(':tag_id', (int) $tagId);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
 
-        $collection = $book->getCollection();
-
-        foreach($stmt as $result) {
-            $myBook = clone($book);
-            $this->_setDataAfterSelect($myBook, $result);
-            $collection->add($myBook);
-        }
-
-        // Load book files information
-        if ($addFiles === true) {
-            $this->_loadBookFilesForCollection($collection);
-        }
-
-        return $collection;
+        return $stmt;
     }
 
     /**
-     * Set data after select statement
+     * Load collection based on keyword
      *
-     * @param \Cops\Model\Book $book   The book instance
+     * @param  str          $keyword
+     *
+     * @return PDOStatement
+     */
+    public function loadByKeyword($keyword) {
+
+        $sql = $this->getBaseSelect(). '
+            LEFT OUTER JOIN books_tags_link ON (
+                main.id = books_tags_link.book
+            )
+            LEFT OUTER JOIN tags ON ( tags.id = books_tags_link.tag)
+            WHERE
+            main.path LIKE :search
+            ORDER BY serie_name, series_index, title';
+
+        $stmt = $this->getConnection()
+            ->prepare($sql);
+
+        $stmt->bindValue(':search', '%'.$keyword.'%');
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+    /**
+     * Set data from statement
+     *
      * @param array            $result The result array from select stmt
      *
      * @return \Cops\Model\Book;
      */
-    private function _setDataAfterSelect(\Cops\Model\Book $book, array $result)
+    public function setDataFromStatement(array $result)
     {
-        // Set serie object
-        $book->getSerie()->setData(array(
-            'id'   => $result['serie_id'],
-            'name' => $result['serie_name'],
-            'sort' => $result['serie_sort'],
-        ));
-        $book->getAuthor()->setData(array(
+        $myBook = parent::setDataFromStatement($result);
+
+        $myBook->getAuthor()->setData(array(
             'id'   => $result['author_id'],
             'name' => $result['author_name'],
             'sort' => $result['author_sort'],
         ));
-        return $book->setData($result);
-    }
 
-    /**
-     * Load book files information for single book
-     *
-     * @param  \Cops\Model\Book $book
-     *
-     * @return \Cops\Model\Book
-     */
-    private function _loadBookFiles(\Cops\Model\Book $book) {
-        $app = Core::getApp();
-        return $app['core']->getModel('BookFile')->loadFromBook($book);
-    }
+        if (!empty($result['serie_id'])) {
+            $myBook->getSerie()->setData(array(
+                'id'   => $result['serie_id'],
+                'name' => $result['serie_name'],
+                'sort' => $result['serie_sort'],
+            ));
+        }
 
-    /**
-     * Load book files information for a book collection
-     *
-     * @param  \Cops\Model\Book\Collection $bookCollection
-     *
-     * @return \Cops\Model\Book\Collection
-     */
-    private function _loadBookFilesForCollection(Collection $bookCollection)
-    {
-        $app = Core::getApp();
-        return $app['core']->getModel('BookFile')->populateBookCollection($bookCollection);
+        return $myBook;
     }
 }
