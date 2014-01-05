@@ -21,28 +21,6 @@ use PDO;
  */
 class Resource extends BaseResource
 {
-    protected $_baseSelect = 'SELECT
-        main.*,
-        comments.text AS comment,
-        ratings.rating,
-
-        authors.id   AS author_id,
-        authors.name AS author_name,
-        authors.sort AS author_sort,
-
-        series.id   AS serie_id,
-        series.name AS serie_name,
-        series.sort AS serie_sort
-
-        FROM books AS main
-        LEFT OUTER JOIN comments ON comments.book = main.id
-        LEFT OUTER JOIN books_authors_link ON books_authors_link.book = main.id
-        LEFT JOIN authors ON authors.id = books_authors_link.author
-        LEFT OUTER JOIN books_series_link ON books_series_link.book = main.id
-        LEFT OUTER JOIN series ON series.id = books_series_link.series
-        LEFT OUTER JOIN books_ratings_link ON books_ratings_link.book = main.id
-        LEFT OUTER JOIN ratings ON ratings.id = books_ratings_link.rating';
-
     /**
      * Load a book data
      *
@@ -53,23 +31,16 @@ class Resource extends BaseResource
      */
     public function load($bookId)
     {
-        /**
-         * Load book common informations
-         */
-        $sql = $this->getBaseSelect() . '
-            WHERE
-            main.id = ?';
-
-        $result = $this->getConnection()->fetchAssoc(
-            $sql,
-            array(
-                (int) $bookId,
-            )
-        );
+        $result = $this->getBaseSelect()
+            ->where('main.id = :book_id')
+            ->setParameter('book_id', $bookId, PDO::PARAM_INT)
+            ->execute()
+            ->fetch(PDO::FETCH_ASSOC);
 
         if (empty($result)) {
             throw new BookException(sprintf('Product width id %s not found', $bookId));
         }
+
         return $result;
     }
 
@@ -82,18 +53,11 @@ class Resource extends BaseResource
      */
     public function loadLatest($nb)
     {
-        $sql = $this->getBaseSelect(). '
-            ORDER BY main.timestamp DESC
-            LIMIT :limit';
-
-        $stmt = $this->getConnection()
-            ->prepare($sql);
-
-        $stmt->bindValue(':limit', (int) $nb);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-
-        return $stmt;
+        return $this->getBaseSelect()
+            ->orderBy('main.timestamp', 'DESC')
+            ->setMaxResults($nb)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -105,21 +69,14 @@ class Resource extends BaseResource
      */
     public function loadBySerieId($serieId)
     {
-        $sql = $this->getBaseSelect(). '
-            WHERE
-            series.id = :serie_id
-            ORDER BY serie_name, series_index, title
-            LIMIT :limit';
-
-        $stmt = $this->getConnection()
-            ->prepare($sql);
-
-        $stmt->bindValue(':serie_id', (int) $serieId);
-        $stmt->bindValue(':limit', 25);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-
-        return $stmt;
+        return $this->getBaseSelect()
+            ->where('serie.id = :serie_id')
+            ->orderBy('serie.name')
+            ->addOrderBy('series_index')
+            ->addOrderBy('title')
+            ->setParameter('serie_id', $serieId)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -132,19 +89,14 @@ class Resource extends BaseResource
      */
     public function loadByAuthorId($authorId)
     {
-        $sql = $this->getBaseSelect(). '
-            WHERE
-            authors.id = :author_id
-            ORDER BY serie_name, series_index, title';
-
-        $stmt = $this->getConnection()
-            ->prepare($sql);
-
-        $stmt->bindValue(':author_id', $authorId);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-
-        return $stmt;
+        return $this->getBaseSelect()
+            ->where('author.id = :author_id')
+            ->orderBy('serie.name')
+            ->addOrderBy('series_index')
+            ->addOrderBy('title')
+            ->setParameter('author_id', $authorId)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -156,49 +108,45 @@ class Resource extends BaseResource
      */
     public function loadByTagId($tagId)
     {
-        $sql = $this->getBaseSelect(). '
-            INNER JOIN books_tags_link ON (
-                main.id = books_tags_link.book
-            )
-            INNER JOIN tags ON ( tags.id = books_tags_link.tag)
-            WHERE
-            tags.id = :tag_id
-            ORDER BY serie_name, series_index, title';
-
-        $stmt = $this->getConnection()
-            ->prepare($sql);
-
-        $stmt->bindValue(':tag_id', (int) $tagId);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-
-        return $stmt;
+        return $this->getBaseSelect()
+            ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.book')
+            ->innerJoin('main', 'tags'           , 'tag', 'tag.id  = btl.tag')
+            ->where('tag.id = :tagid')
+            ->orderBy('serie.name')
+            ->addOrderBy('series_index')
+            ->addOrderBy('title')
+            ->setParameter('tagid', $tagId)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * Load collection based on keyword
      *
-     * @param  str          $keyword
+     * @param  array        $keywords
      *
      * @return PDOStatement
      */
-    public function loadByKeyword($keyword) {
+    public function loadByKeyword($keywords) {
 
-        $sql = $this->getBaseSelect(). '
-            LEFT OUTER JOIN books_tags_link ON (
-                main.id = books_tags_link.book
-            )
-            LEFT OUTER JOIN tags ON ( tags.id = books_tags_link.tag)
-            WHERE
-            main.path LIKE :search
-            ORDER BY serie_name, series_index, title';
+        $qb = $this->getBaseSelect()
+            ->leftJoin('main', 'books_tags_link', 'btl', 'btl.book = main.id')
+            ->leftJoin('main',  'tags',           'tag', 'tag.id = btl.tag')
+            ->orderBy('serie_name')
+            ->addOrderBy('series_index')
+            ->addOrderBy('title');
 
-        $stmt = $this->getConnection()
-            ->prepare($sql);
+        // Build the where clause
+        $or = $qb->expr()->orX();
+        foreach($keywords as $keyword) {
+            $or->add(
+                $qb->expr()->Like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
+            );
+        }
 
-        $stmt->bindValue(':search', '%'.$keyword.'%');
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
+        $stmt = $qb->where($or)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
 
         return $stmt;
     }
@@ -230,4 +178,31 @@ class Resource extends BaseResource
 
         return $myBook;
     }
+
+
+    public function getBaseSelect()
+    {
+        $qb = $this->getConnection()->createQueryBuilder();
+
+        return $qb->select(
+                'main.*',
+                'com.text AS comment',
+                'rating.rating AS rating',
+                'author.id AS author_id',
+                'author.name AS author_name',
+                'author.sort AS author_sort',
+                'serie.id AS serie_id',
+                'serie.name AS serie_name',
+                'serie.sort AS serie_sort'
+            )
+            ->from('books', 'main')
+            ->leftJoin('main', 'comments',           'com',    'com.book = main.id')
+            ->leftJoin('main', 'books_authors_link', 'bal',    'bal.book = main.id')
+            ->leftJoin('main', 'authors',            'author', 'author.id = bal.author')
+            ->leftJoin('main', 'books_series_link',  'bsl',    'bsl.book = main.id')
+            ->leftJoin('main', 'series',             'serie',  'serie.id = bsl.series')
+            ->leftJoin('main', 'books_ratings_link', 'brl',    'brl.book = main.id')
+            ->leftJoin('main', 'ratings'           , 'rating', 'brl.rating = rating.id');
+    }
 }
+
