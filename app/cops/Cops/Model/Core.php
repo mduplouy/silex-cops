@@ -106,6 +106,8 @@ class Core implements CoreInterface
             )
         ));
 
+        // echo $app['security.encoder.digest']->encodePassword('password', 'salt');
+
         $app->register(new \Cops\Provider\SearchServiceProvider());
 
         // Register session provider
@@ -137,6 +139,8 @@ class Core implements CoreInterface
             ));
             return $app->redirect($redirect, 301);
         });
+
+
 
         // Set the mount points for the controllers
         $app->mount('/',            new \Cops\Controller\IndexController());

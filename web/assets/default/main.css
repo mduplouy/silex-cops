@@ -154,6 +154,16 @@ h3 a { font-size: 0.98em; text-decoration:none; color:#666; }
         margin:5px 15px 5px 5px;
     }
 
+    #search_results .paginator {
+        padding:6px 0;
+    }
+
+    #search_results .paginator .ui-icon {
+        margin:0 4px;
+        border:2px #CCC solid;
+        position: relative;
+        top: 4px;
+    }
 
 /**
  * Footer block

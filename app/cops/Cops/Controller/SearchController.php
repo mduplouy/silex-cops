@@ -77,8 +77,8 @@ class SearchController
      * @param string      $keywords
      * @param Application Silex application instance
      */
-    public function resultAction($keywords, Application $app, $page) {
-
+    public function resultAction($keywords, Application $app, $page)
+    {
         $collection = $app['search']->getResults($keywords, $page);
 
         $resultCount = $collection->getResource()->getTotalRows();
