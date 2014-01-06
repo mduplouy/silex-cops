@@ -110,4 +110,16 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
     {
         return count($this->_elements);
     }
+
+    public function setFirstResult($offset)
+    {
+        $this->getResource()->setFirstResult($offset);
+        return $this;
+    }
+
+    public function setMaxResults($limit)
+    {
+        $this->getResource()->setMaxResults($limit);
+        return $this;
+    }
 }

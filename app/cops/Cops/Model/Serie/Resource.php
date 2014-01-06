@@ -100,7 +100,7 @@ class Resource extends ResourceAbstract
     public function loadByFirstLetter($letter)
     {
         $qb = $this->getBaseSelect()
-            ->select('main.*', 'bsl.series AS book_count')
+            ->select('main.*', 'COUNT(bsl.series) AS book_count')
             ->from('series', 'main')
             ->innerJoin('main', 'books_series_link', 'bsl', 'bsl.series = main.id')
             ->where('main.id = :serie_id');
