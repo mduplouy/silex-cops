@@ -67,7 +67,11 @@ class Author extends Common
             if (!preg_match('/[A-Z]/', $author['first_letter'])) {
                 $author['first_letter'] = '#';
             }
-            $output[$author['first_letter']] = $author['nb_author'];
+            if (!array_key_exists($author['first_letter'], $output)) {
+                $output[$author['first_letter']] = 0;
+            }
+
+            $output[$author['first_letter']] += $author['nb_author'];
         }
         return $output;
     }

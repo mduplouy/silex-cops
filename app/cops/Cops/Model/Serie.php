@@ -82,7 +82,10 @@ class Serie extends Common
             if (!preg_match('/[A-Z]/', $serie['first_letter'])) {
                 $serie['first_letter'] = '#';
             }
-            $series[$serie['first_letter']] = $serie['nb_serie'];
+            if (!array_key_exists($serie['first_letter'], $series)) {
+                $series[$serie['first_letter']] = 0;
+            }
+            $series[$serie['first_letter']] += $serie['nb_serie'];
         }
         return $series;
     }
