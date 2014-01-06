@@ -20,12 +20,6 @@ use Cops\Model\CollectionAbstract;
 class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
 {
     /**
-     * Remove current book from collections
-     * @var bool
-     */
-    private $_removeCurentBook = false;
-
-    /**
      * Get last added books
      *
      * @param int  $nb     Number of items to load
@@ -50,7 +44,12 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
      */
     public function getOtherBooksFromAuthor()
     {
-        $this->_removeCurentBook = true;
+        $book = $this->getEntity();
+
+        $resource = $this->getResource()
+            ->setExcludedBookId($book->getId())
+            ->setExcludedSerieId($book->getSerie()->getId());
+
         return $this->getByAuthorId();
     }
 
@@ -68,12 +67,10 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
             $authorId = $book->getAuthor()->getId();
         }
 
+        $serieId = $book->getSerie()->getId();
         $resource = $this->getResource();
 
         foreach($resource->loadByAuthorId($authorId) as $result) {
-            if ($this->_removeCurentBook === true && $result['id'] == $book->getId()) {
-                continue;
-            }
             $this->add($resource->setDataFromStatement($result));
         }
 
@@ -88,7 +85,11 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
      */
     public function getOtherBooksFromSerie()
     {
-        $this->_removeCurentBook = true;
+        $book = $this->getEntity();
+
+        $resource = $this->getResource()
+            ->setExcludedBookId($book->getId());
+
         return $this->getBySerieId();
     }
 
@@ -109,9 +110,6 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
         $resource = $this->getResource();
 
         foreach($resource->loadBySerieId($serieId) as $result) {
-            if ($this->_removeCurentBook === true && $result['id'] == $book->getId()) {
-                continue;
-            }
             $this->add($resource->setDataFromStatement($result));
         }
         return $this;
