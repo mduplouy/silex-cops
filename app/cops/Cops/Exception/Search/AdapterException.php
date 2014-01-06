@@ -7,15 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Cops\Model\Tag;
-
-use Cops\Model\CollectionAbstract;
+namespace Cops\Exception\Search;
 
 /**
- * Tag collection model
+ * Exception is thrown when search adapter can't be used (class missing)
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
+class AdapterException extends \UnexpectedValueException
 {
 }

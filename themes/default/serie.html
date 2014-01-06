@@ -6,25 +6,28 @@
 
 {% block mainBody %}
 <div id="serie_detail" class="mainContent">
-    {{ serie.getName() }}
+
+    <h2 class="center">{{ serie.getName() }}</h2>
 
     {% if books.count() > 1 %}
-        <br />
+    <p>
         <span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(books.count()) }}
         <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: "zip"}) }}">zip</a> /
         <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+    </p>
     {% endif %}
 
     {% for book in books %}
-        <div>
-            {% set thumbnail = book.getCover().getThumbnailPath(80, 120) %}
-            {% if thumbnail %}
-            <div class="cover">
-                <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
-            </div>
-            {% endif %}
-            <h3>{{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} {{ book.getTitle() }} ({{ book.getPubdate()|date("Y") }})</h3>
-            <span class="small">{{ book.getComment()|striptags }}</span>
+        <div class="book">
+
+            {% include 'book_cover.html' with {'book': book} %}
+
+            <h3><a href="{{ app.url_generator.generate('book_detail', {'id': book.getId()}) }}" title="{{ "See book detail"|trans }}">
+                {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} {{ book.getTitle() }} ({{ book.getPubdate()|date("Y") }})
+            </a></h3>
+
+            <div class="small comment">{{ book.getComment()|striptags }}</div>
+
             {% include 'book_download_link.html' with {'book': book} %}
             <div class="clear"></div>
         </div>

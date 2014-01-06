@@ -157,20 +157,21 @@ class Resource extends ResourceAbstract
         $qb = $this->getBaseSelect()
             ->leftJoin('main', 'books_tags_link', 'btl', 'btl.book = main.id')
             ->leftJoin('main',  'tags',           'tag', 'tag.id = btl.tag')
-            ->orderBy('serie_name')
+            ->orderBy('author_name')
+            ->addOrderBy('serie_name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
             ->groupBy('main.id');
 
         // Build the where clause
-        $or = $qb->expr()->orX();
+        $and = $qb->expr()->andX();
         foreach($keywords as $keyword) {
-            $or->add(
+            $and->add(
                 $qb->expr()->Like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
             );
         }
 
-        $qb->where($or);
+        $qb->where($and);
 
         // Count total rows when using limit
         if ($this->maxResults !=null) {
@@ -182,7 +183,7 @@ class Resource extends ResourceAbstract
                 ->execute()
                 ->fetchColumn();
 
-            $this->setTotalRows($total);
+            $this->totalRows = $total;
 
             $qb->setFirstResult($this->firstResult)
                 ->setMaxResults($this->maxResults);

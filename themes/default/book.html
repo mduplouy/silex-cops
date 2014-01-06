@@ -44,7 +44,7 @@
         {% include 'book_download_link.html' with {'book': book} %}
 
         <div id="comments">
-            {{ book.getComment()|raw }}
+            {{ book.getComment()|striptags('<br>')|raw }}
         </div>
 
         {% if book.getSerie().getId() %}

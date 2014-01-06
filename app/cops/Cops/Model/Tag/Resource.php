@@ -9,11 +9,9 @@
  */
 namespace Cops\Model\Tag;
 
-use Cops\Exception\TagException;
-use Cops\Model\Core;
-use Cops\Model\Tag;
 use Cops\Model\ResourceAbstract;
 use PDO;
+use Doctrine\DBAL\Connection;
 
 /**
  * Tag resource model

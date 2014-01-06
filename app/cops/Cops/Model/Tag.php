@@ -9,6 +9,8 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\Common;
+
 /**
  * Tag model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
@@ -42,11 +44,13 @@ class Tag extends Common
      *
      * @param int $tagId
      *
-     * @return \Cops\Model\Tag
+     * @return Tag
      */
     public function load($tagId)
     {
-        return $this->getResource()->load($tagId, $this);
+        return $this->setData(
+            $this->getResource()->load($tagId)
+        );
     }
 
     /**
@@ -65,10 +69,10 @@ class Tag extends Common
     /**
      * Get all books associated to a tag
      *
-     * @return \Cops\Model\Book\Collection
+     * @return Collection
      */
     public function getAllBooks()
     {
-        return $this->getModel('Book')->getCollectionByTagId($this->getId());
+        return $this->getModel('Book')->getCollection()->getByTagId($this->getId());
     }
 }

@@ -7,15 +7,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace Cops\Model\Search;
 
-namespace Cops\Model\Tag;
-
-use Cops\Model\CollectionAbstract;
+use Cops\Model\Core;
 
 /**
- * Tag collection model
+ * Search abstract class
+ *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
+abstract class SearchAbstract
 {
+
 }

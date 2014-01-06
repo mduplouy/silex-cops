@@ -124,8 +124,8 @@ abstract class ResourceAbstract
         return $this;
     }
 
-    public function setTotalRows($total)
+    public function getTotalRows()
     {
-        $this->totalRows = $total;
+        return $this->totalRows;
     }
 }

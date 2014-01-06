@@ -1,4 +1,11 @@
 
     <div id="header" class="ui-corner-all ui-state-active">
         <a href="{{ app.url_generator.generate('homepage') }}">SilexCOPS</a>
+
+        <div style="float:right;">
+            <form method="post" action="{{ app.url_generator.generate('search') }}">
+                <input type="text" name="keywords" value="" size="60" />
+                <input type="submit" value="{{ 'Search'|trans }}" />
+            </form>
+        </div>
     </div>

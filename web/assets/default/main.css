@@ -3,6 +3,7 @@
  */
 body {
     background:#fff;
+    font-family: Helvetica, sans-serif;
 }
 
 /**
@@ -10,8 +11,14 @@ body {
  */
 .bold { font-weight:600; }
 .small { font-size:0.78em; }
-
+.block { display: block; }
+.inline-block { display: inline-block; }
+.nodecoration { text-decoration: none; }
 .clear { clear:both; }
+.f-left { float:left; }
+.center { text-align: center; }
+
+h3 a { font-size: 0.98em; text-decoration:none; color:#666; }
 
 #main {
     width:98%;
@@ -31,18 +38,52 @@ body {
     border-right:#EEE 1px solid;
 }
 
-/**
- * Serie block on homepage
- */
-.books ul.aggregated li {
-    display:inline-block;
-    float:left;
-    margin:1em;
-    color:#ccc;
-}
-    .books ul.aggregated li strong {
-        color:#000;
+    .mainContent .book {
+        margin-bottom:15px;
+        background:#EEE;
     }
+
+    .mainContent .book h3 {
+        margin:0;
+        padding:5px 0 5px 0;
+    }
+
+    .mainContent .book p {
+        margin:4px 0;
+    }
+
+    .mainContent .book .cover {
+        top:4px;
+        text-align:center;
+    }
+
+    .mainContent .book .comment {
+        padding-right:8px;
+        text-align:justify;
+    }
+
+    .mainContent a.book_link {
+        font-size:0.92em;
+        font-weight:bold;
+        color:#333;
+    }
+
+/**
+ * Serie & author block on homepage
+ */
+#main ul.aggregated {
+    padding:0 0 1em 0;
+    margin-top:0 !important;
+}
+    #main ul.aggregated li {
+        display:inline-block;
+        float:left;
+        margin:0 1em;
+        color:#ccc;
+    }
+        #main ul.aggregated li strong {
+            color:#000;
+        }
 
 /**
  * Book detail blocks
@@ -86,10 +127,6 @@ body {
         float:left;
         margin:5px 15px 5px 5px;
     }
-    #serie_detail h3 {
-        margin:8px 0 6px 5px;
-        padding:9px 0 0 0;
-    }
 
 /**
  * Author detail blocks
@@ -104,9 +141,17 @@ body {
         float:left;
         margin:5px 15px 5px 5px;
     }
-    #author_detail h3 {
-        margin:8px 0 6px 5px;
-        padding:9px 0 0 0;
+
+
+/**
+ * Search result blocks
+ */
+#search_results {
+
+}
+    #search_results .cover {
+        float:left;
+        margin:5px 15px 5px 5px;
     }
 
 

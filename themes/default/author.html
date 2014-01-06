@@ -6,7 +6,7 @@
 {% block mainBody %}
 <div id="author_detail" class="mainContent">
 
-    {{ author.getName() }}
+    <h2 class="center">{{ author.getName() }}</h2>
 
     {% if books.count() > 1 %}
     <p>
@@ -17,18 +17,18 @@
     {% endif %}
 
     {% for book in books %}
-        <div>
-            {% set thumbnail = book.getCover().getThumbnailPath(80, 120) %}
-            {% if thumbnail %}
-            <div class="cover">
-                <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
-            </div>
-            {% endif %}
-            <h3>{% if book.getSerie().getId() %}{{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} - {% endif %}
-                {{ book.getTitle() }}</h3>
+        <div class="book ui-widget-content ui-state-active">
 
-            <span class="small">{{ book.getComment()|striptags }}</span>
+            {% include 'book_cover.html' with {'book': book} %}
+
+            <h3><a href="{{ app.url_generator.generate('book_detail', {'id': book.getId()}) }}" title="{{ "See book detail"|trans }}">
+                {% if book.getSerie().getId() %}{{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} - {% endif %}
+                {{ book.getTitle() }}
+            </a></h3>
+
+            <div class="comment small">{{ book.getComment()|striptags }}</div>
             {% include 'book_download_link.html' with {'book': book} %}
+
             <div class="clear"></div>
         </div>
     {% endfor %}

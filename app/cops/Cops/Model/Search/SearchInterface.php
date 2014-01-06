@@ -7,15 +7,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Cops\Model\Tag;
-
-use Cops\Model\CollectionAbstract;
+namespace Cops\Model\Search;
 
 /**
- * Tag collection model
+ * Search interface
+ *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
+interface SearchInterface
 {
+    public function sendRequest();
+
+
+    public function getResults($searchTerm, $page);
 }

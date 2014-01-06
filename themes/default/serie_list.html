@@ -2,8 +2,9 @@
 
 {% block mainContent %}
     {% for serie in series %}
-        <a href="{{ app.url_generator.generate('serie_detail', {'id': serie.getId()}) }}" title="{{ serie.getName() }}">{{ serie.getName() }} ({{ serie.getNumberOfBooks() }})</a><br />
-
+        <div style="width:24%; float:left;">
+            <a href="{{ app.url_generator.generate('serie_detail', {'id': serie.getId()}) }}" title="{{ serie.getName() }}">{{ serie.getName() }} ({{ serie.getNumberOfBooks() }})</a><br />
+        </div>
     {% endfor %}
 {% endblock %}
 
