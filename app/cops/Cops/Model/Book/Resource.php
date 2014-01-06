@@ -9,25 +9,50 @@
  */
 namespace Cops\Model\Book;
 
-use Cops\Model\Resource as BaseResource;
+use Cops\Model\ResourceAbstract;
 use Cops\Exception\BookException;
 use Cops\Model\Core;
 use Cops\Model\Book\Collection;
 use PDO;
+use Doctrine\DBAL\Connection;
 
 /**
  * Book resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Resource extends BaseResource
+class Resource extends ResourceAbstract
 {
+    /**
+     * Allow book exclusion
+     * @var bool
+     */
+    private $_hasExcludedBook = false;
+
+    /**
+     * Book id to be excluded from statement
+     * @var int
+     */
+    private $_excludeBookId;
+
+    /**
+     * Allow serie exclusion
+     * @var bool
+     */
+    private $_hasExcludedSerie = false;
+
+    /**
+     * Serie id to be excluded
+     * @var int
+     */
+    private $_excludeSerieId;
+
     /**
      * Load a book data
      *
      * @param  int              $bookId
      * @param  \Cops\Model\Book $book
      *
-     * @return array;
+     * @return array
      */
     public function load($bookId)
     {
@@ -47,9 +72,9 @@ class Resource extends BaseResource
     /**
      * Load latest added books from database
      *
-     * @param  int          $nb  Number of items to load
+     * @param  int   $nb  Number of items to load
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadLatest($nb)
     {
@@ -65,12 +90,12 @@ class Resource extends BaseResource
      *
      * @param  int          $serieId
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadBySerieId($serieId)
     {
         return $this->getBaseSelect()
-            ->where('serie.id = :serie_id')
+            ->andWhere('serie.id = :serie_id')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
@@ -85,12 +110,12 @@ class Resource extends BaseResource
      * @param int              $authorId
      * @param bool             $addFiles
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadByAuthorId($authorId)
     {
         return $this->getBaseSelect()
-            ->where('author.id = :author_id')
+            ->andWhere('author.id = :author_id')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
@@ -104,18 +129,18 @@ class Resource extends BaseResource
      *
      * @param int              $tagId
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadByTagId($tagId)
     {
         return $this->getBaseSelect()
             ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.book')
             ->innerJoin('main', 'tags'           , 'tag', 'tag.id  = btl.tag')
-            ->where('tag.id = :tagid')
+            ->andWhere('tag.id = :tagid')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
-            ->setParameter('tagid', $tagId)
+            ->setParameter('tagid', $tagId, PDO::TYPE_INT)
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -125,7 +150,7 @@ class Resource extends BaseResource
      *
      * @param  array        $keywords
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadByKeyword($keywords) {
 
@@ -134,7 +159,8 @@ class Resource extends BaseResource
             ->leftJoin('main',  'tags',           'tag', 'tag.id = btl.tag')
             ->orderBy('serie_name')
             ->addOrderBy('series_index')
-            ->addOrderBy('title');
+            ->addOrderBy('title')
+            ->groupBy('main.id');
 
         // Build the where clause
         $or = $qb->expr()->orX();
@@ -144,11 +170,26 @@ class Resource extends BaseResource
             );
         }
 
-        $stmt = $qb->where($or)
-            ->execute()
-            ->fetchAll(PDO::FETCH_ASSOC);
+        $qb->where($or);
 
-        return $stmt;
+        // Count total rows when using limit
+        if ($this->maxResults !=null) {
+            $countQuery = clone($qb);
+
+            $total = (int) $countQuery
+                ->resetQueryParts(array('select', 'join', 'groupBy', 'orderBy'))
+                ->select('COUNT(*)')
+                ->execute()
+                ->fetchColumn();
+
+            $this->setTotalRows($total);
+
+            $qb->setFirstResult($this->firstResult)
+                ->setMaxResults($this->maxResults);
+        }
+
+        return $qb->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -156,7 +197,7 @@ class Resource extends BaseResource
      *
      * @param array            $result The result array from select stmt
      *
-     * @return \Cops\Model\Book;
+     * @return array
      */
     public function setDataFromStatement(array $result)
     {
@@ -179,12 +220,41 @@ class Resource extends BaseResource
         return $myBook;
     }
 
+    /**
+     * Define excluded book id
+     *
+     * @param int $id
+     *
+     * @return Resource
+     */
+    public function setExcludedBookId($id) {
+        $this->_hasExcludedBook = true;
+        $this->_excludeBookId = (int) $id;
+        return $this;
+    }
 
-    public function getBaseSelect()
+    /**
+     * Define excluded serie id
+     *
+     * @param int $id
+     *
+     * @return Resource
+     */
+    public function setExcludedSerieId($id) {
+        $this->_hasExcludedSerie = true;
+        $this->_excludeSerieId = (int) $id;
+        return $this;
+    }
+
+    /**
+     * Get the base select from QueryBuilder
+     *
+     * @return Doctrine\DBAL\Query\QueryBuilder
+     */
+    protected function getBaseSelect()
     {
-        $qb = $this->getConnection()->createQueryBuilder();
-
-        return $qb->select(
+        $qb = parent::getBaseSelect()
+            ->select(
                 'main.*',
                 'com.text AS comment',
                 'rating.rating AS rating',
@@ -202,7 +272,22 @@ class Resource extends BaseResource
             ->leftJoin('main', 'books_series_link',  'bsl',    'bsl.book = main.id')
             ->leftJoin('main', 'series',             'serie',  'serie.id = bsl.series')
             ->leftJoin('main', 'books_ratings_link', 'brl',    'brl.book = main.id')
-            ->leftJoin('main', 'ratings'           , 'rating', 'brl.rating = rating.id');
+            ->leftJoin('main', 'ratings'           , 'rating', 'brl.rating = rating.id')
+            ->where('1');
+
+        if ($this->_hasExcludedBook) {
+            $qb->andWhere('main.id != :exclude_book')
+                ->setParameter('exclude_book', $this->_excludeBookId);
+            $this->_hasExcludedBook = false;
+            $this->_excludeBookId = null;
+        }
+        if ($this->_hasExcludedSerie) {
+            $qb->andWhere('serie.id IS NULL OR serie.id != :exclude_serie')
+                ->setParameter('exclude_serie', $this->_excludeSerieId);
+            $this->_hasExcludedSerie = false;
+            $this->_excludeSerieId = null;
+        }
+        return $qb;
     }
 }
 

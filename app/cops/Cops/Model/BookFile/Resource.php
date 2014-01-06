@@ -9,25 +9,18 @@
  */
 namespace Cops\Model\BookFile;
 
+use Cops\Model\ResourceAbstract;
 use Cops\Model\Collection;
 use Cops\Model\Book\Collection as BookCollection;
-use Cops\Model\Resource as BaseResource;
-use \PDO;
+use PDO;
+use Doctrine\DBAL\Connection;
 
 /**
  * BookFile resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Resource extends BaseResource
+class Resource extends ResourceAbstract
 {
-    protected $_baseSelect = 'SELECT
-        main.id,
-        main.book,
-        main.format,
-        main.uncompressed_size,
-        main.name
-        FROM data as main';
-
     /**
      * Get book files data by serie ID
      *
@@ -72,17 +65,10 @@ class Resource extends BaseResource
             $bookIds[] = $book->getId();
         }
 
-        $sql = $this->getBaseSelect().'
-            WHERE main.book IN (?)';
-
-        $stmt = $this->getConnection()
-            ->executeQuery(
-                $sql,
-                array($bookIds),
-                array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
-            );
-        $stmt->setFetchMode(\PDO::FETCH_ASSOC);
-        $stmt->execute();
+        $stmt = $this->getBaseSelect()
+            ->where('main.book IN (:book_id)')
+            ->setParameter('book_id', $bookIds, Connection::PARAM_INT_ARRAY)
+            ->execute(\PDO::FETCH_ASSOC);
 
         foreach($stmt as $row) {
             $book = $collection->getById($row['book']);
@@ -127,6 +113,24 @@ class Resource extends BaseResource
 
         return $this->getConnection()
             ->executeQuery($sql, array($fieldValue));
+    }
+
+    /**
+     * Base QB select getter
+     *
+     * @return Doctrine\DBAL\Query\QueryBuilder
+     */
+    protected function getBaseSelect()
+    {
+        return parent::getBaseSelect()
+            ->select(
+                'main.id',
+                'main.book',
+                'main.format',
+                'main.uncompressed_size',
+                'main.name'
+            )
+            ->from('data', 'main');
     }
 
 }

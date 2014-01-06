@@ -12,24 +12,26 @@ namespace Cops\Model\Tag;
 use Cops\Exception\TagException;
 use Cops\Model\Core;
 use Cops\Model\Tag;
-use \PDO;
+use Cops\Model\ResourceAbstract;
+use PDO;
 
 /**
  * Tag resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Resource extends \Cops\Model\Resource
+class Resource extends ResourceAbstract
 {
 
     /**
      * Load a tag data
      *
-     * @param  int              $tagId
-     * @param  \Cops\Model\Tag  $tag
+     * @param  int          $tagId
      *
-     * @return \Cops\Model\Book;
+     * @throws TagException
+     *
+     * @return array
      */
-    public function load($tagId, Tag $tag)
+    public function load($tagId)
     {
         /**
          * Load book common informations
@@ -56,7 +58,7 @@ class Resource extends \Cops\Model\Resource
             throw new TagException(sprintf('Tag width id %s not found', $tagId));
         }
 
-        return $tag->setData($result);
+        return $result;
     }
 
     /**

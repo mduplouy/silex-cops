@@ -9,20 +9,18 @@
  */
 namespace Cops\Model\Author;
 
+use Cops\Model\ResourceAbstract;
 use Cops\Model\Core;
-use Cops\Model\Resource as BaseResource;
 use Cops\Exception\AuthorException;
+use Doctrine\DBAL\Connection;
+use PDO;
 
 /**
  * Author resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Resource extends BaseResource
+class Resource extends ResourceAbstract
 {
-    protected $_baseSelect = 'SELECT
-        main.*
-        FROM authors AS main';
-
     /**
      * Load an author data
      *
@@ -32,13 +30,13 @@ class Resource extends BaseResource
      */
     public function load($authorId)
     {
-        $result = $this->getConnection()
-            ->fetchAssoc(
-                $this->getBaseSelect(). ' WHERE id = ?',
-                array(
-                    (int) $authorId,
-                )
-            );
+        $result = $this->getBaseSelect()
+            ->select('*')
+            ->from('authors', 'main')
+            ->where('id = :author_id')
+            ->setParameter('author_id', $authorId, PDO::PARAM_INT)
+            ->execute()
+            ->fetch(PDO::FETCH_ASSOC);
 
         if (empty($result)) {
             throw new AuthorException(sprintf(
@@ -57,16 +55,16 @@ class Resource extends BaseResource
      */
     public function getAggregatedList()
     {
-        $db = $this->getConnection();
-
-        $sql = 'SELECT
-            DISTINCT UPPER(SUBSTR(sort, 1, 1)) AS first_letter,
-            COUNT(*) AS nb_author
-            FROM authors
-            GROUP BY first_letter
-            ORDER BY first_letter';
-
-        return $db->fetchAll($sql);
+        return $this->getBaseSelect()
+            ->select(
+                'DISTINCT UPPER(SUBSTR(sort, 1, 1)) AS first_letter',
+                'COUNT(*) AS nb_author'
+            )
+            ->from('authors', 'main')
+            ->groupBy('first_letter')
+            ->orderBy('first_letter')
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -78,20 +76,15 @@ class Resource extends BaseResource
      */
     public function countBooks($authorId)
     {
-        $sql = 'SELECT
-            COUNT(*) FROM authors
-            INNER JOIN books_authors_link ON authors.id = books_authors_link.author
-            INNER JOIN books ON books_authors_link.book = books.id
-            WHERE authors.id = ?';
-
-        return (int) $this->getConnection()
-            ->fetchColumn(
-                $sql,
-                array(
-                    (int) $authorId,
-                ),
-                0
-            );
+        return (int) $this->getBaseSelect()
+            ->select('COUNT(*) AS nb_author')
+            ->from('authors', 'main')
+            ->innerJoin('main', 'books_authors_link', 'bal',   'bal.author = main.id')
+            ->innerJoin('main', 'books',              'books', 'books.id = bal.book')
+            ->where('main.id = :author_id')
+            ->setParameter('author_id', $authorId, PDO::PARAM_INT)
+            ->execute()
+            ->fetchColumn();
     }
 
     /**
@@ -99,38 +92,27 @@ class Resource extends BaseResource
      *
      * @param string        $letter
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadByFirstLetter($letter)
     {
-        $sql = 'SELECT
-            main.*,
-            COUNT(books.id) as book_count
-            FROM authors AS main
-            LEFT OUTER JOIN books_authors_link ON books_authors_link.author = main.id
-            LEFT OUTER JOIN books ON books_authors_link.book = books.id
-        ';
+        $qb = $this->getBaseSelect()
+            ->select('main.*', 'COUNT(bal.book) as book_count')
+            ->from('authors', 'main')
+            ->innerJoin('main', 'books_authors_link', 'bal', 'bal.author = main.id');
 
-        if ($letter != '#') {
-            $sql .= ' WHERE UPPER(SUBSTR(main.sort, 1, 1)) = ?';
-            $params = array($letter);
-            $paramsType = array(\PDO::PARAM_STR);
+        if ($letter !== '#') {
+            $qb->where('UPPER(SUBSTR(sort, 1, 1)) = ?')
+                ->setParameter(1, $letter, PDO::PARAM_STR);
         } else {
-            $sql .= ' WHERE UPPER(SUBSTR(main.sort, 1, 1)) NOT IN (?)';
-            $params = array(Core::getLetters());
-            $paramsType = array(\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+            $qb->where('UPPER(SUBSTR(sort, 1, 1)) NOT IN (:letters)')
+                ->setParameter('letters', Core::getLetters(), Connection::PARAM_STR_ARRAY);
         }
-        $sql .= ' GROUP BY main.id
-        ORDER BY main.sort';
 
-         $stmt = $this->getConnection()
-            ->executeQuery(
-                $sql,
-                $params,
-                $paramsType
-            )
-            ->fetchAll(\PDO::FETCH_ASSOC);
+        return $qb->groupBy('main.id')
+            ->orderBy('sort')
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
 
-        return $stmt;
     }
 }
