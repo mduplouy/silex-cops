@@ -92,16 +92,6 @@ class Book extends Common
     protected $_file = array();
 
     /**
-     * Get the latest added books
-     *
-     * @return \Cops\Model\Book\Collection  Collection of Book
-     */
-    public function getLatest()
-    {
-        return $this->getCollection()->getLatest();
-    }
-
-    /**
      * Load book
      *
      * @param int $bookId
