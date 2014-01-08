@@ -39,7 +39,7 @@ class Core implements CoreInterface
      * Resource instance
      * @var \Cops\Model\Resource
      */
-    protected $_resource;
+    protected $resource;
 
     /**
      * App instance
@@ -63,6 +63,43 @@ class Core implements CoreInterface
             $app['debug'] = true;
         }
 
+        $this->registerServices($app);
+
+        $app->get('/', function () use ($app) {
+            // redirect to /default_lang/
+            $redirect = $app['url_generator']->generate('homepage', array(
+                '_locale' => $app['config']->getValue('default_lang')
+            ));
+            return $app->redirect($redirect, 301);
+        });
+
+        // Set the mount points for the controllers
+        $app->mount('/',            new \Cops\Controller\IndexController());
+        $app->mount('/book/',       new \Cops\Controller\BookController());
+        $app->mount('/serie/',      new \Cops\Controller\SerieController());
+        $app->mount('/author/',     new \Cops\Controller\AuthorController());
+        $app->mount('/search/',     new \Cops\Controller\SearchController());
+
+        $app->mount('/admin/',      new \Cops\Controller\AdminController());
+        $app->mount('/admin/feed/', new \Cops\Controller\Admin\OpdsFeedController());
+
+        $app->mount('/login/',       new \Cops\Controller\LoginController());
+        $app->mount('/opds/',        new \Cops\Controller\OpdsController());
+
+        $app['core'] = $this;
+
+        self::$app = $app;
+    }
+
+    /**
+     * Register the various app services
+     *
+     * @param Application $app
+     *
+     * @return void
+     */
+    private function registerServices(Application $app)
+    {
         // Register mobile detect service
         $app->register(new MobileDetectServiceProvider());
 
@@ -124,38 +161,13 @@ class Core implements CoreInterface
         $app['translator'] = $app->share($app->extend('translator', function($translator) {
             $translator->addLoader('yaml', new \Symfony\Component\Translation\Loader\YamlFileLoader());
 
-            foreach (array('messages', 'routes') as $domain) {
+            foreach (array('messages') as $domain) {
                 $translator->addResource('yaml', BASE_DIR.'locales/fr/'.$domain.'.yml', 'fr', $domain);
                 $translator->addResource('yaml', BASE_DIR.'locales/en/'.$domain.'.yml', 'en', $domain);
             }
 
             return $translator;
         }));
-
-        $app->get('/', function () use ($app) {
-            // redirect to /default_lang/
-            $redirect = $app['url_generator']->generate('homepage', array(
-                '_locale' => $app['config']->getValue('default_lang')
-            ));
-            return $app->redirect($redirect, 301);
-        });
-
-        // Set the mount points for the controllers
-        $app->mount('/',            new \Cops\Controller\IndexController());
-        $app->mount('/book/',       new \Cops\Controller\BookController());
-        $app->mount('/serie/',      new \Cops\Controller\SerieController());
-        $app->mount('/author/',     new \Cops\Controller\AuthorController());
-        $app->mount('/search/',     new \Cops\Controller\SearchController());
-
-        $app->mount('/admin/',      new \Cops\Controller\AdminController());
-        $app->mount('/admin/feed/', new \Cops\Controller\Admin\OpdsFeedController());
-
-        $app->mount('/login/',       new \Cops\Controller\LoginController());
-        $app->mount('/opds/',        new \Cops\Controller\OpdsController());
-
-        $app['core'] = $this;
-
-        self::$app = $app;
     }
 
     /**
@@ -195,10 +207,10 @@ class Core implements CoreInterface
      */
     public function getResource()
     {
-        if (is_null($this->_resource)) {
-            $this->_resource = $this->getModel(get_called_class().'\\Resource', $this);
+        if (is_null($this->resource)) {
+            $this->resource = $this->getModel(get_called_class().'\\Resource', $this);
         }
-        return $this->_resource;
+        return $this->resource;
     }
 
     /**
@@ -283,6 +295,6 @@ class Core implements CoreInterface
     public function __clone()
     {
         $this->_objecInstance = array();
-        $this->_resource = null;
+        $this->resource = null;
     }
 }

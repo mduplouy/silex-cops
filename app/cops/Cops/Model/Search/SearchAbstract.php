@@ -10,13 +10,27 @@
 namespace Cops\Model\Search;
 
 use Cops\Model\Core;
+use Cops\Model\Book;
 
 /**
  * Search abstract class
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class SearchAbstract
+abstract class SearchAbstract extends Core
 {
+    /**
+     * Book collection instance
+     *
+     * @var Collection
+     */
+    protected $collection;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->collection = $this->getModel('Book')->getCollection();
+    }
 }

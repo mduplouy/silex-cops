@@ -46,7 +46,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $book = $this->getEntity();
 
-        $resource = $this->getResource()
+        $this->getResource()
             ->setExcludedBookId($book->getId())
             ->setExcludedSerieId($book->getSerie()->getId());
 

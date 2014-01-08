@@ -27,7 +27,7 @@ class SearchServiceProvider implements ServiceProviderInterface
             $searchFactory = new SearchFactory(
                 $app['config']->getValue('search_engine')
             );
-            return $searchFactory->getInstance($app['core']->getModel('Book'));
+            return $searchFactory->getInstance();
         });
     }
 

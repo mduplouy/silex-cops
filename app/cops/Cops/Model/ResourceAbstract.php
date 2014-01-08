@@ -20,16 +20,10 @@ use Cops\Model\CoreInterface;
 abstract class ResourceAbstract
 {
     /**
-     * Base select statement for loading
-     * @var string
-     */
-    protected $_baseSelect;
-
-    /**
      * Entity model instance
      * @var Common
      */
-    private $_entity;
+    private $entity;
 
     /**
      * Offset for queries
@@ -51,16 +45,19 @@ abstract class ResourceAbstract
 
     /**
      * Constructor
+     *
+     * @param Common $entity Linked model instance
      */
     public function __construct(Common $entity)
     {
-        $this->_entity = $entity;
+        $this->entity = $entity;
     }
 
     /**
      * Model getter
      *
      * @param string $model
+     *
      * @return Common
      */
     public function getModel($model)
@@ -72,11 +69,11 @@ abstract class ResourceAbstract
     /**
      * Entity model getter
      *
-     * @return Cops\Model\Common
+     * @return Common
      */
     public function getEntity()
     {
-        return $this->_entity;
+        return $this->entity;
     }
 
     /**
@@ -112,18 +109,37 @@ abstract class ResourceAbstract
         return $entity->setData($result);
     }
 
+    /**
+     * Set start offset
+     *
+     * @param int $offset
+     *
+     * @return Resource
+     */
     public function setFirstResult($offset)
     {
         $this->firstResult = $offset;
         return $this;
     }
 
+    /**
+     * Set max number of results
+     *
+     * @param int $limit
+     *
+     * @return Resource
+     */
     public function setMaxResults($limit)
     {
         $this->maxResults = $limit;
         return $this;
     }
 
+    /**
+     * Get total number of rows, ignoring limit clause
+     *
+     * @return int
+     */
     public function getTotalRows()
     {
         return $this->totalRows;

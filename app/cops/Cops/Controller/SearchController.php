@@ -61,7 +61,7 @@ class SearchController
     public function searchAction(Request $request, Application $app)
     {
         $core = $app['core'];
-        $keywords = str_replace(' ', '-', $core->removeAccents($request->get('keywords')));
+        $keywords = preg_replace('([^\\w])', '-', $core->removeAccents($request->get('keywords')));
 
         return $app->redirect(
             $app['url_generator']->generate('search_results',
@@ -79,7 +79,7 @@ class SearchController
      */
     public function resultAction($keywords, Application $app, $page)
     {
-        $collection = $app['search']->getResults($keywords, $page);
+        $collection = $app['search']->getResults(explode('-', $keywords), $page);
 
         $resultCount = $collection->getResource()->getTotalRows();
 

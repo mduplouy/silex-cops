@@ -9,40 +9,32 @@
  */
 namespace Cops\Model\Search\Adapter;
 
-use Cops\Model\Core;
-use Cops\Model\Book;
+use Cops\Model\Search\SearchAbstract;
 use Cops\Model\Search\SearchInterface;
-use \Doctrine\DBAL\Driver\PDOStatement;
 
 /**
  * Sqlite search adapter class
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Sqlite extends Core implements SearchInterface
+class Sqlite extends SearchAbstract implements SearchInterface
 {
-
-    public function __construct(Book $book)
-    {
-        $this->book = $book;
-    }
-
-    public function sendRequest()
-    {
-
-    }
-
-    public function getResults($searchTerm, $page)
+    /**
+     * Get a book collection matching search results
+     *
+     * @param array $searchTerm
+     * @param int   $page
+     *
+     * @return Collection
+     */
+    public function getResults(array $searchTerms, $page)
     {
         $nbItems = $this->getConfig()->getValue('page_result');
 
-        $books = $this->book->getCollection()
+        return $this->collection
             ->setFirstResult(($page-1) * $nbItems)
             ->setMaxResults($nbItems)
-            ->getByKeyword(explode('-', $searchTerm))
+            ->getByKeyword($searchTerms)
             ->addBookFiles();
-
-        return $books;
     }
-
 }

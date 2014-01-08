@@ -62,7 +62,7 @@ class SearchFactory extends Core
      *
      * @return \Cops\Model\Image\SearchInterface
      */
-    public function getInstance(Book $book)
+    public function getInstance()
     {
         if (!isset($this->_instanceTypeStorage[$this->_instanceType])) {
             throw new AdapterException(
@@ -75,7 +75,7 @@ class SearchFactory extends Core
 
         if (!isset($this->_instance[$this->_instanceType])) {
             $className = 'Search\\Adapter\\'.ucfirst($this->_instanceType);
-            $this->_instance[$this->_instanceType] = $this->getModel($className, $book);
+            $this->_instance[$this->_instanceType] = $this->getModel($className);
         }
         return $this->_instance[$this->_instanceType];
     }

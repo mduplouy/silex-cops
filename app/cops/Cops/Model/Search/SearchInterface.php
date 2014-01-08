@@ -16,8 +16,13 @@ namespace Cops\Model\Search;
  */
 interface SearchInterface
 {
-    public function sendRequest();
-
-
-    public function getResults($searchTerm, $page);
+    /**
+     * Get a book collection matching search results
+     *
+     * @param array $searchTerms
+     * @param int   $page
+     *
+     * @return Collection
+     */
+    public function getResults(array $searchTerms, $page);
 }

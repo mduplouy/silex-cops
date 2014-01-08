@@ -21,19 +21,19 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      * Collection elements
      * @var array
      */
-    private $_elements = array();
+    private $elements = array();
 
     /**
      * Object entity model instance
-     * @var Cops\Model\Common
+     * @var Common
      */
-    private $_entity;
+    private $entity;
 
     /**
      * Object model resource instance
-     * @var Cops\Model\Resource
+     * @var Resource
      */
-    private $_resource;
+    private $resource;
 
     /**
      * Constructor
@@ -42,28 +42,28 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      */
     public function __construct(Common $entity)
     {
-        $this->_entity = $entity;
-        $this->_resource = $entity->getResource();
+        $this->entity = $entity;
+        $this->resource = $entity->getResource();
     }
 
     /**
      * Entity model getter
      *
-     * @return \Cops\Model\Common
+     * @return Common
      */
     public function getEntity()
     {
-        return $this->_entity;
+        return $this->entity;
     }
 
     /**
      * Resource getter
      *
-     * @return \Cops\Model\Resource
+     * @return Resource
      */
     public function getResource()
     {
-        return $this->_resource;
+        return $this->resource;
     }
 
     /**
@@ -75,7 +75,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->_elements);
+        return new \ArrayIterator($this->elements);
     }
 
     /**
@@ -83,11 +83,11 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @param mixed $element
      *
-     * @return Cops\Model\Collection
+     * @return Collection
      */
     public function add($element)
     {
-        $this->_elements[$element->getId()] = $element;
+        $this->elements[$element->getId()] = $element;
         return $this;
     }
 
@@ -98,7 +98,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      */
     public function getById($id)
     {
-        return $this->_elements[$id];
+        return $this->elements[$id];
     }
 
     /**
@@ -108,15 +108,29 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      */
     public function count()
     {
-        return count($this->_elements);
+        return count($this->elements);
     }
 
+    /**
+     * Set start offset for "sliced" collection
+     *
+     * @param int $offset
+     *
+     * @return Collection
+     */
     public function setFirstResult($offset)
     {
         $this->getResource()->setFirstResult($offset);
         return $this;
     }
 
+    /**
+     * Set desired size for "sliced" collection
+     *
+     * @param int $limit
+     *
+     * @return Collection
+     */
     public function setMaxResults($limit)
     {
         $this->getResource()->setMaxResults($limit);
