@@ -67,7 +67,6 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
             $authorId = $book->getAuthor()->getId();
         }
 
-        $serieId = $book->getSerie()->getId();
         $resource = $this->getResource();
 
         foreach($resource->loadByAuthorId($authorId) as $result) {
@@ -87,7 +86,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $book = $this->getEntity();
 
-        $resource = $this->getResource()
+        $this->getResource()
             ->setExcludedBookId($book->getId());
 
         return $this->getBySerieId();

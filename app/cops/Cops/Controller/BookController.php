@@ -61,11 +61,13 @@ class BookController
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
 
-        return $app['twig']->render($app['config']->getTemplatePrefix().'book.html', array(
-            'pageTitle' => $book->getTitle(),
-            'book' => $book
-        ));
-
+        return $app['twig']->render(
+            $app['config']->getTemplatePrefix().'book.html',
+            array(
+                'pageTitle' => $book->getTitle(),
+                'book' => $book
+            )
+        );
     }
 
     /**
@@ -89,10 +91,13 @@ class BookController
 
         } catch(\Cops\Exception\BookFile\AdapterException $e) {
             return $app->redirect(
-                $app['url_generator']->generate('book_detail', array(
-                    'id' => $book->getId()
+                $app['url_generator']->generate(
+                    'book_detail',
+                    array(
+                        'id' => $book->getId()
+                    )
                 )
-            ));
+            );
         } catch(\Cops\Exception\BookException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }

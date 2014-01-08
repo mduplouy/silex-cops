@@ -45,7 +45,7 @@ class Core implements CoreInterface
      * App instance
      * @var \Silex\Application
      */
-    private static $_app;
+    private static $app;
 
     /**
      * Constructor
@@ -132,15 +132,13 @@ class Core implements CoreInterface
             return $translator;
         }));
 
-        $app->get('/', function (Request $request) use ($app) {
+        $app->get('/', function () use ($app) {
             // redirect to /default_lang/
             $redirect = $app['url_generator']->generate('homepage', array(
                 '_locale' => $app['config']->getValue('default_lang')
             ));
             return $app->redirect($redirect, 301);
         });
-
-
 
         // Set the mount points for the controllers
         $app->mount('/',            new \Cops\Controller\IndexController());
@@ -157,7 +155,7 @@ class Core implements CoreInterface
 
         $app['core'] = $this;
 
-        self::$_app = $app;
+        self::$app = $app;
     }
 
     /**
@@ -229,7 +227,7 @@ class Core implements CoreInterface
      */
     public static function getApp()
     {
-        return self::$_app;
+        return self::$app;
     }
 
     /**
