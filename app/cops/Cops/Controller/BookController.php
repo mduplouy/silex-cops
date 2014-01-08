@@ -38,11 +38,6 @@ class BookController
             ->assert('id' ,'\d+')
             ->bind('book_detail');
 
-        $controller->get('/list/{page}', __CLASS__.'::listAction')
-            ->assert('page', '\d+')
-            ->value('page', 1)
-            ->bind('book_list');
-
         $controller->get('/download/{id}/{format}', __CLASS__.'::downloadAction')
             ->assert('id', '\d+')
             ->bind('book_download');
@@ -85,7 +80,7 @@ class BookController
     public function downloadAction(
         \Silex\Application $app,
         $id,
-        $format=BookFileFactory::TYPE_EPUB
+        $format = BookFileFactory::TYPE_EPUB
     ) {
         try {
             $book = $this->getModel('Book')->load($id);
@@ -99,12 +94,10 @@ class BookController
                 )
             ));
         } catch(\Cops\Exception\BookException $e) {
-            return $app->redirect(
-                $app['url_generator']->generate('homepage'));
+            return $app->redirect($app['url_generator']->generate('homepage'));
         }
 
         if ($file = $bookFile->getFilePath()) {
-
             return $app
                 ->sendFile($file)
                 ->setContentDisposition(
@@ -113,10 +106,5 @@ class BookController
                 );
         }
         return $app->abort(404);
-    }
-
-    public function listAction($page)
-    {
-        return __FUNCTION__.$page;
     }
 }

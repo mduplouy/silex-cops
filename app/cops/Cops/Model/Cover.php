@@ -24,31 +24,31 @@ class Cover extends Core
      * Cover file
      * @var string
      */
-    protected $_coverFile;
+    protected $coverFile;
 
     /**
      * Thumbnail path
      * @var string
      */
-    protected $_thumbnailPath;
+    protected $thumbnailPath;
 
     /**
      * Thumbnail file
      * @var string
      */
-    protected $_thumbnailFile;
+    protected $thumbnailFile;
 
     /**
      * Book path
      * @var string
      */
-    private $_bookPath;
+    private $bookPath;
 
     /**
      * Book ID
      * @var int
      */
-    private $_bookId;
+    private $bookId;
 
     /**
      * Constructor
@@ -57,13 +57,13 @@ class Cover extends Core
      */
     public function __construct(Book $book)
     {
-        $this->_bookPath = $book->getPath();
-        $this->_bookId = $book->getId();
+        $this->bookPath = $book->getPath();
+        $this->bookId = $book->getId();
 
         if ($book->hasCover()) {
-            $this->_coverFile = sprintf(BASE_DIR.'%s'.DS.'%s'.DS.'cover.jpg',
+            $this->coverFile = sprintf(BASE_DIR.'%s'.DS.'%s'.DS.'cover.jpg',
                 $this->getConfig()->getValue('data_dir'),
-                $this->_bookPath
+                $this->bookPath
             );
         }
     }
@@ -76,9 +76,9 @@ class Cover extends Core
      *
      * @return string
      */
-    public function getThumbnailPath($width=null, $height=null)
+    public function getThumbnailPath($width = null, $height = null)
     {
-        if (is_null($this->_coverFile)) {
+        if (is_null($this->coverFile)) {
             return false;
         }
 
@@ -87,27 +87,28 @@ class Cover extends Core
             $height = (int) $this->getConfig()->getValue('cover_height');
         }
 
-        $this->_thumbnailPath = sprintf(DS.'assets'.DS.'books'.DS.'%d'.DS.'%dx%d'.DS.'%d.jpg',
-            substr($this->_bookId, -1),
+        $this->thumbnailPath = sprintf(
+            DS.'assets'.DS.'books'.DS.'%d'.DS.'%dx%d'.DS.'%d.jpg',
+            substr($this->bookId, -1),
             $width,
             $height,
-            $this->_bookId
+            $this->bookId
         );
 
-        $this->_thumbnailFile = BASE_DIR.$this->getConfig()->getValue('public_dir').$this->_thumbnailPath;
+        $this->thumbnailFile = BASE_DIR.$this->getConfig()->getValue('public_dir').$this->thumbnailPath;
 
-        if (file_exists($this->_thumbnailFile)) {
-            return $this->_thumbnailPath;
-        } elseif ($this->_coverFile && !file_exists(BASE_DIR.$this->_thumbnailPath)) {
+        if (file_exists($this->thumbnailFile)) {
+            return $this->thumbnailPath;
+        } elseif ($this->coverFile && !file_exists(BASE_DIR.$this->thumbnailPath)) {
 
-            $targetDir = dirname($this->_thumbnailFile);
+            $targetDir = dirname($this->thumbnailFile);
             if (!is_dir($targetDir)) {
-                mkdir(dirname($this->_thumbnailFile), 0777, true);
+                mkdir(dirname($this->thumbnailFile), 0777, true);
             }
 
-            $this->_generateThumbnail($width, $height);
+            $this->generateThumbnail($width, $height);
         }
-        return $this->_thumbnailPath;
+        return $this->thumbnailPath;
     }
 
     /**
@@ -115,14 +116,13 @@ class Cover extends Core
      *
      * @return void
      */
-    protected function _generateThumbnail($width, $height)
+    private function generateThumbnail($width, $height)
     {
         $app = self::getApp();
 
         $app['image_processor']
             ->setWidth($width)
             ->setHeight($height)
-            ->generateThumbnail($this->_coverFile, $this->_thumbnailFile);
+            ->generateThumbnail($this->coverFile, $this->thumbnailFile);
     }
-
 }
