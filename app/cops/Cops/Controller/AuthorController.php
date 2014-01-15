@@ -109,7 +109,7 @@ class AuthorController
     {
         try {
             $author = $this->getModel('Author')->load($id);
-        } catch(\Cops\Exception\AuthorException $e) {
+        } catch (\Cops\Exception\AuthorException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
 

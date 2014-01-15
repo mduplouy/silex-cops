@@ -9,6 +9,9 @@
  */
 namespace Cops\Controller;
 
+
+use Cops\Model\Controller;
+use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -18,9 +21,7 @@ use Cops\Model\BookFile\BookFileFactory;
  * Book controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class BookController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class BookController extends Controller implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -35,7 +36,7 @@ class BookController
     {
         $controller = $app['controllers_factory'];
         $controller->get('/{id}', __CLASS__.'::detailAction')
-            ->assert('id' ,'\d+')
+            ->assert('id', '\d+')
             ->bind('book_detail');
 
         $controller->get('/download/{id}/{format}', __CLASS__.'::downloadAction')
@@ -79,17 +80,14 @@ class BookController
      *
      * @return void
      */
-    public function downloadAction(
-        \Silex\Application $app,
-        $id,
-        $format = BookFileFactory::TYPE_EPUB
-    ) {
+    public function downloadAction(Application $app, $id, $format = BookFileFactory::TYPE_EPUB)
+    {
         try {
             $book = $this->getModel('Book')->load($id);
 
             $bookFile = $book->getFile(strtoupper($format));
 
-        } catch(\Cops\Exception\BookFile\AdapterException $e) {
+        } catch (\Cops\Exception\BookFile\AdapterException $e) {
             return $app->redirect(
                 $app['url_generator']->generate(
                     'book_detail',
@@ -98,7 +96,7 @@ class BookController
                     )
                 )
             );
-        } catch(\Cops\Exception\BookException $e) {
+        } catch (\Cops\Exception\BookException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
 
