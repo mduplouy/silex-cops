@@ -31,8 +31,7 @@ class TarGz extends ArchiveAbstract implements ArchiveInterface
         $archive = tempnam(sys_get_temp_dir(), '').'.tar';
 
         $phar = new \PharData($archive, \Phar::TAR);
-        foreach($this->_files as $file)
-        {
+        foreach ($this->_files as $file) {
             if (file_exists($file->getFilePath())) {
                 $phar->addFile($file->getFilePath(), $file->getFileName());
             }
@@ -55,5 +54,4 @@ class TarGz extends ArchiveAbstract implements ArchiveInterface
     {
         return '.tar.gz';
     }
-
 }

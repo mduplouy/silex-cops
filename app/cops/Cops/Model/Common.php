@@ -41,7 +41,7 @@ abstract class Common extends Core
      */
     public function __call($method, $args)
     {
-        $propKey = $this->_getPropNameFromMethod($method);
+        $propKey = $this->getPropertyName(substr($method, 3));
 
         switch (substr($method, 0, 3)) {
             case 'get' :
@@ -67,25 +67,13 @@ abstract class Common extends Core
      */
     public function setData($dataArray)
     {
-        foreach($dataArray as $prop => $value) {
-            $prop = $this->_getDataKeyFromProperty($prop);
+        foreach ($dataArray as $prop => $value) {
+            $prop = $this->getPropertyName($prop);
             if (property_exists($this, $prop)) {
                 $this->$prop = $value;
             }
         }
         return $this;
-    }
-
-    /**
-     * Get the property name from setter method name
-     *
-     * @param string $method
-     *
-     * @return string
-     */
-    protected function _getPropNameFromMethod($method)
-    {
-        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', substr($method, 3)))));
     }
 
     /**
@@ -95,7 +83,7 @@ abstract class Common extends Core
      *
      * @return string
      */
-    protected function _getDataKeyFromProperty($prop)
+    protected function getPropertyName($prop)
     {
         return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $prop))));
     }

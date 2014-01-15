@@ -29,7 +29,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $resource = $this->getResource();
 
-        foreach($resource->loadByFirstLetter($letter) as $result) {
+        foreach ($resource->loadByFirstLetter($letter) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
         return $this;

@@ -65,7 +65,7 @@ class Resource extends ResourceAbstract
         }
 
         $bookIds = array();
-        foreach($collection as $book) {
+        foreach ($collection as $book) {
             $bookIds[] = $book->getId();
         }
 
@@ -74,7 +74,7 @@ class Resource extends ResourceAbstract
             ->setParameter('book_id', $bookIds, Connection::PARAM_INT_ARRAY)
             ->execute(\PDO::FETCH_ASSOC);
 
-        foreach($stmt as $row) {
+        foreach ($stmt as $row) {
             $book = $collection->getById($row['book']);
 
             $bookFile = $book->getFile($row['format']);

@@ -30,8 +30,7 @@ class Zip extends ArchiveAbstract implements ArchiveInterface
 
         $zip = new \ZipArchive;
         if ($zip->open($archive, \ZipArchive::CREATE)) {
-            foreach($this->_files as $file)
-            {
+            foreach ($this->_files as $file) {
                 if (file_exists($file->getFilePath())) {
                     $zip->addFile($file->getFilePath(), $file->getFileName());
                 }

@@ -62,7 +62,7 @@ class Author extends Common
     public function getAggregatedList()
     {
         $output = array();
-        foreach($this->getResource()->getAggregatedList($this) as $author) {
+        foreach ($this->getResource()->getAggregatedList($this) as $author) {
             // Force non alpha to #
             if (!preg_match('/[A-Z]/', $author['first_letter'])) {
                 $author['first_letter'] = '#';

@@ -165,7 +165,7 @@ class Resource extends ResourceAbstract
 
         // Build the where clause
         $and = $qb->expr()->andX();
-        foreach($keywords as $keyword) {
+        foreach ($keywords as $keyword) {
             $and->add(
                 $qb->expr()->Like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
             );

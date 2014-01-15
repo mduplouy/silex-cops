@@ -29,7 +29,7 @@ First you will need a Calibre database
 
 Silex-Cops works with PHP **version >= 5.2**
 
-*Please not that it is not intended to work on any Windows version, try at your own risks*
+*Please note that it is not intended to work on any Windows version, try at your own risks*
 
 The following PHP modules are required :
 * **imagick** or **gd**

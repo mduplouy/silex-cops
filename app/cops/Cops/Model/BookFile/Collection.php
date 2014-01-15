@@ -29,7 +29,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $resource = $this->getResource();
 
-        foreach($resource->loadBySerieId($serieId) as $result) {
+        foreach ($resource->loadBySerieId($serieId) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
 
@@ -47,7 +47,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $resource = $this->getResource();
 
-        foreach($resource->loadByAuthorId($authorId) as $result) {
+        foreach ($resource->loadByAuthorId($authorId) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
 

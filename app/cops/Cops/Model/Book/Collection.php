@@ -30,7 +30,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $resource = $this->getResource();
 
-        foreach($resource->loadLatest($nb) as $result) {
+        foreach ($resource->loadLatest($nb) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
         return $this;
@@ -73,7 +73,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
 
         $resource = $this->getResource();
 
-        foreach($resource->loadByAuthorId($authorId) as $result) {
+        foreach ($resource->loadByAuthorId($authorId) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
 
@@ -116,7 +116,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
 
         $resource = $this->getResource();
 
-        foreach($resource->loadBySerieId($serieId) as $result) {
+        foreach ($resource->loadBySerieId($serieId) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
         return $this;
@@ -134,7 +134,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $resource = $this->getResource();
 
-        foreach($resource->loadByTagId($tagId) as $result) {
+        foreach ($resource->loadByTagId($tagId) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
         return $this;
@@ -151,7 +151,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $resource = $this->getResource();
 
-        foreach($resource->loadByKeyword($keyword) as $result) {
+        foreach ($resource->loadByKeyword($keyword) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
         return $this;

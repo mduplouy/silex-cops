@@ -53,13 +53,13 @@ class IndexController
 
         $serieList = $this->getModel('Serie')->getAggregatedList();
         $countSeries = 0;
-        foreach($serieList as $nbSerie) {
+        foreach ($serieList as $nbSerie) {
             $countSeries += $nbSerie;
         }
 
         $authorList = $this->getModel('Author')->getAggregatedList();
         $countAuthors = 0;
-        foreach($authorList as $nbAuthor) {
+        foreach ($authorList as $nbAuthor) {
             $countAuthors += $nbAuthor;
         }
 
