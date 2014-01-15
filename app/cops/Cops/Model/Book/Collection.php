@@ -67,6 +67,10 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
             $authorId = $book->getAuthor()->getId();
         }
 
+        if ($authorId === null) {
+            return $this;
+        }
+
         $resource = $this->getResource();
 
         foreach($resource->loadByAuthorId($authorId) as $result) {
@@ -104,6 +108,10 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
         $book = $this->getEntity();
         if ($serieId === null) {
             $serieId = $book->getSerie()->getId();
+        }
+
+        if ($serieId === null) {
+            return $this;
         }
 
         $resource = $this->getResource();
