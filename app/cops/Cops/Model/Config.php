@@ -80,8 +80,9 @@ class Config
         $confValue = null;
         if (isset($this->_configValues[$confKey])) {
             $confValue = $this->_configValues[$confKey];
+        } else {
+            throw new \InvalidArgumentException(sprintf("Config value %s doest not exist", $confKey));
         }
-
         return $confValue;
     }
 

@@ -107,7 +107,11 @@ class AuthorController
      */
     public function detailAction(\Silex\Application $app, $id)
     {
-        $author = $this->getModel('Author')->load($id);
+        try {
+            $author = $this->getModel('Author')->load($id);
+        } catch(\Cops\Exception\AuthorException $e) {
+            return $app->redirect($app['url_generator']->generate('homepage'));
+        }
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author.html', array(
             'author'     => $author,
