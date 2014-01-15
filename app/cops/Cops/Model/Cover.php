@@ -78,7 +78,7 @@ class Cover extends Core
      */
     public function getThumbnailPath($width = null, $height = null)
     {
-        if (is_null($this->coverFile)) {
+        if (is_null($this->coverFile) || !file_exists($this->coverFile)) {
             return false;
         }
 
@@ -99,7 +99,7 @@ class Cover extends Core
 
         if (file_exists($this->thumbnailFile)) {
             return $this->thumbnailPath;
-        } elseif ($this->coverFile && !file_exists(BASE_DIR.$this->thumbnailPath)) {
+        } elseif (!file_exists(BASE_DIR.$this->thumbnailPath)) {
 
             $targetDir = dirname($this->thumbnailFile);
             if (!is_dir($targetDir)) {
