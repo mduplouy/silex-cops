@@ -74,7 +74,7 @@ Addtionnal configuration for synology users :
 
 ## License
 
-License for this is **Do What The Fuck You Want To Public License**, guess you don't need more explanations ;)
+License for this is **Do What The Fuck You Want To Public License**, (http://www.wtfpl.net/about/) guess you don't need more explanations ;)
 
 ## Troubleshooting
 
