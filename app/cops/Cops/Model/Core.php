@@ -33,7 +33,7 @@ class Core implements CoreInterface
      * Model object instance registry
      * @var array
      */
-    protected $_modelInstance = array();
+    protected $modelInstance = array();
 
     /**
      * Resource instance
@@ -180,7 +180,7 @@ class Core implements CoreInterface
      */
     public function getModel($className, $args = array())
     {
-        if (!isset($this->_objecInstance[$className])) {
+        if (!isset($this->modelInstance[$className])) {
             $fullClassName = $className;
             if (!class_exists($fullClassName)) {
                 $fullClassName = __NAMESPACE__.'\\'.$className;
@@ -197,7 +197,7 @@ class Core implements CoreInterface
             }
             return $obj->newInstanceArgs($args);
         }
-        return $this->_objecInstance[$className];
+        return $this->modelInstance[$className];
     }
 
     /**
@@ -279,6 +279,11 @@ class Core implements CoreInterface
 
     /**
      * Remove accent from a string
+     *
+     * @param string $str
+     * @param string $charset
+     *
+     * @return string
      */
     public function removeAccents($str, $charset='utf-8')
     {
@@ -294,7 +299,7 @@ class Core implements CoreInterface
      */
     public function __clone()
     {
-        $this->_objecInstance = array();
+        $this->modelInstance = array();
         $this->resource = null;
     }
 }
