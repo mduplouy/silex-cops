@@ -178,7 +178,7 @@ class Book extends Common
     /**
      * File adapter getter
      *
-     * @return \Cops\Model\Book\FileInterface
+     * @return \Cops\Model\BookFile\BookFileInterface
      */
     public function getFile($fileType=BookFileFactory::TYPE_EPUB)
     {

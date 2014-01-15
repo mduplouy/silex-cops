@@ -140,7 +140,7 @@ class Resource extends ResourceAbstract
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
-            ->setParameter('tagid', $tagId, PDO::TYPE_INT)
+            ->setParameter('tagid', $tagId, PDO::PARAM_INT)
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
