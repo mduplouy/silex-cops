@@ -60,6 +60,10 @@ class Resource extends ResourceAbstract
      */
     public function populateBookCollection(BookCollection $collection)
     {
+        if ($collection->count() === 0) {
+            return $collection;
+        }
+
         $bookIds = array();
         foreach($collection as $book) {
             $bookIds[] = $book->getId();
