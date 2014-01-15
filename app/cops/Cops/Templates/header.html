@@ -4,8 +4,29 @@
 
         <div style="float:right;">
             <form method="post" action="{{ app.url_generator.generate('search') }}">
-                <input type="text" name="keywords" value="" size="60" />
+                <input type="text" id="js-search-form-input" name="keywords" value="" class="greyed" size="60" />
+                <input type="hidden" id="js-default-search-value" value="{{ "Author / Book title"|trans|escape }}" />
                 <input type="submit" value="{{ 'Search'|trans }}" />
             </form>
+            <script type="text/javascript">
+                jQuery('document').ready(function() {
+
+                    var searchElm = jQuery('#js-search-form-input');
+                    var defaultValue = jQuery('#js-default-search-value').val();
+
+                    searchElm.val(defaultValue);
+
+                    searchElm.focus(function(){
+                        if (jQuery(this).val() === defaultValue) {
+                            jQuery(this).val('').removeClass('greyed');
+                        }
+                    });
+                    searchElm.blur(function () {
+                        if (jQuery(this).val() == '') {
+                            jQuery(this).val(defaultValue).addClass('greyed');
+                        }
+                    });
+                });
+            </script>
         </div>
     </div>

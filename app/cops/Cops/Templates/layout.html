@@ -4,6 +4,8 @@
     <head>
         {% block head %}
             {% include 'head.html' %}
+            <script type="text/javascript" src="{{ app.request.basepath }}/assets/jquery-2.0.0.min.js"></script>
+
         {% endblock %}
         {# beforeHeadEnd placeholder #}
         {% block beforeHeadEnd %}{% endblock %}
@@ -28,7 +30,6 @@
 
         {# beforeBodyEnd placeholder #}
         {% block beforeBodyEnd %}
-        <script type="text/javascript" src="{{ app.request.basepath }}/assets/jquery-2.0.0.min.js"></script>
         <script type="text/javascript" src="{{ app.request.basepath }}/assets/default/js/jquery-ui-1.10.3.custom.min.js"></script>
         {% endblock %}
     </body>
