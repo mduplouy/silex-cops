@@ -16,6 +16,7 @@ Administration: Administation
 Alphabetic list of the authors: Liste alphabétique des auteurs
 Alphabetic list of the series: List alphabétique des séries
 Author:: Auteur :
+Author / Book title: Auteur / Titre de livre
 Authors: Auteurs
 Authors beginning by %s: Auteurs commençant par %s
 Download in %s format (%s): Télécharger au format %s (%s)
@@ -30,6 +31,7 @@ Other books in this serie:: Autres livres de cette série :
 Page %d on %d (%d results): Page %s sur %d (%d résultats)
 Previous: Précédent
 Publication date:: Date de publication :
+Search: Rechercher
 Search results: Résultats de la recherche
 See book detail: Voir les détails du livre
 See books from %s: Voir les livres de %s
