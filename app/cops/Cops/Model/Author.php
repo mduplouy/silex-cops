@@ -108,6 +108,7 @@ class Author extends Common
      */
     public function __clone()
     {
+        parent::__clone();
         $this->id   = null;
         $this->name = null;
         $this->sort = null;
