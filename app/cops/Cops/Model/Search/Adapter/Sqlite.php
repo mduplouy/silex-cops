@@ -23,18 +23,19 @@ class Sqlite extends SearchAbstract implements SearchInterface
      * Get a book collection matching search results
      *
      * @param array $searchTerm
+     * @param int   $nbItems
      * @param int   $page
      *
      * @return Collection
      */
-    public function getResults(array $searchTerms, $page)
+    public function getResults(array $searchTerms, $nbItems=0, $page=1)
     {
-        $nbItems = $this->getConfig()->getValue('page_result');
+        $this->collection->setFirstResult(($page-1) * $nbItems);
+        if ($nbItems > 0) {
+            $this->collection->setMaxResults($nbItems);
+        }
 
-        return $this->collection
-            ->setFirstResult(($page-1) * $nbItems)
-            ->setMaxResults($nbItems)
-            ->getByKeyword($searchTerms)
+        return $this->collection->getByKeyword($searchTerms)
             ->addBookFiles();
     }
 }

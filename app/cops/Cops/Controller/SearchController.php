@@ -79,7 +79,9 @@ class SearchController
      */
     public function resultAction($keywords, Application $app, $page)
     {
-        $collection = $app['search']->getResults(explode('-', $keywords), $page);
+        $itemsPerPage = $app['config']->getValue('search_page_size');
+
+        $collection = $app['search']->getResults(explode('-', $keywords), $itemsPerPage, $page);
 
         $resultCount = $collection->getResource()->getTotalRows();
 
@@ -90,7 +92,6 @@ class SearchController
             return $app->redirect($bookUrl, 302);
         }
 
-        $itemsPerPage = $app['config']->getValue('page_result');
         $pageCount   = ceil($resultCount / $itemsPerPage);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'search_results.html', array(
