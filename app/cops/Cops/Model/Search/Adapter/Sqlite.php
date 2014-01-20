@@ -28,7 +28,7 @@ class Sqlite extends SearchAbstract implements SearchInterface
      *
      * @return Collection
      */
-    public function getResults(array $searchTerms, $nbItems=0, $page=1)
+    public function getResults(array $searchTerms, $nbItems = 0, $page = 1)
     {
         $this->collection->setFirstResult(($page-1) * $nbItems);
         if ($nbItems > 0) {
