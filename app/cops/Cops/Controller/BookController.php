@@ -17,6 +17,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Cops\Model\BookFile\BookFileFactory;
 
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Cops\Exception\BookException;
+use Cops\Exception\BookFile\AdapterException;
+
 /**
  * Book controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
@@ -58,7 +62,7 @@ class BookController extends Controller implements ControllerProviderInterface
     {
         try {
             $book = $this->getModel('Book')->load($id);
-        } catch(\Cops\Exception\BookException $e) {
+        } catch (BookException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
 
@@ -87,7 +91,7 @@ class BookController extends Controller implements ControllerProviderInterface
 
             $bookFile = $book->getFile(strtoupper($format));
 
-        } catch (\Cops\Exception\BookFile\AdapterException $e) {
+        } catch (AdapterException $e) {
             return $app->redirect(
                 $app['url_generator']->generate(
                     'book_detail',
@@ -96,18 +100,19 @@ class BookController extends Controller implements ControllerProviderInterface
                     )
                 )
             );
-        } catch (\Cops\Exception\BookException $e) {
+        } catch (BookException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
 
-        if ($file = $bookFile->getFilePath()) {
+        try {
             return $app
-                ->sendFile($file)
+                ->sendFile($bookFile->getFilePath())
                 ->setContentDisposition(
                     ResponseHeaderBag::DISPOSITION_ATTACHMENT,
                     $bookFile->getFileName()
                 );
+        } catch (FileNotFoundException $e) {
+            return $app->abort(404);
         }
-        return $app->abort(404);
     }
 }

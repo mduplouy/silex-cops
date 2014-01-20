@@ -83,7 +83,7 @@ class SerieController
     {
         try {
             $serie = $this->getModel('Serie')->load($id);
-        } catch(SerieException $e) {
+        } catch (SerieException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
 
@@ -100,13 +100,27 @@ class SerieController
      * @param int               $id     The serie ID
      * @param string            $format The archive file format (zip|tar.gz)
      *
-     * @return void
+     * @return string
      */
     public function downloadAction(\Silex\Application $app, $id, $format)
     {
-        $serie = $this->getModel('Serie')->load($id);
+        try {
+            $serie = $this->getModel('Serie')->load($id);
 
-        $serieBooks = $this->getModel('BookFile')->getCollection()->getBySerieId($serie->getId());
+            $serieBooks = $this->getModel('BookFile')->getCollection()->getBySerieId($serie->getId());
+
+        } catch (SerieException $e) {
+            return $app->redirect($app['url_generator']->generate('homepage'));
+        } catch (AdapterException $e) {
+            return $app->redirect(
+                $app['url_generator']->generate(
+                    'serie_detail',
+                    array(
+                        'id' => $serie->getId()
+                    )
+                )
+            );
+        }
 
         $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
             ->getInstance();
