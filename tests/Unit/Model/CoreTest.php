@@ -3,18 +3,40 @@
 namespace Cops\Tests\Model;
 
 use Cops\Model\Core;
+use Silex\WebTestCase;
 
 /**
  * Core model test cases
  *
- * @require PHP 5.2
+ * @require PHP 5.3
  */
-class CoreTest extends \PHPUnit_Framework_TestCase
+class CoreTest extends WebTestCase
 {
+    public function createApplication()
+    {
+        $app = new \Cops\Model\Application();
+
+        // Define core model, no closure to ensure loading
+        // Load configuration & set service providers
+        $app['core'] =  new \Cops\Model\Core(BASE_DIR.'app/cops/config.ini', $app);
+
+        $app['debug'] = true;
+
+        // Register special database for tests
+        $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
+            'db.options' => array(
+                'driver'   => 'pdo_sqlite',
+                'path'     => __DIR__ . '/../database.db',
+            ),
+        ));
+        return $app;
+    }
+
     public function testGetModel()
     {
-        $tag = Core::getModel('Tag');
+        $tag = $this->app['core']->getModel('Tag');
         $this->assertInstanceOf('Cops\Model\Tag', $tag);
+        $this->assertInstanceOf('Cops\Model\Common', $tag);
     }
 
     /**
@@ -22,7 +44,7 @@ class CoreTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetModelException()
     {
-        Core::getModel('dummy');
+        $this->app['core']->getModel('dummy');
     }
 
     public function testConfigInstance()
