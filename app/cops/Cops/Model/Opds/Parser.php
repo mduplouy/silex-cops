@@ -20,7 +20,6 @@ class Parser
     {
         $curlHandle = curl_init('http://opds.oreilly.com/opds/alpha');
         curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
-        //curl_setopt($curlHandle, CURLOPT_USERPWD, 'coin:pan');
         //curl_setopt($curlHandle, CURLOPT_TIMEOUT, 30);
 
         $xml = curl_exec($curlHandle);
@@ -37,14 +36,11 @@ class Parser
                 continue;
             }
 
-
             var_dump($link->getAttribute('href'));
             var_dump($type);
 
         }
 
-
-        die('toto');
     }
 
 }

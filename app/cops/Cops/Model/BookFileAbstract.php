@@ -92,7 +92,8 @@ abstract class BookFileAbstract extends Common
 
         $size = $this->uncompressedSize;
         $label = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB' );
-        for ($i = 0; $size >= 1024 && $i < ( count( $label ) -1 ); $size /= 1024, $i++);
+        $labelCount = count($label);
+        for ($i = 0; $size >= 1024 && $i < ( $labelCount -1 ); $size /= 1024, $i++);
         return round( $size, $i-1 ) . ' ' . $app['translator']->trans($label[$i]);
     }
 
