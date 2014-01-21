@@ -9,26 +9,30 @@
  */
 namespace Cops\Controller;
 
+use Cops\Model\Controller;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Cops\Model\BookFile\BookFileFactory;
+
+use Cops\Exception\AuthorException;
 
 /**
  * Author controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class AuthorController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class AuthorController extends Controller implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
      *
-     * @see \Silex\ControllerProviderInterface::connect()
+     * @see ControllerProviderInterface::connect()
      *
-     * @param \Application $app Application instance
+     * @param Application $app Application instance
      *
      * @return ControllerCollection ControllerCollection instance
      */
-    public function connect(\Silex\Application $app)
+    public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
 
@@ -51,13 +55,13 @@ class AuthorController
     /**
      * Download all serie books as archive file
      *
-     * @param \Silex\Application $app Application instance
+     * @param Application $app Application instance
      * @param int                $id     The serie ID
      * @param string             $format The archive file format (zip|tar.gz)
      *
      * @return void
      */
-    public function downloadAction(\Silex\Application $app, $id, $format)
+    public function downloadAction(Application $app, $id, $format)
     {
         $author = $this->getModel('Author')->load($id);
 
@@ -85,7 +89,7 @@ class AuthorController
      *
      * @return string
      */
-    public function listAction(\Silex\Application $app, $letter=0)
+    public function listAction(Application $app, $letter=0)
     {
         if ($letter === '0') {
             $letter = '#';
@@ -105,11 +109,11 @@ class AuthorController
      * @param Silex\Application $app Application instance
      * @param id                $id  Author ID
      */
-    public function detailAction(\Silex\Application $app, $id)
+    public function detailAction(Application $app, $id)
     {
         try {
             $author = $this->getModel('Author')->load($id);
-        } catch (\Cops\Exception\AuthorException $e) {
+        } catch (AuthorException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
 
