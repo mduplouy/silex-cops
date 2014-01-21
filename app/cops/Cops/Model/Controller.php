@@ -9,6 +9,8 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\Core;
+
 /**
  * Common controller model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
@@ -25,7 +27,7 @@ class Controller
      */
     protected function getModel($model, $args=array())
     {
-        $app = \Cops\Model\Core::getApp();
+        $app = Core::getApp();
         return $app['core']->getModel($model, $args);
     }
 }
