@@ -25,7 +25,7 @@
     bootstrap="tests/Unit/bootstrap.php">
     <testsuites>
         <testsuite name="Silex-Cops Test Suite">
-            <directory suffix="Test.php" phpVersion="5.2.0" phpVersionOperator=">=">./tests/Unit/</directory>
+            <directory suffix="Test.php" phpVersion="5.3.0" phpVersionOperator=">=">./tests/Unit/</directory>
             <exclude>vendor/*</exclude>
         </testsuite>
     </testsuites>

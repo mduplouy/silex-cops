@@ -19,10 +19,25 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeInternalType('array', '_configValues', $config);
     }
 
-    public function testGetValue()
+    /**
+     * @dataProvider valueProvider
+     */
+    public function testGetValue($value)
     {
-        $config = Core::getConfig()->getValue('last_added');
-        $this->assertEquals($config, 15);
+        $config = Core::getConfig();
+        $returnType = $config->setValue('last_added', $value);
+
+        $this->assertInstanceOf('Cops\Model\Config', $returnType);
+        $this->assertEquals($config->getValue('last_added'), $value);
+    }
+
+    public function valueProvider()
+    {
+        return array(
+            array(15),
+            array(30),
+            array(45),
+        );
     }
 
     /**
@@ -31,5 +46,26 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testGetValueKo()
     {
         $config = Core::getConfig()->getValue('dummy_value');
+    }
+
+    /**
+     * @dataProvider templatePrefixProvider
+     */
+    public function testSetTemplatePrefix($prefix, $expectedValue)
+    {
+        $config = Core::getConfig();
+
+        $returnType = $config->setTemplatePrefix($prefix);
+
+        $this->assertInstanceOf('Cops\Model\Config', $returnType);
+        $this->assertEquals($expectedValue, $config->getTemplatePrefix());
+    }
+
+    public function templatePrefixProvider()
+    {
+        return array(
+            array(DS.'toto', DS.'toto'.DS),
+            array('tata', 'tata'.DS),
+        );
     }
 }

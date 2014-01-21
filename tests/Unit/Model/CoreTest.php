@@ -36,6 +36,7 @@ class CoreTest extends WebTestCase
     {
         $tag = $this->app['core']->getModel('Tag');
         $this->assertInstanceOf('Cops\Model\Tag', $tag);
+        $tag = $this->app['core']->getModel('Tag');
         $this->assertInstanceOf('Cops\Model\Common', $tag);
     }
 
