@@ -8,8 +8,7 @@ script:
   - ./vendor/bin/phpunit --coverage-clover=coverage.clover
 
 before_install:
-  - wget http://getcomposer.org/composer.phar
-  - php composer.phar install --dev --prefer-source
+  - composer install --dev
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
