@@ -5,7 +5,8 @@ php:
 script:
     - ./vendor/phpunit/phpunit/composer/bin/phpunit --coverage-clover=coverage.clover
 before_install:
-    - 'composer install --dev --prefer-source'
+    - wget http://getcomposer.org/composer.phar
+    - php composer.phar install --dev --prefer-source
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
     - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
