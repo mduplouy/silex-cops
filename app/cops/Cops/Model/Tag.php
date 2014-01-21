@@ -34,12 +34,6 @@ class Tag extends Common
     protected $bookCount;
 
     /**
-     * Books collection
-     * @var \Cops\Model\Book\Collection
-     */
-    private $_books;
-
-    /**
      * Load Tag
      *
      * @param int $tagId
