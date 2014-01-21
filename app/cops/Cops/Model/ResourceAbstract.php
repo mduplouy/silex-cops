@@ -103,7 +103,7 @@ abstract class ResourceAbstract
      *
      * @return Common
      */
-    public function setDataFromStatement($result)
+    public function setDataFromStatement(array $result)
     {
         $entity = clone($this->getEntity());
         return $entity->setData($result);

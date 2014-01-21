@@ -32,9 +32,6 @@ class AuthorControllerTest extends WebTestCase
         $client = $this->createClient();
 
         $crawler = $client->request('GET', '/fr/author/12313');
-
-        echo $client->getResponse()->getContent();
-
         $this->assertTrue($client->getResponse()->isOk());
 
         $crawler = $client->request('GET', '/fr/author/2');
