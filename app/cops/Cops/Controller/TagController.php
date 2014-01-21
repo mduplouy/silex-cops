@@ -14,6 +14,8 @@ use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use Cops\Exception\TagException;
+
 /**
  * Tag controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>

@@ -48,7 +48,7 @@ class Resource extends ResourceAbstract
         if (empty($result)) {
             throw new TagException(sprintf(
                 'Tag width id %s not found',
-                $TagId
+                $tagId
             ));
         }
 
