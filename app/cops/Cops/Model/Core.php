@@ -78,6 +78,7 @@ class Core implements CoreInterface
         $app->mount('/book/',       new \Cops\Controller\BookController());
         $app->mount('/serie/',      new \Cops\Controller\SerieController());
         $app->mount('/author/',     new \Cops\Controller\AuthorController());
+        $app->mount('/tag/',        new \Cops\Controller\TagController());
         $app->mount('/search/',     new \Cops\Controller\SearchController());
 
         $app->mount('/admin/',      new \Cops\Controller\AdminController());

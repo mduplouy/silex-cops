@@ -10,6 +10,7 @@
 namespace Cops\Model\Tag;
 
 use Cops\Model\ResourceAbstract;
+use Cops\Exception\TagException;
 use PDO;
 use Doctrine\DBAL\Connection;
 
@@ -19,7 +20,6 @@ use Doctrine\DBAL\Connection;
  */
 class Resource extends ResourceAbstract
 {
-
     /**
      * Load a tag data
      *
@@ -31,36 +31,32 @@ class Resource extends ResourceAbstract
      */
     public function load($tagId)
     {
-        /**
-         * Load book common informations
-         */
-        $sql = 'SELECT
-            main.id,
-            main.name,
-            COUNT(books_tags_link.id) as book_count
-            FROM tags AS main
-            LEFT OUTER JOIN books_tags_link ON (
-                main.id = books_tags_link.tag
+        $result = $this->getBaseSelect()
+            ->select(
+                'main.id',
+                'main.name',
+                'COUNT(btl.id) AS book_count'
             )
-            WHERE main.id = ?
-            GROUP BY main.id';
-
-        $result = $this->getConnection()->fetchAssoc(
-            $sql,
-            array(
-                (int) $tagId,
-            )
-        );
+            ->from('tags', 'main')
+            ->leftJoin('main', 'books_tags_link', 'btl', 'main.id = btl.tag')
+            ->where('main.id = :tag_id')
+            ->groupBy('main.id')
+            ->setParameter('tag_id', $tagId, PDO::PARAM_INT)
+            ->execute()
+            ->fetch(PDO::FETCH_ASSOC);
 
         if (empty($result)) {
-            throw new TagException(sprintf('Tag width id %s not found', $tagId));
+            throw new TagException(sprintf(
+                'Tag width id %s not found',
+                $TagId
+            ));
         }
 
         return $result;
     }
 
     /**
-     * Count book number in serie
+     * Count book number linked to tag
      *
      * @param  int $tagId
      *
@@ -81,5 +77,63 @@ class Resource extends ResourceAbstract
                 ),
                 0
             );
+    }
+
+    /**
+     * Load all tags and count linked books
+     *
+     * @return array
+     */
+    public function loadAll()
+    {
+        $qb = $this->getBaseSelect()
+            ->select(
+                'main.id',
+                'main.name',
+                'COUNT(btl.book) AS book_count'
+            )
+            ->from('tags', 'main')
+            ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.tag')
+            ->groupBy('main.id');
+
+        // Count total rows when using limit
+        if ($this->maxResults !== null) {
+            $countQuery = clone($qb);
+
+            $total = (int) $countQuery
+                ->resetQueryParts(array('select', 'join', 'groupBy', 'orderBy'))
+                ->select('COUNT(*)')
+                ->execute()
+                ->fetchColumn();
+
+            $this->totalRows = $total;
+
+            $qb->setFirstResult($this->firstResult)
+                ->setMaxResults($this->maxResults);
+        }
+
+        return $qb->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Load tags from book id
+     */
+    public function loadByBookId($bookId)
+    {
+        return $this->getBaseSelect()
+            ->select(
+                'main.id',
+                'main.name',
+                'COUNT(btl.book) AS book_count'
+            )
+            ->from('tags', 'main')
+            ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.tag')
+            ->where('btl.book = :book_id')
+            ->groupBy('main.id')
+            ->orderBy('main.name')
+            ->setParameter('book_id', $bookId, PDO::PARAM_INT)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 }

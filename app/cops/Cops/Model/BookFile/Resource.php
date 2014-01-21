@@ -10,7 +10,6 @@
 namespace Cops\Model\BookFile;
 
 use Cops\Model\ResourceAbstract;
-use Cops\Model\Collection;
 use Cops\Model\Book\Collection as BookCollection;
 use PDO;
 use Doctrine\DBAL\Connection;
@@ -52,6 +51,21 @@ class Resource extends ResourceAbstract
     }
 
     /**
+     * Get book files data by Tag ID
+     *
+     * @param  int          $tagId
+     *
+     * @return PDOStatement
+     */
+    public function loadByTagId($tagId)
+    {
+        $stmt = $this->_getCollectionByType('tags', 'tag', $tagId);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    /**
      * Load bookfile data for a book collection
      *
      * @param  \Cops\Model\Book\Collection $collection
@@ -85,7 +99,7 @@ class Resource extends ResourceAbstract
     }
 
     /**
-     * Retrieve a collection of book file (for books/series ...)
+     * Retrieve a collection of book file (for books/series/tags ...)
      *
      * @param  string $tableName
      * @param  string $fieldName

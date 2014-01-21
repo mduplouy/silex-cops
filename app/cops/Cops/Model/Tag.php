@@ -69,10 +69,30 @@ class Tag extends Common
     /**
      * Get all books associated to a tag
      *
+     * @param int      $firstResult Start offset
+     * @param int|null $maxResults  Number of books to return
+     *
      * @return Collection
      */
-    public function getAllBooks()
+    public function getAllBooks($firstResult=0, $maxResults=null)
     {
-        return $this->getModel('Book')->getCollection()->getByTagId($this->getId());
+        $collection = $this->getModel('Book')->getCollection()
+            ->setFirstResult($firstResult);
+
+        if ($maxResults !== null) {
+            $collection->setMaxResults($maxResults);
+        }
+
+        return $collection->getByTagId($this->getId());
+    }
+
+    /**
+     * Empty properties on clone
+     */
+    public function __clone()
+    {
+        parent::__clone();
+        $this->id = null;
+        $this->name = null;
     }
 }

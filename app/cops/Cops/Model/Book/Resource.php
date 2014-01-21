@@ -133,15 +133,33 @@ class Resource extends ResourceAbstract
      */
     public function loadByTagId($tagId)
     {
-        return $this->getBaseSelect()
+        $qb = $this->getBaseSelect()
             ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.book')
             ->innerJoin('main', 'tags'           , 'tag', 'tag.id  = btl.tag')
             ->andWhere('tag.id = :tagid')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
+            ->addOrderBy('author_sort')
             ->addOrderBy('title')
-            ->setParameter('tagid', $tagId, PDO::PARAM_INT)
-            ->execute()
+            ->setParameter('tagid', $tagId, PDO::PARAM_INT);
+
+        // Count total rows when using limit
+        if ($this->maxResults !=null) {
+            $countQuery = clone($qb);
+
+            $total = (int) $countQuery
+                ->resetQueryParts(array('select', 'groupBy', 'orderBy'))
+                ->select('COUNT(*)')
+                ->execute()
+                ->fetchColumn();
+
+            $this->totalRows = $total;
+
+            $qb->setFirstResult($this->firstResult)
+                ->setMaxResults($this->maxResults);
+        }
+
+        return $qb->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -157,9 +175,9 @@ class Resource extends ResourceAbstract
         $qb = $this->getBaseSelect()
             ->leftJoin('main', 'books_tags_link', 'btl', 'btl.book = main.id')
             ->leftJoin('main',  'tags',           'tag', 'tag.id = btl.tag')
-            ->orderBy('author_name')
-            ->addOrderBy('serie_name')
+            ->orderBy('serie_name')
             ->addOrderBy('series_index')
+            ->addOrderBy('author_name')
             ->addOrderBy('title')
             ->groupBy('main.id');
 

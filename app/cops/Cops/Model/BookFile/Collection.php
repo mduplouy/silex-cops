@@ -53,4 +53,22 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
 
         return $this;
     }
+
+    /**
+     * Load book files collection based on tag ID
+     *
+     * @param int $tagId
+     *
+     * @return Collection
+     */
+    public function getByTagId($tagId)
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadByTagId($tagId) as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+
+        return $this;
+    }
 }

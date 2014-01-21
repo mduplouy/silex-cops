@@ -44,6 +44,10 @@ class Config
         'image_processor'       => 'gd',
         'cover_width'           => 320,
         'cover_height'          => 240,
+
+        // tags
+        'homepage_tags'         => 30,
+        'book_per_page'         => 30,
     );
 
     /**

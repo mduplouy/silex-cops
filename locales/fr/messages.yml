@@ -7,11 +7,13 @@ TB: To
 PB: Po
 %s authors: %s auteur|%s auteurs
 %s books: %s livre| %s livres
+%s books associated to tag "%s": %s livres associés au tag "%s"
 %s Last added books: %s derniers livres ajoutés
 %s series: %s série|%s séries
+Tag :: Tag :| Tags :
 Access by Author: Accès par auteur
 Access by Series: Accès par série
-Access by Tag: Accès par étiquette
+Access by Tag: Accès par tag
 Administration: Administation
 Alphabetic list of the authors: Liste alphabétique des auteurs
 Alphabetic list of the series: List alphabétique des séries
@@ -20,15 +22,17 @@ Author / Book title: Auteur / Titre de livre
 Authors: Auteurs
 Authors beginning by %s: Auteurs commençant par %s
 Download in %s format (%s): Télécharger au format %s (%s)
-Download author's books (%s) as archive:: Télécharger tous les livres de cet auteur (%s) comme archive
-Download whole serie (%s books) as archive:: Télécharger toute la série (%s livres) sous forme d'archive
+Download all books (%s) as archive:: Télécharger tous les livres (%s) comme archive :
+Download author's books (%s) as archive:: Télécharger tous les livres de cet auteur (%s) comme archive :
+Download whole serie (%s books) as archive:: Télécharger toute la série (%s livres) sous forme d'archive :
 Homepage: Accueil
 Last added: Derniers ajouts
 Last added books: Derniers livres ajoutés
 Next: Suivant
 Other books from this author:: Autres livres de cet auteur :
 Other books in this serie:: Autres livres de cette série :
-Page %d on %d (%d results): Page %s sur %d (%d résultats)
+Page %d on %d (%d results): Page %d sur %d (%d résultats)
+Page %d on %d: Page %d sur %d
 Previous: Précédent
 Publication date:: Date de publication :
 Search: Rechercher

@@ -18,4 +18,35 @@ use Cops\Model\CollectionAbstract;
  */
 class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
 {
+    /**
+     * Load all tags along with book count
+     *
+     * @return Collection
+     */
+    public function getAll()
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadAll() as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+        return $this;
+    }
+
+    /**
+     * Load tag collection from book id
+     *
+     * @param int $bookId
+     *
+     * @return Collection
+     */
+    public function getByBookId($bookId)
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadByBookId($bookId) as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+        return $this;
+    }
 }

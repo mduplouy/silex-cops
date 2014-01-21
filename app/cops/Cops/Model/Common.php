@@ -87,4 +87,14 @@ abstract class Common extends Core
     {
         return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $prop))));
     }
+
+    /**
+     * Get the download-safe name of an entity
+     *
+     * @return string
+     */
+    public function getDownloadSafeName()
+    {
+        return $this->removeAccents($this->getName());
+    }
 }

@@ -63,6 +63,13 @@ class IndexController
             $countAuthors += $nbAuthor;
         }
 
+        $tagList = $this->getModel('Tag')
+            ->getCollection()
+            ->setFirstResult(0)
+            ->setMaxResults($app['config']->getValue('homepage_tags'))
+            ->getAll();
+        $countTags = $tagList->getResource()->getTotalRows();
+
         return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html', array(
             'pageTitle' => $app['translator']->trans('Homepage'),
             'latestBooks' => $latestBooks,
@@ -70,7 +77,8 @@ class IndexController
             'countSeries' => $countSeries,
             'authorsAggregated' => $authorList,
             'countAuthors' => $countAuthors,
-            'countTags' => 0,
+            'countTags' => $countTags,
+            'tags' => $tagList,
         ));
     }
 }

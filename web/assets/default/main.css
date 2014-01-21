@@ -20,6 +20,9 @@ body {
 
 h3 a { font-size: 0.98em; text-decoration:none; color:#666; }
 
+/**
+ * General layout
+ */
 #main {
     width:98%;
     margin:0.5em auto 0 auto;
@@ -121,7 +124,6 @@ h3 a { font-size: 0.98em; text-decoration:none; color:#666; }
  * Serie detail blocks
  */
 #serie_detail {
-
 }
     #serie_detail .cover {
         float:left;
@@ -154,16 +156,6 @@ h3 a { font-size: 0.98em; text-decoration:none; color:#666; }
         margin:5px 15px 5px 5px;
     }
 
-    #search_results .paginator {
-        padding:6px 0;
-    }
-
-    #search_results .paginator .ui-icon {
-        margin:0 4px;
-        border:2px #CCC solid;
-        position: relative;
-        top: 4px;
-    }
 
 /**
  * Footer block
@@ -173,3 +165,16 @@ h3 a { font-size: 0.98em; text-decoration:none; color:#666; }
     text-align:center;
     background:#eee;
 }
+
+/**
+ * Paginator
+ */
+.paginator {
+    padding:6px 0;
+}
+    .paginator .ui-icon {
+        margin:0 4px;
+        border:2px #CCC solid;
+        position: relative;
+        top: 4px;
+    }

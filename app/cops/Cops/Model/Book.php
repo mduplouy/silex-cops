@@ -86,6 +86,12 @@ class Book extends Common
     protected $_serie;
 
     /**
+     * A tag collection instance
+     * @var \Cops\Model\Tag\Collection
+     */
+    protected $tags;
+
+    /**
      * An array of file adapter instance
      * @var array
      */
@@ -197,6 +203,18 @@ class Book extends Common
     public function getFiles()
     {
         return $this->_file;
+    }
+
+    /**
+     * Tag getter
+     *
+     * @return Collection A tag collection (can be empty)
+     */
+    public function getTags()
+    {
+        return $this->getModel('Tag')
+            ->getCollection()
+            ->getByBookId($this->getId());
     }
 
     /**
