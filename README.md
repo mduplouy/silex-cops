@@ -27,7 +27,7 @@ Anyone comfortable with Twig can create a theme or modify the default one.
 
 First you will need a Calibre database
 
-Silex-Cops works with PHP **version >= 5.2**
+Silex-Cops works with PHP **version >= 5.3**
 
 *Please note that it is not intended to work on any Windows version, try at your own risks*
 
@@ -85,3 +85,5 @@ Open an issue on github ;)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/mduplouy/silex-cops/badges/quality-score.png?s=5a85f0b8dc7ebe1900b2064bf5d7fa3acc320b3a)](https://scrutinizer-ci.com/g/mduplouy/silex-cops/)
 
 [![Code Coverage](https://scrutinizer-ci.com/g/mduplouy/silex-cops/badges/coverage.png?s=7f1e330f0fe400db7beacece040df1ea36e7ce2e)](https://scrutinizer-ci.com/g/mduplouy/silex-cops/)
+
+[![Build Status](https://travis-ci.org/mduplouy/silex-cops.png?branch=master)](https://travis-ci.org/mduplouy/silex-cops)
