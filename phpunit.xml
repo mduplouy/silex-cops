@@ -32,6 +32,7 @@
 
     <filter>
       <blacklist>
+        <directory suffix=".php">./tests/Unit/application.php</directory>
         <directory suffix=".php">vendor/*</directory>
         <directory suffix=".php">cache/*</directory>
       </blacklist>

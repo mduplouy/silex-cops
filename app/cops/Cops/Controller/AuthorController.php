@@ -9,19 +9,21 @@
  */
 namespace Cops\Controller;
 
-use Cops\Model\Controller;
-use Silex\Application;
+use Cops\Model\Controller as BaseController;
 use Silex\ControllerProviderInterface;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Cops\Model\BookFile\BookFileFactory;
 
 use Cops\Exception\AuthorException;
+use Cops\Exception\Archive\AdapterException;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Author controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class AuthorController extends Controller implements ControllerProviderInterface
+class AuthorController extends BaseController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -36,7 +38,7 @@ class AuthorController extends Controller implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
 
-        $controller->get('/download/{id}/{format}', __CLASS__.'::downloadAction')
+        $controller->get('/{id}/download/{format}', __CLASS__.'::downloadAction')
             ->assert('id', '\d+')
             ->bind('author_download');
 
@@ -63,22 +65,44 @@ class AuthorController extends Controller implements ControllerProviderInterface
      */
     public function downloadAction(Application $app, $id, $format)
     {
-        $author = $this->getModel('Author')->load($id);
+        try {
+            $author = $this->getModel('Author')->load($id);
+        } catch (AuthorException $e) {
+            return $app->redirect($app['url_generator']->generate('homepage'));
+        }
 
-        $authorBooks = $this->getModel('BookFile')->getCollection()->getByAuthorId($author->getId());
-
-        $archiveClass = $this->getModel('Archive\\ArchiveFactory', array($format))
-            ->getInstance();
-
-        $archive = $archiveClass->addFiles($authorBooks)
-            ->generateArchive();
-
-        return $app
-            ->sendFile($archive)
-            ->setContentDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $author->getName().$archiveClass->getExtension()
+        try {
+            $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
+                ->getInstance();
+        } catch (AdapterException $e) {
+            return $app->redirect(
+                $app['url_generator']->generate(
+                    'author_detail',
+                    array(
+                        'id' => $author->getId()
+                    )
+                )
             );
+        }
+
+        try {
+            $authorBooks = $this->getModel('BookFile')
+                ->getCollection()
+                ->getByAuthorId($author->getId());
+
+
+            $archive = $archiveClass->addFiles($authorBooks)
+                ->generateArchive();
+
+            return $app
+                ->sendFile($archive)
+                ->setContentDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    $author->getDownloadSafeName().$archiveClass->getExtension()
+                );
+        } catch (FileNotFoundException $e) {
+            return $app->abord(404);
+        }
     }
 
     /**

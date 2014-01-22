@@ -9,33 +9,36 @@
  */
 namespace Cops\Controller;
 
+use Cops\Model\Controller as BaseController;
+use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Cops\Model\BookFile\BookFileFactory;
+
 use Cops\Exception\SerieException;
+use Cops\Exception\Archive\AdapterException;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Serie controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class SerieController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class SerieController extends BaseController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
      *
      * @see \Silex\ControllerProviderInterface::connect()
      *
-     * @param \Application $app Application instance
+     * @param  $app Application instance
      *
      * @return ControllerCollection ControllerCollection instance
      */
-    public function connect(\Silex\Application $app)
+    public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
 
-        $controller->get('/download/{id}/{format}', __CLASS__.'::downloadAction')
+        $controller->get('/{id}/download/{format}', __CLASS__.'::downloadAction')
             ->assert('id', '\d+')
             ->bind('serie_download');
 
@@ -54,12 +57,12 @@ class SerieController
     /**
      * List series action
      *
-     * @param Silex\Application $app
-     * @param string|0          $letter
+     * @param Application $app
+     * @param string|0    $letter
      *
      * @return string
      */
-    public function listAction(\Silex\Application $app, $letter=0)
+    public function listAction(Application $app, $letter=0)
     {
         if ($letter === '0') {
             $letter = '#';
@@ -76,10 +79,10 @@ class SerieController
     /**
      * Serie detail action
      *
-     * @param Silex\Application $app
-     * @param id                $id
+     * @param Application  $app
+     * @param id           $id
      */
-    public function detailAction(\Silex\Application $app, $id)
+    public function detailAction(Application $app, $id)
     {
         try {
             $serie = $this->getModel('Serie')->load($id);
@@ -96,21 +99,23 @@ class SerieController
     /**
      * Download all serie books as archive file
      *
-     * @param Silex\Application $app
-     * @param int               $id     The serie ID
-     * @param string            $format The archive file format (zip|tar.gz)
+     * @param Application  $app
+     * @param int          $id     The serie ID
+     * @param string       $format The archive file format (zip|tar.gz)
      *
      * @return string
      */
-    public function downloadAction(\Silex\Application $app, $id, $format)
+    public function downloadAction(Application $app, $id, $format)
     {
         try {
             $serie = $this->getModel('Serie')->load($id);
-
-            $serieBooks = $this->getModel('BookFile')->getCollection()->getBySerieId($serie->getId());
-
         } catch (SerieException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
+        }
+
+        try {
+            $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
+                ->getInstance();
         } catch (AdapterException $e) {
             return $app->redirect(
                 $app['url_generator']->generate(
@@ -122,18 +127,23 @@ class SerieController
             );
         }
 
-        $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
-            ->getInstance();
+        try {
+            $serieBooks = $this->getModel('BookFile')
+                ->getCollection()
+                ->getBySerieId($serie->getId());
 
-        $archive = $archiveClass->addFiles($serieBooks)
-            ->generateArchive();
+            $archive = $archiveClass->addFiles($serieBooks)
+                ->generateArchive();
 
-        return $app
-            ->sendFile($archive)
-            ->setContentDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $serie->getDownloadSafeName().$archiveClass->getExtension()
-            );
+            return $app
+                ->sendFile($archive)
+                ->setContentDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    $serie->getDownloadSafeName().$archiveClass->getExtension()
+                );
+        } catch (FileNotFoundException $e) {
+            return $app->abord(404);
+        }
     }
 
 }

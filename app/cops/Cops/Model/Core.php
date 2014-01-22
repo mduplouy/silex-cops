@@ -87,6 +87,10 @@ class Core implements CoreInterface
         $app->mount('/login/',       new \Cops\Controller\LoginController());
         $app->mount('/opds/',        new \Cops\Controller\OpdsController());
 
+        if (!isset($app['book_storage_dir'])) {
+            $app['book_storage_dir'] = BASE_DIR.$app['config']->getValue('data_dir');
+        }
+
         $app['core'] = $this;
 
         self::$app = $app;

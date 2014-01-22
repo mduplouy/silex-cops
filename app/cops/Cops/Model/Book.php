@@ -188,7 +188,7 @@ class Book extends Common
      *
      * @return \Cops\Model\BookFile\BookFileInterface
      */
-    public function getFile($fileType=BookFileFactory::TYPE_EPUB)
+    public function getFile($fileType = BookFileFactory::TYPE_EPUB)
     {
         if (!isset($this->_file[$fileType])) {
             $this->_file[$fileType] = $this->getModel('BookFile\\BookFileFactory', $fileType)

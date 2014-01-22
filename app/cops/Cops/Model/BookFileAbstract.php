@@ -60,15 +60,14 @@ abstract class BookFileAbstract extends Common
      */
     public function getFilePath()
     {
-        $filePath = BASE_DIR
-            . Core::getConfig()->getValue('data_dir') . DS
+        $app = self::getApp();
+
+        $filePath = $app['book_storage_dir'] . DS
             . $this->directory . DS
             . $this->name . '.'
             . strtolower($this->format);
 
-        if (file_exists($filePath)) {
-            return $filePath;
-        }
+        return $filePath;
     }
 
     /**

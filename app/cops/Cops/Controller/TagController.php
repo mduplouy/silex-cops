@@ -15,6 +15,8 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use Cops\Exception\TagException;
+use Cops\Exception\Archive\AdapterException;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Tag controller class
@@ -97,30 +99,36 @@ class TagController extends Controller implements ControllerProviderInterface
         }
 
         try {
-            $tagBooks = $this->getModel('BookFile')->getCollection()->getByTagId($tag->getId());
+            $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
+                ->getInstance();
         } catch (AdapterException $e) {
             return $app->redirect(
                 $app['url_generator']->generate(
-                    'serie_detail',
+                    'tag_book_list',
                     array(
-                        'id' => $serie->getId()
+                        'id' => $tag->getId()
                     )
                 )
             );
         }
 
-        $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
-            ->getInstance();
+        try {
+            $tagBooks = $this->getModel('BookFile')
+                ->getCollection()
+                ->getByTagId($tag->getId());
 
-        $archive = $archiveClass->addFiles($tagBooks)
-            ->generateArchive();
+            $archive = $archiveClass->addFiles($tagBooks)
+                ->generateArchive();
 
-        return $app
-            ->sendFile($archive)
-            ->setContentDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $tag->getDownloadSafeName().$archiveClass->getExtension()
-            );
+            return $app
+                ->sendFile($archive)
+                ->setContentDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    $tag->getDownloadSafeName().$archiveClass->getExtension()
+                );
+        } catch (FileNotFoundException $e) {
+            return $app->abort(404);
+        }
     }
 
 }

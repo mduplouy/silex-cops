@@ -55,7 +55,7 @@ class Config
      *
      * @var string
      */
-    protected $_templatePrefix = '';
+    protected $templatePrefix = '';
 
     /**
      * Constructor
@@ -97,7 +97,7 @@ class Config
      *
      * @param mixed $confValue
      *
-     * @return \Cops\Model\Config
+     * @return Config
      */
     public function setValue($confKey, $confValue)
     {
@@ -108,16 +108,16 @@ class Config
     /**
      * Template prefix setter
      *
-     * @param string
+     * @param  string
      *
-     * @return \Cops\Model\Config
+     * @return Config
      */
      public function setTemplatePrefix($value)
      {
-         if (substr($value, 1) != DS) {
+         if (substr($value, -1) != DS) {
              $value .= DS;
          }
-         $this->_templatePrefix = $value;
+         $this->templatePrefix = $value;
          return $this;
      }
 
@@ -128,6 +128,6 @@ class Config
      */
      public function getTemplatePrefix()
      {
-         return $this->_templatePrefix;
+         return $this->templatePrefix;
      }
 }

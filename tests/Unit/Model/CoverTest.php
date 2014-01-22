@@ -19,7 +19,7 @@ class CoverTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testThumbnailWithoutFileIsFalse()
+    public function testThumbnailGeneration()
     {
         $book = new \Cops\Model\Book;
         $book->load(5);
@@ -35,8 +35,21 @@ class CoverTest extends \PHPUnit_Framework_TestCase
         rmdir(dirname($this->targetPath.$thumbnail));
         rmdir($this->targetPath.DS.'assets'.DS.'books'.DS.'5');
 
+
+        $thumbnail = '/assets/books/5/320x240/5.jpg';
+        $this->assertFileNotExists($this->targetPath.$thumbnail);
+
         $thumbnail = $cover->getThumbnailPath(320, 240);
-        $this->assertRegExp('#/assets/books/5/320x240/5.jpg#', $thumbnail);
+        $this->assertRegExp('#'.$thumbnail.'#', $thumbnail);
+
+        $this->assertFileExists($this->targetPath.$thumbnail);
+
+        $thumbnail = $cover->getThumbnailPath(320, 240);
+
+        // cleaning
+        unlink($this->targetPath.$thumbnail);
+        rmdir(dirname($this->targetPath.$thumbnail));
+        rmdir($this->targetPath.DS.'assets'.DS.'books'.DS.'5');
 
     }
 

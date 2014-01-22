@@ -59,7 +59,7 @@ class BookFileFactory
     /**
      * Instance getter
      *
-     * @return \Cops\Model\Image\ImageProcessorInterface
+     * @return \Cops\Model\BookFile\BookFileInterface
      */
     public function getInstance()
     {

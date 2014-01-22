@@ -6,32 +6,15 @@ use Silex\WebTestCase;
 
 class BookControllerTest extends WebTestCase
 {
-
     public function createApplication()
     {
-        $app = new \Cops\Model\Application();
-
-        // Define core model, no closure to ensure loading
-        // Load configuration & set service providers
-        $app['core'] =  new \Cops\Model\Core(BASE_DIR.'app/cops/config.ini', $app);
-
-        $app['debug'] = true;
-
-        // Register special database for tests
-        $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
-            'db.options' => array(
-                'driver'   => 'pdo_sqlite',
-                'path'     => DATABASE,
-            ),
-        ));
-        return $app;
+        return require __DIR__.'/../application.php';
     }
 
     public function testBookDetailPage()
     {
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/fr/book/3');
-
+        $crawler = $client->request('GET', '/fr/book/5');
         $this->assertTrue($client->getResponse()->isOk());
     }
 
@@ -54,8 +37,38 @@ class BookControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/fr/book/download/134561233132213/EPUB');
         $this->assertTrue($client->getResponse()->isOk());
 
-        // Redirect to book detail page
+        // Redirect to homepage
         $crawler = $client->request('GET', '/fr/book/download/134561233132213/DUMMY');
         $this->assertTrue($client->getResponse()->isOk());
+    }
+
+    public function testBookDownloadOk()
+    {
+        $client = $this->createClient();
+
+        $client->request('GET', '/fr/book/download/5/MOBI');
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\BinaryFileResponse', $client->getResponse());
+        $this->assertTrue($client->getResponse()->isOk());
+
+        $crawler = $client->request('GET', '/fr/book/download/5/PDF');
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\BinaryFileResponse', $client->getResponse());
+        $this->assertTrue($client->getResponse()->isOk());
+
+        $crawler = $client->request('GET', '/fr/book/download/5/EPUB');
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\BinaryFileResponse', $client->getResponse());
+        $this->assertTrue($client->getResponse()->isOk());
+    }
+
+    public function testBookDownloadKo()
+    {
+        $client = $this->createClient();
+
+        // Redirect to homepage
+        $client->request('GET', '/fr/book/download/3/DUMMY');
+        $this->assertTrue($client->getResponse()->isOk());
+
+        // 404 not found
+        $client->request('GET', '/fr/book/download/3/MOBI');
+        $this->assertTrue($client->getResponse()->isNotFound());
     }
 }
