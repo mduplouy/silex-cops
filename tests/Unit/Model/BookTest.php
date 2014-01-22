@@ -24,7 +24,7 @@ class BookTest extends \PHPUnit_Framework_TestCase
     private function getRealBook()
     {
         $book = new \Cops\Model\Book;
-        $book->load(1);
+        $book->load(3);
         return $book;
     }
 
@@ -45,7 +45,7 @@ class BookTest extends \PHPUnit_Framework_TestCase
     {
         $origBook = $this->getRealBook();
 
-        $origBook->load(2);
+        $origBook->load(5);
 
         $book = clone($origBook);
 

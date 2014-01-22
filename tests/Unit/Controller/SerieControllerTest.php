@@ -21,7 +21,7 @@ class SerieControllerTest extends WebTestCase
         $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
             'db.options' => array(
                 'driver'   => 'pdo_sqlite',
-                'path'     => __DIR__ . '/../database.db',
+                'path'     => DATABASE,
             ),
         ));
         return $app;
@@ -31,7 +31,7 @@ class SerieControllerTest extends WebTestCase
     {
         $client = $this->createClient();
 
-        $crawler = $client->request('GET', '/fr/serie/2');
+        $crawler = $client->request('GET', '/fr/serie/1');
         $this->assertTrue($client->getResponse()->isOk());
 
         $crawler = $client->request('GET', '/fr/serie/12313');

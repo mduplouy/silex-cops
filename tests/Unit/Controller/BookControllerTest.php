@@ -21,7 +21,7 @@ class BookControllerTest extends WebTestCase
         $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
             'db.options' => array(
                 'driver'   => 'pdo_sqlite',
-                'path'     => __DIR__ . '/../database.db',
+                'path'     => DATABASE,
             ),
         ));
         return $app;
@@ -30,7 +30,7 @@ class BookControllerTest extends WebTestCase
     public function testBookDetailPage()
     {
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/fr/book/1');
+        $crawler = $client->request('GET', '/fr/book/3');
 
         $this->assertTrue($client->getResponse()->isOk());
     }
@@ -47,7 +47,7 @@ class BookControllerTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isOk(), 'Non-existant book doest not redirect to homepage');
 
         // File not found => 404
-        $crawler = $client->request('GET', '/fr/book/download/1/EPUB');
+        $crawler = $client->request('GET', '/fr/book/download/3/PDF');
         $this->assertEquals($client->getResponse()->getStatusCode(), 404, "Non-existant book file does not send a 404");
 
         // Redirect to homepage

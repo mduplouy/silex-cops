@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:identifier opf:scheme="calibre" id="calibre_id">3</dc:identifier>
+        <dc:identifier opf:scheme="uuid" id="uuid_id">92ea5541-a8d9-408e-a8b4-050a8ce94c83</dc:identifier>
+        <dc:title>Les Misérables</dc:title>
+        <dc:creator opf:file-as="Hugo, Victor" opf:role="aut">Victor Hugo</dc:creator>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (1.18.0) [http://calibre-ebook.com]</dc:contributor>
+        <dc:date>2008-06-21T22:00:00+00:00</dc:date>
+        <dc:identifier opf:scheme="URI">http://www.gutenberg.org/ebooks/135</dc:identifier>
+        <dc:language>eng</dc:language>
+        <dc:subject>Ex-convicts -- Fiction</dc:subject>
+        <dc:subject>Paris (France) -- Fiction</dc:subject>
+        <dc:subject>Epic literature</dc:subject>
+        <meta content="{&quot;Victor Hugo&quot;: &quot;&quot;}" name="calibre:author_link_map"/>
+        <meta content="2014-01-22T10:07:45+00:00" name="calibre:timestamp"/>
+        <meta content="Les Misérables" name="calibre:title_sort"/>
+    </metadata>
+    <guide>
+        <reference href="cover.jpg" title="Couverture" type="cover"/>
+    </guide>
+</package>

@@ -21,9 +21,9 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadOk()
     {
-        $author = $this->getEmptyauthor()->load(2);
+        $author = $this->getEmptyauthor()->load(4);
 
-        $this->assertEquals($author->getId(), 2);
+        $this->assertEquals($author->getId(), 4);
     }
 
     /**
@@ -38,7 +38,7 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadAllBooksCollection()
     {
-        $author = $this->getEmptyauthor()->load(2);
+        $author = $this->getEmptyauthor()->load(4);
         $books = $author->getAllBooks();
 
         $this->assertInstanceOf('Cops\Model\Book\Collection', $books);
@@ -59,7 +59,7 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
     {
         $origAuthor = $this->getEmptyauthor();
 
-        $origAuthor->load(2);
+        $origAuthor->load(4);
 
         $author = clone($origAuthor);
 

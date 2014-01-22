@@ -51,17 +51,41 @@ class Cover extends Core
     private $bookId;
 
     /**
+     * Storage directory
+     * @var string
+     */
+    protected $storageDir;
+
+    /**
+     * Width
+     * @var int
+     */
+    private $width;
+
+    /**
+     * Height
+     * @var int
+     */
+    private $height;
+
+    /**
      * Constructor
      *
-     * @param Cops\Model\Book $book
+     * @param Book   $book
+     * @param string $sourceDir
      */
-    public function __construct(Book $book)
+    public function __construct(Book $book, $sourceDir = null)
     {
-        $this->bookPath = $book->getPath();
-        $this->bookId = $book->getId();
+        if ($sourceDir === null) {
+            $sourceDir = BASE_DIR;
+        }
+
+        $this->storageDir = $sourceDir;
+        $this->bookPath   = $book->getPath();
+        $this->bookId     = $book->getId();
 
         if ($book->hasCover()) {
-            $this->coverFile = sprintf(BASE_DIR.'%s'.DS.'%s'.DS.'cover.jpg',
+            $this->coverFile = sprintf($this->storageDir.'%s'.DS.'%s'.DS.'cover.jpg',
                 $this->getConfig()->getValue('data_dir'),
                 $this->bookPath
             );
@@ -82,10 +106,7 @@ class Cover extends Core
             return false;
         }
 
-        if (empty($width) || empty($height)) {
-            $width = (int) $this->getConfig()->getValue('cover_width');
-            $height = (int) $this->getConfig()->getValue('cover_height');
-        }
+        $this->setSize($width, $height);
 
         $this->thumbnailPath = sprintf(
             DS.'assets'.DS.'books'.DS.'%d'.DS.'%dx%d'.DS.'%d.jpg',
@@ -99,14 +120,14 @@ class Cover extends Core
 
         if (file_exists($this->thumbnailFile)) {
             return $this->thumbnailPath;
-        } elseif (!file_exists(BASE_DIR.$this->thumbnailPath)) {
+        } elseif (!file_exists($this->storageDir.$this->thumbnailPath)) {
 
             $targetDir = dirname($this->thumbnailFile);
             if (!is_dir($targetDir)) {
                 mkdir(dirname($this->thumbnailFile), 0777, true);
             }
 
-            $this->generateThumbnail($width, $height);
+            $this->generateThumbnail();
         }
         return $this->thumbnailPath;
     }
@@ -116,13 +137,54 @@ class Cover extends Core
      *
      * @return void
      */
-    private function generateThumbnail($width, $height)
+    private function generateThumbnail()
     {
         $app = self::getApp();
 
         $app['image_processor']
-            ->setWidth($width)
-            ->setHeight($height)
+            ->setWidth($this->getWidth())
+            ->setHeight($this->getHeight())
             ->generateThumbnail($this->coverFile, $this->thumbnailFile);
+    }
+
+    /**
+     * Size setter
+     *
+     * @param int $width
+     * @param int $height
+     *
+     * @return Cover
+     */
+    public function setSize($width, $height)
+    {
+        $this->width = $width;
+        $this->height = $height;
+        return $this;
+    }
+
+    /**
+     * Width getter
+     *
+     * @return int
+     */
+    private function getWidth()
+    {
+        if ($this->width === null || $this->height === null) {
+            return (int) $this->getConfig()->getValue('cover_width');
+        }
+        return $this->width;
+    }
+
+    /**
+     * Height getter
+     *
+     * @return int
+     */
+    private function getHeight()
+    {
+        if ($this->width === null || $this->height === null) {
+            return (int) $this->getConfig()->getValue('cover_height');
+        }
+        return $this->height;
     }
 }

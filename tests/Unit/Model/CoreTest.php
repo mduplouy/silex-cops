@@ -26,7 +26,7 @@ class CoreTest extends WebTestCase
         $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
             'db.options' => array(
                 'driver'   => 'pdo_sqlite',
-                'path'     => __DIR__ . '/../database.db',
+                'path'     => DATABASE,
             ),
         ));
         return $app;

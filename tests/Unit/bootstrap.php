@@ -2,6 +2,7 @@
 
 define('BASE_DIR', __DIR__.'/../../');
 define('DS', DIRECTORY_SEPARATOR);
+define('DATABASE', __DIR__ . '/../data/metadata.db');
 
 $loader = require BASE_DIR.'vendor/autoload.php';
 $loader->add('Cops\Tests', __DIR__);
@@ -18,7 +19,7 @@ $app['debug'] = true;
 $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
     'db.options' => array(
         'driver'   => 'pdo_sqlite',
-        'path'     => __DIR__ . '/database.db',
+        'path'     => DATABASE,
     ),
 ));
 

@@ -63,7 +63,7 @@ class Resource extends ResourceAbstract
             ->fetch(PDO::FETCH_ASSOC);
 
         if (empty($result)) {
-            throw new BookException(sprintf('Product width id %s not found', $bookId));
+            throw new BookException(sprintf('Book width id %s not found', $bookId));
         }
 
         return $result;

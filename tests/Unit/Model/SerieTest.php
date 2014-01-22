@@ -22,9 +22,9 @@ class SerieTest extends \PHPUnit_Framework_TestCase
 
     public function testLoad()
     {
-        $serie = $this->getEmptySerie()->load(2);
+        $serie = $this->getEmptySerie()->load(1);
 
-        $this->assertEquals($serie->getId(), 2);
+        $this->assertEquals($serie->getId(), 1);
     }
 
     /**
@@ -44,7 +44,7 @@ class SerieTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadAllBooksCollection()
     {
-        $serie = $this->getEmptySerie()->load(2);
+        $serie = $this->getEmptySerie()->load(1);
         $books = $serie->getAllBooks();
 
         $this->assertInstanceOf('Cops\Model\Book\Collection', $books);
@@ -70,7 +70,7 @@ class SerieTest extends \PHPUnit_Framework_TestCase
     {
         $origSerie = $this->getEmptySerie();
 
-        $origSerie->load(2);
+        $origSerie->load(1);
 
         $serie = clone($origSerie);
 

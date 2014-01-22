@@ -145,12 +145,14 @@ class Book extends Common
     /**
      * Cover object getter
      *
-     * @return \Cops\Model\Cover
+     * @param string $storageDir
+     *
+     * @return Cover
      */
-    public function getCover()
+    public function getCover($storageDir = null)
     {
-        if (is_null($this->_cover)) {
-            $this->_cover = $this->getModel('Cover', $this);
+        if ($this->_cover === null) {
+            $this->_cover = $this->getModel('Cover', array($this, $storageDir));
         }
         return $this->_cover;
     }

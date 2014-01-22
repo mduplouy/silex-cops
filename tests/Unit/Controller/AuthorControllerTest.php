@@ -21,7 +21,7 @@ class AuthorControllerTest extends WebTestCase
         $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
             'db.options' => array(
                 'driver'   => 'pdo_sqlite',
-                'path'     => __DIR__ . '/../database.db',
+                'path'     => DATABASE,
             ),
         ));
         return $app;
@@ -34,7 +34,7 @@ class AuthorControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/fr/author/12313');
         $this->assertTrue($client->getResponse()->isOk());
 
-        $crawler = $client->request('GET', '/fr/author/2');
+        $crawler = $client->request('GET', '/fr/author/4');
         $this->assertTrue($client->getResponse()->isOk());
 
         $crawler = $client->request('GET', '/fr/author/list/A');
