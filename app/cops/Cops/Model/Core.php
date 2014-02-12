@@ -166,6 +166,7 @@ class Core implements CoreInterface
                 'driverOptions' => array(
                     'userDefinedFunctions' => array(
                         'title_sort' => array(
+                            // @todo implement title_sort function from calibre
                             'callback' => function($title) use ($app) {
                                 return $title;
                             },
@@ -196,7 +197,7 @@ class Core implements CoreInterface
         $app->register(new SecurityServiceProvider(), array(
             'security.firewalls' => array(
                 'admin' => array(
-                    'pattern' => '^/../admin',
+                    'pattern' => '^/admin',
                     'http' => true,
                     'users' => array(
                         // admin : password
@@ -206,6 +207,7 @@ class Core implements CoreInterface
                 'default' => array(
                     'pattern' => '^.*$',
                     'http' => true,
+                    'anonymous' => php_sapi_name() == 'cli' ? true : false,
                     'users' => array(
                         // user : password
                         'user' => array('ROLE_EDIT', 'BFEQkknI/c+Nd7BaG7AaiyTfUFby/pkMHy3UsYqKqDcmvHoPRX/ame9TnVuOV2GrBH0JK9g4koW+CgTYI9mK+w=='),
@@ -222,8 +224,8 @@ class Core implements CoreInterface
         );
 
         $app['security.access_rules'] = array(
-             array('^/../admin',        'ROLE_ADMIN'),
-             array('^/../inline-edit/', 'ROLE_EDIT')
+             array('^/admin',        'ROLE_ADMIN'),
+             array('^/inline-edit/', 'ROLE_EDIT')
         );
     }
 
