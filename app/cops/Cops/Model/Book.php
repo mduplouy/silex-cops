@@ -220,6 +220,38 @@ class Book extends Common
     }
 
     /**
+     * Update book author
+     *
+     * @param array $author
+     * @param int   $bookId
+     *
+     * @return bool
+     */
+    public function updateAuthor($author, $bookId = null)
+    {
+        if ($bookId === null) {
+            $bookId = $this->getId();
+        }
+        return $this->getResource()->updateAuthor($bookId, explode('&', $author));
+    }
+
+    /**
+     * Update book title
+     *
+     * @param string $title
+     * @param int    $bookId
+     *
+     * @return bool
+     */
+    public function updateTitle($title, $bookId = null)
+    {
+        if ($bookId === null) {
+            $bookId = $this->getId();
+        }
+        return $this->getResource()->updateTitle($bookId, $title);
+    }
+
+    /**
      * Empty properties on clone
      */
     public function __clone()

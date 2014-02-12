@@ -266,6 +266,122 @@ class Resource extends ResourceAbstract
     }
 
     /**
+     * Update author & author_sort
+     *
+     * @param int   $id
+     * @param array $authors
+     *
+     * @return bool
+     */
+    public function updateAuthor($id, $authors)
+    {
+        $con = $this->getConnection();
+        $app = Core::getApp();
+
+        $con->beginTransaction();
+
+        try {
+            $authors_sort = $app['calibre']->getAuthorSort($authors);
+
+            // Delete book <=> author link
+            $con->createQueryBuilder()
+                ->delete('books_authors_link')
+                ->where('book = :book_id')
+                ->setParameter('book_id', $id, PDO::PARAM_INT)
+                ->execute();
+
+            foreach ($authors_sort as $authorName => $sortName) {
+
+                // Get author id
+                $authorId = $con->createQueryBuilder()
+                    ->select('id')
+                    ->from('authors', 'main')
+                    ->where('main.name = :author_name')
+                    ->setParameter('author_name', $authorName, PDO::PARAM_STR)
+                    ->execute()
+                    ->fetchColumn();
+
+                // Update or insert each author
+                if ($authorId) {
+                    $con->createQueryBuilder()
+                        ->update('authors')
+                        ->set('name', ':author_name')
+                        ->where('id = :author_id')
+                        ->setParameter('author_id',   $authorId,   PDO::PARAM_INT)
+                        ->setParameter('author_name', $authorName, PDO::PARAM_STR)
+                        ->execute();
+                } else {
+                    $con->insert(
+                        'authors',
+                        array(
+                            'name' => $authorName,
+                            'sort' => $sortName,
+                        ),
+                        array(
+                            PDO::PARAM_STR,
+                            PDO::PARAM_STR,
+                        )
+                    );
+
+                    $authorId = $con->lastInsertId();
+                }
+
+                // Create new book <=> author link
+                $con->insert(
+                    'books_authors_link',
+                    array(
+                        'book'   => $id,
+                        'author' => $authorId
+                    ),
+                    array(
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT
+                    )
+                );
+            }
+
+            // Update author_sort in book table (no relation)
+            $con->update(
+                'books',
+                array(
+                    'author_sort' => implode('&', $authors_sort),
+                ),
+                array(
+                    'id' => $id,
+                ),
+                array(
+                    PDO::PARAM_STR,
+                    PDO::PARAM_INT,
+                )
+            );
+
+            $con->commit();
+
+        } catch (\Exception $e) {
+            $con->rollback();
+
+            var_dump($e);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Update title & title sort
+     *
+     * @param int   $id
+     * @param array $title
+     *
+     * @return bool
+     */
+    public function updateTitle($id, $title)
+    {
+        return true;
+    }
+
+    /**
      * Get the base select from QueryBuilder
      *
      * @return Doctrine\DBAL\Query\QueryBuilder

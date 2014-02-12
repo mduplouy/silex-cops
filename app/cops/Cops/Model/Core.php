@@ -81,6 +81,8 @@ class Core implements CoreInterface
         $app->mount('/tag/',        new \Cops\Controller\TagController());
         $app->mount('/search/',     new \Cops\Controller\SearchController());
 
+        $app->mount('/inline-edit/', new \Cops\Controller\InlineEditController);
+
         $app->mount('/admin/',      new \Cops\Controller\AdminController());
         $app->mount('/admin/feed/', new \Cops\Controller\Admin\OpdsFeedController());
 
@@ -127,36 +129,18 @@ class Core implements CoreInterface
             )
         ));
 
-        // Register doctrine DBAL service
-        $app->register(new DoctrineServiceProvider(), array(
-            'db.options' => array(
-                'driver'   => 'pdo_sqlite',
-                'path'     => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
-            ),
-        ));
+         // Calibre internal routines (author_sort etc..)
+        $app['calibre'] = $app->share(function ($app) {
+            return new \Cops\Model\Calibre($app);
+        });
 
-        // Register security provider
-        $app->register(new SecurityServiceProvider(), array(
-            'security.firewalls' => array(
-                'admin' => array(
-                    'pattern' => '^/admin/',
-                    'http' => true,
-                    'users' => array(
-                        'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg==')
-                    )
-                ),
-            )
-        ));
-
-        // echo $app['security.encoder.digest']->encodePassword('password', 'salt');
-
-        $app->register(new \Cops\Provider\SearchServiceProvider());
+        $app->register(new \Cops\Provider\SearchServiceProvider);
 
         // Register session provider
-        $app->register(new \Silex\Provider\SessionServiceProvider());
+        $app->register(new \Silex\Provider\SessionServiceProvider);
 
         // Register url generator service
-        $app->register(new \Cops\Provider\UrlGeneratorServiceProvider());
+        $app->register(new \Cops\Provider\UrlGeneratorServiceProvider);
 
         // Register translator
         $app->register(new \Cops\Provider\TranslationServiceProvider(array(
@@ -173,6 +157,74 @@ class Core implements CoreInterface
 
             return $translator;
         }));
+
+       // Register doctrine DBAL service
+        $app->register(new DoctrineServiceProvider(), array(
+            'db.options' => array(
+                'driver'        => 'pdo_sqlite',
+                'path'          => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
+                'driverOptions' => array(
+                    'userDefinedFunctions' => array(
+                        'title_sort' => array(
+                            'callback' => function($title) use ($app) {
+                                return $title;
+                            },
+                            'numArgs' => 1
+                        ),
+                    ),
+                ),
+            ),
+        ));
+
+        // Security setup
+        $this->registerSecurityService($app);
+    }
+
+    /**
+     * Dedicated method to register security service
+     *
+     * @param  Application $app
+     *
+     * @return void
+     */
+    private function registerSecurityService(Application $app)
+    {
+        // password encoding reminder
+        // echo $app['security.encoder.digest']->encodePassword('password', '');
+
+        // Register security provider
+        $app->register(new SecurityServiceProvider(), array(
+            'security.firewalls' => array(
+                'admin' => array(
+                    'pattern' => '^/../admin',
+                    'http' => true,
+                    'users' => array(
+                        // admin : password
+                        'admin' => array('ROLE_ADMIN', 'BFEQkknI/c+Nd7BaG7AaiyTfUFby/pkMHy3UsYqKqDcmvHoPRX/ame9TnVuOV2GrBH0JK9g4koW+CgTYI9mK+w==')
+                    )
+                ),
+                'default' => array(
+                    'pattern' => '^.*$',
+                    'http' => true,
+                    'users' => array(
+                        // user : password
+                        'user' => array('ROLE_EDIT', 'BFEQkknI/c+Nd7BaG7AaiyTfUFby/pkMHy3UsYqKqDcmvHoPRX/ame9TnVuOV2GrBH0JK9g4koW+CgTYI9mK+w=='),
+                        // admin : password
+                        'admin' => array('ROLE_ADMIN', 'BFEQkknI/c+Nd7BaG7AaiyTfUFby/pkMHy3UsYqKqDcmvHoPRX/ame9TnVuOV2GrBH0JK9g4koW+CgTYI9mK+w==')
+                    )
+                ),
+            )
+        ));
+
+        $app['security.role_hierarchy'] = array(
+            'ROLE_ADMIN' => array('ROLE_USER','ROLE_EDIT'),
+            'ROLE_EDIT'  => array('ROLE_USER'),
+        );
+
+        $app['security.access_rules'] = array(
+             array('^/../admin',        'ROLE_ADMIN'),
+             array('^/../inline-edit/', 'ROLE_EDIT')
+        );
     }
 
     /**

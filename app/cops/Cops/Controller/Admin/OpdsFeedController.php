@@ -36,9 +36,7 @@ class OpdsFeedController
 
     public function indexAction()
     {
-
-        $feedContent = $this->getModel('Opds\\Parser');
-
-        return 'toto';
+        $this->getModel('Opds\\Parser');
+        return 'TODO';
     }
 }

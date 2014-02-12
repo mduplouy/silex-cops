@@ -23,31 +23,37 @@ class Config
      */
     private $_configValues = array(
         // common
-        'last_added'            => 10,
+        'last_added'              => 10,
 
         // web
-        'theme'                 => 'default',
-        'mobile_theme'          => 'mobile',
+        'theme'                   => 'default',
+        'mobile_theme'            => 'mobile',
 
         // path
-        'public_dir'            => 'web',
-        'data_dir'              => 'data',
+        'public_dir'              => 'web',
+        'data_dir'                => 'data',
 
         // email
-        'sender'                => 'php',
+        'sender'                  => 'php',
 
         // misc
-        'debug'                 => false,
-        'use_rewrite'           => false,
+        'debug'                   => false,
+        'use_rewrite'             => false,
 
         // cover
-        'image_processor'       => 'gd',
-        'cover_width'           => 320,
-        'cover_height'          => 240,
+        'image_processor'         => 'gd',
+        'cover_width'             => 320,
+        'cover_height'            => 240,
 
         // tags
-        'homepage_tags'         => 30,
-        'book_per_page'         => 30,
+        'homepage_tags'           => 30,
+        'book_per_page'           => 30,
+
+        // admin
+        'inline_edit'             => false,
+
+        // calibre
+        'author_sort_copy_method' => 'invert',
     );
 
     /**
