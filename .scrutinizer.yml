@@ -1,5 +1,5 @@
 filter:
-    excluded_paths: [vendor/*, tests/*, cops/Cops/Model/Routing/UrlGenerator.php]
+    excluded_paths: [vendor/*, tests/*]
 tools:
     external_code_coverage: true
     php_mess_detector: true
