@@ -224,8 +224,8 @@ class Core implements CoreInterface
         );
 
         $app['security.access_rules'] = array(
-             array('^/admin',        'ROLE_ADMIN'),
-             array('^/inline-edit/', 'ROLE_EDIT')
+             array('^/../admin',        'ROLE_ADMIN'),
+             array('^/../inline-edit/', 'ROLE_EDIT')
         );
     }
 
