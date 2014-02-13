@@ -89,9 +89,19 @@ abstract class ResourceAbstract
     /**
      * Base QB select getter
      *
+     * @deprecated
+     *
      * @return Doctrine\DBAL\Query\QueryBuilder
      */
     protected function getBaseSelect()
+    {
+        return $this->getQueryBuilder();
+    }
+
+    /**
+     * QueryBuilder getter
+     */
+    protected function getQueryBuilder()
     {
         return $this->getConnection()->createQueryBuilder();
     }

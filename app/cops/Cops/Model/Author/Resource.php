@@ -30,7 +30,7 @@ class Resource extends ResourceAbstract
      */
     public function load($authorId)
     {
-        $result = $this->getBaseSelect()
+        $result = $this->getQueryBuilder()
             ->select('*')
             ->from('authors', 'main')
             ->where('id = :author_id')
@@ -44,8 +44,44 @@ class Resource extends ResourceAbstract
                 $authorId
             ));
         }
-
         return $result;
+    }
+
+    /**
+     * Insert author
+     *
+     * @return int
+     */
+    public function insert()
+    {
+        $con = $this->getConnection();
+        $con->insert('authors',
+            array(
+                'name' => $this->getEntity()->getName(),
+                'sort' => $this->getEntity()->getSort(),
+            ),
+            array(
+                PDO::PARAM_STR,
+                PDO::PARAM_STR,
+            )
+        );
+        return $con->lastInsertId();
+    }
+
+    /**
+     * Update author
+     *
+     * @return int
+     */
+    public function update()
+    {
+        return $this->getQueryBuilder()
+            ->update('authors')
+            ->set('name', ':author_name')
+            ->where('id = :author_id')
+            ->setParameter('author_id',   $authorId,   PDO::PARAM_INT)
+            ->setParameter('author_name', $authorName, PDO::PARAM_STR)
+            ->execute();
     }
 
     /**
@@ -55,7 +91,7 @@ class Resource extends ResourceAbstract
      */
     public function getAggregatedList()
     {
-        return $this->getBaseSelect()
+        return $this->getQueryBuilder()
             ->select(
                 'DISTINCT UPPER(SUBSTR(sort, 1, 1)) AS first_letter',
                 'COUNT(*) AS nb_author'
@@ -76,7 +112,7 @@ class Resource extends ResourceAbstract
      */
     public function countBooks($authorId)
     {
-        return (int) $this->getBaseSelect()
+        return (int) $this->getQueryBuilder()
             ->select('COUNT(*) AS nb_author')
             ->from('authors', 'main')
             ->innerJoin('main', 'books_authors_link', 'bal',   'bal.author = main.id')
@@ -96,7 +132,7 @@ class Resource extends ResourceAbstract
      */
     public function loadByFirstLetter($letter)
     {
-        $qb = $this->getBaseSelect()
+        $qb = $this->getQueryBuilder()
             ->select('main.*', 'COUNT(bal.book) as book_count')
             ->from('authors', 'main')
             ->innerJoin('main', 'books_authors_link', 'bal', 'bal.author = main.id');

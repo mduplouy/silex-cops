@@ -102,6 +102,24 @@ class Author extends Common
     }
 
     /**
+     * Save author to DB
+     *
+     * @return int
+     */
+    public function save()
+    {
+        $resource = $this->getResource();
+
+        if ($this->getId()) {
+            $authorId = $this->getId();
+            $resource->update();
+        } else {
+            $authorId = $resource->insert();
+        }
+        return $authorId;
+    }
+
+    /**
      * Reset data on clone
      *
      * @return void

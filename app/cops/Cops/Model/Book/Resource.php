@@ -292,6 +292,8 @@ class Resource extends ResourceAbstract
 
             foreach ($authors_sort as $authorName => $sortName) {
 
+                $author = $this->getModel('Author');
+
                 // Get author id
                 $authorId = $con->createQueryBuilder()
                     ->select('id')
@@ -301,30 +303,15 @@ class Resource extends ResourceAbstract
                     ->execute()
                     ->fetchColumn();
 
-                // Update or insert each author
-                if ($authorId) {
-                    $con->createQueryBuilder()
-                        ->update('authors')
-                        ->set('name', ':author_name')
-                        ->where('id = :author_id')
-                        ->setParameter('author_id',   $authorId,   PDO::PARAM_INT)
-                        ->setParameter('author_name', $authorName, PDO::PARAM_STR)
-                        ->execute();
-                } else {
-                    $con->insert(
-                        'authors',
-                        array(
-                            'name' => $authorName,
-                            'sort' => $sortName,
-                        ),
-                        array(
-                            PDO::PARAM_STR,
-                            PDO::PARAM_STR,
-                        )
-                    );
+                // Save author data
+                $author
+                    ->setName($authorName)
+                    ->setSort($sortName);
 
-                    $authorId = $con->lastInsertId();
+                if ($authorId) {
+                    $author->setId($authorId);
                 }
+                $authorId = $author->save();
 
                 // Create new book <=> author link
                 $con->insert(
@@ -343,12 +330,8 @@ class Resource extends ResourceAbstract
             // Update author_sort in book table (no relation)
             $con->update(
                 'books',
-                array(
-                    'author_sort' => implode('&', $authors_sort),
-                ),
-                array(
-                    'id' => $id,
-                ),
+                array('author_sort' => implode('&', $authors_sort)),
+                array('id'          => $id),
                 array(
                     PDO::PARAM_STR,
                     PDO::PARAM_INT,
@@ -359,9 +342,6 @@ class Resource extends ResourceAbstract
 
         } catch (\Exception $e) {
             $con->rollback();
-
-            var_dump($e);
-
             return false;
         }
 
