@@ -8,17 +8,15 @@
  * file that was distributed with this source code.
  */
 
-ini_set('date.timezone', 'Europe/Paris');
-
 define('BASE_DIR', __DIR__.'/../');
 define('DS', DIRECTORY_SEPARATOR);
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once BASE_DIR.'/vendor/autoload.php';
 
 $app = new \Cops\Model\Application();
 
 // Define core model, no closure to ensure loading
 // Load configuration & set service providers
-$app['core'] =  new Cops\Model\Core(__DIR__.'/cops/config.ini', $app);
+$app['core'] =  new \Cops\Model\Core(BASE_DIR.'app/cops/config.ini', $app);
 
 return $app;

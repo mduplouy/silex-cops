@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+ini_set('date.timezone', 'Europe/Paris');
+
 $app = require __DIR__.'/../app/bootstrap.php';
 
 $app->run();
