@@ -85,6 +85,24 @@ class Resource extends ResourceAbstract
     }
 
     /**
+     * Delete author
+     *
+     * @return bool
+     */
+    public function delete()
+    {
+        return (bool) $this->getConnection()
+            ->delete('authors',
+            array(
+                'id' => $this->getEntity()->getId(),
+            ),
+            array(
+                PDO::PARAM_INT,
+            )
+        );
+    }
+
+    /**
      * Load aggregated list of authors
      *
      * @return array();

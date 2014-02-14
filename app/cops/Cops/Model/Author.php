@@ -120,6 +120,16 @@ class Author extends Common
     }
 
     /**
+     * Delete author from DB
+     *
+     * @return bool
+     */
+    public function delete()
+    {
+        return $this->getResource()->delete();
+    }
+
+    /**
      * Reset data on clone
      *
      * @return void

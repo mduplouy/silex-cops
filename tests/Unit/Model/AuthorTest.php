@@ -66,7 +66,22 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($author->getId(),   "Author Id not null after cloning");
         $this->assertNull($author->getName(), "Author pubdate not null after cloning");
         $this->assertNull($author->getSort(), "Author pubdate not null after cloning");
+    }
 
+    public function testInsert()
+    {
+        $origAuthor = $this->getEmptyauthor();
+        $newId = $origAuthor->setName('My Author')
+            ->setSort('Author, My')
+            ->save();
+
+        $author = new \Cops\Model\Author;
+        $author->load($newId);
+
+        $this->assertEquals($author->getName(), 'My Author');
+        $this->assertEquals($author->getSort(), 'Author, My');
+
+        $author->delete();
     }
 
 }
