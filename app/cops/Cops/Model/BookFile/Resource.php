@@ -25,14 +25,11 @@ class Resource extends ResourceAbstract
      *
      * @param  int      $serieId
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadBySerieId($serieId)
     {
-        $stmt = $this->_getCollectionByType('series', 'series', $serieId);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-        return $stmt;
+        return $this->getCollectionByType('series', 'series', $serieId);
     }
 
     /**
@@ -40,14 +37,11 @@ class Resource extends ResourceAbstract
      *
      * @param  int          $authorId
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadByAuthorId($authorId)
     {
-        $stmt = $this->_getCollectionByType('authors', 'author', $authorId);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-        return $stmt;
+        return $this->getCollectionByType('authors', 'author', $authorId);
     }
 
     /**
@@ -55,14 +49,11 @@ class Resource extends ResourceAbstract
      *
      * @param  int          $tagId
      *
-     * @return PDOStatement
+     * @return array
      */
     public function loadByTagId($tagId)
     {
-        $stmt = $this->_getCollectionByType('tags', 'tag', $tagId);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-        return $stmt;
+        return $this->getCollectionByType('tags', 'tag', $tagId);
     }
 
     /**
@@ -86,7 +77,7 @@ class Resource extends ResourceAbstract
         $stmt = $this->getBaseSelect()
             ->where('main.book IN (:book_id)')
             ->setParameter('book_id', $bookIds, Connection::PARAM_INT_ARRAY)
-            ->execute(\PDO::FETCH_ASSOC);
+            ->execute(PDO::FETCH_ASSOC);
 
         foreach ($stmt as $row) {
             $book = $collection->getById($row['book']);
@@ -105,32 +96,24 @@ class Resource extends ResourceAbstract
      * @param  string $fieldName
      * @param  string $fieldValue
      *
-     * @return PDOStatement
+     * @return array
      */
-    private function _getCollectionByType($tableName, $fieldName, $fieldValue)
+    private function getCollectionByType($tableName, $fieldName, $fieldValue)
     {
-        $sql = 'SELECT
-            data.id,
-            data.format,
-            data.uncompressed_size,
-            data.name,
-            books.path as directory
-            FROM books_%s_link
-            INNER JOIN data ON
-                data.book = books_%s_link.book
-            INNER JOIN books ON
-                books.id = data.book
-            WHERE books_%s_link.%s = ?';
-
-        $sql = sprintf($sql,
-            $tableName,
-            $tableName,
-            $tableName,
-            $fieldName
-        );
-
-        return $this->getConnection()
-            ->executeQuery($sql, array($fieldValue));
+        return $this->getQueryBuilder()
+            ->select(
+                'data.id',
+                'data.format',
+                'data.uncompressed_size',
+                'data.name',
+                'books.path AS directory'
+            )
+            ->from(sprintf('books_%s_link', $tableName), 'main')
+            ->innerJoin('main', 'data',  '', 'data.book = main.book')
+            ->innerJoin('main', 'books', '', 'books.id = data.book')
+            ->where(sprintf('main.%s = :value', $fieldName))
+            ->setParameter('value', $fieldValue)
+            ->execute(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -140,7 +123,7 @@ class Resource extends ResourceAbstract
      */
     protected function getBaseSelect()
     {
-        return parent::getBaseSelect()
+        return $this->getQueryBuilder()
             ->select(
                 'main.id',
                 'main.book',
