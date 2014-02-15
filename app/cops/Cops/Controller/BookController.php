@@ -88,14 +88,19 @@ class BookController extends Controller implements ControllerProviderInterface
     {
         try {
             $book = $this->getModel('Book')->load($id);
-        } catch (BookException $e) {
-            return $app->redirect($app['url_generator']->generate('homepage'));
-        }
 
-        try {
             $bookFile = $book->getFile(strtoupper($format));
+
+            return $app
+                ->sendFile($bookFile->getFilePath(), 200, array($bookFile->getContentTypeHeader()))
+                ->setContentDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    $bookFile->getFileName()
+                );
+        } catch (BookException $e) {
+            $redirect = $app->redirect($app['url_generator']->generate('homepage'));
         } catch (AdapterException $e) {
-            return $app->redirect(
+            $redirect = $app->redirect(
                 $app['url_generator']->generate(
                     'book_detail',
                     array(
@@ -103,17 +108,9 @@ class BookController extends Controller implements ControllerProviderInterface
                     )
                 )
             );
-        }
-
-        try {
-            return $app
-                ->sendFile($bookFile->getFilePath(), 200, array($bookFile->getContentTypeHeader()))
-                ->setContentDisposition(
-                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                    $bookFile->getFileName()
-                );
         } catch (FileNotFoundException $e) {
-            return $app->abort(404);
+            $redirect = $app->abort(404);
         }
+        return $redirect;
     }
 }

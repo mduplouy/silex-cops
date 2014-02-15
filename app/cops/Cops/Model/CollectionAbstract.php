@@ -53,6 +53,20 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
     }
 
     /**
+     * Get all elements id
+     *
+     * @return array
+     */
+    public function getAllIds()
+    {
+        $allIds = array();
+        foreach ($this->mapping as $id => &$elmId) {
+            $allIds[] = $id;
+        }
+        return $allIds;
+    }
+
+    /**
      * Resource getter
      *
      * @return \Cops\Model\ResourceAbstract

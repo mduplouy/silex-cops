@@ -69,10 +69,7 @@ class Resource extends ResourceAbstract
             return $collection;
         }
 
-        $bookIds = array();
-        foreach ($collection as $book) {
-            $bookIds[] = $book->getId();
-        }
+        $bookIds = $collection->getAllIds();
 
         $stmt = $this->getBaseSelect()
             ->where('main.book IN (:book_id)')
