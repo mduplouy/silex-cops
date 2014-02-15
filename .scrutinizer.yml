@@ -1,4 +1,5 @@
 filter:
+    path: [app/cops/*]
     excluded_paths: [vendor/*, tests/*]
 tools:
     external_code_coverage: true
