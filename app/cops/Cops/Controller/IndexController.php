@@ -21,12 +21,6 @@ class IndexController
     implements \Silex\ControllerProviderInterface
 {
     /**
-     * Latest books collection
-     * @var \Cops\Model\Book\Collection
-     */
-    private $latestBooks;
-
-    /**
      * Author aggregated list
      * @var array
      */
