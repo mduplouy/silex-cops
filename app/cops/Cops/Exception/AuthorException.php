@@ -13,6 +13,6 @@ namespace Cops\Exception;
  * Exception is thrown by author object
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class AuthorException extends \RuntimeException
+class AuthorException extends \UnexpectedValueException
 {
 }

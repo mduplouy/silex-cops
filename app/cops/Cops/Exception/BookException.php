@@ -13,6 +13,6 @@ namespace Cops\Exception;
  * Exception is thrown by book object
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class BookException extends \RuntimeException
+class BookException extends \UnexpectedValueException
 {
 }

@@ -13,6 +13,6 @@ namespace Cops\Exception;
  * Exception is thrown by tag object
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class TagException extends \RuntimeException
+class TagException extends \UnexpectedValueException
 {
 }

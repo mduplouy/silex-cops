@@ -109,25 +109,10 @@ class SerieController extends BaseController implements ControllerProviderInterf
     {
         try {
             $serie = $this->getModel('Serie')->load($id);
-        } catch (SerieException $e) {
-            return $app->redirect($app['url_generator']->generate('homepage'));
-        }
 
-        try {
             $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
                 ->getInstance();
-        } catch (AdapterException $e) {
-            return $app->redirect(
-                $app['url_generator']->generate(
-                    'serie_detail',
-                    array(
-                        'id' => $serie->getId()
-                    )
-                )
-            );
-        }
 
-        try {
             $serieBooks = $this->getModel('BookFile')
                 ->getCollection()
                 ->getBySerieId($serie->getId());
@@ -141,6 +126,17 @@ class SerieController extends BaseController implements ControllerProviderInterf
                     ResponseHeaderBag::DISPOSITION_ATTACHMENT,
                     $serie->getDownloadSafeName().$archiveClass->getExtension()
                 );
+        } catch (SerieException $e) {
+            return $app->redirect($app['url_generator']->generate('homepage'));
+        } catch (AdapterException $e) {
+            return $app->redirect(
+                $app['url_generator']->generate(
+                    'serie_detail',
+                    array(
+                        'id' => $serie->getId()
+                    )
+                )
+            );
         } catch (FileNotFoundException $e) {
             return $app->abort(404);
         }

@@ -94,25 +94,10 @@ class TagController extends Controller implements ControllerProviderInterface
     {
         try {
             $tag = $this->getModel('Tag')->load($id);
-        } catch (TagException $e) {
-            return $app->redirect($app['url_generator']->generate('homepage'));
-        }
 
-        try {
             $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
                 ->getInstance();
-        } catch (AdapterException $e) {
-            return $app->redirect(
-                $app['url_generator']->generate(
-                    'tag_book_list',
-                    array(
-                        'id' => $tag->getId()
-                    )
-                )
-            );
-        }
 
-        try {
             $tagBooks = $this->getModel('BookFile')
                 ->getCollection()
                 ->getByTagId($tag->getId());
@@ -126,6 +111,17 @@ class TagController extends Controller implements ControllerProviderInterface
                     ResponseHeaderBag::DISPOSITION_ATTACHMENT,
                     $tag->getDownloadSafeName().$archiveClass->getExtension()
                 );
+        } catch (TagException $e) {
+            return $app->redirect($app['url_generator']->generate('homepage'));
+        } catch (AdapterException $e) {
+            return $app->redirect(
+                $app['url_generator']->generate(
+                    'tag_book_list',
+                    array(
+                        'id' => $tag->getId()
+                    )
+                )
+            );
         } catch (FileNotFoundException $e) {
             return $app->abort(404);
         }

@@ -13,6 +13,6 @@ namespace Cops\Exception;
  * Exception is thrown by serie object
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class SerieException extends \RuntimeException
+class SerieException extends \UnexpectedValueException
 {
 }

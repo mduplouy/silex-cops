@@ -10,6 +10,7 @@
 namespace Cops\Model;
 
 use Cops\Model\Core;
+use Cops\Exception\Archive\AdapterException;
 
 /**
  * Common controller model
