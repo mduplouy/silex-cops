@@ -40,7 +40,6 @@ class BookTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($book->hasCover());
     }
 
-
     public function testCloneResetProperties()
     {
         $origBook = $this->getRealBook();
@@ -54,6 +53,23 @@ class BookTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($book->hasCover() === false,  "Book hasCover not false after cloning");
         $this->assertTrue($book->getPath() === null);
         $this->assertTrue($book->getComment() === null);
+    }
+
+    public function testUpdateAuthor()
+    {
+        $origBook = $this->getRealBook();
+
+        // Check there is 1 author
+        $origAuthors = $origBook->getAuthors();
+        $this->assertEquals(1, $origAuthors->count());
+
+        // Check now there are 2
+        $origBook->updateAuthor('John Smith & Jane Doe');
+        $modifiedBook = $this->getRealBook();
+        $this->assertEquals(2, $modifiedBook->getAuthors()->count());
+
+        // Revert back to original author
+        $origBook->updateAuthor($origAuthors->getName());
     }
 
     /**

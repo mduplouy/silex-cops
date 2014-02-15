@@ -123,7 +123,8 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($author->getName(), 'My Author');
         $this->assertEquals($author->getSort(), 'Author, My');
 
+        $author->setName('John Doe')->save();
+
         $author->delete();
     }
-
 }
