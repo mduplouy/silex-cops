@@ -32,7 +32,6 @@ class AuthorControllerTest extends WebTestCase
     public function testDownloadOk()
     {
         $client = $this->createClient();
-
         $client->request('GET', '/fr/author/4/download/zip');
         $this->assertTrue($client->getResponse()->isOk());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\BinaryFileResponse', $client->getResponse());

@@ -21,6 +21,48 @@ class IndexController
     implements \Silex\ControllerProviderInterface
 {
     /**
+     * Latest books collection
+     * @var \Cops\Model\Book\Collection
+     */
+    private $latestBooks;
+
+    /**
+     * Author aggregated list
+     * @var array
+     */
+    private $authors;
+
+    /**
+     * Author count
+     * @var int
+     */
+    private $nbAuthors;
+
+    /**
+     * Serie aggregated list
+     * @var array
+     */
+    private $series;
+
+    /**
+     * Serie count
+     * @var int
+     */
+    private $nbSeries;
+
+    /**
+     * Tag list
+     * @var \Cops\Model\Tag\Collection
+     */
+    private $tags;
+
+    /**
+     * Tag count
+     * @var int
+     */
+    private $nbTags;
+
+    /**
      * Connect method to dynamically add routes
      *
      * @see \Silex\ControllerProviderInterface::connect()
@@ -51,34 +93,60 @@ class IndexController
             ->getCollection()
             ->getLatest($app['config']->getValue('last_added'));
 
-        $serieList = $this->getModel('Serie')->getAggregatedList();
-        $countSeries = 0;
-        foreach ($serieList as $nbSerie) {
-            $countSeries += $nbSerie;
-        }
+        $this->listSeries();
+        $this->listAuthors();
+        $this->listTags($app);
 
-        $authorList = $this->getModel('Author')->getAggregatedList();
-        $countAuthors = 0;
-        foreach ($authorList as $nbAuthor) {
-            $countAuthors += $nbAuthor;
-        }
+        return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html', array(
+            'pageTitle'         => $app['translator']->trans('Homepage'),
+            'latestBooks'       => $latestBooks,
+            'seriesAggregated'  => $this->series,
+            'countSeries'       => $this->nbSeries,
+            'authorsAggregated' => $this->authors,
+            'countAuthors'      => $this->nbAuthors,
+            'tags'              => $this->tags,
+            'countTags'         => $this->nbTags,
+        ));
+    }
 
-        $tagList = $this->getModel('Tag')
+    /**
+     * Get serie list and count total
+     *
+     * @return void
+     */
+    private function listSeries()
+    {
+        $serie = $this->getModel('Serie');
+        $this->series = $serie->getAggregatedList();
+        $this->nbSeries = $serie->getResource()->count();
+    }
+
+    /**
+     * Get authors and count total
+     *
+     * @return void
+     */
+    private function listAuthors()
+    {
+        $author = $this->getModel('Author');
+        $this->authors = $author->getAggregatedList();
+        $this->nbAuthors = $author->getResource()->count();
+    }
+
+    /**
+     * Get tags and count total
+     *
+     * @param  Application $app
+     *
+     * @return void
+     */
+    private function listTags($app)
+    {
+        $this->tags = $this->getModel('Tag')
             ->getCollection()
             ->setFirstResult(0)
             ->setMaxResults($app['config']->getValue('homepage_tags'))
             ->getAll();
-        $countTags = $tagList->getResource()->getTotalRows();
-
-        return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html', array(
-            'pageTitle' => $app['translator']->trans('Homepage'),
-            'latestBooks' => $latestBooks,
-            'seriesAggregated' => $serieList,
-            'countSeries' => $countSeries,
-            'authorsAggregated' => $authorList,
-            'countAuthors' => $countAuthors,
-            'countTags' => $countTags,
-            'tags' => $tagList,
-        ));
+        $this->nbTags = $this->tags->getResource()->getTotalRows();
     }
 }

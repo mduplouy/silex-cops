@@ -126,6 +126,21 @@ class Resource extends ResourceAbstract
     }
 
     /**
+     * Count total author
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return (int) $this->getQueryBuilder()
+            ->select('COUNT(*)')
+            ->from('authors', 'authors')
+            ->groupBy('id')
+            ->execute()
+            ->fetchColumn(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Count book number written by author
      *
      * @param  int $authorId

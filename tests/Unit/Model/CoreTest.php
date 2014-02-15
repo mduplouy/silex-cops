@@ -60,4 +60,10 @@ class CoreTest extends WebTestCase
     {
         $this->app['core']->getCollection();
     }
+
+    public function testTranslation()
+    {
+        $series = $this->app['translator']->trans('Series', array(), null, 'fr_FR');
+        $this->assertEquals('Séries', $series);
+    }
 }

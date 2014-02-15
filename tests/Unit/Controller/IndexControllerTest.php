@@ -6,29 +6,20 @@ use Silex\WebTestCase;
 
 class IndexControllerTest extends WebTestCase
 {
-
-    private $crawler;
-    private $response;
-
     public function createApplication()
     {
         return require __DIR__.'/../application.php';
     }
 
-    private function requestHome()
+    public function testHomepageResponseCode()
     {
         $client = $this->createClient();
         $crawler = $client->request('GET', '/fr/');
 
-        $this->crawler  = $crawler;
-        $this->response = $client->getResponse();
-    }
+        $this->assertTrue($client->getResponse()->isOk());
 
-
-    public function testHomepageResponseCode()
-    {
-        $this->requestHome();
-        $this->assertTrue($this->response->isOk());
+        $crawler = $client->request('GET', '/');
+        $this->assertTrue($client->getResponse()->isOk());
     }
 
 }

@@ -239,6 +239,7 @@ class Core implements CoreInterface
                 sprintf('Could not get model %s, class does not exists', $fullClassName)
             );
         }
+
         $obj = new \ReflectionClass($fullClassName);
 
         if (!is_array($args)) {

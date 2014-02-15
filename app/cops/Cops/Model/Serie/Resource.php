@@ -33,7 +33,7 @@ class Resource extends ResourceAbstract
      */
     public function load($serieId)
     {
-        $result = $this->getBaseSelect()
+        $result = $this->getQueryBuilder()
             ->select('main.*')
             ->from('series', 'main')
             ->where('id = :serie_id')
@@ -60,7 +60,7 @@ class Resource extends ResourceAbstract
      */
     public function countBooks($serieId)
     {
-        return $this->getBaseSelect()
+        return $this->getQueryBuilder()
             ->select('COUNT(*)')
             ->from('series', 'main')
             ->innerJoin('main', 'books_series_link', 'bsl',   'bsl.series = main.id')
@@ -78,7 +78,7 @@ class Resource extends ResourceAbstract
      */
     public function getAggregatedList()
     {
-        return $this->getBaseSelect()
+        return $this->getQueryBuilder()
             ->select(
                 'DISTINCT UPPER(SUBSTR(sort, 1, 1)) AS first_letter',
                 'COUNT(*) AS nb_serie'
@@ -91,6 +91,22 @@ class Resource extends ResourceAbstract
     }
 
     /**
+     * Count series
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return (int) $this->getQueryBuilder()
+            ->select('COUNT(*)')
+            ->from('series', 'series')
+            ->groupBy('id')
+            ->execute()
+            ->fetchColumn(PDO::FETCH_ASSOC);
+    }
+
+
+    /**
      * Retrieve data based on first letter
      *
      * @param string  $letter
@@ -99,7 +115,7 @@ class Resource extends ResourceAbstract
      */
     public function loadByFirstLetter($letter)
     {
-        $qb = $this->getBaseSelect()
+        $qb = $this->getQueryBuilder()
             ->select('main.*', 'COUNT(bsl.series) AS book_count')
             ->from('series', 'main')
             ->innerJoin('main', 'books_series_link', 'bsl', 'bsl.series = main.id')
