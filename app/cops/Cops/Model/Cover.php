@@ -98,7 +98,7 @@ class Cover extends Core
      * @param int $width
      * @param int $height
      *
-     * @return string
+     * @return false|string
      */
     public function getThumbnailPath($width = null, $height = null)
     {
@@ -118,17 +118,10 @@ class Cover extends Core
 
         $this->thumbnailFile = BASE_DIR.$this->getConfig()->getValue('public_dir').$this->thumbnailPath;
 
-        if (file_exists($this->thumbnailFile)) {
-            return $this->thumbnailPath;
-        } elseif (!file_exists($this->storageDir.$this->thumbnailPath)) {
-
-            $targetDir = dirname($this->thumbnailFile);
-            if (!is_dir($targetDir)) {
-                mkdir(dirname($this->thumbnailFile), 0777, true);
-            }
-
+        if (!file_exists($this->thumbnailFile)) {
             $this->generateThumbnail();
         }
+
         return $this->thumbnailPath;
     }
 
@@ -139,6 +132,11 @@ class Cover extends Core
      */
     private function generateThumbnail()
     {
+        $targetDir = dirname($this->thumbnailFile);
+        if (!is_dir($targetDir)) {
+            mkdir(dirname($this->thumbnailFile), 0777, true);
+        }
+
         $app = self::getApp();
 
         $app['image_processor']
