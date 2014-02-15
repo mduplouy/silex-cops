@@ -18,7 +18,7 @@ use Cops\Provider\UrlGeneratorServiceProvider;
 use Cops\Provider\ImageProcessorServiceProvider;
 use Cops\Provider\TranslationServiceProvider;
 use Cops\Provider\SearchServiceProvider;
-use Cops\Provider\UrlGeneratorServiceProvider;
+
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\SessionServiceProvider;
