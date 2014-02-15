@@ -61,6 +61,7 @@ class BookTest extends \PHPUnit_Framework_TestCase
 
         // Check there is 1 author
         $origAuthors = $origBook->getAuthors();
+        $origNames = $origAuthors->getName();
         $this->assertEquals(1, $origAuthors->count());
 
         // Check now there are 2
@@ -69,7 +70,7 @@ class BookTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $modifiedBook->getAuthors()->count());
 
         // Revert back to original author
-        $origBook->updateAuthor($origAuthors->getName());
+        $origBook->updateAuthor($origNames);
     }
 
     /**
