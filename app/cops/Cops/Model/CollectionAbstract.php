@@ -35,12 +35,6 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
     private $entity;
 
     /**
-     * Object model resource instance
-     * @var \Cops\Model\ResourceAbstract
-     */
-    private $resource;
-
-    /**
      * Constructor
      *
      * @param Common $entity Related entity instance for collection
