@@ -11,17 +11,25 @@ namespace Cops\Model;
 
 use Cops\Model\Config;
 use Cops\Model\CoreInterface;
+use Cops\Model\Calibre;
+
 use Cops\Provider\MobileDetectServiceProvider;
 use Cops\Provider\UrlGeneratorServiceProvider;
 use Cops\Provider\ImageProcessorServiceProvider;
-use Cops\EventListener\LocaleListener;
-use Silex\Application as BaseApplication;
-use Silex\Provider\TwigServiceProvider;
+use Cops\Provider\TranslationServiceProvider;
+use Cops\Provider\SearchServiceProvider;
+use Cops\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\SessionServiceProvider;
+use Silex\Provider\TwigServiceProvider;
+
+use Cops\EventListener\LocaleListener;
+use Silex\Application as BaseApplication;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Translation\Loader\YamlFileLoader;
 
 /**
  * Core class
@@ -29,12 +37,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class Core implements CoreInterface
 {
-    /**
-     * Model object instance registry
-     * @var array
-     */
-    protected $modelInstance = array();
-
     /**
      * Resource instance
      * @var \Cops\Model\Resource
@@ -74,17 +76,17 @@ class Core implements CoreInterface
         });
 
         // Set the mount points for the controllers
-        $app->mount('/',            new \Cops\Controller\IndexController());
-        $app->mount('/book/',       new \Cops\Controller\BookController());
-        $app->mount('/serie/',      new \Cops\Controller\SerieController());
-        $app->mount('/author/',     new \Cops\Controller\AuthorController());
-        $app->mount('/tag/',        new \Cops\Controller\TagController());
-        $app->mount('/search/',     new \Cops\Controller\SearchController());
+        $app->mount('/',             new \Cops\Controller\IndexController());
+        $app->mount('/book/',        new \Cops\Controller\BookController());
+        $app->mount('/serie/',       new \Cops\Controller\SerieController());
+        $app->mount('/author/',      new \Cops\Controller\AuthorController());
+        $app->mount('/tag/',         new \Cops\Controller\TagController());
+        $app->mount('/search/',      new \Cops\Controller\SearchController());
 
         $app->mount('/inline-edit/', new \Cops\Controller\InlineEditController);
 
-        $app->mount('/admin/',      new \Cops\Controller\AdminController());
-        $app->mount('/admin/feed/', new \Cops\Controller\Admin\OpdsFeedController());
+        $app->mount('/admin/',       new \Cops\Controller\AdminController());
+        $app->mount('/admin/feed/',  new \Cops\Controller\Admin\OpdsFeedController());
 
         $app->mount('/login/',       new \Cops\Controller\LoginController());
         $app->mount('/opds/',        new \Cops\Controller\OpdsController());
@@ -131,24 +133,24 @@ class Core implements CoreInterface
 
          // Calibre internal routines (author_sort etc..)
         $app['calibre'] = $app->share(function ($app) {
-            return new \Cops\Model\Calibre($app);
+            return new Calibre($app);
         });
 
-        $app->register(new \Cops\Provider\SearchServiceProvider);
+        $app->register(new SearchServiceProvider);
 
         // Register session provider
-        $app->register(new \Silex\Provider\SessionServiceProvider);
+        $app->register(new SessionServiceProvider);
 
         // Register url generator service
-        $app->register(new \Cops\Provider\UrlGeneratorServiceProvider);
+        $app->register(new UrlGeneratorServiceProvider);
 
         // Register translator
-        $app->register(new \Cops\Provider\TranslationServiceProvider(array(
+        $app->register(new TranslationServiceProvider(array(
             'default' => $app['config']->getValue('default_lang')
         )));
 
         $app['translator'] = $app->share($app->extend('translator', function($translator) {
-            $translator->addLoader('yaml', new \Symfony\Component\Translation\Loader\YamlFileLoader());
+            $translator->addLoader('yaml', new YamlFileLoader());
 
             foreach (array('messages') as $domain) {
                 $translator->addResource('yaml', BASE_DIR.'locales/fr/'.$domain.'.yml', 'fr', $domain);
@@ -163,7 +165,7 @@ class Core implements CoreInterface
             'db.options' => array(
                 'driver'        => 'pdo_sqlite',
                 'path'          => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
-                'driverOptions' => \Cops\Model\Calibre::getDBInternalFunctions(),
+                'driverOptions' => Calibre::getDBInternalFunctions(),
             ),
         ));
 
@@ -229,24 +231,21 @@ class Core implements CoreInterface
      */
     public function getModel($className, $args = array())
     {
-        if (!isset($this->modelInstance[$className])) {
-            $fullClassName = $className;
-            if (!class_exists($fullClassName)) {
-                $fullClassName = __NAMESPACE__.'\\'.$className;
-            }
-            if (!class_exists($fullClassName)) {
-                throw new \InvalidArgumentException(
-                    sprintf('Could not get model %s, class does not exists', $fullClassName)
-                );
-            }
-            $obj = new \ReflectionClass($fullClassName);
-
-            if (!is_array($args)) {
-                $args = array($args);
-            }
-            return $obj->newInstanceArgs($args);
+        $fullClassName = $className;
+        if (!class_exists($fullClassName)) {
+            $fullClassName = __NAMESPACE__.'\\'.$className;
         }
-        return $this->modelInstance[$className];
+        if (!class_exists($fullClassName)) {
+            throw new \InvalidArgumentException(
+                sprintf('Could not get model %s, class does not exists', $fullClassName)
+            );
+        }
+        $obj = new \ReflectionClass($fullClassName);
+
+        if (!is_array($args)) {
+            $args = array($args);
+        }
+        return $obj->newInstanceArgs($args);
     }
 
     /**
@@ -305,7 +304,7 @@ class Core implements CoreInterface
     /**
      * DBAL connection getter
      *
-     * @return Doctrine\DBAL\Connection
+     * @return \Doctrine\DBAL\Connection
      */
     public static function getDb()
     {
