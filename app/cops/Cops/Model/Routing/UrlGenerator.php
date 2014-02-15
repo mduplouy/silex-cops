@@ -27,21 +27,25 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
 
         // Check for mod_rewrite config then prepend script name to url
         if (Core::getConfig()->getValue('use_rewrite') !== true && php_sapi_name() != 'cli') {
-            $app = Core::getApp();
-            $scriptName = $app['request']->getScriptName();
+            $url = $this->addScriptNameToUrl($url);
+        }
+        return $url;
+    }
 
-            if (strpos($url, $scriptName) === false) {
-                $basePath = $app['request']->getBasePath();
-                if ($basePath == '') {
-                    $url = $basePath.basename($scriptName).$url;
-                } else {
-                    $url = str_replace(
-                        $basePath,
-                        $basePath.DS.basename($scriptName),
-                        $url
-                    );
-                }
-            }
+    /**
+     * Add script name to url when not using rewrite
+     *
+     * @param  string $url
+     *
+     * @return string
+     */
+    private function addScriptNameToUrl($url)
+    {
+        $app = Core::getApp();
+        $scriptName = $app['request']->getScriptName();
+
+        if (strpos($url, $scriptName) === false) {
+            $url = $app['request']->getBasePath().DS.basename($scriptName).$url;
         }
         return $url;
     }
