@@ -5,7 +5,7 @@ namespace Cops\Tests\Model;
 /**
  * Book model test cases
  *
- * @require PHP 5.2
+ * @require PHP 5.3
  */
 class BookTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +34,7 @@ class BookTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Cops\Model\Cover', $book->getCover());
         $this->assertInstanceOf('Cops\Model\Serie', $book->getSerie());
-        $this->assertInstanceOf('Cops\Model\Author', $book->getAuthor());
+        $this->assertInstanceOf('Cops\Model\Author\Collection', $book->getAuthors());
         $this->assertInstanceOf('Cops\Model\BookFile\BookFileInterface', $book->getFile());
         $this->assertInternalType('array', $book->getFiles());
         $this->assertFalse($book->hasCover());

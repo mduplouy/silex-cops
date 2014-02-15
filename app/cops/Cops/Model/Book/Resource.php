@@ -222,11 +222,13 @@ class Resource extends ResourceAbstract
     {
         $myBook = parent::setDataFromStatement($result);
 
+        /*
         $myBook->getAuthor()->setData(array(
             'id'   => $result['author_id'],
             'name' => $result['author_name'],
             'sort' => $result['author_sort'],
         ));
+        */
 
         if (!empty($result['serie_id'])) {
             $myBook->getSerie()->setData(array(
@@ -281,8 +283,6 @@ class Resource extends ResourceAbstract
         $con->beginTransaction();
 
         try {
-            $authors_sort = $app['calibre']->getAuthorSort($authors);
-
             // Delete book <=> author link
             $con->createQueryBuilder()
                 ->delete('books_authors_link')
@@ -290,7 +290,12 @@ class Resource extends ResourceAbstract
                 ->setParameter('book_id', $id, PDO::PARAM_INT)
                 ->execute();
 
-            foreach ($authors_sort as $authorName => $sortName) {
+            $allAuthorsSort = array();
+
+            foreach ($authors as $authorName) {
+
+                $sortName = $app['calibre']->getAuthorSortName($authorName);
+                $allAuthorsSort[] = $sortName;
 
                 $author = $this->getModel('Author');
 
@@ -330,7 +335,7 @@ class Resource extends ResourceAbstract
             // Update author_sort in book table (no relation)
             $con->update(
                 'books',
-                array('author_sort' => implode('&', $authors_sort)),
+                array('author_sort' => implode(' & ', $allAuthorsSort)),
                 array('id'          => $id),
                 array(
                     PDO::PARAM_STR,
@@ -340,6 +345,7 @@ class Resource extends ResourceAbstract
 
             $con->commit();
 
+        // @fixme pop exception message to the user
         } catch (\Exception $e) {
             $con->rollback();
             return false;

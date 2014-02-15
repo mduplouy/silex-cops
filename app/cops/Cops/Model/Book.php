@@ -68,10 +68,10 @@ class Book extends Common
     protected $seriesIndex;
 
     /**
-     * An Author object instance
-     * @var \Cops\Model\Author
+     * Collection of author
+     * @var \Cops\Model\Author\Collection
      */
-    protected $_author;
+    protected $_authors;
 
     /**
      * A Cover object instance
@@ -95,7 +95,7 @@ class Book extends Common
      * An array of file adapter instance
      * @var array
      */
-    protected $_file = array();
+    protected $_files = array();
 
     /**
      * Load book
@@ -110,14 +110,10 @@ class Book extends Common
 
         $this->setData($result);
 
-        if (!empty($result['author_id'])) {
-            $this->getAuthor()->setData(array(
-                'id'   => $result['author_id'],
-                'name' => $result['author_name'],
-                'sort' => $result['author_sort'],
-            ));
-        }
+        // Set author collection
+        $this->_authors = $this->getModel('Author')->getCollection()->getByBookId($this->getId());
 
+        // Set serie data
         if (!empty($result['serie_id'])) {
             $this->getSerie()->setData(array(
                 'id'   => $result['serie_id'],
@@ -126,6 +122,7 @@ class Book extends Common
             ));
         }
 
+        // Set bookfile data
         // @TODO, change this
         $this->getModel('BookFile')->loadFromBook($this);
 
@@ -171,16 +168,18 @@ class Book extends Common
     }
 
     /**
-     * Author object getter
+     * Author collection getter
      *
-     * @return \Cops\Model\Author
+     * @return \Cops\Model\Author\Collection
      */
-    public function getAuthor()
+    public function getAuthors()
     {
-        if (is_null($this->_author)) {
-            $this->_author = $this->getModel('Author');
+        if (is_null($this->_authors)) {
+            $this->_authors = $this->getModel('Author')
+                ->getCollection()
+                ->getByBookId($this->getId());
         }
-        return $this->_author;
+        return $this->_authors;
     }
 
     /**
@@ -190,11 +189,11 @@ class Book extends Common
      */
     public function getFile($fileType = BookFileFactory::TYPE_EPUB)
     {
-        if (!isset($this->_file[$fileType])) {
-            $this->_file[$fileType] = $this->getModel('BookFile\\BookFileFactory', $fileType)
+        if (!isset($this->_files[$fileType])) {
+            $this->_files[$fileType] = $this->getModel('BookFile\\BookFileFactory', $fileType)
                 ->getInstance();
         }
-        return $this->_file[$fileType];
+        return $this->_files[$fileType];
     }
 
     /**
@@ -204,7 +203,7 @@ class Book extends Common
      */
     public function getFiles()
     {
-        return $this->_file;
+        return $this->_files;
     }
 
     /**
@@ -222,17 +221,20 @@ class Book extends Common
     /**
      * Update book author
      *
-     * @param array $author
-     * @param int   $bookId
+     * @param string|array $authors
+     * @param int          $bookId
      *
      * @return bool
      */
-    public function updateAuthor($author, $bookId = null)
+    public function updateAuthor($authors, $bookId = null)
     {
         if ($bookId === null) {
             $bookId = $this->getId();
         }
-        return $this->getResource()->updateAuthor($bookId, explode('&', $author));
+        if (!is_array($authors)) {
+            $authors = explode('&', $authors);
+        }
+        return $this->getResource()->updateAuthor($bookId, $authors);
     }
 
     /**

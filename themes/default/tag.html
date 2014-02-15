@@ -22,6 +22,8 @@
     {% endif %}
 
     {% for book in books %}
+        {% set authors = book.getAuthors() %}
+
         <div class="book">
 
             {% include 'book_cover.html' with {'book': book} %}
@@ -30,6 +32,8 @@
                 {% if book.getSerie().getId() %}{{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} - {% endif %}
                 {{ book.getTitle() }}
             </a></h3>
+
+            <h4>{{ authors.getName() }}</h4>
 
             <div class="small comment">{{ book.getComment()|striptags }}</div>
 
@@ -43,12 +47,14 @@
                 </a><br />
             {% endif %}
 
-            {% set author = book.getAuthor() %}
-            {% if author.getId() %}
-                {% set authorLinkText = "See books from %s"|trans|format(author.getName()) %}
-                <a class="inline-block book_link author" href="{{ app.url_generator.generate('author_detail', {'id': author.getId()}) }}" title="{{ authorLinkText|escape }}">
-                    &rsaquo; {{ authorLinkText }}
-                </a>
+            {% if authors.count() %}
+                <span class="book_link author">&rsaquo; {{ "See all books from"|trans }}</span>
+                {% for author in authors  %}
+                <a class="inline-block book_link author" href="{{ app.url_generator.generate('author_detail', {'id': author.getId()}) }}" title="{{ author.getName()|escape }}">
+                    {{ author.getName() }}
+                </a>{% if loop.revindex0 %}, {% endif %}
+
+                {% endfor %}
             {% endif %}
 
             <div class="clear"></div>

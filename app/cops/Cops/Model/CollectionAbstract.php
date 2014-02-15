@@ -15,13 +15,18 @@ use Cops\Model\Common;
  * Collection abstract class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class CollectionAbstract implements \IteratorAggregate, \Countable
-{
+abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
     /**
      * Collection elements
      * @var array
      */
     private $elements = array();
+
+    /**
+     * Id <=> Key mapping for elements
+     * @var array
+     */
+    private $mapping = array();
 
     /**
      * Object entity model instance
@@ -31,7 +36,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
 
     /**
      * Object model resource instance
-     * @var Resource
+     * @var \Cops\Model\ResourceAbstract
      */
     private $resource;
 
@@ -40,10 +45,8 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @param Common $entity Related entity instance for collection
      */
-    public function __construct(Common $entity)
-    {
+    public function __construct(Common $entity) {
         $this->entity = $entity;
-        $this->resource = $entity->getResource();
     }
 
     /**
@@ -51,19 +54,17 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return Common
      */
-    public function getEntity()
-    {
+    public function getEntity() {
         return $this->entity;
     }
 
     /**
      * Resource getter
      *
-     * @return Resource
+     * @return \Cops\Model\ResourceAbstract
      */
-    public function getResource()
-    {
-        return $this->resource;
+    public function getResource() {
+        return $this->getEntity()->getResource();
     }
 
     /**
@@ -73,8 +74,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return \ArrayIterator An \ArrayIterator object for iterating over collection elements
      */
-    public function getIterator()
-    {
+    public function getIterator() {
         return new \ArrayIterator($this->elements);
     }
 
@@ -85,9 +85,9 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return Collection
      */
-    public function add($element)
-    {
-        $this->elements[$element->getId()] = $element;
+    public function add($element) {
+        $this->elements[] = $element;
+        $this->mapping[$element->getId()] = count($this->elements) - 1;
         return $this;
     }
 
@@ -95,10 +95,23 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      * Get element by ID
      *
      * @param int $id
+     *
+     * @return mixed
      */
-    public function getById($id)
+    public function getById($id) {
+        return $this->elements[$this->mapping[$id]];
+    }
+
+    /**
+     * Get element by key
+     *
+     * @param int $key
+     *
+     * @return mixed
+     */
+    public function getByKey($key)
     {
-        return $this->elements[$id];
+        return $this->elements[$key];
     }
 
     /**
@@ -106,8 +119,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      * Implements \Countable
      * @return int
      */
-    public function count()
-    {
+    public function count() {
         return count($this->elements);
     }
 
@@ -118,8 +130,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return Collection
      */
-    public function setFirstResult($offset)
-    {
+    public function setFirstResult($offset) {
         $this->getResource()->setFirstResult($offset);
         return $this;
     }
@@ -131,9 +142,9 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return Collection
      */
-    public function setMaxResults($limit)
-    {
+    public function setMaxResults($limit) {
         $this->getResource()->setMaxResults($limit);
         return $this;
     }
+
 }

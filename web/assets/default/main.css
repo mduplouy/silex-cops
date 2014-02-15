@@ -19,7 +19,7 @@ body {
 .center { text-align: center; }
 
 h3 a { font-size: 0.98em; text-decoration:none; color:#666; }
-
+h4 { font-size:0.82em; padding:0; margin:0; }
 /**
  * General layout
  */

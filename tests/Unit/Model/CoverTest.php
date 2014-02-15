@@ -50,7 +50,6 @@ class CoverTest extends \PHPUnit_Framework_TestCase
         unlink($this->targetPath.$thumbnail);
         rmdir(dirname($this->targetPath.$thumbnail));
         rmdir($this->targetPath.DS.'assets'.DS.'books'.DS.'5');
-
     }
 
 }

@@ -11,6 +11,7 @@
 namespace Cops\Model\Author;
 
 use Cops\Model\CollectionAbstract;
+use Cops\Model\Core;
 
 /**
  * Author collection model
@@ -21,7 +22,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     /**
      * Get collection based on first letter
      *
-     * @param str $letter
+     * @param  str        $letter
      *
      * @return Collection
      */
@@ -33,6 +34,56 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
             $this->add($resource->setDataFromStatement($result));
         }
         return $this;
+    }
 
+    /**
+     * Get collection based on bookId
+     *
+     * @param  int        $bookId
+     *
+     * @return Collection
+     */
+    public function getByBookId($bookId)
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadByBookId($bookId) as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+        return $this;
+    }
+
+    /**
+     * Get concatened author's name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        $name = array();
+        foreach($this as $author) {
+            $name[] = $author->getName();
+        }
+        return implode(' & ', $name);
+    }
+
+    /**
+     * Set sort name for author collection
+     *
+     * @param  \Cops\Model\Author\Collection $authors
+     *
+     * @return \Cops\Model\Author\Collection
+     */
+    public function setSortName()
+    {
+        $app = Core::getApp();
+        $calibre = $app['calibre'];
+
+        foreach ($this as &$author) {
+            $author->setSort(
+                $calibre->getSortName($author->getName())
+            );
+        }
+        return $this;
     }
 }

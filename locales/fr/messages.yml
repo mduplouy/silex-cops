@@ -18,7 +18,7 @@ Access by Tag: Accès par tag
 Administration: Administation
 Alphabetic list of the authors: Liste alphabétique des auteurs
 Alphabetic list of the series: List alphabétique des séries
-Author:: Auteur :
+Author:: Auteur :|Auteurs :
 Author / Book title: Auteur / Titre de livre
 Authors: Auteurs
 Authors beginning by %s: Auteurs commençant par %s
@@ -30,16 +30,16 @@ Homepage: Accueil
 Last added: Derniers ajouts
 Last added books: Derniers livres ajoutés
 Next: Suivant
-Other books from this author:: Autres livres de cet auteur :
-Other books in this serie:: Autres livres de cette série :
+Other book from this author:: Autre livre de cet auteur:|Autres livres de cet auteur :
+Other book in this serie:: Autre livre de cette série :|Autres livres de cette série :
 Page %d on %d (%d results): Page %d sur %d (%d résultats)
 Page %d on %d: Page %d sur %d
 Previous: Précédent
 Publication date:: Date de publication :
 Search: Rechercher
 Search results: Résultats de la recherche
+See all books from: Voir tous les livres de
 See book detail: Voir les détails du livre
-See books from %s: Voir les livres de %s
 See the books from serie %s: Voir les livres de la série %s
 Series: Séries
 Series beginning by %s: Série(s) commençant par %s

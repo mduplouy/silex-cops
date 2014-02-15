@@ -17,16 +17,20 @@
 
         <h1 class="editable" data-type="text" data-inputclass="h1" data-name="title">{{ book.getTitle() }}</h1>
 
-        {% set author = book.getAuthor() %}
-        <p>{{"Author:"|trans}} <span class="bold editable" data-type="text" data-name="author">{{ book.getAuthor().getName() }}</span>
-        {% set nbBooks = author.getNumberOfBooks %}
-            {% if nbBooks > 1 %}
-            <br />
-            <span class="small">{{"Download author's books (%s) as archive:"|trans|format(nbBooks) }}
-            <a href="{{ app.url_generator.generate('author_download', {id: author.getId(), format: "zip"}) }}">zip</a> /
-            <a href="{{ app.url_generator.generate('author_download', {id: author.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
-            {% endif %}
-        </p>
+        {% set authors = book.getAuthors() %}
+        <p>{{ "Author:"|transchoice(authors.count()) }} <span class="bold editable" data-type="text" data-name="author">{{ authors.getName() }}</span>
+
+        {% if authors.count() == 1 %}
+            {% set author = authors.getByKey(0) %}
+            {% set nbBooks = author.getNumberOfBooks %}
+                {% if nbBooks > 1 %}
+                <br />
+                <span class="small">{{"Download author's books (%s) as archive:"|trans|format(nbBooks) }}
+                <a href="{{ app.url_generator.generate('author_download', {id: author.getId(), format: "zip"}) }}">zip</a> /
+                <a href="{{ app.url_generator.generate('author_download', {id: author.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+                {% endif %}
+            </p>
+        {% endif %}
 
         <p>{{"Publication date:"|trans}} <span class="bold editable" data-type="combodate" data-format="{{ date_edit }}">{{ book.getPubdate()|date(date_format) }}</span></p>
 
@@ -62,7 +66,7 @@
             {% set serieBooks = book.getCollection().getOtherBooksFromSerie() %}
             {%if serieBooks|length > 0 %}
         <div id="serie">
-            {{"Other books in this serie:"|trans}} <br />
+            {{ "Other book in this serie:"|transchoice(serieBooks|length) }} <br />
             <ul>
                 {% for serieBook in serieBooks %}
                 <li>{% include 'book_link.html' with {'book': serieBook, 'showAuthor': false} %}</li>
@@ -73,10 +77,11 @@
         <div class="clear"></div>
         {% endif %}
 
-        {% set authorBooks = book.getCollection().getOtherBooksFromAuthor() %}
-        {% if authorBooks|length %}
+        {% if authors.count() == 1 %}
+            {% set authorBooks = book.getCollection().getOtherBooksFromAuthor() %}
+            {% if authorBooks|length %}
         <div id="author">
-            {{"Other books from this author:"|trans}} <br />
+            {{ "Other book from this author:"|transchoice(authorBooks|length) }} <br />
             <ul>
             {% for authorBook in authorBooks %}
                 <li>{% include 'book_link.html' with {'book': authorBook, 'showAuthor': false} %}</li>
@@ -84,6 +89,7 @@
             </ul>
         </div>
         <div class="clear"></div>
+            {% endif %}
         {% endif %}
 
     </div>

@@ -46,11 +46,17 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     {
         $book = $this->getEntity();
 
+        $authorId = null;
+        foreach($book->getAuthors() as $author) {
+            $authorId = $author->getId();
+            break;
+        }
+
         $this->getResource()
             ->setExcludedBookId($book->getId())
             ->setExcludedSerieId($book->getSerie()->getId());
 
-        return $this->getByAuthorId();
+        return $this->getByAuthorId($authorId);
     }
 
     /**
@@ -62,11 +68,6 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
      */
     public function getByAuthorId($authorId = null)
     {
-        $book = $this->getEntity();
-        if ($authorId === null) {
-            $authorId = $book->getAuthor()->getId();
-        }
-
         if ($authorId === null) {
             return $this;
         }
@@ -76,7 +77,6 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
         foreach ($resource->loadByAuthorId($authorId) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
-
         return $this;
     }
 

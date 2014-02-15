@@ -55,6 +55,22 @@ class Author extends Common
     }
 
     /**
+     * Get sort name using Calibre algorithm
+     *
+     * @return string|null
+     */
+    public function getSort()
+    {
+        if ($this->sort === null && $this->name !== null)
+        {
+            $app = self::getApp();
+            $this->sort = $app['calibre']->getAuthorSortName($this->name);
+        }
+
+        return $this->sort;
+    }
+
+    /**
      * Get the latest added books
      *
      * @return array Array of Book object

@@ -45,6 +45,12 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($author->getNumberOfBooks(), $books->count());
     }
 
+    public function testLoadByBookId()
+    {
+        $authors = $this->getEmptyauthor()->getCollection()->getByBookId(5);
+        $this->assertInstanceOf('Cops\Model\Author\Collection', $authors);
+    }
+
     public function testLoadByFirstLetter()
     {
         $authors = $this->getEmptyauthor()->getCollection()->getByFirstLetter('A');
@@ -68,12 +74,48 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($author->getSort(), "Author pubdate not null after cloning");
     }
 
+    /**
+     * @dataProvider getDataForAuthorSort
+     */
+    public function testAuthorSort($authorName, $expectedSort)
+    {
+        $author = $this->getEmptyauthor();
+        $config = \Cops\Model\Core::getConfig();
+
+        $author->setSort(null)->setName($authorName);
+
+        $this->assertEquals(
+            $author->getSort(),
+            $expectedSort,
+            sprintf(
+                'Default sort algorithm gives %s result instead of %s',
+                $author->getSort(),
+                $expectedSort
+            )
+        );
+    }
+
+    /**
+     * Data provider for author sort testing
+     */
+    public function getDataForAuthorSort()
+    {
+        return array(
+            array('John Smith',       'Smith, John'),
+            array('John Steve Smith', 'Smith, John Steve'),
+            array('Smith',            'Smith'),
+        );
+    }
+
     public function testInsert()
     {
-        $origAuthor = $this->getEmptyauthor();
-        $newId = $origAuthor->setName('My Author')
+        $author = new \Cops\Model\Author;
+        $newId = $author
+            ->setName('My Author')
             ->setSort('Author, My')
             ->save();
+
+        $this->assertGreaterThan(0, $newId);
 
         $author = new \Cops\Model\Author;
         $author->load($newId);

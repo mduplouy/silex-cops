@@ -8,6 +8,6 @@
 {% endif %}
 {{ book.getTitle() }}
 
-{% if showAuthor %} - {{ book.getAuthor().getName() }}{% endif %}
+{% if showAuthor %} - {{ book.getAuthors().getName() }}{% endif %}
  ({{ book.getPubdate()|date("Y") }})
 </a>

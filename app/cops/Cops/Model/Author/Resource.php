@@ -71,16 +71,20 @@ class Resource extends ResourceAbstract
     /**
      * Update author
      *
-     * @return int
+     * @return int Number of updated lines
      */
     public function update()
     {
+        $author = $this->getEntity();
+
         return $this->getQueryBuilder()
             ->update('authors')
-            ->set('name', ':author_name')
-            ->where('id = :author_id')
-            ->setParameter('author_id',   $authorId,   PDO::PARAM_INT)
-            ->setParameter('author_name', $authorName, PDO::PARAM_STR)
+            ->set('name', ':name')
+            ->set('sort', ':sort')
+            ->where('id = :id')
+            ->setParameter('id',   $author->getId(),   PDO::PARAM_INT)
+            ->setParameter('name', $author->getName(), PDO::PARAM_STR)
+            ->setParameter('sort', $author->getSort(), PDO::PARAM_STR)
             ->execute();
     }
 
@@ -167,6 +171,25 @@ class Resource extends ResourceAbstract
             ->orderBy('sort')
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
+    }
 
+    /**
+     * Load by bookId
+     *
+     * @param  int   $bookId
+     *
+     * @return array
+     */
+    public function loadByBookId($bookId)
+    {
+        return $this->getQueryBuilder()
+            ->select('main.*')
+            ->from('authors', 'main')
+            ->innerJoin('main', 'books_authors_link', 'bal',   'bal.author = main.id')
+            ->innerJoin('main', 'books',              'books', 'books.id = bal.book')
+            ->where('books.id = :book_id')
+            ->setParameter('book_id', $bookId, PDO::PARAM_INT)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 }
