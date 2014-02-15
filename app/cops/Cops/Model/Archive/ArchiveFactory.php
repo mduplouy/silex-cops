@@ -86,14 +86,4 @@ class ArchiveFactory extends ArchiveAbstract
         }
         return $this->_instance[$this->_instanceType];
     }
-
-    /**
-     * Get available archive types as array
-     *
-     * @return array
-     */
-    public function getArchiveTypes()
-    {
-        return $this->_instanceTypeStorage;
-    }
 }
