@@ -163,17 +163,7 @@ class Core implements CoreInterface
             'db.options' => array(
                 'driver'        => 'pdo_sqlite',
                 'path'          => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
-                'driverOptions' => array(
-                    'userDefinedFunctions' => array(
-                        'title_sort' => array(
-                            // @todo implement title_sort function from calibre
-                            'callback' => function($title) use ($app) {
-                                return $title;
-                            },
-                            'numArgs' => 1
-                        ),
-                    ),
-                ),
+                'driverOptions' => \Cops\Model\Calibre::getDBInternalFunctions(),
             ),
         ));
 

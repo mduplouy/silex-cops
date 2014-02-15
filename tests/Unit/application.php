@@ -11,9 +11,11 @@ $app['debug'] = true;
 // Register special database for tests
 $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
     'db.options' => array(
-        'driver'   => 'pdo_sqlite',
-        'path'     => DATABASE,
+        'driver'        => 'pdo_sqlite',
+        'path'          => DATABASE,
+        'driverOptions' => \Cops\Model\Calibre::getDBInternalFunctions(),
     ),
+
 ));
 
 $app['book_storage_dir'] = BASE_DIR.'tests/data';

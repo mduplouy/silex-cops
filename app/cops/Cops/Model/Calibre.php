@@ -129,4 +129,25 @@ class Calibre
         }
         return $name;
     }
+
+    /**
+     * Return specific DB user functions for DB container
+     *
+     * @return array
+     */
+    public static function getDBInternalFunctions()
+    {
+        return
+            array(
+                'userDefinedFunctions' => array(
+                    'title_sort' => array(
+                        // @todo implement title_sort function from calibre
+                        'callback' => function($title) {
+                            return $title;
+                        },
+                        'numArgs' => 1
+                    ),
+                ),
+            );
+    }
 }
