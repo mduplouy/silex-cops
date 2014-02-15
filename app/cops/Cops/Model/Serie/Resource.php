@@ -99,10 +99,9 @@ class Resource extends ResourceAbstract
     {
         return (int) $this->getQueryBuilder()
             ->select('COUNT(*)')
-            ->from('series', 'series')
-            ->groupBy('id')
+            ->from('series', 'main')
             ->execute()
-            ->fetchColumn(PDO::FETCH_ASSOC);
+            ->fetchColumn();
     }
 
 

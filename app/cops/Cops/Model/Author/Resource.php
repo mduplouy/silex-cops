@@ -135,9 +135,8 @@ class Resource extends ResourceAbstract
         return (int) $this->getQueryBuilder()
             ->select('COUNT(*)')
             ->from('authors', 'authors')
-            ->groupBy('id')
             ->execute()
-            ->fetchColumn(PDO::FETCH_ASSOC);
+            ->fetchColumn();
     }
 
     /**
