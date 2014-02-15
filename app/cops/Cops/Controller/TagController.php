@@ -29,7 +29,7 @@ class TagController extends Controller implements ControllerProviderInterface
      *
      * @see \Silex\ControllerProviderInterface::connect()
      *
-     * @param \Application $app Application instance
+     * @param \Silex\Application $app Application instance
      *
      * @return ControllerCollection ControllerCollection instance
      */

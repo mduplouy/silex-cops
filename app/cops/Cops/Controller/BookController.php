@@ -32,7 +32,7 @@ class BookController extends Controller implements ControllerProviderInterface
      *
      * @see \Silex\ControllerProviderInterface::connect()
      *
-     * @param \Application $app Application instance
+     * @param Application $app Application instance
      *
      * @return ControllerCollection ControllerCollection instance
      */
@@ -53,8 +53,8 @@ class BookController extends Controller implements ControllerProviderInterface
     /**
      * Show details of a book
      *
-     * @param \Silex\Application $app Silex app instance
-     * @param int                $id  BookId
+     * @param Application $app Silex app instance
+     * @param int         $id  BookId
      *
      * @return string
      */
@@ -78,9 +78,9 @@ class BookController extends Controller implements ControllerProviderInterface
     /**
      * Download book file
      *
-     * @param \Silex\Application $app    Silex app instance
-     * @param int                $id     The book ID
-     * @param string             $format The book file format
+     * @param Application $app    Silex app instance
+     * @param int         $id     The book ID
+     * @param string      $format The book file format
      *
      * @return void
      */

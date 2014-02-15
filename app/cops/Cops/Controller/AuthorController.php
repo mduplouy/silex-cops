@@ -58,8 +58,8 @@ class AuthorController extends BaseController implements ControllerProviderInter
      * Download all serie books as archive file
      *
      * @param Application $app Application instance
-     * @param int                $id     The serie ID
-     * @param string             $format The archive file format (zip|tar.gz)
+     * @param int         $id     The serie ID
+     * @param string      $format The archive file format (zip|tar.gz)
      *
      * @return void
      */
@@ -101,15 +101,15 @@ class AuthorController extends BaseController implements ControllerProviderInter
                     $author->getDownloadSafeName().$archiveClass->getExtension()
                 );
         } catch (FileNotFoundException $e) {
-            return $app->abord(404);
+            return $app->abort(404);
         }
     }
 
     /**
      * List author action
      *
-     * @param Silex\Application $app
-     * @param string|0          $letter
+     * @param Application $app
+     * @param string|0    $letter
      *
      * @return string
      */
@@ -130,8 +130,8 @@ class AuthorController extends BaseController implements ControllerProviderInter
     /**
      * Author detail action
      *
-     * @param Silex\Application $app Application instance
-     * @param id                $id  Author ID
+     * @param Application $app Application instance
+     * @param id          $id  Author ID
      */
     public function detailAction(Application $app, $id)
     {

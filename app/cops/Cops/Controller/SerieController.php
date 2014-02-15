@@ -30,7 +30,7 @@ class SerieController extends BaseController implements ControllerProviderInterf
      *
      * @see \Silex\ControllerProviderInterface::connect()
      *
-     * @param  $app Application instance
+     * @param  Application $app Application instance
      *
      * @return ControllerCollection ControllerCollection instance
      */
@@ -142,7 +142,7 @@ class SerieController extends BaseController implements ControllerProviderInterf
                     $serie->getDownloadSafeName().$archiveClass->getExtension()
                 );
         } catch (FileNotFoundException $e) {
-            return $app->abord(404);
+            return $app->abort(404);
         }
     }
 
