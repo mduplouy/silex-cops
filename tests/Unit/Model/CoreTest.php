@@ -52,4 +52,12 @@ class CoreTest extends WebTestCase
     {
         $this->assertInstanceOf('Cops\Model\Config', Core::getConfig());
     }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCoreCollectionException()
+    {
+        $this->app['core']->getCollection();
+    }
 }

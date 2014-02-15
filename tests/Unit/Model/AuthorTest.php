@@ -5,7 +5,7 @@ namespace Cops\Tests\Model;
 /**
  * Book model test cases
  *
- * @require PHP 5.2
+ * @require PHP 5.3
  */
 class AuthorTest extends \PHPUnit_Framework_TestCase
 {
