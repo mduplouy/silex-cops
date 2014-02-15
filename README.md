@@ -33,7 +33,6 @@ Silex-Cops works with PHP **version >= 5.3**
 
 The following PHP modules are required :
 * **imagick** or **gd**
-* **phar** to be able to produce tar.gz archives (zip is builtin)
 * **DOM** for the opds feed
 
 **apc** (opcode and data cache) is not required but **highly recommended**
