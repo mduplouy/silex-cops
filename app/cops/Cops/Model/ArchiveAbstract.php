@@ -9,7 +9,6 @@
  */
 namespace Cops\Model;
 
-use Cops\Model\Core;
 use Cops\Model\BookFile\Collection as BookFileCollection;
 
 /**
@@ -17,20 +16,13 @@ use Cops\Model\BookFile\Collection as BookFileCollection;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class ArchiveAbstract extends Core
+abstract class ArchiveAbstract
 {
     /**
      * Files to add to archive
      * @var array
      */
     protected $_files = array();
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * Add files to current archive

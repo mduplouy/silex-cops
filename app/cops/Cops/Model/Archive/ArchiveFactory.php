@@ -88,7 +88,7 @@ class ArchiveFactory extends ArchiveAbstract
     }
 
     /**
-     * File types getter
+     * Get available archive types as array
      *
      * @return array
      */
