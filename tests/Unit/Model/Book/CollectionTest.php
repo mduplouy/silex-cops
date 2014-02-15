@@ -5,7 +5,7 @@ namespace Cops\Tests\Model\Book;
 /**
  * Book collection test cases
  *
- * @require PHP 5.2
+ * @require PHP 5.3
  */
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {

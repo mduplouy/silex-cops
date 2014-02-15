@@ -7,7 +7,7 @@ use Cops\Model\Core;
 /**
  * Config model test cases
  *
- * @require PHP 5.2
+ * @require PHP 5.3
  */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {

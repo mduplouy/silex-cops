@@ -5,7 +5,7 @@ namespace Cops\Tests\Model;
 /**
  * Serie model test cases
  *
- * @require PHP 5.2
+ * @require PHP 5.3
  */
 class SerieTest extends \PHPUnit_Framework_TestCase
 {

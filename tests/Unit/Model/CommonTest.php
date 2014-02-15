@@ -5,7 +5,7 @@ namespace Cops\Tests\Model;
 /**
  * Common model test cases
  *
- * @require PHP 5.2
+ * @require PHP 5.3
  */
 class CommonTest extends \PHPUnit_Framework_TestCase
 {
