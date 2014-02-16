@@ -59,11 +59,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
      */
     public function getAllIds()
     {
-        $allIds = array();
-        foreach ($this->mapping as $id => &$elmId) {
-            $allIds[] = $id;
-        }
-        return $allIds;
+        return array_keys($this->mapping);
     }
 
     /**
