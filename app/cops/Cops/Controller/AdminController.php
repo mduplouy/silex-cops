@@ -9,23 +9,27 @@
  */
 namespace Cops\Controller;
 
+
+use Cops\Model\Controller;
+use Silex\ControllerProviderInterface;
+use Silex\Application;
+
 /**
  * Admin related controller
+ * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class AdminController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class AdminController extends Controller implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
      *
-     * @see \Silex\ControllerProviderInterface::connect()
+     * @see ControllerProviderInterface::connect()
      *
-     * @param \Application $app Application instance
+     * @param Application $app Application instance
      *
      * @return ControllerCollection ControllerCollection instance
      */
-    public function connect(\Silex\Application $app)
+    public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
         $controller->get('/', __CLASS__.'::indexAction')
@@ -36,10 +40,14 @@ class AdminController
 
     /**
      * Admin home
+     *
+     * @param  Application $app Application instance
+     *
+     * @return string
      */
-    public function indexAction(\Silex\Application $app)
+    public function indexAction(Application $app)
     {
-        return $app['twig']->render('admin.html', array(
+        return $app['twig']->render('admin/home.html', array(
             'pageTitle'     => $app['translator']->trans('Administration'),
         ));
     }

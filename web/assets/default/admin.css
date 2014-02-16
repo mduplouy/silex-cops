@@ -1,0 +1,13 @@
+/**
+ * Admin specific stylesheet
+ */
+
+
+div#left-menu {
+    float:left;
+    width:180px;
+}
+
+div#main-body {
+    margin-left:188px;
+}

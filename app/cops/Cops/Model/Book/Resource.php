@@ -300,7 +300,7 @@ class Resource extends ResourceAbstract
                 $author = $this->getModel('Author');
 
                 // Get author id
-                $authorId = $con->createQueryBuilder()
+                $authorId = $this->getQueryBuilder()
                     ->select('id')
                     ->from('authors', 'main')
                     ->where('main.name = :author_name')
@@ -364,7 +364,64 @@ class Resource extends ResourceAbstract
      */
     public function updateTitle($id, $title)
     {
+        $con = $this->getConnection();
+        $app = Core::getApp();
+
+        $bookLang = $this->getBookLanguageCode($id);
+
+        $con->beginTransaction();
+
+        try {
+
+            $titleSort = $app['calibre']->getTitleSort($title, $bookLang);
+
+            $con->update(
+                'books',
+                array(
+                    'title' => $title,
+                    'sort'  => $titleSort,
+                ),
+                array('id'  => $id),
+                array(
+                    PDO::PARAM_STR,
+                    PDO::PARAM_STR,
+                    PDO::PARAM_INT,
+                )
+            );
+
+            $con->commit();
+
+        } catch (\Exception $e) {
+            var_dump($e);
+            $con->rollback();
+        }
+
         return true;
+    }
+
+    /**
+     * Get book language code from DB
+     *
+     * @param  int    $bookId
+     *
+     * @return string
+     */
+    public function getBookLanguageCode($bookId)
+    {
+        $lang = $this->getQueryBuilder()
+            ->select('lang.lang_code')
+            ->from('books_languages_link', 'main')
+            ->innerJoin('main', 'books',     'books', 'books.id = main.book')
+            ->innerJoin('main', 'languages', 'lang',  'main.lang_code = lang.id')
+            ->where('main.book = :id')
+            ->setParameter('id', $bookId, PDO::PARAM_INT)
+            ->execute()
+            ->fetchColumn();
+
+        if ($lang) {
+            $lang = substr($lang, 0, 2);
+        }
+        return $lang;
     }
 
     /**
@@ -374,7 +431,7 @@ class Resource extends ResourceAbstract
      */
     protected function getBaseSelect()
     {
-        $qb = parent::getBaseSelect()
+        $qb = $this->getQueryBuilder()
             ->select(
                 'main.*',
                 'com.text AS comment',
@@ -393,7 +450,7 @@ class Resource extends ResourceAbstract
             ->leftJoin('main', 'books_series_link',  'bsl',    'bsl.book = main.id')
             ->leftJoin('main', 'series',             'serie',  'serie.id = bsl.series')
             ->leftJoin('main', 'books_ratings_link', 'brl',    'brl.book = main.id')
-            ->leftJoin('main', 'ratings'           , 'rating', 'brl.rating = rating.id')
+            ->leftJoin('main', 'ratings',            'rating', 'brl.rating = rating.id')
             ->where('1');
 
         if ($this->_hasExcludedBook) {

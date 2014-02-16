@@ -41,10 +41,10 @@ use Cops\Model\Author\Collection as AuthorCollection;
  * Inc. will be Acme Inc. instead of Inc., Acme
  *
  * author_sort_copy_method = 'comma'
- * author_name_suffixes = ('Jr', 'Sr', 'Inc', 'Ph.D', 'Phd',
+ * author_name_suffixes = ('J', 'S', 'Inc', 'Ph.D', 'Phd',
  *                       'MD', 'M.D', 'I', 'II', 'III', 'IV',
- *                       'Junior', 'Senior')
- * author_name_prefixes = ('Mr', 'Mrs', 'Ms', 'Dr', 'Prof')
+ *                       'Junio', 'Senio')
+ * author_name_prefixes = ('M', 'Mrs', 'Ms', 'D', 'Prof')
  * author_name_copywords = ('Corporation', 'Company', 'Co.', 'Agency', 'Council',
  *       'Committee', 'Inc.', 'Institute', 'Society', 'Club', 'Team')
  *
@@ -58,6 +58,80 @@ class Calibre
      * @var string
      */
     private $authorSortMethod;
+
+    /**
+     * Article patterns per language taken from Calibre src
+     * @var array
+     */
+    private $articlePatterns = array(
+        // English
+        'en' => array('A\s+', 'The\s+', 'An\s+'),
+
+        // French
+        'fr' => array('L[ea]\s+', "L['´]", 'Les\s+', 'Une?\s+', 'Des?\s+', 'De\s+La\s+',
+            "D('|´)"),
+
+        // German
+        'de' => array('De[rsn]\s+', 'Die\s+', 'Das\s+', 'Eine?\s+', 'Eine[nms]\s+',
+            'Dem\s+', 'Einem\s+'),
+
+        // Spanish
+        'es' => array('El\s+', 'L[ao]s?\s+', 'Un\s+', 'Unas?\s+', 'Unos\s+'),
+
+        // Italian
+        'it' => array('Lo\s+', 'Il\s+', "L'", 'La\s+', 'Gli\s+', 'I\s+', 'Le\s+'),
+
+        // Portuguese
+        'pt' => array('A\s+', 'O\s+', 'Os\s+', 'As\s+', 'Um\s+', 'Uns\s+', 'Uma\s+', 'Umas\s+'),
+
+        // Romanian
+        'ro' => array('Un\s+', 'O\s+', 'Nişte\s+', ),
+
+        // Dutch
+        'nl' => array('De\s+', 'Het\s+', 'Een\s+', "'n\s+", "'s\s+", 'Ene\s+', 'Ener\s+',
+            'Enes\s+', 'Den\s+', 'Der\s+', 'Des\s+', "'t\s+"),
+
+        // Swedish
+        'sw' => array ('En\s+', 'Ett\s+', 'Det\s+', 'Den\s+', 'De\s+', ),
+
+        // Turkish
+        'tu' => array('Bir\s+'),
+
+        // Afrikaans
+        'af' => array("'n\s+", 'Die\s+'),
+
+        // Greek
+        'el' => array('O\s+', 'I\s+', 'To\s+', 'Ta\s+', 'Tus\s+', 'Tis\s+',
+            "'Enas\s+", "'Mia\s+", "'Ena\s+", "'Enan\s+", ),
+
+        // Hungarian
+        'hu' => array('A\s+', 'Az\s+', 'Egy\s+'),
+    );
+
+    /**
+     * Database trigger description
+     */
+    const TRIGGER_BOOK_INSERT = 'Trigger on book insert';
+    const TRIGGER_BOOK_UPDATE = 'Trigger on book update';
+
+    /**
+     * Database Trigger names
+     */
+    const TRIGGER_BOOK_INSERT_NAME = 'books_insert_trg';
+    const TRIGGER_BOOK_UPDATE_NAME = 'books_update_trg';
+
+    /**
+     * Database trigger SQL
+     */
+    const TRIGGER_BOOK_INSERT_SQL = 'CREATE TRIGGER books_insert_trg AFTER INSERT ON books
+        BEGIN
+            UPDATE books SET sort=title_sort(NEW.title),uuid=uuid4() WHERE id=NEW.id;
+        END';
+    const TRIGGER_BOOK_UPDATE_SQL = 'CREATE TRIGGER books_update_trg AFTER UPDATE ON books
+        BEGIN
+            UPDATE books SET sort=title_sort(NEW.title)
+                WHERE id=NEW.id AND OLD.title <> NEW.title;
+        END';
 
     /**
      * Constructor
@@ -131,23 +205,68 @@ class Calibre
     }
 
     /**
+     * Modify title_sort so articles are placed at the end
+     *
+     * @param string       $title    Title to be modified
+     * @param string|false $langCode Book ISO 2 language code
+     *
+     * @return string
+     */
+    public function getTitleSort($title, $langCode = false)
+    {
+        if ($langCode !== false) {
+            $patterns = $this->articlePatterns[$langCode];
+        } else {
+            $patterns = $this->articlePatterns['en'];
+        }
+
+        $titleSort = $title;
+        foreach($patterns as $pattern) {
+            $pattern = sprintf('/^(%s)(.*)/i', $pattern);
+            $titleSort = preg_replace($pattern, '\2, \1', $title, -1, $count);
+            if ($count) {
+                break;
+            }
+        }
+        return trim($titleSort);
+    }
+
+    /**
      * Return specific DB user functions for DB container
      *
      * @return array
      */
     public static function getDBInternalFunctions()
     {
-        return
-            array(
-                'userDefinedFunctions' => array(
-                    'title_sort' => array(
-                        // @todo implement title_sort function from calibre
-                        'callback' => function($title) {
-                            return $title;
-                        },
-                        'numArgs' => 1
-                    ),
+        return array(
+            'userDefinedFunctions' => array(
+                'title_sort' => array(
+                    // @todo implement title_sort function from calibre
+                    'callback' => function($title) {
+                        return $title;
+                    },
+                    'numArgs' => 1
                 ),
-            );
+            ),
+        );
+    }
+
+    /**
+     * Trigger getter
+     *
+     * @return array
+     */
+    public function getTriggers()
+    {
+        return array(
+            self::TRIGGER_BOOK_INSERT_NAME => array(
+                'sql'  => self::TRIGGER_BOOK_INSERT_SQL,
+                'desc' => self::TRIGGER_BOOK_INSERT,
+            ),
+            self::TRIGGER_BOOK_UPDATE_NAME => array(
+                'sql'  => self::TRIGGER_BOOK_UPDATE_SQL,
+                'desc' => self::TRIGGER_BOOK_UPDATE,
+            ),
+        );
     }
 }

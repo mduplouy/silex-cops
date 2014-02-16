@@ -1,0 +1,18 @@
+{% extends "admin/layout.html" %}
+
+{% block mainBody %}
+    <h2>{{ "Activate / Deactivate triggers from database"|trans([], "admin") }}</h2>
+
+    <p>{{ "Calibre database uses trigger to fill some book informations as title sort, this page is meant to provide you the ability to enable or disable them"|trans([], "admin") }}</p>
+
+    <form method="post" action="">
+        <fieldset>
+            {% for triggerName, trigger in triggers %}
+
+                {{ trigger.desc|trans([], "admin") }} {% if foundTriggers[triggerName] %} ACTIVE {% else %} INACTIVE {% endif %} <br />
+
+            {% endfor %}
+        </fieldset>
+    </form>
+
+{% endblock %}
