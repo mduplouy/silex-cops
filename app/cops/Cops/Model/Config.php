@@ -50,6 +50,7 @@ class Config
         'book_per_page'           => 30,
 
         // admin
+        'path'                    => '/admin',
         'inline_edit'             => false,
 
         // calibre
@@ -135,5 +136,15 @@ class Config
      public function getTemplatePrefix()
      {
          return $this->templatePrefix;
+     }
+
+     /**
+      * Get admin path value
+      *
+      * @return string
+      */
+     public function getAdminPath()
+     {
+         return DS.trim($this->getValue('admin_path'), '/');
      }
 }

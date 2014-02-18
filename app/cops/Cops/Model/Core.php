@@ -76,21 +76,24 @@ class Core implements CoreInterface
         });
 
         // Set the mount points for the controllers
-        $app->mount('/',             new \Cops\Controller\IndexController());
-        $app->mount('/book/',        new \Cops\Controller\BookController());
-        $app->mount('/serie/',       new \Cops\Controller\SerieController());
-        $app->mount('/author/',      new \Cops\Controller\AuthorController());
-        $app->mount('/tag/',         new \Cops\Controller\TagController());
-        $app->mount('/search/',      new \Cops\Controller\SearchController());
+        $app->mount('/',                     new \Cops\Controller\IndexController());
+        $app->mount('/book/',                new \Cops\Controller\BookController());
+        $app->mount('/serie/',               new \Cops\Controller\SerieController());
+        $app->mount('/author/',              new \Cops\Controller\AuthorController());
+        $app->mount('/tag/',                 new \Cops\Controller\TagController());
+        $app->mount('/search/',              new \Cops\Controller\SearchController());
 
-        $app->mount('/inline-edit/', new \Cops\Controller\InlineEditController);
+        $app->mount('/inline-edit/',         new \Cops\Controller\InlineEditController);
 
-        $app->mount('/admin/',       new \Cops\Controller\AdminController());
-        $app->mount('/admin/feed/',  new \Cops\Controller\Admin\OpdsFeedController());
+        $app->mount('/login/',               new \Cops\Controller\LoginController());
+        $app->mount('/opds/',                new \Cops\Controller\OpdsController());
 
-        $app->mount('/login/',       new \Cops\Controller\LoginController());
-        $app->mount('/opds/',        new \Cops\Controller\OpdsController());
+        $adminPath = $app['config']->getAdminPath();
+        $app->mount($adminPath,              new \Cops\Controller\AdminController());
+        $app->mount($adminPath.'/database/', new \Cops\Controller\Admin\DatabaseController());
+        $app->mount($adminPath.'/feed/',     new \Cops\Controller\Admin\OpdsFeedController());
 
+        // Set default storage dir
         if (!isset($app['book_storage_dir'])) {
             $app['book_storage_dir'] = BASE_DIR.$app['config']->getValue('data_dir');
         }
@@ -152,7 +155,7 @@ class Core implements CoreInterface
         $app['translator'] = $app->share($app->extend('translator', function($translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
 
-            foreach (array('messages') as $domain) {
+            foreach (array('messages', 'admin') as $domain) {
                 $translator->addResource('yaml', BASE_DIR.'locales/fr/'.$domain.'.yml', 'fr', $domain);
                 $translator->addResource('yaml', BASE_DIR.'locales/en/'.$domain.'.yml', 'en', $domain);
             }
