@@ -11,6 +11,8 @@ namespace Cops\Model;
 
 use Silex\Application as BaseApplication;
 use Cops\Model\Author\Collection as AuthorCollection;
+use Cops\Model\Calibre\Resource;
+use Cops\Model\Core;
 
 /*
  * Calibre model class
@@ -19,37 +21,6 @@ use Cops\Model\Author\Collection as AuthorCollection;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-
-/**
- * Author sort name algorithm
- * The algorithm used to copy author to author_sort
- * Possible values are:
- *  invert: use "fn ln" -> "ln, fn"
- *  copy  : copy author to author_sort without modification
- *  comma : use 'copy' if there is a ',' in the name, otherwise use 'invert'
- *  nocomma : "fn ln" -> "ln fn" (without the comma)
- *
- * When this tweak is changed, the author_sort values stored with each author
- * must be recomputed by right-clicking on an author in the left-hand tags pane,
- * selecting 'manage authors', and pressing 'Recalculate all author sort values'.
- * The author name suffixes are words that are ignored when they occur at the
- * end of an author name. The case of the suffix is ignored and trailing
- * periods are automatically handled. The same is true for prefixes.
- * The author name copy words are a set of words which if they occur in an
- * author name cause the automatically generated author sort string to be
- * identical to the author name. This means that the sort for a string like Acme
- * Inc. will be Acme Inc. instead of Inc., Acme
- *
- * author_sort_copy_method = 'comma'
- * author_name_suffixes = ('J', 'S', 'Inc', 'Ph.D', 'Phd',
- *                       'MD', 'M.D', 'I', 'II', 'III', 'IV',
- *                       'Junio', 'Senio')
- * author_name_prefixes = ('M', 'Mrs', 'Ms', 'D', 'Prof')
- * author_name_copywords = ('Corporation', 'Company', 'Co.', 'Agency', 'Council',
- *       'Committee', 'Inc.', 'Institute', 'Society', 'Club', 'Team')
- *
- */
-
 class Calibre
 {
     /**
@@ -108,30 +79,7 @@ class Calibre
         'hu' => array('A\s+', 'Az\s+', 'Egy\s+'),
     );
 
-    /**
-     * Database trigger description
-     */
-    const TRIGGER_BOOK_INSERT = 'Trigger on book insert';
-    const TRIGGER_BOOK_UPDATE = 'Trigger on book update';
-
-    /**
-     * Database Trigger names
-     */
-    const TRIGGER_BOOK_INSERT_NAME = 'books_insert_trg';
-    const TRIGGER_BOOK_UPDATE_NAME = 'books_update_trg';
-
-    /**
-     * Database trigger SQL
-     */
-    const TRIGGER_BOOK_INSERT_SQL = 'CREATE TRIGGER books_insert_trg AFTER INSERT ON books
-        BEGIN
-            UPDATE books SET sort=title_sort(NEW.title),uuid=uuid4() WHERE id=NEW.id;
-        END';
-    const TRIGGER_BOOK_UPDATE_SQL = 'CREATE TRIGGER books_update_trg AFTER UPDATE ON books
-        BEGIN
-            UPDATE books SET sort=title_sort(NEW.title)
-                WHERE id=NEW.id AND OLD.title <> NEW.title;
-        END';
+    private $resource;
 
     /**
      * Constructor
@@ -144,6 +92,47 @@ class Calibre
     }
 
     /**
+     * Resource getter
+     *
+     * @return \Cops\Model\Calibre\Resource
+     */
+    public function getResource()
+    {
+        if ($this->resource === null) {
+            $this->resource = new Resource(Core::getDb());
+        }
+        return $this->resource;
+    }
+
+    /**
+     * Author sort name algorithm
+     * The algorithm used to copy author to author_sort
+     * Possible values are:
+     *  invert: use "fn ln" -> "ln, fn"
+     *  copy  : copy author to author_sort without modification
+     *  comma : use 'copy' if there is a ',' in the name, otherwise use 'invert'
+     *  nocomma : "fn ln" -> "ln fn" (without the comma)
+     *
+     * When this tweak is changed, the author_sort values stored with each author
+     * must be recomputed by right-clicking on an author in the left-hand tags pane,
+     * selecting 'manage authors', and pressing 'Recalculate all author sort values'.
+     * The author name suffixes are words that are ignored when they occur at the
+     * end of an author name. The case of the suffix is ignored and trailing
+     * periods are automatically handled. The same is true for prefixes.
+     * The author name copy words are a set of words which if they occur in an
+     * author name cause the automatically generated author sort string to be
+     * identical to the author name. This means that the sort for a string like Acme
+     * Inc. will be Acme Inc. instead of Inc., Acme
+     *
+     * author_sort_copy_method = 'comma'
+     * author_name_suffixes = ('J', 'S', 'Inc', 'Ph.D', 'Phd',
+     *                       'MD', 'M.D', 'I', 'II', 'III', 'IV',
+     *                       'Junio', 'Senio')
+     * author_name_prefixes = ('M', 'Mrs', 'Ms', 'D', 'Prof')
+     * author_name_copywords = ('Corporation', 'Company', 'Co.', 'Agency', 'Council',
+     *       'Committee', 'Inc.', 'Institute', 'Society', 'Club', 'Team')
+     *
+     *
      * Get author sort name depending of sort algorithm
      *
      * @param  string $name
@@ -258,15 +247,6 @@ class Calibre
      */
     public function getTriggers()
     {
-        return array(
-            self::TRIGGER_BOOK_INSERT_NAME => array(
-                'sql'  => self::TRIGGER_BOOK_INSERT_SQL,
-                'desc' => self::TRIGGER_BOOK_INSERT,
-            ),
-            self::TRIGGER_BOOK_UPDATE_NAME => array(
-                'sql'  => self::TRIGGER_BOOK_UPDATE_SQL,
-                'desc' => self::TRIGGER_BOOK_UPDATE,
-            ),
-        );
+        return $this->getResource()->getTriggers();
     }
 }

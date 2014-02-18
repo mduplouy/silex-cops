@@ -11,3 +11,15 @@ div#left-menu {
 div#main-body {
     margin-left:188px;
 }
+
+/**
+ * jQuery UI adjustments
+ */
+label.ui-button.ui-state-default {
+    background:#CCC;
+    color:#FFF;
+}
+label.ui-button.ui-state-active {
+    background:lime;
+    color:#666;
+}

@@ -35,6 +35,9 @@ class DatabaseController extends Controller implements ControllerProviderInterfa
         $controller->get('/triggers', __CLASS__.'::triggerAction')
             ->bind('admin_database_triggers');
 
+        $controller->post('/triggers', __CLASS__.'::saveTriggerAction')
+            ->bind('admin_database_triggers_action');
+
         return $controller;
     }
 
@@ -47,7 +50,6 @@ class DatabaseController extends Controller implements ControllerProviderInterfa
      */
     public function triggerAction(Application $app)
     {
-
         $triggers = $app['calibre']->getTriggers();
 
         $checkTriggers = $app['db']->createQueryBuilder()
@@ -68,4 +70,24 @@ class DatabaseController extends Controller implements ControllerProviderInterfa
             'foundTriggers' => $foundTriggers,
         ));
     }
+
+    /**
+     * Save trigger action, remove or restore selected triggers
+     *
+     * @param  Application $app Application instance
+     *
+     * @return RedirectResponse
+     */
+     public function saveTriggerAction(Application $app)
+     {
+        foreach($app['request']->get('triggers') as $trigger => $value) {
+            if (empty($value)) {
+                $app['calibre']->getResource()->dropTrigger($trigger);
+            }
+            else {
+                $app['calibre']->getResource()->restoreTrigger($trigger);
+            }
+        }
+        return $app->redirect($app['url_generator']->generate('admin_database_triggers'));
+     }
 }

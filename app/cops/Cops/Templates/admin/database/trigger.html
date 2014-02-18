@@ -6,13 +6,29 @@
     <p>{{ "Calibre database uses trigger to fill some book informations as title sort, this page is meant to provide you the ability to enable or disable them"|trans([], "admin") }}</p>
 
     <form method="post" action="">
-        <fieldset>
+
+        <div id="triggers" style="float:left">
             {% for triggerName, trigger in triggers %}
+                <div style="text-align:right">
+                    {{ trigger.desc|trans([], "admin") }}
+                    <input type="radio" name="triggers[{{ triggerName }}]" id="{{ triggerName }}-enabled" value="1" {% if (foundTriggers[triggerName] is defined) %}checked="checked"{% endif %}/>
+                    <label for="{{ triggerName }}-enabled">Enabled</label>
 
-                {{ trigger.desc|trans([], "admin") }} {% if foundTriggers[triggerName] %} ACTIVE {% else %} INACTIVE {% endif %} <br />
-
+                    <input type="radio" name="triggers[{{ triggerName }}]" id="{{ triggerName }}-disabled" value="0" {% if not(foundTriggers[triggerName] is defined) %}checked="checked"{% endif %}/>
+                    <label for="{{ triggerName }}-disabled">Disabled</label>
+               </div>
             {% endfor %}
-        </fieldset>
+        </div>
+        <div class="clear"></div>
+
+        <input id="submit" type="submit" value="Save" class="ui-widget ui-button" />
     </form>
+
+    <script type="text/javascript">
+        jQuery('document').ready(function() {
+            jQuery('#submit').button();
+            jQuery('#triggers').buttonset();
+        });
+    </script>
 
 {% endblock %}
