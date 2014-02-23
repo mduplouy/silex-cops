@@ -70,6 +70,17 @@ Addtionnal configuration for synology users :
     $ ln -s web/assets ./assets
     $ ln -s web/index.php ./index.php
 
+Do not forget to deny access to all files but the index.php and assets !
+
+### 5. Configure HTTP authentication
+
+By default the public part is protected by simple HTTP auth.
+
+There are 2 builtin logins :
+ - user / password : This user has inline edit privileges but cannot accesss the admin part
+ - admin / password : This user has admin privileges and can connect to the backoffice (url is (fr|en)/admin/)
+
+These logins can be changed in app/cops/Cops/Model/Core.php file (there is a code snippet to encrypt the desired password)
 
 ## License
 
