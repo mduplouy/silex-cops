@@ -15,6 +15,15 @@
 
     <div id="infos">
 
+        {% if inline_edit %}
+        <div>
+            <a href="#" id="toggle-edit">
+                <span>{{ "Enable inline edit"|trans }}</span>
+                <span style="display:none;">{{ "Disable inline edit"|trans }}</span>
+            </a>
+        </div>
+        {% endif %}
+
         <h1 class="editable" data-type="text" data-inputclass="h1" data-name="title">{{ book.getTitle() }}</h1>
 
         {% set authors = book.getAuthors() %}
@@ -95,4 +104,24 @@
     </div>
 
 </div>
+
+    {% if inline_edit %}
+    <script type="text/javascript">
+        jQuery.fn.editable.defaults.mode = 'inline';
+
+        jQuery('document').ready(function() {
+            jQuery('.editable').editable({
+                pk: {{ book.getId() }},
+                url: "{{ app.url_generator.generate('inline_edit_book', { id: book.getId() }) }}",
+                disabled: true
+            });
+            jQuery('#toggle-edit').click(function () {
+                jQuery('.editable').editable('toggleDisabled');
+                jQuery(this).children('span').toggle();
+            })
+        });
+
+    </script>
+    {% endif %}
+
 {% endblock %}

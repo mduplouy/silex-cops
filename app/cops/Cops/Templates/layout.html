@@ -44,18 +44,6 @@
 
         {# beforeBodyEnd placeholder #}
         {% block beforeBodyEnd %}
-            {% if inline_edit and book is defined %}
-            <script type="text/javascript">
-                jQuery.fn.editable.defaults.mode = 'inline';
-
-                jQuery('document').ready(function() {
-                    jQuery('.editable').editable({
-                        pk: {{ book.getId() }},
-                        url: "{{ app.url_generator.generate('inline_edit_book', { id: book.getId() }) }}"
-                    });
-                });
-            </script>
-            {% endif %}
         {% endblock %}
     </body>
 
