@@ -179,17 +179,23 @@ class Resource extends ResourceAbstract
             ->orderBy('serie_name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
-            ->groupBy('main.id');
+            ->groupBy('main.id')
+            ->resetQueryParts(array('where'));
 
         // Build the where clause
-        $and = $qb->expr()->andX();
+        $andPath  = $qb->expr()->andX();
+        $andSerie = $qb->expr()->andX();
+        //$andSerie->add($qb->expr()->isNotNull('serie_name'));
         foreach ($keywords as $keyword) {
-            $and->add(
-                $qb->expr()->Like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
+            $andPath->add(
+                $qb->expr()->like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
+            );
+            $andSerie->add(
+                $qb->expr()->like('serie.sort', $this->getConnection()->quote('%'.$keyword.'%'))
             );
         }
 
-        $qb->where($and);
+        $qb->orWhere($andPath, $andSerie);
 
         // Count total rows when using limit
         if ($this->maxResults !=null) {
@@ -198,6 +204,8 @@ class Resource extends ResourceAbstract
             $total = (int) $countQuery
                 ->resetQueryParts(array('select', 'join', 'groupBy', 'orderBy'))
                 ->select('COUNT(*)')
+                ->leftJoin('main', 'books_series_link',  'bsl',    'bsl.book = main.id')
+                ->leftJoin('main', 'series',             'serie',  'serie.id = bsl.series')
                 ->execute()
                 ->fetchColumn();
 
@@ -359,12 +367,10 @@ class Resource extends ResourceAbstract
         $con = $this->getConnection();
         $app = Core::getApp();
 
-        $bookLang = $this->getBookLanguageCode($id);
-
         $con->beginTransaction();
 
         try {
-
+            $bookLang = $this->getBookLanguageCode($id);
             $titleSort = $app['calibre']->getTitleSort($title, $bookLang);
 
             $con->update(
@@ -380,14 +386,10 @@ class Resource extends ResourceAbstract
                     PDO::PARAM_INT,
                 )
             );
-
             $con->commit();
-
         } catch (\Exception $e) {
-            var_dump($e);
             $con->rollback();
         }
-
         return true;
     }
 
