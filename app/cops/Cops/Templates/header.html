@@ -5,7 +5,7 @@
         <div style="float:right;">
             <form method="post" action="{{ app.url_generator.generate('search') }}">
                 <input type="text" id="js-search-form-input" name="keywords" value="" class="greyed" size="60" />
-                <input type="hidden" id="js-default-search-value" value="{{ "Author / Book title"|trans|escape }}" />
+                <input type="hidden" id="js-default-search-value" value="{{ "Author / Serie / Book title"|trans|escape }}" />
                 <input type="submit" value="{{ 'Search'|trans }}" />
             </form>
             <script type="text/javascript">

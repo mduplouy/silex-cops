@@ -115,6 +115,8 @@ class Resource extends ResourceAbstract
     public function loadByAuthorId($authorId)
     {
         return $this->getBaseSelect()
+            ->leftJoin('main', 'books_authors_link', 'bal',    'bal.book = main.id')
+            ->leftJoin('main', 'authors',            'author', 'author.id = bal.author')
             ->andWhere('author.id = :author_id')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
@@ -139,7 +141,6 @@ class Resource extends ResourceAbstract
             ->andWhere('tag.id = :tagid')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
-            ->addOrderBy('author_sort')
             ->addOrderBy('title')
             ->setParameter('tagid', $tagId, PDO::PARAM_INT);
 
@@ -177,19 +178,24 @@ class Resource extends ResourceAbstract
             ->leftJoin('main',  'tags',           'tag', 'tag.id = btl.tag')
             ->orderBy('serie_name')
             ->addOrderBy('series_index')
-            ->addOrderBy('author_name')
             ->addOrderBy('title')
-            ->groupBy('main.id');
+            ->groupBy('main.id')
+            ->resetQueryParts(array('where'));
 
         // Build the where clause
-        $and = $qb->expr()->andX();
+        $andPath  = $qb->expr()->andX();
+        $andSerie = $qb->expr()->andX();
+        //$andSerie->add($qb->expr()->isNotNull('serie_name'));
         foreach ($keywords as $keyword) {
-            $and->add(
-                $qb->expr()->Like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
+            $andPath->add(
+                $qb->expr()->like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
+            );
+            $andSerie->add(
+                $qb->expr()->like('serie.sort', $this->getConnection()->quote('%'.$keyword.'%'))
             );
         }
 
-        $qb->where($and);
+        $qb->orWhere($andPath, $andSerie);
 
         // Count total rows when using limit
         if ($this->maxResults !=null) {
@@ -198,6 +204,8 @@ class Resource extends ResourceAbstract
             $total = (int) $countQuery
                 ->resetQueryParts(array('select', 'join', 'groupBy', 'orderBy'))
                 ->select('COUNT(*)')
+                ->leftJoin('main', 'books_series_link',  'bsl',    'bsl.book = main.id')
+                ->leftJoin('main', 'series',             'serie',  'serie.id = bsl.series')
                 ->execute()
                 ->fetchColumn();
 
@@ -221,14 +229,6 @@ class Resource extends ResourceAbstract
     public function setDataFromStatement(array $result)
     {
         $myBook = parent::setDataFromStatement($result);
-
-        /*
-        $myBook->getAuthor()->setData(array(
-            'id'   => $result['author_id'],
-            'name' => $result['author_name'],
-            'sort' => $result['author_sort'],
-        ));
-        */
 
         if (!empty($result['serie_id'])) {
             $myBook->getSerie()->setData(array(
@@ -367,12 +367,10 @@ class Resource extends ResourceAbstract
         $con = $this->getConnection();
         $app = Core::getApp();
 
-        $bookLang = $this->getBookLanguageCode($id);
-
         $con->beginTransaction();
 
         try {
-
+            $bookLang = $this->getBookLanguageCode($id);
             $titleSort = $app['calibre']->getTitleSort($title, $bookLang);
 
             $con->update(
@@ -388,14 +386,10 @@ class Resource extends ResourceAbstract
                     PDO::PARAM_INT,
                 )
             );
-
             $con->commit();
-
         } catch (\Exception $e) {
-            var_dump($e);
             $con->rollback();
         }
-
         return true;
     }
 
@@ -436,17 +430,12 @@ class Resource extends ResourceAbstract
                 'main.*',
                 'com.text AS comment',
                 'rating.rating AS rating',
-                'author.id AS author_id',
-                'author.name AS author_name',
-                'author.sort AS author_sort',
                 'serie.id AS serie_id',
                 'serie.name AS serie_name',
                 'serie.sort AS serie_sort'
             )
             ->from('books', 'main')
             ->leftJoin('main', 'comments',           'com',    'com.book = main.id')
-            ->leftJoin('main', 'books_authors_link', 'bal',    'bal.book = main.id')
-            ->leftJoin('main', 'authors',            'author', 'author.id = bal.author')
             ->leftJoin('main', 'books_series_link',  'bsl',    'bsl.book = main.id')
             ->leftJoin('main', 'series',             'serie',  'serie.id = bsl.series')
             ->leftJoin('main', 'books_ratings_link', 'brl',    'brl.book = main.id')

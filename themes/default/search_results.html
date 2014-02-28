@@ -15,7 +15,7 @@
 
     {% for book in books %}
         {% set serie = book.getSerie() %}
-        {% set author = book.getAuthor() %}
+        {% set authors = book.getAuthors() %}
 
         <div class="book ui-widget-content ui-state-active">
 
@@ -39,11 +39,14 @@
                     </a><br />
                 {% endif %}
 
-                {% if author.getId() %}
-                    {% set authorLinkText = "See books from %s"|trans|format(author.getName()) %}
-                    <a class="inline-block book_link author" href="{{ app.url_generator.generate('author_detail', {'id': author.getId()}) }}" title="{{ authorLinkText|escape }}">
-                        &rsaquo; {{ authorLinkText }}
-                    </a>
+                {% if authors.count() %}
+                    <span class="book_link author">&rsaquo; {{ "See all books from"|trans }}</span>
+                    {% for author in authors  %}
+                    <a class="inline-block book_link author" href="{{ app.url_generator.generate('author_detail', {'id': author.getId()}) }}" title="{{ author.getName()|escape }}">
+                        {{ author.getName() }}
+                    </a>{% if loop.revindex0 %}, {% endif %}
+
+                    {% endfor %}
                 {% endif %}
                 </div>
 
