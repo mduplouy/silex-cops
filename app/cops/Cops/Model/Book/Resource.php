@@ -178,7 +178,6 @@ class Resource extends ResourceAbstract
             ->leftJoin('main',  'tags',           'tag', 'tag.id = btl.tag')
             ->orderBy('serie_name')
             ->addOrderBy('series_index')
-            ->addOrderBy('author_name')
             ->addOrderBy('title')
             ->groupBy('main.id');
 
