@@ -115,6 +115,8 @@ class Resource extends ResourceAbstract
     public function loadByAuthorId($authorId)
     {
         return $this->getBaseSelect()
+            ->leftJoin('main', 'books_authors_link', 'bal',    'bal.book = main.id')
+            ->leftJoin('main', 'authors',            'author', 'author.id = bal.author')
             ->andWhere('author.id = :author_id')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
@@ -139,7 +141,6 @@ class Resource extends ResourceAbstract
             ->andWhere('tag.id = :tagid')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
-            ->addOrderBy('author_sort')
             ->addOrderBy('title')
             ->setParameter('tagid', $tagId, PDO::PARAM_INT);
 
@@ -221,14 +222,6 @@ class Resource extends ResourceAbstract
     public function setDataFromStatement(array $result)
     {
         $myBook = parent::setDataFromStatement($result);
-
-        /*
-        $myBook->getAuthor()->setData(array(
-            'id'   => $result['author_id'],
-            'name' => $result['author_name'],
-            'sort' => $result['author_sort'],
-        ));
-        */
 
         if (!empty($result['serie_id'])) {
             $myBook->getSerie()->setData(array(
@@ -436,17 +429,12 @@ class Resource extends ResourceAbstract
                 'main.*',
                 'com.text AS comment',
                 'rating.rating AS rating',
-                'author.id AS author_id',
-                'author.name AS author_name',
-                'author.sort AS author_sort',
                 'serie.id AS serie_id',
                 'serie.name AS serie_name',
                 'serie.sort AS serie_sort'
             )
             ->from('books', 'main')
             ->leftJoin('main', 'comments',           'com',    'com.book = main.id')
-            ->leftJoin('main', 'books_authors_link', 'bal',    'bal.book = main.id')
-            ->leftJoin('main', 'authors',            'author', 'author.id = bal.author')
             ->leftJoin('main', 'books_series_link',  'bsl',    'bsl.book = main.id')
             ->leftJoin('main', 'series',             'serie',  'serie.id = bsl.series')
             ->leftJoin('main', 'books_ratings_link', 'brl',    'brl.book = main.id')
