@@ -96,7 +96,7 @@ class AuthorController extends BaseController implements ControllerProviderInter
                 )
             );
         } catch (FileNotFoundException $e) {
-            $redirect = $app->abord(404);
+            $redirect = $app->abort(404);
         }
         return $redirect;
     }
