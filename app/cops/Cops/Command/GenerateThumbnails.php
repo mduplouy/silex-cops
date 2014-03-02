@@ -30,7 +30,7 @@ class GenerateThumbnails extends Command
     /**
      * Constructor
      */
-    function __construct($name, Application $app)
+    public function __construct($name, Application $app)
     {
         parent::__construct('generate:thumbnails');
         $this->app = $app;
