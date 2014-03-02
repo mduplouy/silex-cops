@@ -33,8 +33,9 @@ abstract class EntityAbstract
      */
     public function __construct(BaseApplication $app, array $dataArray = array())
     {
-        $app['resource.'.get_called_class()] = $app->share(function($app) {
-            $resourceClassName = sprintf('%s\\Resource', get_called_class());
+        $className = get_called_class();
+        $app['resource.'.$className] = $app->share(function($app) use($className) {
+            $resourceClassName = sprintf('%s\\Resource', $className);
             return new $resourceClassName($app, $this);
         });
 
