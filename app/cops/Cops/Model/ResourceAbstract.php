@@ -9,9 +9,8 @@
  */
 namespace Cops\Model;
 
-use Cops\Model\Core;
-use Cops\Model\Common;
-use Cops\Model\CoreInterface;
+use Cops\Model\EntityAbstract;
+use Silex\Application as BaseApplication;
 
 /**
  * Base resource class
@@ -46,24 +45,13 @@ abstract class ResourceAbstract
     /**
      * Constructor
      *
-     * @param Common $entity Linked model instance
+     * @param BaseApplication  $app     Application instance
+     * @param EntityAbstract   $entity  Linked model instance
      */
-    public function __construct(Common $entity)
+    public function __construct(BaseApplication $app, EntityAbstract $entity)
     {
+        $this->app    = $app;
         $this->entity = $entity;
-    }
-
-    /**
-     * Model getter
-     *
-     * @param string $model
-     *
-     * @return Common
-     */
-    public function getModel($model)
-    {
-        $app = Core::getApp();
-        return $app['core']->getModel($model);
     }
 
     /**

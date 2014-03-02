@@ -9,12 +9,14 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\EntityAbstract;
+
 /**
  * Author model class
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Author extends Common
+class Author extends EntityAbstract
 {
     /**
      * Object ID
@@ -64,7 +66,7 @@ class Author extends Common
         if ($this->sort === null && $this->name !== null)
         {
             $app = self::getApp();
-            $this->sort = $app['calibre']->getAuthorSortName($this->name);
+            $this->sort = $this->app['model.calibre']->getAuthorSortName($this->name);
         }
 
         return $this->sort;
@@ -112,7 +114,7 @@ class Author extends Common
      */
     public function getAllBooks()
     {
-        return $this->getModel('Book')->getCollection()
+        return $this->app['model.book']->getCollection()
             ->getByAuthorId($this->getId())
             ->addBookFiles();
     }

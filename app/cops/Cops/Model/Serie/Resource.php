@@ -11,7 +11,6 @@ namespace Cops\Model\Serie;
 
 use Cops\Model\ResourceAbstract;
 use Cops\Exception\SerieException;
-use Cops\Model\Core;
 use PDO;
 use Doctrine\DBAL\Connection;
 
@@ -125,7 +124,7 @@ class Resource extends ResourceAbstract
                 ->setParameter(1, $letter, PDO::PARAM_STR);
         } else {
             $qb->where('UPPER(SUBSTR(sort, 1, 1)) NOT IN (:letters)')
-                ->setParameter('letters', Core::getLetters(), Connection::PARAM_STR_ARRAY);
+                ->setParameter('letters', $this->app['utils']->getLetters(), Connection::PARAM_STR_ARRAY);
         }
 
         return $qb->groupBy('main.id')

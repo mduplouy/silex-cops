@@ -11,7 +11,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 {
     public function testCollection()
     {
-        $book = new \Cops\Model\Book;
+        $book = new \Cops\Model\Book(\Cops\Model\Core::getApp());
 
         $collection = $book->getCollection();
 

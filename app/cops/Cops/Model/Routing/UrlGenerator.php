@@ -9,15 +9,34 @@
  */
 namespace Cops\Model\Routing;
 
-use Cops\Model\Core;
+use Silex\Application as BaseApplication;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
+
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\RequestContext;
+use Psr\Log\LoggerInterface;
 
 /**
  * Overrided the class to be able to deactive url rewriting
  */
 class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
 {
+    /**
+     * Application instance
+     * @var \Silex\Application
+     */
+    private $app;
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(RouteCollection $routes, RequestContext $context, LoggerInterface $logger = null, BaseApplication $app)
+    {
+        parent::__construct($routes, $context, $logger);
+        $this->app = $app;
+    }
+
     /**
      * @inheritDoc
      */
@@ -26,7 +45,7 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
         $url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
 
         // Check for mod_rewrite config then prepend script name to url
-        if (Core::getConfig()->getValue('use_rewrite') !== true && php_sapi_name() != 'cli') {
+        if ($this->app['config']->getValue('use_rewrite') !== true && php_sapi_name() != 'cli') {
             $url = $this->addScriptNameToUrl($url);
         }
         return $url;
@@ -41,11 +60,10 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
      */
     private function addScriptNameToUrl($url)
     {
-        $app = Core::getApp();
-        $scriptName = $app['request']->getScriptName();
+        $scriptName = $this->app['request']->getScriptName();
 
         if (strpos($url, $scriptName) === false) {
-            $url = $app['request']->getBasePath().DS.basename($scriptName).$url;
+            $url = $this->app['request']->getBasePath().DS.basename($scriptName).$url;
         }
         return $url;
     }

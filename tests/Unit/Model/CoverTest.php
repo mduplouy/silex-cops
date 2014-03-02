@@ -12,28 +12,27 @@ use Cops\Model\Core;
  */
 class CoverTest extends \PHPUnit_Framework_TestCase
 {
+    protected $app;
+
     public function setUp()
     {
-        $this->sourcePath = __DIR__.'/../../';
-        $this->targetPath = BASE_DIR.Core::getConfig()->getValue('public_dir');
+        $this->app = \Cops\Model\Core::getApp();
+        $this->targetPath = BASE_DIR.$this->app['config']->getValue('public_dir');
     }
 
 
     public function testThumbnailGeneration()
     {
-        $book = new \Cops\Model\Book;
+        $book = new \Cops\Model\Book($this->app);
         $book->load(5);
 
-        $cover = $book->getCover($this->sourcePath);
-
-        $thumbnail = $cover->getThumbnailPath();
-
-        $this->assertRegExp('#/assets/books/5/*.*/5.jpg#', $thumbnail);
+        $thumbnail = $book->getCover()->getThumbnailPath();
+        $this->assertRegExp('#/assets/books/5/*.*/5.jpg#', (string) $thumbnail);
 
         // cleaning
         unlink($this->targetPath.$thumbnail);
         rmdir(dirname($this->targetPath.$thumbnail));
-        rmdir($this->targetPath.DS.'assets'.DS.'books'.DS.'5');
+        rmdir($this->targetPath.DS.'assets'.DS.'books'.DS.'3');
 
 
         $thumbnail = '/assets/books/5/320x240/5.jpg';

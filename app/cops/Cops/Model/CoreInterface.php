@@ -30,10 +30,4 @@ interface CoreInterface
      */
     public function getResource();
 
-    /**
-     * Collection object loader
-     *
-     * @return \Cops\Model\Collection
-     */
-    public function getCollection();
 }

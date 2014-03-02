@@ -9,8 +9,8 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\EntityAbstract;
 use Cops\Model\Book;
-use Cops\Model\Core;
 use Cops\Exception\ImageProcessor\AdapterException;
 
 /**
@@ -18,7 +18,7 @@ use Cops\Exception\ImageProcessor\AdapterException;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Cover extends Core
+class Cover extends EntityAbstract
 {
     /**
      * Cover file
@@ -54,7 +54,7 @@ class Cover extends Core
      * Storage directory
      * @var string
      */
-    protected $storageDir;
+    protected $storageDir = BASE_DIR;
 
     /**
      * Width
@@ -69,27 +69,25 @@ class Cover extends Core
     private $height;
 
     /**
-     * Constructor
+     * Book setter
      *
-     * @param Book   $book
-     * @param string $sourceDir
+     * @param Book
+     *
+     * @return $this
      */
-    public function __construct(Book $book, $sourceDir = null)
+    public function setBook(Book $book)
     {
-        if ($sourceDir === null) {
-            $sourceDir = BASE_DIR;
-        }
-
-        $this->storageDir = $sourceDir;
         $this->bookPath   = $book->getPath();
         $this->bookId     = $book->getId();
 
         if ($book->hasCover()) {
             $this->coverFile = sprintf($this->storageDir.'%s'.DS.'%s'.DS.'cover.jpg',
-                $this->getConfig()->getValue('data_dir'),
+                $this->app['config']->getValue('data_dir'),
                 $this->bookPath
             );
         }
+
+        return $this;
     }
 
     /**
@@ -111,12 +109,12 @@ class Cover extends Core
         $this->thumbnailPath = sprintf(
             DS.'assets'.DS.'books'.DS.'%d'.DS.'%dx%d'.DS.'%d.jpg',
             substr($this->bookId, -1),
-            $width,
-            $height,
+            $this->getWidth(),
+            $this->getHeight(),
             $this->bookId
         );
 
-        $this->thumbnailFile = BASE_DIR.$this->getConfig()->getValue('public_dir').$this->thumbnailPath;
+        $this->thumbnailFile = BASE_DIR.$this->app['config']->getValue('public_dir').$this->thumbnailPath;
 
         if (!file_exists($this->thumbnailFile)) {
             $this->generateThumbnail();
@@ -168,7 +166,7 @@ class Cover extends Core
     private function getWidth()
     {
         if ($this->width === null || $this->height === null) {
-            return (int) $this->getConfig()->getValue('cover_width');
+            return (int) $this->app['config']->getValue('cover_width');
         }
         return $this->width;
     }
@@ -181,7 +179,7 @@ class Cover extends Core
     private function getHeight()
     {
         if ($this->width === null || $this->height === null) {
-            return (int) $this->getConfig()->getValue('cover_height');
+            return (int) $this->app['config']->getValue('cover_height');
         }
         return $this->height;
     }

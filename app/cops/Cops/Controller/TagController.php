@@ -9,7 +9,6 @@
  */
 namespace Cops\Controller;
 
-use Cops\Model\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -22,7 +21,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
  * Tag controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class TagController extends Controller implements ControllerProviderInterface
+class TagController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -63,7 +62,7 @@ class TagController extends Controller implements ControllerProviderInterface
     {
         try {
             $itemPerPage = $app['config']->getValue('tag_page_size');
-            $tag = $this->getModel('Tag')->load($id);
+            $tag = $app['model.tag']->load($id);
             $books = $tag->getAllBooks($itemPerPage * ($page-1), $itemPerPage);
             $totalBooks = $books->getResource()->getTotalRows();
         } catch (TagException $e) {
@@ -93,17 +92,15 @@ class TagController extends Controller implements ControllerProviderInterface
     public function downloadAction(Application $app, $id, $format)
     {
         try {
-            $tag = $this->getModel('Tag')->load($id);
+            $tag = $app['model.tag']->load($id);
 
-            $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
-                ->getInstance();
+            $archiveClass = $app['factory.archive']->getInstance($format);
 
-            $tagBooks = $this->getModel('BookFile')
+            $tagBooks = $app['model.bookfile']
                 ->getCollection()
                 ->getByTagId($tag->getId());
 
-            $archive = $archiveClass->addFiles($tagBooks)
-                ->generateArchive();
+            $archive = $archiveClass->addFiles($tagBooks)->generateArchive();
 
             return $app
                 ->sendFile($archive)

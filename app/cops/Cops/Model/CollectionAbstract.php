@@ -9,24 +9,32 @@
  */
 namespace Cops\Model;
 
-use Cops\Model\Common;
+use Cops\Model\EntityAbstract;
+use Silex\Application as BaseApplication;
 
 /**
  * Collection abstract class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
+abstract class CollectionAbstract implements \IteratorAggregate, \Countable
+{
+    /**
+     * Application instance
+     * @var \Silex\Application
+     */
+    protected $app;
+
     /**
      * Collection elements
      * @var array
      */
-    private $elements = array();
+    protected $elements = array();
 
     /**
-     * Id <=> Key mapping for elements
+     * Id => Key mapping for elements
      * @var array
      */
-    private $mapping = array();
+    protected $mapping = array();
 
     /**
      * Object entity model instance
@@ -39,17 +47,27 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
      *
      * @param Common $entity Related entity instance for collection
      */
-    public function __construct(Common $entity) {
+    public function __construct(EntityAbstract $entity) {
         $this->entity = $entity;
+        $this->app    = $entity->getApp();
     }
 
     /**
      * Entity model getter
      *
-     * @return Common
+     * @return \Cops\0EntityAbstract
      */
     public function getEntity() {
         return $this->entity;
+    }
+
+    /**
+     * App getter
+     *
+     * @return \Silex\Application
+     */
+    public function getApp() {
+        return $this->app;
     }
 
     /**
@@ -87,7 +105,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
      *
      * @param mixed $element
      *
-     * @return Collection
+     * @return $this
      */
     public function add($element) {
         $this->elements[] = $element;
@@ -132,7 +150,7 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
      *
      * @param int $offset
      *
-     * @return Collection
+     * @return $this
      */
     public function setFirstResult($offset) {
         $this->getResource()->setFirstResult($offset);
@@ -144,11 +162,10 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable {
      *
      * @param int $limit
      *
-     * @return Collection
+     * @return $this
      */
     public function setMaxResults($limit) {
         $this->getResource()->setMaxResults($limit);
         return $this;
     }
-
 }

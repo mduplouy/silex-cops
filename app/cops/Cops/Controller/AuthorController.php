@@ -9,11 +9,9 @@
  */
 namespace Cops\Controller;
 
-use Cops\Model\Controller as BaseController;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Cops\Model\BookFile\BookFileFactory;
 
 use Cops\Exception\AuthorException;
 use Cops\Exception\Archive\AdapterException;
@@ -23,7 +21,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
  * Author controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class AuthorController extends BaseController implements ControllerProviderInterface
+class AuthorController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -55,7 +53,7 @@ class AuthorController extends BaseController implements ControllerProviderInter
     }
 
     /**
-     * Download all serie books as archive file
+     * Download all author books as archive file
      *
      * @param Application $app Application instance
      * @param int                $id     The serie ID
@@ -66,12 +64,12 @@ class AuthorController extends BaseController implements ControllerProviderInter
     public function downloadAction(Application $app, $id, $format)
     {
         try {
-            $author = $this->getModel('Author')->load($id);
+            $author = $app['model.author']->load($id);
 
-            $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
-                ->getInstance();
+            $archiveClass = $app['factory.archive']
+                ->getInstance($format);
 
-            $authorBooks = $this->getModel('BookFile')
+            $authorBooks = $app['model.bookfile']
                 ->getCollection()
                 ->getByAuthorId($author->getId());
 
@@ -114,7 +112,7 @@ class AuthorController extends BaseController implements ControllerProviderInter
         if ($letter === '0') {
             $letter = '#';
         }
-        $authors = $this->getModel('Author')->getCollection()->getByFirstLetter($letter);
+        $authors = $app['model.author']->getCollection()->getByFirstLetter($letter);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author_list.html', array(
             'letter' => $letter,
@@ -132,7 +130,7 @@ class AuthorController extends BaseController implements ControllerProviderInter
     public function detailAction(Application $app, $id)
     {
         try {
-            $author = $this->getModel('Author')->load($id);
+            $author = $app['model.author']->load($id);
         } catch (AuthorException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }

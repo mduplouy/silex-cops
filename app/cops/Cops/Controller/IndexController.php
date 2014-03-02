@@ -16,9 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Index controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class IndexController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class IndexController implements \Silex\ControllerProviderInterface
 {
     /**
      * Author aggregated list
@@ -83,12 +81,12 @@ class IndexController
      */
     public function indexAction(\Silex\Application $app)
     {
-        $latestBooks = $this->getModel('Book')
+        $latestBooks = $app['model.book']
             ->getCollection()
             ->getLatest($app['config']->getValue('last_added'));
 
-        $this->listSeries();
-        $this->listAuthors();
+        $this->listSeries($app);
+        $this->listAuthors($app);
         $this->listTags($app);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html', array(
@@ -106,11 +104,13 @@ class IndexController
     /**
      * Get serie list and count total
      *
+     * @param  \Silex\Application $app
+     *
      * @return void
      */
-    private function listSeries()
+    private function listSeries(Application $app)
     {
-        $serie = $this->getModel('Serie');
+        $serie = $app['model.serie'];
         $this->series = $serie->getAggregatedList();
         $this->nbSeries = $serie->getResource()->count();
     }
@@ -118,11 +118,13 @@ class IndexController
     /**
      * Get authors and count total
      *
+     * @param  \Silex\Application $app
+     *
      * @return void
      */
-    private function listAuthors()
+    private function listAuthors(Application $app)
     {
-        $author = $this->getModel('Author');
+        $author = $app['model.author'];
         $this->authors = $author->getAggregatedList();
         $this->nbAuthors = $author->getResource()->count();
     }
@@ -130,13 +132,13 @@ class IndexController
     /**
      * Get tags and count total
      *
-     * @param  Application $app
+     * @param  \Silex\Application $app
      *
      * @return void
      */
-    private function listTags($app)
+    private function listTags(Application $app)
     {
-        $this->tags = $this->getModel('Tag')
+        $this->tags = $app['model.tag']
             ->getCollection()
             ->setFirstResult(0)
             ->setMaxResults($app['config']->getValue('homepage_tags'))

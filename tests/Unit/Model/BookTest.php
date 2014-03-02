@@ -13,17 +13,22 @@ class BookTest extends \PHPUnit_Framework_TestCase
     private $emptyBook;
     private $book;
 
+    public function setUp()
+    {
+        $this->app = \Cops\Model\Core::getApp();
+    }
+
     private function getEmptyBook()
     {
         if (null === $this->emptyBook) {
-            $this->emptyBook = new \Cops\Model\Book;
+            $this->emptyBook = new \Cops\Model\Book($this->app);
         }
         return $this->emptyBook;
     }
 
     private function getRealBook()
     {
-        $book = new \Cops\Model\Book;
+        $book = new \Cops\Model\Book($this->app);
         $book->load(3);
         return $book;
     }
@@ -35,9 +40,17 @@ class BookTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Cops\Model\Cover', $book->getCover());
         $this->assertInstanceOf('Cops\Model\Serie', $book->getSerie());
         $this->assertInstanceOf('Cops\Model\Author\Collection', $book->getAuthors());
-        $this->assertInstanceOf('Cops\Model\BookFile\BookFileInterface', $book->getFile());
-        $this->assertInternalType('array', $book->getFiles());
+        $this->assertInstanceOf('Cops\Model\BookFile\Collection', $book->getFiles());
         $this->assertFalse($book->hasCover());
+    }
+
+    /**
+     * @expectedException Cops\Exception\BookFile\FormatUnavailableException
+     */
+    public function testBasicGettersException()
+    {
+        $book = $this->getEmptyBook();
+        $this->assertInstanceOf('Cops\Model\BookFile\BookFileInterface', $book->getFile());
     }
 
     public function testCloneResetProperties()

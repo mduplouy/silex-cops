@@ -18,9 +18,9 @@ class CoreTest extends WebTestCase
 
         // Define core model, no closure to ensure loading
         // Load configuration & set service providers
-        $app['core'] =  new \Cops\Model\Core(BASE_DIR.'app/cops/config.ini', $app);
-
-        $app['debug'] = true;
+        $app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini', $app);
+        $app['core']   =  new \Cops\Model\Core($app);
+        $app['debug']  = true;
 
         // Register special database for tests
         $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
@@ -32,12 +32,29 @@ class CoreTest extends WebTestCase
         return $app;
     }
 
-    public function testGetModel()
+    /**
+     * @dataProvider getModels
+     */
+    public function testGetModel($modelName, $className)
     {
-        $tag = $this->app['core']->getModel('Tag');
-        $this->assertInstanceOf('Cops\Model\Tag', $tag);
-        $tag = $this->app['core']->getModel('Tag');
-        $this->assertInstanceOf('Cops\Model\Common', $tag);
+        $model = $this->app[$modelName];
+        $this->assertInstanceOf($className, $model);
+    }
+
+    public function getModels()
+    {
+        return array(
+            array('utils',          '\Cops\Model\Utils'),
+            array('model.book',     '\Cops\Model\Book'),
+            array('model.author',   '\Cops\Model\Author'),
+            array('model.serie',    '\Cops\Model\Serie'),
+            array('model.tag',      '\Cops\Model\Tag'),
+            array('model.cover',    '\Cops\Model\Cover'),
+            array('model.bookfile', '\Cops\Model\BookFile'),
+            array('model.calibre',  '\Cops\Model\Calibre'),
+
+            array('factory.bookfile', '\Cops\Model\BookFile\BookFileFactory'),
+        );
     }
 
     /**
@@ -45,20 +62,12 @@ class CoreTest extends WebTestCase
      */
     public function testGetModelException()
     {
-        $this->app['core']->getModel('dummy');
+        $this->app['model.dummy'];
     }
 
     public function testConfigInstance()
     {
-        $this->assertInstanceOf('Cops\Model\Config', Core::getConfig());
-    }
-
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testCoreCollectionException()
-    {
-        $this->app['core']->getCollection();
+        $this->assertInstanceOf('Cops\Model\Config', $this->app['config']);
     }
 
     public function testTranslation()

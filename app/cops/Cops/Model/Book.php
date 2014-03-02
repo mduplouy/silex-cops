@@ -9,7 +9,8 @@
  */
 namespace Cops\Model;
 
-use Cops\Model\Core;
+use Silex\Application as BaseApplication;
+use Cops\Model\EntityAbstract;
 use Cops\Model\BookFile\BookFileFactory;
 
 /**
@@ -17,7 +18,7 @@ use Cops\Model\BookFile\BookFileFactory;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Book extends Common
+class Book extends EntityAbstract
 {
     /**
      * Object ID
@@ -71,34 +72,54 @@ class Book extends Common
      * Collection of author
      * @var \Cops\Model\Author\Collection
      */
-    protected $_authors;
+    protected $authorCollection;
 
     /**
      * A Cover object instance
      * @var \Cops\Model\Cover
      */
-    protected $_cover;
+    protected $cover;
 
     /**
      * A Serie object instance
      * @var \Cops\Model\Serie
      */
-    protected $_serie;
+    protected $serie;
 
     /**
      * A tag collection instance
      * @var \Cops\Model\Tag\Collection
      */
-    protected $tags;
+    protected $tagCollection;
 
     /**
-     * An array of file adapter instance
-     * @var array
+     * An bookfile collection instance
+     * @var \Cops\Model\BookFile\Collection
      */
-    protected $_files = array();
+    protected $bookFileCollection;
 
     /**
-     * Load book
+     * Constructor
+     *
+     * @param array $dataArray
+     *
+     * @return \Cops\Model\Core
+     */
+    public function __construct(BaseApplication $app, array $dataArray = array())
+    {
+        parent::__construct($app, $dataArray);
+
+        $this->authorCollection     = $this->app['model.author']->getCollection();
+        $this->serie                = $this->app['model.serie']->setBook($this);
+        $this->cover                = $this->app['model.cover']->setBook($this);
+        $this->tagCollection        = $this->app['model.tag']->getCollection();
+        $this->bookFileCollection   = $this->app['model.bookfile']->getCollection();
+
+        return $this;
+    }
+
+    /**
+     * Load one book data
      *
      * @param int $bookId
      *
@@ -111,20 +132,24 @@ class Book extends Common
         $this->setData($result);
 
         // Set author collection
-        $this->_authors = $this->getModel('Author')->getCollection()->getByBookId($this->getId());
+        $this->authorCollection = $this->authorCollection->getByBookId($this->getId());
 
         // Set serie data
         if (!empty($result['serie_id'])) {
-            $this->getSerie()->setData(array(
+            $this->serie->setData(array(
                 'id'   => $result['serie_id'],
                 'name' => $result['serie_name'],
                 'sort' => $result['serie_sort'],
             ));
         }
 
-        // Set bookfile data
-        // @TODO, change this
-        $this->getModel('BookFile')->loadFromBook($this);
+        // Set bookfile
+        $this->bookFileCollection->getFromBook($this);
+
+        // Set tags
+        $this->tagCollection->getByBookId($this->getId());
+
+        $this->cover->setBook($this);
 
         return $this;
     }
@@ -142,16 +167,11 @@ class Book extends Common
     /**
      * Cover object getter
      *
-     * @param string $storageDir
-     *
      * @return Cover
      */
-    public function getCover($storageDir = null)
+    public function getCover()
     {
-        if ($this->_cover === null) {
-            $this->_cover = $this->getModel('Cover', array($this, $storageDir));
-        }
-        return $this->_cover;
+        return $this->cover;
     }
 
     /**
@@ -161,10 +181,7 @@ class Book extends Common
      */
     public function getSerie()
     {
-        if (is_null($this->_serie)) {
-            $this->_serie = $this->getModel('Serie');
-        }
-        return $this->_serie;
+        return $this->serie;
     }
 
     /**
@@ -174,26 +191,19 @@ class Book extends Common
      */
     public function getAuthors()
     {
-        if (is_null($this->_authors)) {
-            $this->_authors = $this->getModel('Author')
-                ->getCollection()
-                ->getByBookId($this->getId());
-        }
-        return $this->_authors;
+        return $this->authorCollection;
     }
 
     /**
      * File adapter getter
      *
+     * @param  string $fileType
+     *
      * @return \Cops\Model\BookFile\BookFileInterface
      */
     public function getFile($fileType = BookFileFactory::TYPE_EPUB)
     {
-        if (!isset($this->_files[$fileType])) {
-            $this->_files[$fileType] = $this->getModel('BookFile\\BookFileFactory', $fileType)
-                ->getInstance();
-        }
-        return $this->_files[$fileType];
+        return $this->bookFileCollection->findFormat($fileType, $this->getId());
     }
 
     /**
@@ -203,7 +213,7 @@ class Book extends Common
      */
     public function getFiles()
     {
-        return $this->_files;
+        return $this->bookFileCollection;
     }
 
     /**
@@ -213,9 +223,7 @@ class Book extends Common
      */
     public function getTags()
     {
-        return $this->getModel('Tag')
-            ->getCollection()
-            ->getByBookId($this->getId());
+        return $this->tagCollection;
     }
 
     /**
@@ -225,6 +233,8 @@ class Book extends Common
      * @param int          $bookId
      *
      * @return bool
+     *
+     * @todo inject author collection here instead of array
      */
     public function updateAuthor($authors, $bookId = null)
     {
@@ -258,17 +268,18 @@ class Book extends Common
      */
     public function __clone()
     {
-        $this->id          = null;
-        $this->pubdate     = null;
-        $this->hasCover    = null;
-        $this->path        = null;
-        $this->rating      = null;
-        $this->comment     = null;
-        $this->seriesIndex = null;
-        $this->_serie      = null;
-        $this->_author     = null;
-        $this->_cover      = null;
-        $this->_file       = array();
         parent::__clone();
+        $this->id                 = null;
+        $this->pubdate            = null;
+        $this->hasCover           = null;
+        $this->path               = null;
+        $this->rating             = null;
+        $this->comment            = null;
+        $this->seriesIndex        = null;
+        $this->serie              = $this->app['model.serie']->setBook($this);
+        $this->cover              = $this->app['model.cover'];
+        $this->tagCollection      = $this->app['model.tag']->getCollection();
+        $this->authorCollection   = $this->app['model.author']->getCollection();
+        $this->bookFileCollection = $this->app['model.bookfile']->getCollection();
     }
 }

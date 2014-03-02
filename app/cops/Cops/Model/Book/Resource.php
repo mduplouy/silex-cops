@@ -237,7 +237,6 @@ class Resource extends ResourceAbstract
                 'sort' => $result['serie_sort'],
             ));
         }
-
         return $myBook;
     }
 

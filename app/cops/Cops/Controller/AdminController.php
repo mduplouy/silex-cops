@@ -10,7 +10,6 @@
 namespace Cops\Controller;
 
 
-use Cops\Model\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 
@@ -18,7 +17,7 @@ use Silex\Application;
  * Admin related controller
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class AdminController extends Controller implements ControllerProviderInterface
+class AdminController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes

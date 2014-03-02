@@ -9,7 +9,7 @@
  */
 namespace Cops\Model\BookFile\Adapter;
 
-use Cops\Model\BookFileAbstract;
+use Cops\Model\BookFile\AdapterAbstract;
 use Cops\Model\BookFile\BookFileInterface;
 
 /**
@@ -17,7 +17,7 @@ use Cops\Model\BookFile\BookFileInterface;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Pdf extends BookFileAbstract implements BookFileInterface
+class Pdf extends AdapterAbstract implements BookFileInterface
 {
     /**
      * Get content type header for download

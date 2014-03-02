@@ -9,13 +9,21 @@
  */
 namespace Cops\Model;
 
+use Silex\Application as BaseApplication;
+
 /**
  * Common class model
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class Common extends Core
+abstract class EntityAbstract
 {
+    /**
+     * Application instance
+     * @var Application
+     */
+    protected $app;
+
     /**
      * Constructor
      *
@@ -23,12 +31,16 @@ abstract class Common extends Core
      *
      * @return \Cops\Model\Core
      */
-    public function __construct($dataArray=null)
+    public function __construct(BaseApplication $app, array $dataArray = array())
     {
-        if (is_array($dataArray)) {
-            $this->setData($dataArray);
-        }
-        return $this;
+        $app['resource.'.get_called_class()] = $app->share(function($app) {
+            $resourceClassName = sprintf('%s\\Resource', get_called_class());
+            return new $resourceClassName($app, $this);
+        });
+
+        $this->app = $app;
+
+        return $this->setData($dataArray);
     }
 
     /**
@@ -65,7 +77,7 @@ abstract class Common extends Core
      *
      * @return \Cops\Model\Core
      */
-    public function setData($dataArray)
+    public function setData(array $dataArray)
     {
         foreach ($dataArray as $prop => $value) {
             $prop = $this->getPropertyName($prop);
@@ -74,6 +86,52 @@ abstract class Common extends Core
             }
         }
         return $this;
+    }
+
+    /**
+     * Resource object loader
+     *
+     * @return \Cops\Model\ResourceAbstract
+     */
+    public function getResource()
+    {
+        return $this->app['resource.'.get_called_class()];
+    }
+
+    /**
+     * Collection object loader
+     *
+     * @return \Cops\Model\Collection
+     */
+    public function getCollection()
+    {
+        $fullClassName = get_called_class().'\\Collection';
+        if (!class_exists($fullClassName)) {
+            throw new \RuntimeException(
+                sprintf('Requested collection %s does not exists', $fullClassName)
+            );
+        }
+        return new $fullClassName($this);
+    }
+
+    /**
+     * Application getter
+     *
+     * @return \Silex\Application
+     */
+    public function getApp()
+    {
+        return $this->app;
+    }
+
+    /**
+     * Config short hand getter
+     *
+     * @return \Cops\Model\Config
+     */
+    public function getConfig()
+    {
+        return $this->app['config'];
     }
 
     /**
@@ -95,6 +153,15 @@ abstract class Common extends Core
      */
     public function getDownloadSafeName()
     {
-        return $this->removeAccents($this->getName());
+        return $this->app['utils']->removeAccents($this->getName());
+    }
+
+    /**
+     * Empty properties on clone
+     */
+    public function __clone()
+    {
+        $this->modelInstance = array();
+        $this->resource = null;
     }
 }

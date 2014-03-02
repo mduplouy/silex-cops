@@ -18,9 +18,7 @@ use Cops\Model\BookFile\BookFileFactory;
  * Book controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class SearchController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class SearchController implements \Silex\ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -61,7 +59,7 @@ class SearchController
     public function searchAction(Request $request, Application $app)
     {
         $core = $app['core'];
-        $keywords = preg_replace('([^\\w])', '-', $core->removeAccents($request->get('keywords')));
+        $keywords = preg_replace('([^\\w])', '-', $app['utils']->removeAccents($request->get('keywords')));
 
         return $app->redirect(
             $app['url_generator']->generate('search_results',
