@@ -94,7 +94,7 @@ class OpdsController implements ControllerProviderInterface
     {
         $xml =  $app['twig']->render('opds/authors.xml', array(
             'updated'           => date('Y-m-d\TH:i:sP'),
-            'authorsAggregated' => $this->getModel('Author')->getAggregatedList(),
+            'authorsAggregated' => $app['model.author']->getAggregatedList(),
         ));
 
         return $this->_checkXml($xml);
@@ -113,7 +113,7 @@ class OpdsController implements ControllerProviderInterface
         if ($letter === '0') {
             $letter = '#';
         }
-        $authors = $this->getModel('Author')->getCollectionByFirstLetter($letter);
+        $authors = $app['model.author']->getCollection()->getByFirstLetter($letter);
 
         $xml =  $app['twig']->render('opds/authors_alpha.xml', array(
             'updated' => date('Y-m-d\TH:i:sP'),
@@ -134,7 +134,7 @@ class OpdsController implements ControllerProviderInterface
     {
         $xml =  $app['twig']->render('opds/series.xml', array(
             'updated'          => date('Y-m-d\TH:i:sP'),
-            'seriesAggregated' => $this->getModel('Serie')->getAggregatedList(),
+            'seriesAggregated' => $app['model.serie']->getAggregatedList(),
         ));
 
         return $this->_checkXml($xml);
@@ -153,7 +153,7 @@ class OpdsController implements ControllerProviderInterface
         if ($letter === '0') {
             $letter = '#';
         }
-        $series = $this->getModel('Serie')->getCollectionByFirstLetter($letter);
+        $series = $app['model.serie']->getCollection()->getByFirstLetter($letter);
 
         $xml =  $app['twig']->render('opds/series_alpha.xml', array(
             'updated' => date('Y-m-d\TH:i:sP'),
@@ -174,7 +174,8 @@ class OpdsController implements ControllerProviderInterface
     private function _checkXml($xmlString)
     {
         // Load into DOM to ensure the xml is well formated
-        $dom = \DOMDocument::loadXml($xmlString);
+        $dom = new \DOMDocument;
+        $dom->loadXml($xmlString);
         return $dom->saveXml();
     }
 }

@@ -36,7 +36,6 @@ class OpdsFeedController implements ControllerProviderInterface
 
     public function indexAction()
     {
-        $this->getModel('Opds\\Parser');
         return 'TODO';
     }
 }
