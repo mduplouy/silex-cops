@@ -12,6 +12,7 @@ namespace Cops\Model;
 use Cops\Model\EntityAbstract;
 use Cops\Model\Book;
 use Cops\Exception\ImageProcessor\AdapterException;
+use Silex\Application as BaseApplication;
 
 /**
  * Cover model class
@@ -69,6 +70,19 @@ class Cover extends EntityAbstract
     private $height;
 
     /**
+     * Constructor
+     *
+     * @param array $dataArray
+     *
+     * @return \Cops\Model\Core
+     */
+    public function __construct(BaseApplication $app, array $dataArray = array())
+    {
+        $this->app = $app;
+        $this->setData($dataArray);
+    }
+
+    /**
      * Book setter
      *
      * @param Book
@@ -86,7 +100,6 @@ class Cover extends EntityAbstract
                 $this->bookPath
             );
         }
-
         return $this;
     }
 
@@ -137,7 +150,8 @@ class Cover extends EntityAbstract
 
         $app = self::getApp();
 
-        $app['image_processor']
+        $app['factory.image']
+            ->getInstance($this->app['config']->getValue('image_processor'))
             ->setWidth($this->getWidth())
             ->setHeight($this->getHeight())
             ->generateThumbnail($this->coverFile, $this->thumbnailFile);

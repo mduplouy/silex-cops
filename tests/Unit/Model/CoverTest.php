@@ -17,9 +17,16 @@ class CoverTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->app = \Cops\Model\Core::getApp();
+        $this->oldConfigValue = $this->app['config']->getValue('data_dir');
+        $this->app['config']->setValue('data_dir', 'tests/data');
+
         $this->targetPath = BASE_DIR.$this->app['config']->getValue('public_dir');
     }
 
+    public function tearDown()
+    {
+        $this->app['config']->setValue('data_dir', $this->oldConfigValue);
+    }
 
     public function testThumbnailGeneration()
     {
@@ -32,9 +39,9 @@ class CoverTest extends \PHPUnit_Framework_TestCase
         // cleaning
         unlink($this->targetPath.$thumbnail);
         rmdir(dirname($this->targetPath.$thumbnail));
-        rmdir($this->targetPath.DS.'assets'.DS.'books'.DS.'3');
+        rmdir($this->targetPath.DS.'assets'.DS.'books'.DS.'5');
 
-
+        $cover = $book->getCover();
         $thumbnail = '/assets/books/5/320x240/5.jpg';
         $this->assertFileNotExists($this->targetPath.$thumbnail);
 

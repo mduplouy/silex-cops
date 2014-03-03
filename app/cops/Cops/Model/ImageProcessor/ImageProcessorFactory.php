@@ -9,13 +9,15 @@
  */
 namespace Cops\Model\ImageProcessor;
 
+use Cops\Model\FactoryAbstract;
+use Silex\Application as BaseApplication;
 use Cops\Exception\ImageProcessor\AdapterException;
 
 /**
  * Image processor factory
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class ImageProcessorFactory
+class ImageProcessorFactory extends FactoryAbstract
 {
     /**
      * Instance types
@@ -27,30 +29,18 @@ class ImageProcessorFactory
      * Instance type storage
      * @var array
      */
-    private $_instanceTypeStorage;
-
-    /**
-     * Instance type
-     * @var string
-     */
-    private $_instanceType;
-
-    /**
-     * Processor instance
-     * @var array
-     */
-    protected $_instance;
+    private $instanceTypeStorage;
 
     /**
      * Constructor
      *
      * @param string $processingType
      */
-    public function __construct($processingType = self::TYPE_GD)
+    public function __construct(BaseApplication $app)
     {
-        $this->_instanceType = $processingType;
+        parent::__construct($app);
 
-        $this->_instanceTypeStorage = array(
+        $this->instanceTypeStorage = array(
             self::TYPE_GD      => self::TYPE_GD,
             self::TYPE_IMAGICK => self::TYPE_IMAGICK,
         );
@@ -59,23 +49,16 @@ class ImageProcessorFactory
     /**
      * Instance getter
      *
-     * @return ImageProcessorInterface
+     * @return \Cops\Model\ImageProcessor\ImageProcessorInterface
      */
-    public function getInstance()
+    public function getInstance($instance = self::TYPE_GD )
     {
-        if (!isset($this->_instanceTypeStorage[$this->_instanceType])) {
+        if (!isset($this->instanceTypeStorage[$instance])) {
             throw new AdapterException(
-                sprintf(
-                    'No model configured for the %s image processor',
-                    $this->_instanceType
-                )
+                sprintf('No model configured for the %s image processor', $instance)
             );
         }
-
-        if (!isset($this->_instance[$this->_instanceType])) {
-            $className = __NAMESPACE__.'\\Adapter\\'.ucfirst($this->_instanceType);
-            $this->_instance[$this->_instanceType] = new $className;
-        }
-        return $this->_instance[$this->_instanceType];
+        $className = __NAMESPACE__.'\\Adapter\\' . ucfirst(strtolower($instance));
+        return new $className($this->app);
     }
 }

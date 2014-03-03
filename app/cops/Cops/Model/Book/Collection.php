@@ -105,7 +105,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
         $resource = $this->getResource();
 
         foreach ($resource->loadBySerieId($serieId) as $result) {
-            $this->add($resource->setDataFromStatement($result));
+;           $this->add($resource->setDataFromStatement($result));
         }
         return $this;
     }

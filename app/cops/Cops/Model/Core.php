@@ -15,7 +15,6 @@ use Cops\Provider\MobileDetectServiceProvider;
 use Cops\Provider\UrlGeneratorServiceProvider;
 use Cops\Provider\ImageProcessorServiceProvider;
 use Cops\Provider\TranslationServiceProvider;
-use Cops\Provider\SearchServiceProvider;
 
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
@@ -103,8 +102,6 @@ class Core
     {
         $app
             ->register(new MobileDetectServiceProvider())    // Register mobile detect service
-            ->register(new ImageProcessorServiceProvider())  // Image processor service
-            ->register(new SearchServiceProvider)            // Search service
             ->register(new SessionServiceProvider)           // Register session provider
             ->register(new UrlGeneratorServiceProvider)      // Register url generator service
             ->register(new TwigServiceProvider(), array(     // Register twig service
@@ -258,13 +255,19 @@ class Core
             return new \Cops\Model\Calibre($app);
         });
 
-        $app['factory.bookfile'] = function($app) {
+        $app['factory.bookfile'] = $app->share(function($app) {
             return new \Cops\Model\BookFile\BookFileFactory($app);
-        };
-        $app['factory.archive'] = function($app) {
+        });
+        $app['factory.archive'] = $app->share(function($app) {
             return new \Cops\Model\Archive\ArchiveFactory($app);
-        };
-        return $this;
+        });
+        $app['factory.search'] = $app->share(function ($app) {
+            return new \Cops\Model\Search\SearchFactory($app);
+        });
+        $app['factory.image'] = $app->share(function ($app) {
+            return new \Cops\Model\ImageProcessor\ImageProcessorFactory($app);
+        });
+        return $this;
     }
 
     /**

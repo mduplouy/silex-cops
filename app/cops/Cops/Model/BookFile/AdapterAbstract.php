@@ -69,8 +69,6 @@ abstract class AdapterAbstract extends EntityAbstract
      * Constructor
      *
      * @param array $dataArray
-     *
-     * @return \Cops\Model\Core
      */
     public function __construct(BaseApplication $app, array $dataArray = array())
     {

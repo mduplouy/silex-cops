@@ -76,8 +76,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
      */
     public function setSortName()
     {
-        $app = Core::getApp();
-        $calibre = $app['calibre'];
+        $calibre = $this->app['calibre'];
 
         foreach ($this as &$author) {
             $author->setSort(

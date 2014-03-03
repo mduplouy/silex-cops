@@ -9,28 +9,35 @@
  */
 namespace Cops\Model\Search;
 
-use Cops\Model\Core;
-use Cops\Model\Book;
+use Silex\Application as BaseApplication;
 
 /**
  * Search abstract class
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class SearchAbstract extends Core
+abstract class SearchAbstract
 {
     /**
+     * Application instance
+     * @var \Silex\Application
+     */
+    protected $app;
+
+    /**
      * Book collection instance
-     *
      * @var Collection
      */
     protected $collection;
 
     /**
      * Constructor
+     *
+     * @param \Silex\Application $app
      */
-    public function __construct()
+    public function __construct(BaseApplication $app)
     {
-        $this->collection = $this->getModel('Book')->getCollection();
+        $this->app = $app;
+        $this->collection = $this->app['model.book']->getCollection();
     }
 }

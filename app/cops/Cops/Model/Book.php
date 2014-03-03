@@ -108,13 +108,34 @@ class Book extends EntityAbstract
     public function __construct(BaseApplication $app, array $dataArray = array())
     {
         parent::__construct($app, $dataArray);
+        $this->cover                = $this->app['model.cover'];
+        return $this->setDefaultProperties();
+    }
 
+    /**
+     * Set data into object
+     *
+     * @param array
+     *
+     * @return \Cops\Model\Core
+     */
+    public function setData(array $dataArray)
+    {
+        parent::setData($dataArray);
+        return $this->setDefaultProperties();
+    }
+
+    /**
+     * Set default properties as object from DIC
+     *
+     * @return $this
+     */
+    private function setDefaultProperties()
+    {
         $this->authorCollection     = $this->app['model.author']->getCollection();
         $this->serie                = $this->app['model.serie']->setBook($this);
-        $this->cover                = $this->app['model.cover']->setBook($this);
         $this->tagCollection        = $this->app['model.tag']->getCollection();
         $this->bookFileCollection   = $this->app['model.bookfile']->getCollection();
-
         return $this;
     }
 
@@ -149,8 +170,6 @@ class Book extends EntityAbstract
         // Set tags
         $this->tagCollection->getByBookId($this->getId());
 
-        $this->cover->setBook($this);
-
         return $this;
     }
 
@@ -171,7 +190,7 @@ class Book extends EntityAbstract
      */
     public function getCover()
     {
-        return $this->cover;
+        return $this->cover->setBook($this);
     }
 
     /**
@@ -276,10 +295,7 @@ class Book extends EntityAbstract
         $this->rating             = null;
         $this->comment            = null;
         $this->seriesIndex        = null;
-        $this->serie              = $this->app['model.serie']->setBook($this);
-        $this->cover              = $this->app['model.cover'];
-        $this->tagCollection      = $this->app['model.tag']->getCollection();
-        $this->authorCollection   = $this->app['model.author']->getCollection();
-        $this->bookFileCollection = $this->app['model.bookfile']->getCollection();
+
+        $this->setDefaultProperties();
     }
 }

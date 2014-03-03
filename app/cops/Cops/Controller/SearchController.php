@@ -58,8 +58,11 @@ class SearchController implements \Silex\ControllerProviderInterface
      */
     public function searchAction(Request $request, Application $app)
     {
-        $core = $app['core'];
-        $keywords = preg_replace('([^\\w])', '-', $app['utils']->removeAccents($request->get('keywords')));
+        $keywords = preg_replace(
+            '([^\\w])',
+            '-',
+            $app['utils']->removeAccents($request->get('keywords'))
+        );
 
         return $app->redirect(
             $app['url_generator']->generate('search_results',
@@ -79,7 +82,9 @@ class SearchController implements \Silex\ControllerProviderInterface
     {
         $itemsPerPage = $app['config']->getValue('search_page_size');
 
-        $collection = $app['search']->getResults(explode('-', $keywords), $itemsPerPage, $page);
+        $collection = $app['factory.search']
+            ->getInstance($app['config']->getValue('search_engine'))
+            ->getResults(explode('-', $keywords), $itemsPerPage, $page);
 
         $resultCount = $collection->getResource()->getTotalRows();
 

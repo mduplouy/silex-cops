@@ -71,7 +71,7 @@ abstract class ResourceAbstract
      */
     public function getConnection()
     {
-        return Core::getDb();
+        return $this->app['db'];
     }
 
     /**
