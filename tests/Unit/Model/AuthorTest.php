@@ -11,10 +11,19 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
 {
     protected $author;
 
+    protected $app;
+
+    public function setUp()
+    {
+        $this->app = \Cops\Model\Core::getApp();
+        $this->sourcePath = __DIR__.'/../../';
+        $this->targetPath = BASE_DIR.$this->app['config']->getValue('public_dir');
+    }
+
     private function getEmptyauthor()
     {
         if (null === $this->author) {
-            $this->author = new \Cops\Model\Author;
+            $this->author = new \Cops\Model\Author($this->app);
         }
         return $this->author;
     }
@@ -80,7 +89,7 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
     public function testAuthorSort($authorName, $expectedSort)
     {
         $author = $this->getEmptyauthor();
-        $config = \Cops\Model\Core::getConfig();
+        $config = $this->app['config'];
 
         $author->setSort(null)->setName($authorName);
 
@@ -109,7 +118,7 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
 
     public function testInsert()
     {
-        $author = new \Cops\Model\Author;
+        $author = new \Cops\Model\Author($this->app);
         $newId = $author
             ->setName('My Author')
             ->setSort('Author, My')
@@ -117,7 +126,7 @@ class AuthorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertGreaterThan(0, $newId);
 
-        $author = new \Cops\Model\Author;
+        $author = new \Cops\Model\Author($this->app);
         $author->load($newId);
 
         $this->assertEquals($author->getName(), 'My Author');

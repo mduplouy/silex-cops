@@ -9,7 +9,7 @@
  */
 namespace Cops\Model;
 
-use Cops\Model\BookFileAbstract;
+use Cops\Model\EntityAbstract;
 use Cops\Model\Book;
 use Cops\Model\Book\Collection as BookCollection;
 
@@ -18,7 +18,7 @@ use Cops\Model\Book\Collection as BookCollection;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class BookFile extends BookFileAbstract
+class BookFile extends EntityAbstract
 {
     /**
      * Get book files by serie ID
@@ -29,7 +29,7 @@ class BookFile extends BookFileAbstract
      */
     public function getCollectionBySerieId($serieId)
     {
-        return $this->getResource()->getCollectionBySerieId($serieId, $this);
+        return $this->getResource()->loadBySerieId($serieId, $this);
     }
 
     /**
@@ -41,7 +41,7 @@ class BookFile extends BookFileAbstract
      */
     public function getCollectionByAuthorId($authorId)
     {
-        return $this->getResource()->getCollectionByAuthorId($authorId, $this);
+        return $this->getResource()->loadByAuthorId($authorId, $this);
     }
 
     /**
@@ -53,7 +53,7 @@ class BookFile extends BookFileAbstract
      */
     public function populateBookCollection(BookCollection $collection)
     {
-        return $this->getResource()->populateBookCollection($collection, $this);
+        return $this->getResource()->populateBookCollection($collection);
     }
 
     /**
@@ -75,10 +75,11 @@ class BookFile extends BookFileAbstract
      */
     public function __clone()
     {
-        $this->format = null;
+        $this->format           = null;
         $this->uncompressedSize = 0;
-        $this->name = null;
-        $this->directory = null;
+        $this->name             = null;
+        $this->directory        = null;
+
         parent::__clone();
     }
 }

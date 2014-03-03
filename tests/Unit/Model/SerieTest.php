@@ -12,10 +12,17 @@ class SerieTest extends \PHPUnit_Framework_TestCase
 
     protected $serie;
 
+    protected $app;
+
+    public function setUp()
+    {
+        $this->app = \Cops\Model\Core::getApp();
+    }
+
     private function getEmptySerie()
     {
         if (null === $this->serie) {
-            $this->serie = new \Cops\Model\Serie;
+            $this->serie = new \Cops\Model\Serie($this->app);
         }
         return $this->serie;
     }

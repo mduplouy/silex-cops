@@ -18,9 +18,7 @@ use Cops\Model\BookFile\BookFileFactory;
  * Book controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class SearchController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class SearchController implements \Silex\ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -60,8 +58,11 @@ class SearchController
      */
     public function searchAction(Request $request, Application $app)
     {
-        $core = $app['core'];
-        $keywords = preg_replace('([^\\w])', '-', $core->removeAccents($request->get('keywords')));
+        $keywords = preg_replace(
+            '([^\\w])',
+            '-',
+            $app['utils']->removeAccents($request->get('keywords'))
+        );
 
         return $app->redirect(
             $app['url_generator']->generate('search_results',
@@ -81,7 +82,9 @@ class SearchController
     {
         $itemsPerPage = $app['config']->getValue('search_page_size');
 
-        $collection = $app['search']->getResults(explode('-', $keywords), $itemsPerPage, $page);
+        $collection = $app['factory.search']
+            ->getInstance($app['config']->getValue('search_engine'))
+            ->getResults(explode('-', $keywords), $itemsPerPage, $page);
 
         $resultCount = $collection->getResource()->getTotalRows();
 

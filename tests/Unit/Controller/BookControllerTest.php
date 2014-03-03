@@ -29,9 +29,9 @@ class BookControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/fr/book/134561233132213');
         $this->assertTrue($client->getResponse()->isOk(), 'Non-existant book doest not redirect to homepage');
 
-        // File not found => 404
+        // File not found => redirect to book page
         $crawler = $client->request('GET', '/fr/book/download/3/PDF');
-        $this->assertEquals($client->getResponse()->getStatusCode(), 404, "Non-existant book file does not send a 404");
+        $this->assertTrue($client->getResponse()->isOk());
 
         // Redirect to homepage
         $crawler = $client->request('GET', '/fr/book/download/134561233132213/EPUB');
@@ -63,12 +63,12 @@ class BookControllerTest extends WebTestCase
     {
         $client = $this->createClient();
 
-        // Redirect to homepage
+        // Redirect to book page
         $client->request('GET', '/fr/book/download/3/DUMMY');
         $this->assertTrue($client->getResponse()->isOk());
 
-        // 404 not found
+        // Redirect to book page
         $client->request('GET', '/fr/book/download/3/MOBI');
-        $this->assertTrue($client->getResponse()->isNotFound());
+        $this->assertTrue($client->getResponse()->isOk());
     }
 }

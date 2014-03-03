@@ -9,7 +9,6 @@
  */
 namespace Cops\Controller;
 
-use Cops\Model\Controller as BaseController;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 
@@ -17,7 +16,7 @@ use Silex\Application;
  * Inline edit controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class InlineEditController extends BaseController implements ControllerProviderInterface
+class InlineEditController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes

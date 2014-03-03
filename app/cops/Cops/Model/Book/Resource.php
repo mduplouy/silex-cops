@@ -80,7 +80,22 @@ class Resource extends ResourceAbstract
     {
         return $this->getBaseSelect()
             ->orderBy('main.timestamp', 'DESC')
+            ->setFirstResult(0)
             ->setMaxResults($nb)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Load all books
+     *
+     * @return array
+     */
+    public function loadAll()
+    {
+        return $this->getQueryBuilder()
+            ->select('main.*')
+            ->from('books', 'main')
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -278,8 +293,6 @@ class Resource extends ResourceAbstract
     public function updateAuthor($id, $authors)
     {
         $con = $this->getConnection();
-        $app = Core::getApp();
-
         $con->beginTransaction();
 
         try {
@@ -294,10 +307,10 @@ class Resource extends ResourceAbstract
 
             foreach ($authors as $authorName) {
 
-                $sortName = $app['calibre']->getAuthorSortName($authorName);
+                $sortName = $this->app['model.calibre']->getAuthorSortName($authorName);
                 $allAuthorsSort[] = $sortName;
 
-                $author = $this->getModel('Author');
+                $author = $this->app['model.author'];
 
                 // Get author id
                 $authorId = $this->getQueryBuilder()
@@ -365,13 +378,12 @@ class Resource extends ResourceAbstract
     public function updateTitle($id, $title)
     {
         $con = $this->getConnection();
-        $app = Core::getApp();
 
         $con->beginTransaction();
 
         try {
             $bookLang = $this->getBookLanguageCode($id);
-            $titleSort = $app['calibre']->getTitleSort($title, $bookLang);
+            $titleSort = $this->app['model.calibre']->getTitleSort($title, $bookLang);
 
             $con->update(
                 'books',

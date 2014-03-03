@@ -82,6 +82,12 @@ There are 2 builtin logins :
 
 These logins can be changed in app/cops/Cops/Model/Core.php file (there is a code snippet to encrypt the desired password)
 
+## Misc.
+
+If you don't want your visitor to wait for thumbnails to be generated, do it using cli by running following command :
+
+    $ php app/console.php generate:thumbnails
+
 ## License
 
 License for this is **Do What The Fuck You Want To Public License**, (http://www.wtfpl.net/about/) guess you don't need more explanations ;)

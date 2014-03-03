@@ -22,9 +22,9 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     /**
      * Get last added books
      *
-     * @param int  $nb     Number of items to load
+     * @param int     $nb  Number of items to load
      *
-     * @return Collection
+     * @return $this
      */
     public function getLatest($nb)
     {
@@ -33,6 +33,23 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
         foreach ($resource->loadLatest($nb) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
+
+        return $this->app['model.author']->getResource()->populateBookCollection($this);
+    }
+
+    /**
+     * Get all books
+     *
+     * @return $this
+     */
+    public function getAll()
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadAll() as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+
         return $this;
     }
 
@@ -40,7 +57,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
      * Get book collection based on author
      * Remove current book from collection
      *
-     * @return Collection
+     * @return $this
      */
     public function getOtherBooksFromAuthor()
     {
@@ -62,16 +79,12 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     /**
      * Get other books from author
      *
-     * @param int|null     $authorId
+     * @param  int    $authorId
      *
-     * @return Collection
+     * @return $this
      */
-    public function getByAuthorId($authorId = null)
+    public function getByAuthorId($authorId)
     {
-        if ($authorId === null) {
-            return $this;
-        }
-
         $resource = $this->getResource();
 
         foreach ($resource->loadByAuthorId($authorId) as $result) {
@@ -84,7 +97,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
      * Get book collection based on a serie
      * Remove current book from collection
      *
-     * @return Collection
+     * @return $this
      */
     public function getOtherBooksFromSerie()
     {
@@ -93,31 +106,22 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
         $this->getResource()
             ->setExcludedBookId($book->getId());
 
-        return $this->getBySerieId();
+        return $this->getBySerieId($this->getEntity()->getSerie()->getId());
     }
 
     /**
      * Get book collection based on a serie
      *
-     * @param int|null     $serieId
+     * @param int     $serieId
      *
-     * @return Collection
+     * @return $this
      */
-    public function getBySerieId($serieId = null)
+    public function getBySerieId($serieId)
     {
-        $book = $this->getEntity();
-        if ($serieId === null) {
-            $serieId = $book->getSerie()->getId();
-        }
-
-        if ($serieId === null) {
-            return $this;
-        }
-
         $resource = $this->getResource();
 
         foreach ($resource->loadBySerieId($serieId) as $result) {
-            $this->add($resource->setDataFromStatement($result));
+;           $this->add($resource->setDataFromStatement($result));
         }
         return $this;
     }
@@ -125,10 +129,9 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     /**
      * Load collection from tag ID
      *
-     * @param int         $tagId
+     * @param int     $tagId
      *
-     * @return Collection
-     *
+     * @return $this
      */
     public function getByTagId($tagId)
     {
@@ -137,15 +140,18 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
         foreach ($resource->loadByTagId($tagId) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
+        $this->app['model.author']->getResource()->populateBookCollection($this);
+        $this->app['model.bookfile']->getResource()->populateBookCollection($this);
+
         return $this;
     }
 
     /**
      * Load collection by keyword
      *
-     * @param int             $tagId
+     * @param  string      $keyword
      *
-     * @return Collection
+     * @return $this
      */
     public function getByKeyword($keyword)
     {
@@ -160,13 +166,11 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     /**
      * Load book files information for a book collection
      *
-     * @param  \Cops\Model\Book\Collection $bookCollection
-     *
-     * @return Collection
+     * @return $this
      */
     public function addBookFiles()
     {
-        return $this->getResource()->getModel('BookFile')->populateBookCollection($this);
+        return $this->app['model.bookfile']->populateBookCollection($this);
     }
 
 }

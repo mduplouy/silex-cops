@@ -9,6 +9,7 @@
  */
 namespace Cops\Controller;
 
+use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,9 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class OpdsController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class OpdsController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes

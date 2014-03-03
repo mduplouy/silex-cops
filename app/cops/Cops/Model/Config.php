@@ -68,8 +68,6 @@ class Config
      * Constructor
      *
      * @param string $configFilePath
-     *
-     * @return void
      */
     public function __construct($configFilePath)
     {

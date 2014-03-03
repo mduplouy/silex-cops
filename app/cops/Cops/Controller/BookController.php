@@ -10,7 +10,6 @@
 namespace Cops\Controller;
 
 
-use Cops\Model\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +18,13 @@ use Cops\Model\BookFile\BookFileFactory;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Cops\Exception\BookException;
-use Cops\Exception\BookFile\AdapterException;
+use Cops\Exception\BookFile\FormatUnavailableException;
 
 /**
  * Book controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class BookController extends Controller implements ControllerProviderInterface
+class BookController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -61,7 +60,7 @@ class BookController extends Controller implements ControllerProviderInterface
     public function detailAction(\Silex\Application $app, $id)
     {
         try {
-            $book = $this->getModel('Book')->load($id);
+            $book = $app['model.book']->load($id);
         } catch (BookException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
@@ -87,7 +86,7 @@ class BookController extends Controller implements ControllerProviderInterface
     public function downloadAction(Application $app, $id, $format = BookFileFactory::TYPE_EPUB)
     {
         try {
-            $book = $this->getModel('Book')->load($id);
+            $book = $app['model.book']->load($id);
 
             $bookFile = $book->getFile(strtoupper($format));
 
@@ -99,14 +98,9 @@ class BookController extends Controller implements ControllerProviderInterface
                 );
         } catch (BookException $e) {
             $redirect = $app->redirect($app['url_generator']->generate('homepage'));
-        } catch (AdapterException $e) {
+        } catch (FormatUnavailableException $e) {
             $redirect = $app->redirect(
-                $app['url_generator']->generate(
-                    'book_detail',
-                    array(
-                        'id' => $book->getId()
-                    )
-                )
+                $app['url_generator']->generate('book_detail', array('id' => $book->getId()))
             );
         } catch (FileNotFoundException $e) {
             $redirect = $app->abort(404);

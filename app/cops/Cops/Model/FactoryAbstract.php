@@ -7,16 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Cops\Model\Search;
 
+namespace Cops\Model;
+
+use Cops\Model\FactoryInterface;
 use Silex\Application as BaseApplication;
 
-/**
- * Search abstract class
- *
- * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
- */
-abstract class SearchAbstract
+abstract class FactoryAbstract implements FactoryInterface
 {
     /**
      * Application instance
@@ -25,19 +22,12 @@ abstract class SearchAbstract
     protected $app;
 
     /**
-     * Book collection instance
-     * @var Collection
-     */
-    protected $collection;
-
-    /**
      * Constructor
      *
-     * @param \Silex\Application $app
+     * @param \Silex\Application $app
      */
     public function __construct(BaseApplication $app)
     {
         $this->app = $app;
-        $this->collection = $this->app['model.book']->getCollection();
     }
 }

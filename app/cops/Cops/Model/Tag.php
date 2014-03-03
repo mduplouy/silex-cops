@@ -9,13 +9,13 @@
  */
 namespace Cops\Model;
 
-use Cops\Model\Common;
+use Cops\Model\EntityAbstract;
 
 /**
  * Tag model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Tag extends Common
+class Tag extends EntityAbstract
 {
     /**
      * @var int
@@ -66,11 +66,11 @@ class Tag extends Common
      * @param int      $firstResult Start offset
      * @param int|null $maxResults  Number of books to return
      *
-     * @return Collection
+     * @return \Cops\Model\Book\Collection
      */
     public function getAllBooks($firstResult=0, $maxResults=null)
     {
-        $collection = $this->getModel('Book')->getCollection()
+        $collection = $this->app['model.book']->getCollection()
             ->setFirstResult($firstResult);
 
         if ($maxResults !== null) {

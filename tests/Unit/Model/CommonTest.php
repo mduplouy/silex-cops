@@ -12,10 +12,10 @@ class CommonTest extends \PHPUnit_Framework_TestCase
 
     private $book;
 
-    private function getModel()
+    private function getBook()
     {
         if (null == $this->book) {
-            $this->book = new \Cops\Model\Book;
+            $this->book = new \Cops\Model\Book(\Cops\Model\Core::getApp());
         }
         return $this->book;
     }
@@ -25,21 +25,21 @@ class CommonTest extends \PHPUnit_Framework_TestCase
      */
     public function testCallError()
     {
-        $this->getModel()->whatever();
+        $this->getBook()->whatever();
     }
 
     public function testNonExistentPropertyGetter()
     {
-        $this->assertEquals($this->getModel()->getDummy(), null);
+        $this->assertEquals($this->getBook()->getDummy(), null);
     }
 
     public function testSetData()
     {
-        $model = $this->getModel();
+        $model = $this->getBook();
         $model->setData(array('id' => 1));
         $this->assertEquals($model->getId(), 1);
 
-        $model = new \Cops\Model\Book(array('id' => 1));
+        $model = new \Cops\Model\Book(\Cops\Model\Core::getApp(), array('id' => 1));
         $this->assertEquals($model->getId(), 1);
     }
 
