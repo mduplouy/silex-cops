@@ -81,7 +81,7 @@ class InlineEditController implements ControllerProviderInterface
      */
     protected function updateBookTitle(Application $app, $bookId, $title)
     {
-        return $app[['model.book']->updateTitle($title, $bookId);
+        return $app['model.book']->updateTitle($title, $bookId);
     }
 
 }
