@@ -271,38 +271,6 @@ class Core
     }
 
     /**
-     * Simple object loader
-     *
-     * @param string $className
-     * @param array $args
-     *
-     * @return \Cops\Model\Common
-     */
-    public function getModel($className, $args = array())
-    {
-        if (isset(self::$app['model.'.strtolower($className)])) {
-            return self::$app['model.'.strtolower($className)];
-        }
-
-        $fullClassName = $className;
-        if (!class_exists($fullClassName)) {
-            $fullClassName = __NAMESPACE__.'\\'.$className;
-        }
-        if (!class_exists($fullClassName)) {
-            throw new \InvalidArgumentException(
-                sprintf('Could not get model %s, class does not exists', $fullClassName)
-            );
-        }
-
-        $obj = new \ReflectionClass($fullClassName);
-
-        if (!is_array($args)) {
-            $args = array($args);
-        }
-        return $obj->newInstanceArgs($args);
-    }
-
-    /**
      * App getter
      *
      * @return \Silex\Application
