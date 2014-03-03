@@ -9,7 +9,6 @@
  */
 namespace Cops\Controller\Admin;
 
-use Cops\Model\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 use PDO;
@@ -18,7 +17,7 @@ use Doctrine\DBAL\Connection;
 /**
  * Admin related controller
  */
-class DatabaseController extends Controller implements ControllerProviderInterface
+class DatabaseController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes

@@ -9,7 +9,6 @@
  */
 namespace Cops\Controller;
 
-use Cops\Model\Controller as BaseController;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 
@@ -17,7 +16,7 @@ use Silex\Application;
  * Inline edit controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class InlineEditController extends BaseController implements ControllerProviderInterface
+class InlineEditController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -68,7 +67,7 @@ class InlineEditController extends BaseController implements ControllerProviderI
      */
     protected function updateBookAuthor(Application $app, $bookId, $authors)
     {
-        return $app['core']->getModel('Book')->updateAuthor($authors, $bookId);
+        return $app['model.book']->updateAuthor($authors, $bookId);
     }
 
     /**
@@ -82,7 +81,7 @@ class InlineEditController extends BaseController implements ControllerProviderI
      */
     protected function updateBookTitle(Application $app, $bookId, $title)
     {
-        return $app['core']->getModel('Book')->updateTitle($title, $bookId);
+        return $app[['model.book']->updateTitle($title, $bookId);
     }
 
 }

@@ -12,7 +12,6 @@ namespace Cops\Model;
 use Silex\Application as BaseApplication;
 use Cops\Model\Author\Collection as AuthorCollection;
 use Cops\Model\Calibre\Resource;
-use Cops\Model\Core;
 
 /*
  * Calibre model class
@@ -23,6 +22,12 @@ use Cops\Model\Core;
  */
 class Calibre
 {
+    /**
+     * Application instance
+     * @var \Silex\Application
+     */
+    protected $app;
+
     /**
      * Author sort copy algorithm
      *
@@ -88,6 +93,7 @@ class Calibre
      */
     public function __construct(BaseApplication $app)
     {
+        $this->app              = $app;
         $this->authorSortMethod = $app['config']->getValue('author_sort_copy_method');
     }
 
@@ -99,7 +105,7 @@ class Calibre
     public function getResource()
     {
         if ($this->resource === null) {
-            $this->resource = new Resource(Core::getDb());
+            $this->resource = new Resource($this->app['db']);
         }
         return $this->resource;
     }

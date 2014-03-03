@@ -9,7 +9,6 @@
  */
 namespace Cops\Controller;
 
-use Cops\Model\Controller as BaseController;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -23,7 +22,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
  * Serie controller class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class SerieController extends BaseController implements ControllerProviderInterface
+class SerieController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -67,7 +66,7 @@ class SerieController extends BaseController implements ControllerProviderInterf
         if ($letter === '0') {
             $letter = '#';
         }
-        $series = $this->getModel('Serie')->getCollection()->getByFirstLetter($letter);
+        $series = $app['model.serie']->getCollection()->getByFirstLetter($letter);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'serie_list.html', array(
             'letter' => $letter,
@@ -85,7 +84,7 @@ class SerieController extends BaseController implements ControllerProviderInterf
     public function detailAction(Application $app, $id)
     {
         try {
-            $serie = $this->getModel('Serie')->load($id);
+            $serie = $app['model.serie']->load($id);
         } catch (SerieException $e) {
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
@@ -108,12 +107,11 @@ class SerieController extends BaseController implements ControllerProviderInterf
     public function downloadAction(Application $app, $id, $format)
     {
         try {
-            $serie = $this->getModel('Serie')->load($id);
+            $serie = $app['model.serie']->load($id);
 
-            $archiveClass = $this->getModel('Archive\\ArchiveFactory', $format)
-                ->getInstance();
+            $archiveClass = $app['factory.archive']->getInstance($format);
 
-            $serieBooks = $this->getModel('BookFile')
+            $serieBooks = $app['model.bookfile']
                 ->getCollection()
                 ->getBySerieId($serie->getId());
 

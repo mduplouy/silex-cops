@@ -9,16 +9,15 @@
  */
 namespace Cops\Model\Search;
 
-use Cops\Model\Core;
-use Cops\Model\Book;
-use Cops\Model\ImageProcessor\SearchInterface;
+use Cops\Model\FactoryAbstract;
+use Silex\Application as BaseApplication;
 use Cops\Exception\Search\AdapterException;
 
 /**
  * Image processor factory
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class SearchFactory extends Core
+class SearchFactory extends FactoryAbstract
 {
     /**
      * Instance types
@@ -29,30 +28,18 @@ class SearchFactory extends Core
      * Instance type storage
      * @var array
      */
-    private $_instanceTypeStorage;
-
-    /**
-     * Instance type
-     * @var string
-     */
-    private $_instanceType;
-
-    /**
-     * Processor instance
-     * @var array
-     */
-    protected $_instance;
+    private $instanceTypeStorage;
 
     /**
      * Constructor
      *
-     * @param string $searchType
+     * @param \Silex\Application $app
      */
-    public function __construct($searchType='sqlite')
+    public function __construct(BaseApplication $app)
     {
-        $this->_instanceType = $searchType;
+        parent::__construct($app);
 
-        $this->_instanceTypeStorage = array(
+        $this->instanceTypeStorage = array(
             self::TYPE_SQLITE      => self::TYPE_SQLITE,
         );
     }
@@ -62,21 +49,15 @@ class SearchFactory extends Core
      *
      * @return \Cops\Model\Image\SearchInterface
      */
-    public function getInstance()
+    public function getInstance($instance = self::TYPE_SQLITE)
     {
-        if (!isset($this->_instanceTypeStorage[$this->_instanceType])) {
+        if (!isset($this->instanceTypeStorage[$instance])) {
             throw new AdapterException(
-                sprintf(
-                    'No model configured for the %s search engine',
-                    $this->_instanceType
-                )
+                sprintf('No model configured for the %s search engine', $instance)
             );
         }
 
-        if (!isset($this->_instance[$this->_instanceType])) {
-            $className = 'Search\\Adapter\\'.ucfirst($this->_instanceType);
-            $this->_instance[$this->_instanceType] = $this->getModel($className);
-        }
-        return $this->_instance[$this->_instanceType];
+        $className = __NAMESPACE__.'\\Adapter\\' . ucfirst(strtolower($instance));
+        return new $className($this->app);
     }
 }

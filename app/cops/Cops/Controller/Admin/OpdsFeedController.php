@@ -9,12 +9,12 @@
  */
 namespace Cops\Controller\Admin;
 
+use Silex\ControllerProviderInterface;
+
 /**
  * Admin related controller
  */
-class OpdsFeedController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class OpdsFeedController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes
@@ -36,7 +36,6 @@ class OpdsFeedController
 
     public function indexAction()
     {
-        $this->getModel('Opds\\Parser');
         return 'TODO';
     }
 }

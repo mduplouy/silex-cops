@@ -15,8 +15,14 @@ require_once BASE_DIR.'/vendor/autoload.php';
 
 $app = new \Cops\Model\Application();
 
-// Define core model, no closure to ensure loading
-// Load configuration & set service providers
-$app['core'] =  new \Cops\Model\Core(BASE_DIR.'app/cops/config.ini', $app);
+// Load & set configuration
+$app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini');
+
+if ($app['config']->getValue('debug')) {
+    $app['debug'] = true;
+}
+
+// Define core model
+$app['core'] =  new \Cops\Model\Core($app);
 
 return $app;

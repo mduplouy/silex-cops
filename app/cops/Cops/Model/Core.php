@@ -9,15 +9,12 @@
  */
 namespace Cops\Model;
 
-use Cops\Model\Config;
 use Cops\Model\CoreInterface;
-use Cops\Model\Calibre;
 
 use Cops\Provider\MobileDetectServiceProvider;
 use Cops\Provider\UrlGeneratorServiceProvider;
 use Cops\Provider\ImageProcessorServiceProvider;
 use Cops\Provider\TranslationServiceProvider;
-use Cops\Provider\SearchServiceProvider;
 
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
@@ -35,7 +32,7 @@ use Symfony\Component\Translation\Loader\YamlFileLoader;
  * Core class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Core implements CoreInterface
+class Core
 {
     /**
      * Resource instance
@@ -53,18 +50,9 @@ class Core implements CoreInterface
      * Constructor
      *
      * @param \Silex\Application $app
-     *
-     * @param string $configFilePath
      */
-    public function __construct($configFilePath, BaseApplication $app)
+    public function __construct(BaseApplication $app)
     {
-        // Always instanciate configuration, so no closure use
-        $app['config'] = new Config($configFilePath);
-
-        if ($app['config']->getValue('debug')) {
-            $app['debug'] = true;
-        }
-
         $this->registerServices($app);
 
         $app->get('/', function () use ($app) {
@@ -76,22 +64,22 @@ class Core implements CoreInterface
         });
 
         // Set the mount points for the controllers
-        $app->mount('/',                     new \Cops\Controller\IndexController());
-        $app->mount('/book/',                new \Cops\Controller\BookController());
-        $app->mount('/serie/',               new \Cops\Controller\SerieController());
-        $app->mount('/author/',              new \Cops\Controller\AuthorController());
-        $app->mount('/tag/',                 new \Cops\Controller\TagController());
-        $app->mount('/search/',              new \Cops\Controller\SearchController());
+        $app->mount('/',                     new \Cops\Controller\IndexController($app));
+        $app->mount('/book/',                new \Cops\Controller\BookController($app));
+        $app->mount('/serie/',               new \Cops\Controller\SerieController($app));
+        $app->mount('/author/',              new \Cops\Controller\AuthorController($app));
+        $app->mount('/tag/',                 new \Cops\Controller\TagController($app));
+        $app->mount('/search/',              new \Cops\Controller\SearchController($app));
 
-        $app->mount('/inline-edit/',         new \Cops\Controller\InlineEditController);
+        $app->mount('/inline-edit/',         new \Cops\Controller\InlineEditController($app));
 
-        $app->mount('/login/',               new \Cops\Controller\LoginController());
-        $app->mount('/opds/',                new \Cops\Controller\OpdsController());
+        $app->mount('/login/',               new \Cops\Controller\LoginController($app));
+        $app->mount('/opds/',                new \Cops\Controller\OpdsController($app));
 
         $adminPath = $app['config']->getAdminPath();
-        $app->mount($adminPath,              new \Cops\Controller\AdminController());
-        $app->mount($adminPath.'/database/', new \Cops\Controller\Admin\DatabaseController());
-        $app->mount($adminPath.'/feed/',     new \Cops\Controller\Admin\OpdsFeedController());
+        $app->mount($adminPath,              new \Cops\Controller\AdminController($app));
+        $app->mount($adminPath.'/database/', new \Cops\Controller\Admin\DatabaseController($app));
+        $app->mount($adminPath.'/feed/',     new \Cops\Controller\Admin\OpdsFeedController($app));
 
         // Set default storage dir
         if (!isset($app['book_storage_dir'])) {
@@ -112,45 +100,28 @@ class Core implements CoreInterface
      */
     private function registerServices(Application $app)
     {
-        // Register mobile detect service
-        $app->register(new MobileDetectServiceProvider());
-
-        // Image processor service
-        $app->register(new ImageProcessorServiceProvider());
+        $app
+            ->register(new MobileDetectServiceProvider())    // Register mobile detect service
+            ->register(new SessionServiceProvider)           // Register session provider
+            ->register(new UrlGeneratorServiceProvider)      // Register url generator service
+            ->register(new TwigServiceProvider(), array(     // Register twig service
+                'twig.path' => array(
+                    BASE_DIR . 'themes/' . $app['config']->getValue('theme'),
+                    __DIR__ . '/../Templates',
+                ),
+                'twig.options' => array(
+                    'cache' => realpath(BASE_DIR . 'cache'),
+                )
+            ))
+            // Translator
+            ->register(new TranslationServiceProvider(array(
+                'default' => $app['config']->getValue('default_lang')
+            )));
 
         // Detect mobile user agent
         if ($app['mobile_detect']->isMobile()) {
             $app['config']->setTemplatePrefix($app['config']->getValue('mobile_theme'));
         }
-
-        // Register twig service
-        $app->register(new TwigServiceProvider(), array(
-            'twig.path' => array(
-                BASE_DIR . 'themes/' . $app['config']->getValue('theme'),
-                __DIR__ . '/../Templates',
-            ),
-            'twig.options' => array(
-                'cache' => realpath(BASE_DIR . 'cache'),
-            )
-        ));
-
-         // Calibre internal routines (author_sort etc..)
-        $app['calibre'] = $app->share(function ($app) {
-            return new Calibre($app);
-        });
-
-        $app->register(new SearchServiceProvider);
-
-        // Register session provider
-        $app->register(new SessionServiceProvider);
-
-        // Register url generator service
-        $app->register(new UrlGeneratorServiceProvider);
-
-        // Register translator
-        $app->register(new TranslationServiceProvider(array(
-            'default' => $app['config']->getValue('default_lang')
-        )));
 
         $app['translator'] = $app->share($app->extend('translator', function($translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
@@ -172,8 +143,10 @@ class Core implements CoreInterface
             ),
         ));
 
-        // Security setup
-        $this->registerSecurityService($app);
+        $this
+            ->registerSecurityService($app)     // Security setup
+            ->registerConsoleCommands($app)     // Console commands
+            ->registerModels($app);             // Register models in DIC
     }
 
     /**
@@ -181,7 +154,7 @@ class Core implements CoreInterface
      *
      * @param  Application $app
      *
-     * @return void
+     * @return $this
      */
     private function registerSecurityService(Application $app)
     {
@@ -221,66 +194,80 @@ class Core implements CoreInterface
              array('^/../admin',        'ROLE_ADMIN'),
              array('^/../inline-edit/', 'ROLE_EDIT')
         );
+
+        return $this;
     }
 
     /**
-     * Simple object loader
+     * Register console commands (cache warmup etc..)
      *
-     * @param string $className
-     * @param array $args
+     * @param  Application $app
      *
-     * @return \Cops\Model\Common
+     * @return $this
      */
-    public function getModel($className, $args = array())
+    private function registerConsoleCommands(Application $app)
     {
-        $fullClassName = $className;
-        if (!class_exists($fullClassName)) {
-            $fullClassName = __NAMESPACE__.'\\'.$className;
-        }
-        if (!class_exists($fullClassName)) {
-            throw new \InvalidArgumentException(
-                sprintf('Could not get model %s, class does not exists', $fullClassName)
-            );
-        }
+        // Register console
+        $app->register(new \LExpress\Silex\ConsoleServiceProvider(), array(
+            'console.name'    => 'SilexCops',
+            'console.version' => '0.0.5',
+        ));
 
-        $obj = new \ReflectionClass($fullClassName);
+        $app['command.cache-warmup'] = $app->share(function ($app) {
+            return new \Cops\Command\GenerateThumbnails('generate:thumbnails', $app);
+        });
 
-        if (!is_array($args)) {
-            $args = array($args);
-        }
-        return $obj->newInstanceArgs($args);
+        return $this;
     }
 
     /**
-     * Resource object loader
+     * Register models in DIC
      *
-     * @return \Cops\Model\Resource\Common
+     * @param  Application $app
+     *
+     * @return $this
      */
-    public function getResource()
+    private function registerModels(Application $app)
     {
-        if (is_null($this->resource)) {
-            $this->resource = $this->getModel(get_called_class().'\\Resource', $this);
-        }
-        return $this->resource;
-    }
+        $app['utils'] = $app->share(function(){
+            return new \Cops\Model\Utils;
+        });
+        $app['model.book'] = function($app) {
+            return new \Cops\Model\Book($app);
+        };
+        $app['model.author'] = function($app) {
+            return new \Cops\Model\Author($app);
+        };
+        $app['model.serie'] = function($app) {
+            return new \Cops\Model\Serie($app);
+        };
+        $app['model.tag'] = function($app) {
+            return new \Cops\Model\Tag($app);
+        };
+        $app['model.cover']  = $app->share(function($app) {
+             return new \Cops\Model\Cover($app);
+        });
+        $app['model.bookfile'] = function($app) {
+            return new \Cops\Model\BookFile($app);
+        };
+         // Calibre internal routines (author_sort etc..)
+        $app['model.calibre'] = $app->share(function ($app) {
+            return new \Cops\Model\Calibre($app);
+        });
 
-    /**
-     * Collection object loader
-     *
-     * @return \Cops\Model\Collection
-     */
-    public function getCollection()
-    {
-        $fullClassName = get_called_class().'\\Collection';
-        if (!class_exists($fullClassName)) {
-            $fullClassName = __NAMESPACE__.'\\'.$fullClassName;
-        }
-        if (!class_exists($fullClassName)) {
-            throw new \RuntimeException(
-                sprintf('Requested collection %s does not exists', $fullClassName)
-            );
-        }
-        return new $fullClassName($this);
+        $app['factory.bookfile'] = $app->share(function($app) {
+            return new \Cops\Model\BookFile\BookFileFactory($app);
+        });
+        $app['factory.archive'] = $app->share(function($app) {
+            return new \Cops\Model\Archive\ArchiveFactory($app);
+        });
+        $app['factory.search'] = $app->share(function ($app) {
+            return new \Cops\Model\Search\SearchFactory($app);
+        });
+        $app['factory.image'] = $app->share(function ($app) {
+            return new \Cops\Model\ImageProcessor\ImageProcessorFactory($app);
+        });
+        return $this;
     }
 
     /**
@@ -294,17 +281,6 @@ class Core implements CoreInterface
     }
 
     /**
-     * Config getter
-     *
-     * @return \Cops\Model\Config
-     */
-    public static function getConfig()
-    {
-        $app = self::getApp();
-        return $app['config'];
-    }
-
-    /**
      * DBAL connection getter
      *
      * @return \Doctrine\DBAL\Connection
@@ -313,44 +289,5 @@ class Core implements CoreInterface
     {
         $app = self::getApp();
         return $app['db'];
-    }
-
-    /**
-     * Get alphabetic letters
-     *
-     * @return array
-     */
-    public static function getLetters()
-    {
-        return array(
-            'A','B','C','D','E','F','G','H','I','J','K','L','M',
-            'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-        );
-    }
-
-    /**
-     * Remove accent from a string
-     *
-     * @param string $str
-     * @param string $charset
-     *
-     * @return string
-     */
-    public function removeAccents($str, $charset='utf-8')
-    {
-        $str = htmlentities($str, ENT_NOQUOTES, $charset);
-        $str = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str);
-        $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str);
-        $str = preg_replace('#&[^;]+;#', '', $str);
-        return $str;
-    }
-
-    /**
-     * Empty properties on clone
-     */
-    public function __clone()
-    {
-        $this->modelInstance = array();
-        $this->resource = null;
     }
 }

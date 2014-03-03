@@ -57,6 +57,22 @@ class Resource extends ResourceAbstract
     }
 
     /**
+     * Get book files data by book ID
+     *
+     * @param  int          $tagId
+     *
+     * @return array
+     */
+    public function loadByBookId($bookId)
+    {
+        return $this->getBaseSelect()
+            ->where('main.book = :book_id')
+            ->setParameter('book_id', $bookId, PDO::PARAM_INT)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Load bookfile data for a book collection
      *
      * @param  \Cops\Model\Book\Collection $collection
@@ -72,16 +88,19 @@ class Resource extends ResourceAbstract
         $bookIds = $collection->getAllIds();
 
         $stmt = $this->getBaseSelect()
-            ->where('main.book IN (:book_id)')
+            ->where('book_id IN (:book_id)')
             ->setParameter('book_id', $bookIds, Connection::PARAM_INT_ARRAY)
-            ->execute(PDO::FETCH_ASSOC);
+            ->execute();
 
-        foreach ($stmt as $row) {
-            $book = $collection->getById($row['book']);
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
-            $bookFile = $book->getFile($row['format']);
+            // Get the book that will receive the bookfiles
+            $book = $collection->getById($row['book_id']);
+
+            $bookFile = $this->setDataFromStatement($row);
             $bookFile->setDirectory($book->getPath());
-            $bookFile->setData($row);
+
+            $book->getFiles()->add($bookFile);
         }
         return $collection;
     }
@@ -110,7 +129,8 @@ class Resource extends ResourceAbstract
             ->innerJoin('main', 'books', '', 'books.id = data.book')
             ->where(sprintf('main.%s = :value', $fieldName))
             ->setParameter('value', $fieldValue)
-            ->execute(PDO::FETCH_ASSOC);
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -123,7 +143,7 @@ class Resource extends ResourceAbstract
         return $this->getQueryBuilder()
             ->select(
                 'main.id',
-                'main.book',
+                'main.book as book_id',
                 'main.format',
                 'main.uncompressed_size',
                 'main.name'
@@ -131,4 +151,16 @@ class Resource extends ResourceAbstract
             ->from('data', 'main');
     }
 
+    /**
+     * Set data to entity from statement result
+     *
+     * @param array $result
+     *
+     * @return Common
+     */
+    public function setDataFromStatement(array $result)
+    {
+        $entity = $this->app['factory.bookfile']->getInstance($result['format']);
+        return $entity->setData($result);
+    }
 }

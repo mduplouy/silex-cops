@@ -14,10 +14,10 @@ class CalibreTest extends \PHPUnit_Framework_TestCase
      */
     public function testAuthorSortAlgorithm($sortMethod, $authorName, $expectedSort)
     {
-        $config = \Cops\Model\Core::getConfig();
-        $config->setValue('author_sort_copy_method', $sortMethod);
+        $app = \Cops\Model\Core::getApp();
+        $app['config']->setValue('author_sort_copy_method', $sortMethod);
 
-        $calibre = new \Cops\Model\Calibre(\Cops\Model\Core::getApp());
+        $calibre = new \Cops\Model\Calibre($app);
 
         $authorSort = $calibre->getAuthorSortName($authorName);
 

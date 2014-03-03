@@ -9,11 +9,14 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\EntityAbstract;
+use Cops\Model\Book;
+
 /**
  * Serie model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Serie extends Common
+class Serie extends EntityAbstract
 {
     /**
      * Object ID
@@ -40,6 +43,12 @@ class Serie extends Common
     protected $bookCount;
 
     /**
+     * Book instance
+     * @var \Cops\Model\Book
+     */
+    private $book;
+
+    /**
      * Books collection
      * @var \Cops\Model\Book\Collection
      */
@@ -57,6 +66,19 @@ class Serie extends Common
         return $this->setData(
             $this->getResource()->load($serieId)
         );
+    }
+
+    /**
+     * Book setter
+     *
+     * @param Book
+     *
+     * @return $this
+     */
+    public function setBook(Book $book)
+    {
+        $this->book = $book;
+        return $this;
     }
 
     /**
@@ -87,7 +109,7 @@ class Serie extends Common
      */
     public function getAllBooks()
     {
-        return $this->getModel('Book')->getCollection()
+        return $this->app['model.book']->getCollection()
             ->getBySerieId($this->getId())
             ->addBookFiles();
     }

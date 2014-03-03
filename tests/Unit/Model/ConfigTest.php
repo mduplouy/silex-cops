@@ -24,11 +24,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetValue($value)
     {
-        $config = Core::getConfig();
-        $returnType = $config->setValue('last_added', $value);
-
+        $app = \Cops\Model\Core::getApp();
+        $returnType = $app['config']->setValue('last_added', $value);
         $this->assertInstanceOf('Cops\Model\Config', $returnType);
-        $this->assertEquals($config->getValue('last_added'), $value);
+        $this->assertEquals($app['config']->getValue('last_added'), $value);
     }
 
     public function valueProvider()
@@ -45,7 +44,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetValueKo()
     {
-        $config = Core::getConfig()->getValue('dummy_value');
+        $app = \Cops\Model\Core::getApp();
+        $config = $app['config']->getValue('dummy_value');
     }
 
     /**
@@ -53,12 +53,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetTemplatePrefix($prefix, $expectedValue)
     {
-        $config = Core::getConfig();
+        $app = \Cops\Model\Core::getApp();
 
-        $returnType = $config->setTemplatePrefix($prefix);
+        $returnType = $app['config']->setTemplatePrefix($prefix);
 
         $this->assertInstanceOf('Cops\Model\Config', $returnType);
-        $this->assertEquals($expectedValue, $config->getTemplatePrefix());
+        $this->assertEquals($expectedValue, $app['config']->getTemplatePrefix());
     }
 
     public function templatePrefixProvider()

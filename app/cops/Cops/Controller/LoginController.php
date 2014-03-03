@@ -9,15 +9,16 @@
  */
 namespace Cops\Controller;
 
+
+use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+
 
 /**
  * Login controller
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class LoginController
-    extends \Cops\Model\Controller
-    implements \Silex\ControllerProviderInterface
+class LoginController implements ControllerProviderInterface
 {
     /**
      * Connect method to dynamically add routes

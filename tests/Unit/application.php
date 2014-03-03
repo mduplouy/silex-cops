@@ -2,9 +2,11 @@
 // @codeCoverageIgnoreStart
 $app = new \Cops\Model\Application();
 
-// Define core model, no closure to ensure loading
-// Load configuration & set service providers
-$app['core'] =  new \Cops\Model\Core(BASE_DIR.'app/cops/config.ini', $app);
+// Load & set configuration
+$app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini');
+
+// Define core model
+$app['core'] =  new \Cops\Model\Core($app);
 
 $app['debug'] = true;
 $app['session.test'] = true;

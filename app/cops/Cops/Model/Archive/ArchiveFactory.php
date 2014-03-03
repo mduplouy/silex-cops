@@ -9,7 +9,8 @@
  */
 namespace Cops\Model\Archive;
 
-use Cops\Model\ArchiveAbstract;
+use Cops\Model\FactoryAbstract;
+use Silex\Application as BaseApplication;
 use Cops\Exception\Archive\AdapterException;
 
 /**
@@ -17,7 +18,7 @@ use Cops\Exception\Archive\AdapterException;
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class ArchiveFactory extends ArchiveAbstract
+class ArchiveFactory extends FactoryAbstract
 {
     /**
      * Archive type keys
@@ -35,31 +36,19 @@ class ArchiveFactory extends ArchiveAbstract
      * Archive types storage
      * @var array
      */
-    protected $_instanceTypeStorage = array();
-
-    /**
-     * Instance type
-     * @var string
-     */
-    private $_instanceType;
-
-    /**
-     * Archive type instance
-     * @var array
-     */
-    private $_instance;
+    protected $instanceTypeStorage = array();
 
     /**
      * Constructor
      *
-     * @param string $archiveType
+     * @param \Silex\Application $app
      */
-    public function __construct($archiveType=self::TYPEKEY_ZIP)
+    public function __construct(BaseApplication $app)
     {
-        $this->_instanceTypeStorage[self::TYPEKEY_ZIP] = self::TYPE_ZIP;
-        $this->_instanceTypeStorage[self::TYPEKEY_TARGZ]  = self::TYPE_TARGZ;
+        parent::__construct($app);
 
-        $this->_instanceType = $archiveType;
+        $this->instanceTypeStorage[self::TYPEKEY_ZIP] = self::TYPE_ZIP;
+        $this->instanceTypeStorage[self::TYPEKEY_TARGZ]  = self::TYPE_TARGZ;
     }
 
     /**
@@ -67,23 +56,14 @@ class ArchiveFactory extends ArchiveAbstract
      *
      * @return \Cops\Model\Image\ImageProcessorInterface
      */
-    public function getInstance()
+    public function getInstance($instance = self::TYPEKEY_TARGZ)
     {
-        if (!isset($this->_instanceTypeStorage[$this->_instanceType])) {
+        if (!isset($this->instanceTypeStorage[$instance])) {
             throw new AdapterException(
-                sprintf(
-                    'No model configured for the %s archive file format',
-                    $this->_instanceType
-                )
+                sprintf('No model configured for the %s archive format', $instance)
             );
         }
-
-        if (!isset($this->_instance[$this->_instanceType])) {
-            $className = __NAMESPACE__.'\\Adapter\\' .
-                $this->_instanceTypeStorage[$this->_instanceType];
-
-            $this->_instance[$this->_instanceType] = new $className;
-        }
-        return $this->_instance[$this->_instanceType];
+        $className = __NAMESPACE__ . '\\Adapter\\' . $this->instanceTypeStorage[$instance];
+        return new $className($this->app);
     }
 }

@@ -9,15 +9,17 @@
  */
 namespace Cops\Model\BookFile;
 
-use Cops\Model\Core;
+use Cops\Model\FactoryAbstract;
+use Silex\Application as BaseApplication;
 use Cops\Exception\BookFile\AdapterException;
+
 
 /**
  * Book file factory
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class BookFileFactory
+class BookFileFactory extends FactoryAbstract
 {
     /**
      * File types
@@ -30,30 +32,20 @@ class BookFileFactory
      * File types storage
      * @var array
      */
-    protected $_instanceTypeStorage = array();
-
-    /**
-     * Instance type
-     * @var string
-     */
-    private $_instanceType;
-
-    /**
-     * File type instance
-     * @var array
-     */
-    private $_instance;
+    protected $instanceTypeStorage = array();
 
     /**
      * Constructor
+     *
+     * @param \Silex\Application $app
      */
-    public function __construct($fileType=self::TYPE_EPUB)
+    public function __construct(BaseApplication $app)
     {
-        $this->_instanceTypeStorage[self::TYPE_EPUB] = self::TYPE_EPUB;
-        $this->_instanceTypeStorage[self::TYPE_PDF]  = self::TYPE_PDF;
-        $this->_instanceTypeStorage[self::TYPE_MOBI] = self::TYPE_MOBI;
+        parent::__construct($app);
 
-        $this->_instanceType = $fileType;
+        $this->instanceTypeStorage[self::TYPE_EPUB] = self::TYPE_EPUB;
+        $this->instanceTypeStorage[self::TYPE_PDF]  = self::TYPE_PDF;
+        $this->instanceTypeStorage[self::TYPE_MOBI] = self::TYPE_MOBI;
     }
 
     /**
@@ -61,24 +53,19 @@ class BookFileFactory
      *
      * @return \Cops\Model\BookFile\BookFileInterface
      */
-    public function getInstance()
+    public function getInstance($instance = self::TYPE_EPUB)
     {
-        if (!isset($this->_instanceTypeStorage[$this->_instanceType])) {
+        if (!isset($this->instanceTypeStorage[$instance])) {
             throw new AdapterException(
                 sprintf(
                     'No model configured for the %s book file format',
-                    $this->_instanceType
+                    $this->$instance
                 )
             );
         }
 
-        if (!isset($this->_instance[$this->_instanceType])) {
-            $className = __NAMESPACE__.'\\Adapter\\' .
-                ucfirst(strtolower($this->_instanceType));
-
-            $this->_instance[$this->_instanceType] = new $className;
-        }
-        return $this->_instance[$this->_instanceType];
+        $className = __NAMESPACE__.'\\Adapter\\' . ucfirst(strtolower($instance));
+        return new $className($this->app);
     }
 
     /**

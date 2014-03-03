@@ -10,10 +10,10 @@
 namespace Cops\Model\Author;
 
 use Cops\Model\ResourceAbstract;
-use Cops\Model\Core;
 use Cops\Exception\AuthorException;
 use Doctrine\DBAL\Connection;
 use PDO;
+use Cops\Model\Book\Collection as BookCollection;
 
 /**
  * Author resource model
@@ -178,7 +178,7 @@ class Resource extends ResourceAbstract
                 ->setParameter(1, $letter, PDO::PARAM_STR);
         } else {
             $qb->where('UPPER(SUBSTR(sort, 1, 1)) NOT IN (:letters)')
-                ->setParameter('letters', Core::getLetters(), Connection::PARAM_STR_ARRAY);
+                ->setParameter('letters', $this->app['utils']->getLetters(), Connection::PARAM_STR_ARRAY);
         }
 
         return $qb->groupBy('main.id')
@@ -205,5 +205,44 @@ class Resource extends ResourceAbstract
             ->setParameter('book_id', $bookId, PDO::PARAM_INT)
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Load author data for a book collection
+     *
+     * @param  \Cops\Model\Book\Collection $collection
+     *
+     * @return \Cops\Model\Book\Collection
+     */
+    public function populateBookCollection(BookCollection $collection)
+    {
+        if ($collection->count() === 0) {
+            return $collection;
+        }
+
+        $bookIds = $collection->getAllIds();
+
+        $stmt = $this->getQueryBuilder()
+            ->select(
+                'main.*',
+                'books.id AS book_id'
+            )
+            ->from('authors', 'main')
+            ->innerJoin('main', 'books_authors_link', 'bal',   'bal.author = main.id')
+            ->innerJoin('main', 'books',              'books', 'books.id = bal.book')
+            ->where('books.id IN (:book_id)')
+            ->setParameter('book_id', $bookIds, Connection::PARAM_INT_ARRAY)
+            ->execute();
+
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+
+            // Get the book that will receive the bookfiles
+            $book = $collection->getById($row['book_id']);
+
+            $author = $this->setDataFromStatement($row);
+
+            $book->getAuthors()->add($author);
+        }
+        return $collection;
     }
 }

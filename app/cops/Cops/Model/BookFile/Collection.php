@@ -11,6 +11,9 @@
 namespace Cops\Model\BookFile;
 
 use Cops\Model\CollectionAbstract;
+use Cops\Model\Book;
+
+use Cops\Exception\BookFile\FormatUnavailableException;
 
 /**
  * BookFile collection model
@@ -18,6 +21,49 @@ use Cops\Model\CollectionAbstract;
  */
 class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
 {
+    /**
+     * Format mapping
+     * @var array
+     */
+    private $formatMapping = array();
+
+    /**
+     * Add an element into collection
+     *
+     * @param mixed $element
+     *
+     * @return Collection
+     */
+    public function add($element)
+    {
+        $this->elements[] = $element;
+        $this->mapping[$element->getBookId()] = count($this->elements) - 1;
+        $this->formatMapping[$element->getBookId()][$element->getFormat()] = count($this->elements) - 1;
+        return $this;
+    }
+
+    /**
+     * Get a bookfile from collection by specifying format
+     *
+     * @param  string $format
+     * @param  int    $bookId
+     *
+     * @return \Cops\Model\BookFile\AdapterAbstract
+     *
+     * @throws FormatUnavailableException
+     */
+    public function findFormat($format, $bookId)
+    {
+        if (isset($this->formatMapping[$bookId][$format])) {
+            $collectionKey = $this->formatMapping[$bookId][$format];
+            return $this->elements[$collectionKey];
+        }
+
+        throw new FormatUnavailableException(
+            sprintf('Could not get %s format for book id %s', $format, $bookId)
+        );
+    }
+
     /**
      * Load book files collection based on serie ID
      *
@@ -51,6 +97,25 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
             $this->add($resource->setDataFromStatement($result));
         }
 
+        return $this;
+    }
+
+    /**
+     * Load book files from single book
+     *
+     * @param \Cops\Model\Book
+     *
+     * @return Collection
+     */
+    public function getFromBook(Book $book)
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadByBookId($book->getId()) as $result) {
+            $elm = $resource->setDataFromStatement($result);
+            $elm->setDirectory($book->getPath());
+            $this->add($elm);
+        }
         return $this;
     }
 
