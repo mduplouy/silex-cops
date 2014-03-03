@@ -80,7 +80,22 @@ class Resource extends ResourceAbstract
     {
         return $this->getBaseSelect()
             ->orderBy('main.timestamp', 'DESC')
+            ->setFirstResult(0)
             ->setMaxResults($nb)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Load all books
+     *
+     * @return array
+     */
+    public function loadAll()
+    {
+        return $this->getQueryBuilder()
+            ->select('main.*')
+            ->from('books', 'main')
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -237,6 +252,7 @@ class Resource extends ResourceAbstract
                 'sort' => $result['serie_sort'],
             ));
         }
+
         return $myBook;
     }
 

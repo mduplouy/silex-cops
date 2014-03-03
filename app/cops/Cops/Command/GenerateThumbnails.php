@@ -23,7 +23,7 @@ class GenerateThumbnails extends Command
 {
     /**
      * Application instance
-     * @var Application
+     * @var \Silex\Application
      */
     private $app;
 
@@ -49,16 +49,16 @@ class GenerateThumbnails extends Command
         $output->writeln('');
         $output->writeln('<fg=green>Generating all book thumbnails</fg=green>');
 
-        $allBooks = $this->app['model.book']->getCollection()->getLatest(999999);
+        $allBooks = $this->app['model.book']->getCollection()->getAll();
 
         // Progress bar
         $progress = $this->getHelperSet()->get('progress');
         $progress->start($output, $allBooks->count());
 
         // Generate each book thumbnail
-        foreach($allBooks as &$book) {
+        foreach($allBooks as $book) {
 
-            $cover = $book->getCover();
+            $cover = $book->getCover()->setBook($book);
 
             $cover->getThumbnailPath(160, 260);
             $cover->getThumbnailPath(80, 120);

@@ -38,6 +38,22 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
     }
 
     /**
+     * Get all books
+     *
+     * @return $this
+     */
+    public function getAll()
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadAll() as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+
+        return $this;
+    }
+
+    /**
      * Get book collection based on author
      * Remove current book from collection
      *
