@@ -146,7 +146,7 @@ class Core
 
         // Remove any file marked as "to be deleted"
         $app->finish(function (Request $request, Response $response) use ($app) {
-            if (isset($app['delete_file'])) {
+            if (isset($app['delete_file']) && php_sapi_name() != 'cli') {
                 unlink($app['delete_file']);
             }
         });
