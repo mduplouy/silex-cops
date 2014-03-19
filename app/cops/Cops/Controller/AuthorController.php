@@ -76,6 +76,9 @@ class AuthorController implements ControllerProviderInterface
             $archive = $archiveClass->addFiles($authorBooks)
                 ->generateArchive();
 
+            // Mark file as "to be deleted"
+            $app['delete_file'] = $archive;
+
             return $app
                 ->sendFile($archive)
                 ->setContentDisposition(
