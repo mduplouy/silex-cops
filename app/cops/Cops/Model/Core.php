@@ -25,6 +25,7 @@ use Cops\EventListener\LocaleListener;
 use Silex\Application as BaseApplication;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 
@@ -142,6 +143,13 @@ class Core
                 'driverOptions' => Calibre::getDBInternalFunctions(),
             ),
         ));
+
+        // Remove any file marked as "to be deleted"
+        $app->finish(function (Request $request, Response $response) use ($app) {
+            if (isset($app['delete_file']) && php_sapi_name() != 'cli') {
+                unlink($app['delete_file']);
+            }
+        });
 
         $this
             ->registerSecurityService($app)     // Security setup
