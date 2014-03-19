@@ -102,6 +102,9 @@ class TagController implements ControllerProviderInterface
 
             $archive = $archiveClass->addFiles($tagBooks)->generateArchive();
 
+            // Mark file as "to be deleted"
+            $app['delete_file'] = $archive;
+
             return $app
                 ->sendFile($archive)
                 ->setContentDisposition(
