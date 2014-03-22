@@ -49,7 +49,7 @@ class DatabaseController implements ControllerProviderInterface
      */
     public function triggerAction(Application $app)
     {
-        $triggers = $app['calibre']->getTriggers();
+        $triggers = $app['model.calibre']->getTriggers();
 
         $checkTriggers = $app['db']->createQueryBuilder()
             ->select('name')
@@ -81,10 +81,10 @@ class DatabaseController implements ControllerProviderInterface
      {
         foreach($app['request']->get('triggers') as $trigger => $value) {
             if (empty($value)) {
-                $app['calibre']->getResource()->dropTrigger($trigger);
+                $app['model.calibre']->getResource()->dropTrigger($trigger);
             }
             else {
-                $app['calibre']->getResource()->restoreTrigger($trigger);
+                $app['model.calibre']->getResource()->restoreTrigger($trigger);
             }
         }
         return $app->redirect($app['url_generator']->generate('admin_database_triggers'));
