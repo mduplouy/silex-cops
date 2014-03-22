@@ -263,6 +263,7 @@ class Core
             return new \Cops\Model\Calibre($app);
         });
 
+        // Factories
         $app['factory.bookfile'] = $app->share(function($app) {
             return new \Cops\Model\BookFile\BookFileFactory($app);
         });
@@ -286,16 +287,5 @@ class Core
     public static function getApp()
     {
         return self::$app;
-    }
-
-    /**
-     * DBAL connection getter
-     *
-     * @return \Doctrine\DBAL\Connection
-     */
-    public static function getDb()
-    {
-        $app = self::getApp();
-        return $app['db'];
     }
 }

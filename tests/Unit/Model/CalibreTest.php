@@ -2,30 +2,34 @@
 
 namespace Cops\Tests\Model;
 
+use Silex\WebTestCase;
+
 /**
  * Calibre model test cases
  *
  * @require PHP 5.3
  */
-class CalibreTest extends \PHPUnit_Framework_TestCase
+class CalibreTest extends WebTestCase
 {
+    public function createApplication()
+    {
+        return require __DIR__.'/../application.php';
+    }
+
     /**
-     * @dataProvider getDataForSortAlgo
+     * @dataProvider getDataForAuthorSortAlgo
      */
     public function testAuthorSortAlgorithm($sortMethod, $authorName, $expectedSort)
     {
-        $app = \Cops\Model\Core::getApp();
-        $app['config']->setValue('author_sort_copy_method', $sortMethod);
+        $this->app['config']->setValue('author_sort_copy_method', $sortMethod);
 
-        $calibre = new \Cops\Model\Calibre($app);
-
-        $authorSort = $calibre->getAuthorSortName($authorName);
+        $authorSort = $this->app['model.calibre']->getAuthorSortName($authorName);
 
         $this->assertEquals(
             $authorSort,
             $expectedSort,
             sprintf(
-                'Calibre %s algorithm gives %s result instead of %s',
+                'Calibre "%s" algorithm gives "%s" result instead of "%s"',
                 $sortMethod,
                 $authorSort,
                 $expectedSort
@@ -36,7 +40,7 @@ class CalibreTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for author sort testing
      */
-    public function getDataForSortAlgo()
+    public function getDataForAuthorSortAlgo()
     {
         return array(
             array('invert',  'John Smith',       'Smith, John'),
@@ -48,5 +52,34 @@ class CalibreTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @dataProvider getDataForTitleSortAlgo
+     */
+    public function testTitleSortAlgorithm($title, $expected, $lang)
+    {
+        $titleSort = $this->app['model.calibre']->getTitleSort($title, $lang);
+
+        $this->assertEquals(
+            $titleSort,
+            $expected,
+            sprintf(
+                'Calibre title sort gives "%s" result instead of "%s"',
+                $titleSort,
+                $expected
+            )
+        );
+    }
+
+    /**
+     * Data provider for title sort testing
+     */
+    public function getDataForTitleSortAlgo()
+    {
+        return array(
+            array('Le titre test',  'titre test, Le',  'fr'),
+            array('The title test', 'title test, The', 'en'),
+            array('The title test', 'title test, The', false),
+        );
+    }
 }
 

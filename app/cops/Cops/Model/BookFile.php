@@ -57,20 +57,6 @@ class BookFile extends EntityAbstract
     }
 
     /**
-     * Add book files to single book
-     *
-     * @param  \Cops\Model\Book $book
-     *
-     * @return \Cops\Model\Book
-     */
-    public function loadFromBook(Book $book)
-    {
-        $collection = $book->getCollection()->add($book);
-        $this->getResource()->populateBookCollection($collection, $this);
-        return $collection->getById($book->getId());
-    }
-
-    /**
      * Reset data on cloning
      */
     public function __clone()

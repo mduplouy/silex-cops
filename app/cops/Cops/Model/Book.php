@@ -101,23 +101,21 @@ class Book extends EntityAbstract
     /**
      * Constructor
      *
-     * @param array $dataArray
-     *
-     * @return \Cops\Model\Core
+     * @param \Silex\Application $app
+     * @param array              $dataArray
      */
     public function __construct(BaseApplication $app, array $dataArray = array())
     {
         parent::__construct($app, $dataArray);
-        $this->cover                = $this->app['model.cover'];
-        return $this->setDefaultProperties();
+        $this->setDefaultProperties();
     }
 
     /**
      * Set data into object
      *
-     * @param array
+     * @param array $dataArray
      *
-     * @return \Cops\Model\Core
+     * @return $this
      */
     public function setData(array $dataArray)
     {
@@ -132,6 +130,7 @@ class Book extends EntityAbstract
      */
     private function setDefaultProperties()
     {
+        $this->cover                = $this->app['model.cover'];
         $this->authorCollection     = $this->app['model.author']->getCollection();
         $this->serie                = $this->app['model.serie']->setBook($this);
         $this->tagCollection        = $this->app['model.tag']->getCollection();
