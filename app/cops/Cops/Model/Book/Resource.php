@@ -160,23 +160,8 @@ class Resource extends ResourceAbstract
             ->addOrderBy('title')
             ->setParameter('tagid', $tagId, PDO::PARAM_INT);
 
-        // Count total rows when using limit
-        if ($this->maxResults !=null) {
-            $countQuery = clone($qb);
-
-            $total = (int) $countQuery
-                ->resetQueryParts(array('select', 'groupBy', 'orderBy'))
-                ->select('COUNT(*)')
-                ->execute()
-                ->fetchColumn();
-
-            $this->totalRows = $total;
-
-            $qb->setFirstResult($this->firstResult)
-                ->setMaxResults($this->maxResults);
-        }
-
-        return $qb->execute()
+        return $this->paginate($qb)
+            ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -213,25 +198,8 @@ class Resource extends ResourceAbstract
 
         $qb->orWhere($andPath, $andSerie);
 
-        // Count total rows when using limit
-        if ($this->maxResults !=null) {
-            $countQuery = clone($qb);
-
-            $total = (int) $countQuery
-                ->resetQueryParts(array('select', 'join', 'groupBy', 'orderBy'))
-                ->select('COUNT(*)')
-                ->leftJoin('main', 'books_series_link',  'bsl',    'bsl.book = main.id')
-                ->leftJoin('main', 'series',             'serie',  'serie.id = bsl.series')
-                ->execute()
-                ->fetchColumn();
-
-            $this->totalRows = $total;
-
-            $qb->setFirstResult($this->firstResult)
-                ->setMaxResults($this->maxResults);
-        }
-
-        return $qb->execute()
+        return $this->paginate($qb)
+            ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 

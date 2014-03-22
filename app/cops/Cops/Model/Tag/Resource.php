@@ -96,23 +96,8 @@ class Resource extends ResourceAbstract
             ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.tag')
             ->groupBy('main.id');
 
-        // Count total rows when using limit
-        if ($this->maxResults !== null) {
-            $countQuery = clone($qb);
-
-            $total = (int) $countQuery
-                ->resetQueryParts(array('select', 'join', 'groupBy', 'orderBy'))
-                ->select('COUNT(*)')
-                ->execute()
-                ->fetchColumn();
-
-            $this->totalRows = $total;
-
-            $qb->setFirstResult($this->firstResult)
-                ->setMaxResults($this->maxResults);
-        }
-
-        return $qb->execute()
+        return $this->paginate($qb, array('select', 'join', 'groupBy', 'orderBy'))
+            ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -136,4 +121,5 @@ class Resource extends ResourceAbstract
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
+
 }

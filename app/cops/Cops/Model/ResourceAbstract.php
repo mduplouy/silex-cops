@@ -11,6 +11,7 @@ namespace Cops\Model;
 
 use Cops\Model\EntityAbstract;
 use Silex\Application as BaseApplication;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * Base resource class
@@ -141,5 +142,35 @@ abstract class ResourceAbstract
     public function getTotalRows()
     {
         return $this->totalRows;
+    }
+
+    /**
+     * Paginate query*
+     *
+     * @param  QueryBuilder $queryBuilder
+     * @param  array        $resetParts
+     *
+     * @return QueryBuilder
+     */
+    protected function paginate(
+        QueryBuilder $queryBuilder,
+        $resetParts = array('select', 'groupBy', 'orderBy')
+    ) {
+        // Count total rows when using limit
+        if ($this->maxResults !== null) {
+            $countQuery = clone($queryBuilder);
+
+            $total = (int) $countQuery
+                ->resetQueryParts($resetParts)
+                ->select('COUNT(*)')
+                ->execute()
+                ->fetchColumn();
+
+            $this->totalRows = $total;
+
+            $queryBuilder->setFirstResult($this->firstResult)
+                ->setMaxResults($this->maxResults);
+        }
+        return $queryBuilder;
     }
 }
