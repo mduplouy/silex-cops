@@ -12,6 +12,8 @@ namespace Cops\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\Request;
+use Cops\Model\Author;
 
 use Cops\Exception\AuthorException;
 use Cops\Exception\Archive\AdapterException;
@@ -64,10 +66,9 @@ class AuthorController implements ControllerProviderInterface
     public function downloadAction(Application $app, $id, $format)
     {
         try {
-            $author = $app['model.author']->load($id);
+            $author = $this->loadAuthorOrRedirect($app, $id);
 
-            $archiveClass = $app['factory.archive']
-                ->getInstance($format);
+            $archiveClass = $this->getArchiveOrRedirect($app, $format);
 
             $authorBooks = $app['model.bookfile']
                 ->getCollection()
@@ -85,21 +86,52 @@ class AuthorController implements ControllerProviderInterface
                     ResponseHeaderBag::DISPOSITION_ATTACHMENT,
                     $author->getDownloadSafeName().$archiveClass->getExtension()
                 );
-        } catch (AuthorException $e) {
-            $redirect = $app->redirect($app['url_generator']->generate('homepage'));
-        } catch (AdapterException $e) {
-            $redirect = $app->redirect(
-                $app['url_generator']->generate(
-                    'author_detail',
-                    array(
-                        'id' => $author->getId()
-                    )
-                )
-            );
         } catch (FileNotFoundException $e) {
             $redirect = $app->abort(404);
         }
         return $redirect;
+    }
+
+    /**
+     * Load author or redirect to homepage
+     *
+     * @param \Silex\Application $app
+     * @param int                $id
+     *
+     * @return \Cops\Model\Author
+     */
+    protected function loadAuthorOrRedirect(Application $app, $id)
+    {
+        try {
+            return $app['model.author']->load($id);
+        } catch (AuthorException $e) {
+            $app->redirect($app['url_generator']->generate('homepage'))->send();
+            exit;
+        }
+    }
+
+    /**
+     * Get archive class or redirect
+     *
+     * @param \Silex\Application $app    Application instance
+     * @param string             $format Archive format
+     * @param \Cops\Model\Author $author Author instance
+     *
+     * @return \Cops\Model\Archive\ArchiveInterface
+     */
+    protected function getArchiveOrRedirect(Application $app, $format, Author $author)
+    {
+        try {
+            return $app['factory.archive']->getInstance($format);
+        } catch (AdapterException $e) {
+            $url = $app['url_generator']->generate(
+                'author_detail',
+                array(
+                    'id' => $author->getId()
+                )
+            );
+            $app->redirect($url)->send();
+        }
     }
 
     /**
@@ -132,11 +164,7 @@ class AuthorController implements ControllerProviderInterface
      */
     public function detailAction(Application $app, $id)
     {
-        try {
-            $author = $app['model.author']->load($id);
-        } catch (AuthorException $e) {
-            return $app->redirect($app['url_generator']->generate('homepage'));
-        }
+        $author = $this->loadAuthorOrRedirect($app, $id);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author.html', array(
             'author'     => $author,

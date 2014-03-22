@@ -273,45 +273,8 @@ class Resource extends ResourceAbstract
                 ->execute();
 
             $allAuthorsSort = array();
-
             foreach ($authors as $authorName) {
-
-                $sortName = $this->app['model.calibre']->getAuthorSortName($authorName);
-                $allAuthorsSort[] = $sortName;
-
-                $author = $this->app['model.author'];
-
-                // Get author id
-                $authorId = $this->getQueryBuilder()
-                    ->select('id')
-                    ->from('authors', 'main')
-                    ->where('main.name = :author_name')
-                    ->setParameter('author_name', $authorName, PDO::PARAM_STR)
-                    ->execute()
-                    ->fetchColumn();
-
-                // Save author data
-                $author
-                    ->setName($authorName)
-                    ->setSort($sortName);
-
-                if ($authorId) {
-                    $author->setId($authorId);
-                }
-                $authorId = $author->save();
-
-                // Create new book <=> author link
-                $con->insert(
-                    'books_authors_link',
-                    array(
-                        'book'   => $id,
-                        'author' => $authorId
-                    ),
-                    array(
-                        PDO::PARAM_INT,
-                        PDO::PARAM_INT
-                    )
-                );
+                $allAuthorsSort[] = $this->updateAuthorSortNameAndLink($id, $authorName);
             }
 
             // Update author_sort in book table (no relation)
@@ -324,16 +287,59 @@ class Resource extends ResourceAbstract
                     PDO::PARAM_INT,
                 )
             );
-
             $con->commit();
-
-        // @fixme pop exception message to the user
-        } catch (\Exception $e) {
+            return true;
+        } catch (\Exception $e) {         // @fixme pop exception message to the user
             $con->rollback();
             return false;
         }
+    }
 
-        return true;
+    /**
+     * Update author name and author <=> book link
+     *
+     * @param int    $id         Book ID
+     * @param string $authorName Author name
+     *
+     * @return string $sortName
+     *
+     */
+    private function updateAuthorSortNameAndLink($bookId, $authorName)
+    {
+        $sortName = $this->app['model.calibre']->getAuthorSortName($authorName);
+
+        // Get author id if author name already exists
+        $authorId = $this->getQueryBuilder()
+            ->select('id')
+            ->from('authors', 'main')
+            ->where('main.name = :author_name')
+            ->setParameter('author_name', $authorName, PDO::PARAM_STR)
+            ->execute()
+            ->fetchColumn();
+
+        // Save author data (update existing or insert new one)
+        $author = $this->app['model.author'];
+        $author
+            ->setName($authorName)
+            ->setSort($sortName);
+        if ($authorId) {
+            $author->setId($authorId);
+        }
+        $authorId = $author->save();
+
+        // Create new book <=> author link
+        $this->getConnection()->insert(
+            'books_authors_link',
+            array(
+                'book'   => $bookId,
+                'author' => $authorId
+            ),
+            array(
+                PDO::PARAM_INT,
+                PDO::PARAM_INT
+            )
+        );
+        return $sortName;
     }
 
     /**

@@ -11,8 +11,6 @@ namespace Cops\Controller\Admin;
 
 use Silex\ControllerProviderInterface;
 use Silex\Application;
-use PDO;
-use Doctrine\DBAL\Connection;
 
 /**
  * Admin related controller
@@ -50,14 +48,7 @@ class DatabaseController implements ControllerProviderInterface
     public function triggerAction(Application $app)
     {
         $triggers = $app['model.calibre']->getTriggers();
-
-        $checkTriggers = $app['db']->createQueryBuilder()
-            ->select('name')
-            ->from('SQLite_Master', 'main')
-            ->where('name IN(:trigger_name)')
-            ->setParameter('trigger_name', array_keys($triggers), Connection::PARAM_STR_ARRAY)
-            ->execute()
-            ->fetchAll(PDO::FETCH_ASSOC);
+        $checkTriggers = $app['model.calibre']->loadExistingTriggers();
 
         $foundTriggers = array();
         foreach($checkTriggers as $trigger) {

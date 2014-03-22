@@ -255,4 +255,14 @@ class Calibre
     {
         return $this->getResource()->getTriggers();
     }
+
+    /**
+     * Load existing triggers inside DB
+     *
+     * @return array
+     */
+    public function loadExistingTriggers()
+    {
+        return $this->getResource()->loadTriggersFromDb();
+    }
 }

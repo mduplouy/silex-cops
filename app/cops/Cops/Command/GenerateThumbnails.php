@@ -34,6 +34,7 @@ class GenerateThumbnails extends Command
     {
         parent::__construct('generate:thumbnails');
         $this->app = $app;
+        $this->setDescription('Generate the thumbnails for every book');
     }
 
     /**

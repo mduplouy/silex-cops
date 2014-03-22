@@ -11,6 +11,7 @@ namespace Cops\Model\Calibre;
 
 use Cops\Model\ResourceAbstract;
 use Doctrine\DBAL\Connection;
+use PDO;
 
 /**
  * Calibre resource model
@@ -74,6 +75,24 @@ class Resource extends ResourceAbstract
                 'desc' => self::TRIGGER_BOOK_UPDATE,
             ),
         );
+    }
+
+    /**
+     * Try to load triggers from database
+     *
+     * @return array
+     */
+    public function loadTriggersFromDb()
+    {
+        return
+            $this->connection
+            ->createQueryBuilder()
+            ->select('name')
+            ->from('SQLite_Master', 'main')
+            ->where('name IN(:trigger_name)')
+            ->setParameter('trigger_name', array_keys($this->triggers), Connection::PARAM_STR_ARRAY)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
