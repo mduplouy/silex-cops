@@ -51,16 +51,15 @@ class BookFileFactory extends FactoryAbstract
     /**
      * Instance getter
      *
+     * @param string $instance
+     *
      * @return \Cops\Model\BookFile\BookFileInterface
      */
     public function getInstance($instance = self::TYPE_EPUB)
     {
         if (!isset($this->instanceTypeStorage[$instance])) {
             throw new AdapterException(
-                sprintf(
-                    'No model configured for the %s book file format',
-                    $this->$instance
-                )
+                sprintf('No model configured for the %s book file format', $instance)
             );
         }
 

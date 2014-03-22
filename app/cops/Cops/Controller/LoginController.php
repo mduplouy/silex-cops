@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Login controller
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
+ *
+ * @codeCoverageIgnore
  */
 class LoginController implements ControllerProviderInterface
 {

@@ -44,10 +44,12 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
     {
         $url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
 
+        // @codeCoverageIgnoreStart
         // Check for mod_rewrite config then prepend script name to url
         if ($this->app['config']->getValue('use_rewrite') !== true && php_sapi_name() != 'cli') {
             $url = $this->addScriptNameToUrl($url);
         }
+        // @codeCoverageIgnoreEnd
         return $url;
     }
 
@@ -57,6 +59,8 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
      * @param  string $url
      *
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     private function addScriptNameToUrl($url)
     {

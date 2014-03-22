@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
  * OPDS controller class
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
+ *
+ * @codeCoverageIgnore
  */
 class OpdsController implements ControllerProviderInterface
 {

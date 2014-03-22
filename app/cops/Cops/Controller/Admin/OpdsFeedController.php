@@ -13,6 +13,8 @@ use Silex\ControllerProviderInterface;
 
 /**
  * Admin related controller
+ *
+ * @codeCoverageIgnore
  */
 class OpdsFeedController implements ControllerProviderInterface
 {
