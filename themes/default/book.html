@@ -41,7 +41,7 @@
             </p>
         {% endif %}
 
-        <p>{{"Publication date:"|trans}} <span class="bold editable" data-type="combodate" data-format="{{ date_edit }}">{{ book.getPubdate()|date(date_format) }}</span></p>
+        <p>{{"Publication date:"|trans}} <span class="bold editable" data-type="combodate" data-name="pubdate" data-format="{{ date_edit }}">{{ book.getPubdate()|date(date_format) }}</span></p>
 
         {% set tags = book.getTags() %}
         {% if tags.count() > 0 %}

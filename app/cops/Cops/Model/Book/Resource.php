@@ -14,6 +14,7 @@ use Cops\Exception\BookException;
 use Cops\Model\Core;
 use Cops\Model\Book\Collection;
 use PDO;
+use Doctrine\DBAL;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -403,6 +404,28 @@ class Resource extends ResourceAbstract
             $con->rollback();
         }
         return true;
+    }
+
+    /**
+     * Update publication date
+     *
+     * @param int       $id
+     * @param \DateTime $pubDate
+     *
+     * @return bool
+     */
+    public function updatePublicationDate($id, \DateTime $pubDate)
+    {
+        return (bool) $this->getConnection()
+            ->update(
+                'books',
+                array('pubdate' => $pubDate),
+                array('id' => $id),
+                array(
+                    'datetime',
+                    PDO::PARAM_INT
+                )
+            );
     }
 
     /**

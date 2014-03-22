@@ -283,6 +283,22 @@ class Book extends EntityAbstract
     }
 
     /**
+     * Update book publication date
+     *
+     * @param \DateTime $dateTime
+     * @param int       $bookId
+     *
+     * @return bool
+     */
+    public function updatePublicationDate(\DateTime $dateTime, $bookId)
+    {
+        if ($bookId === null) {
+            $bookId = $this->getId();
+        }
+        return $this->getResource()->updatePublicationDate($bookId, $dateTime);
+    }
+
+    /**
      * Empty properties on clone
      */
     public function __clone()
