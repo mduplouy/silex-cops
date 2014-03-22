@@ -65,31 +65,30 @@ class AuthorController implements ControllerProviderInterface
      */
     public function downloadAction(Application $app, $id, $format)
     {
-        try {
-            $author = $this->loadAuthorOrRedirect($app, $id);
-
-            $archiveClass = $this->getArchiveOrRedirect($app, $format);
-
-            $authorBooks = $app['model.bookfile']
-                ->getCollection()
-                ->getByAuthorId($author->getId());
-
-            $archive = $archiveClass->addFiles($authorBooks)
-                ->generateArchive();
-
-            // Mark file as "to be deleted"
-            $app['delete_file'] = $archive;
-
-            return $app
-                ->sendFile($archive)
-                ->setContentDisposition(
-                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                    $author->getDownloadSafeName().$archiveClass->getExtension()
-                );
-        } catch (FileNotFoundException $e) {
-            $redirect = $app->abort(404);
+        if (!$author = $this->loadAuthorOrRedirect($app, $id)) {
+            return $app['response'];
         }
-        return $redirect;
+
+        if (!$archiveClass = $this->getArchiveOrRedirect($app, $format, $author)) {
+            return $app['response'];
+        }
+
+        $authorBooks = $app['model.bookfile']
+            ->getCollection()
+            ->getByAuthorId($author->getId());
+
+        $archive = $archiveClass->addFiles($authorBooks)
+            ->generateArchive();
+
+        // Mark file as "to be deleted"
+        $app['delete_file'] = $archive;
+
+        return $app
+            ->sendFile($archive)
+            ->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $author->getDownloadSafeName().$archiveClass->getExtension()
+            );
     }
 
     /**
@@ -105,8 +104,7 @@ class AuthorController implements ControllerProviderInterface
         try {
             return $app['model.author']->load($id);
         } catch (AuthorException $e) {
-            $app->redirect($app['url_generator']->generate('homepage'))->send();
-            exit;
+            $app['response'] = $app->redirect($app['url_generator']->generate('homepage'));
         }
     }
 
@@ -130,7 +128,7 @@ class AuthorController implements ControllerProviderInterface
                     'id' => $author->getId()
                 )
             );
-            $app->redirect($url)->send();
+            $app['response'] = $app->redirect($url);
         }
     }
 
@@ -164,12 +162,13 @@ class AuthorController implements ControllerProviderInterface
      */
     public function detailAction(Application $app, $id)
     {
-        $author = $this->loadAuthorOrRedirect($app, $id);
-
-        return $app['twig']->render($app['config']->getTemplatePrefix().'author.html', array(
-            'author'     => $author,
-            'pageTitle' => $author->getSort(),
-        ));
+        if ($author = $this->loadAuthorOrRedirect($app, $id)) {
+            return $app['twig']->render($app['config']->getTemplatePrefix().'author.html', array(
+                'author'     => $author,
+                'pageTitle' => $author->getSort(),
+            ));
+        }
+        return $app['response'];
     }
 
 }

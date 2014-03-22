@@ -101,10 +101,7 @@ class InlineEditController implements ControllerProviderInterface
     {
         // Translate format like in view to build DateTime object
         $dateFormat = $app['translator']->trans("m/d/Y");
-
-        if ($dateTime = \DateTime::createFromFormat($dateFormat, $pubDate)) {
-            return $app['model.book']->updatePublicationDate($dateTime, $bookId);
-        }
-        return false;
+        $dateTime = \DateTime::createFromFormat($dateFormat, $pubDate);
+        return $app['model.book']->updatePublicationDate($dateTime, $bookId);
     }
 }

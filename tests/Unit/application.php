@@ -21,25 +21,26 @@ $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
 
 ));
 
+$users =  array(
+    // test : test
+    'test' => array('ROLE_USER', 'stHGdg4MhYOm/OVTWjpMJievIvJqafsQQ3WpWlUNDT6WfHupVWjBQaxdppMQkdCmYSXl6QQQXVYLGL/MDZi5Zw=='),
+    // admin : test
+    'admin' => array('ROLE_ADMIN', 'stHGdg4MhYOm/OVTWjpMJievIvJqafsQQ3WpWlUNDT6WfHupVWjBQaxdppMQkdCmYSXl6QQQXVYLGL/MDZi5Zw==')
+);
+
 // Register security provider with less security
 $app->register(new \Silex\Provider\SecurityServiceProvider(), array(
     'security.firewalls' => array(
         'admin' => array(
             'pattern' => '^/admin',
             'http' => true,
-            'users' => array(
-                // test : test
-                'test' => array('ROLE_ADMIN', 'stHGdg4MhYOm/OVTWjpMJievIvJqafsQQ3WpWlUNDT6WfHupVWjBQaxdppMQkdCmYSXl6QQQXVYLGL/MDZi5Zw==')
-            )
+            'users' => $users
         ),
         'default' => array(
             'pattern' => '^.*$',
             'http' => true,
             'anonymous' => true,
-            'users' => array(
-                // test : test
-                'test' => array('ROLE_ADMIN', 'stHGdg4MhYOm/OVTWjpMJievIvJqafsQQ3WpWlUNDT6WfHupVWjBQaxdppMQkdCmYSXl6QQQXVYLGL/MDZi5Zw==')
-            )
+            'users' => $users
         ),
     )
 ));
