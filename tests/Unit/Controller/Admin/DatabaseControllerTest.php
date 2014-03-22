@@ -38,7 +38,7 @@ class InlineEditControllerTest extends WebTestCase
         $this->assertFalse($this->client->getResponse()->isOk());
     }
 
-    public function testAccessForAdmin()
+    public function testAccessAndUpdatesForAdmin()
     {
         $session = $this->app['session'];
 
@@ -51,6 +51,32 @@ class InlineEditControllerTest extends WebTestCase
         $this->client->getCookieJar()->set($cookie);
 
         $this->client->request('GET', '/fr/admin/database/triggers');
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        // Remove DB triggers
+        $this->client->request(
+            'POST',
+            '/fr/admin/database/triggers',
+            array(
+                'triggers' => array(
+                    'books_insert_trg' => 0,
+                    'books_update_trg' => 0,
+                ),
+            )
+        );
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        // Restore DB triggers
+        $this->client->request(
+            'POST',
+            '/fr/admin/database/triggers',
+            array(
+                'triggers' => array(
+                    'books_insert_trg' => 1,
+                    'books_update_trg' => 1,
+                ),
+            )
+        );
         $this->assertTrue($this->client->getResponse()->isOk());
     }
 
