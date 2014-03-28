@@ -403,6 +403,29 @@ class Resource extends ResourceAbstract
     }
 
     /**
+     * Update comment
+     *
+     * @param int       $id
+     * @param string    $comment
+     *
+     * @return bool
+     */
+    public function updateComment($id, $comment)
+    {
+        return (bool) $this->getConnection()
+            ->update(
+                'comments',
+                array('text' => $comment),
+                array('book' => $id),
+                array(
+                    PDO::PARAM_STR,
+                    PDO::PARAM_INT
+                )
+            );
+    }
+
+
+    /**
      * Get book language code from DB
      *
      * @param  int    $bookId

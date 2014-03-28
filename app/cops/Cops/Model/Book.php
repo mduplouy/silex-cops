@@ -298,6 +298,22 @@ class Book extends EntityAbstract
     }
 
     /**
+     * Update book comment
+     *
+     * @param string $comment
+     * @param int    $bookId
+     *
+     * @return bool
+     */
+    public function updateComment($comment, $bookId)
+    {
+        if ($bookId === null) {
+            $bookId = $this->getId();
+        }
+        return $this->getResource()->updateComment($bookId, $comment);
+    }
+
+    /**
      * Empty properties on clone
      */
     public function __clone()

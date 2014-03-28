@@ -68,7 +68,7 @@
         {% include 'book_download_link.html' with {'book': book} %}
 
         <div id="comments">
-            <div class="editable" data-type="textarea" data-inputclass="comments">{{ book.getComment()|striptags('<br>')|raw }}</div>
+            <div class="editable" data-type="textarea" data-name="comment" data-inputclass="comments">{{ book.getComment()|striptags('<br>')|raw }}</div>
         </div>
 
         {% if book.getSerie().getId() %}

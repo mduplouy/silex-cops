@@ -45,7 +45,9 @@ class InlineEditController implements ControllerProviderInterface
         $value = $app['request']->get('value');
 
         switch ($field) {
-
+            case 'comment':
+                $output = $this->updateBookComment($app, $id, $value);
+                break;
             case 'pubdate':
                 $output = $this->updateBookPublicationDate($app, $id, $value);
                 break;
@@ -103,5 +105,19 @@ class InlineEditController implements ControllerProviderInterface
         $dateFormat = $app['translator']->trans("m/d/Y");
         $dateTime = \DateTime::createFromFormat($dateFormat, $pubDate);
         return $app['model.book']->updatePublicationDate($dateTime, $bookId);
+    }
+
+    /**
+     * Update book comment
+     *
+     * @param Application $app
+     * @param int         $bookId
+     * @param string      $comment
+     *
+     * @return bool
+     */
+    protected function updateBookComment(Application $app, $bookId, $comment)
+    {
+        return $app['model.book']->updateComment($comment, $bookId);
     }
 }
