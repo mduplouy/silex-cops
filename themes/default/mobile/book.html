@@ -13,8 +13,8 @@
 
         <div data-role="content">
 
-            {% set author = book.getAuthor() %}
-            <p>{{"Author:"|trans}} <span class="bold">{{ book.getAuthor().getName() }}</span></p>
+            {% set authors = book.getAuthors() %}
+            <p>{{ "Author:"|transchoice(authors.count()) }} <span class="bold">{{ authors.getName() }}</span></p>
             <p>{{"Publication date:"|trans}} <span class="bold">{{ book.getPubdate()|date(date_format) }}</span></p>
 
             <a href="#book_comment_{{ book.getId() }}" title="{{"See summary"|trans}}">{{"See summary"|trans}}</a>

@@ -7,5 +7,5 @@
     -
 {% endif %}
 {{ book.getTitle() }}
-</a><span class="small">{% if showAuthor %}<br />{{ book.getAuthor().getName() }}{% endif %}
+</a><span class="small">{% if showAuthor %}<br />{{ book.getAuthors().getName() }}{% endif %}
  ({{ book.getPubdate()|date("Y") }})</span>
