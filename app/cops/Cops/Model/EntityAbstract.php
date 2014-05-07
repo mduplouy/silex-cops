@@ -9,20 +9,27 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\EntityInterface;
 use Silex\Application as BaseApplication;
 
 /**
- * Common class model
+ * Entity abstract class model
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class EntityAbstract
+abstract class EntityAbstract implements EntityInterface
 {
     /**
      * Application instance
      * @var Application
      */
     protected $app;
+
+    /**
+     * Resource instance
+     * @var \Cops\Model\ResourceAbstract
+     */
+    protected $resource;
 
     /**
      * Constructor
@@ -33,20 +40,20 @@ abstract class EntityAbstract
      */
     public function __construct(BaseApplication $app, array $dataArray = array())
     {
-        $className = get_called_class();
-        $object = $this;
-        $app['resource.'.$className] = $app->share(function($app) use($className, $object) {
-            $resourceClassName = sprintf('%s\\Resource', $className);
-            return new $resourceClassName($app, $object);
-        });
-
         $this->app = $app;
+
+        if (is_null($this->resource)) {
+            $className = get_called_class();
+            $resourceClassName = sprintf('%s\\Resource', $className);
+            $this->resource = new $resourceClassName($app, $this);
+        }
 
         return $this->setData($dataArray);
     }
 
     /**
      * Set/Get attribute wrapper
+     * @todo Remove this and code any needed setter / getter
      *
      * @param   string $method
      * @param   array $args
@@ -97,7 +104,7 @@ abstract class EntityAbstract
      */
     public function getResource()
     {
-        return $this->app['resource.'.get_called_class()];
+        return $this->resource;
     }
 
     /**
@@ -163,7 +170,6 @@ abstract class EntityAbstract
      */
     public function __clone()
     {
-        $this->modelInstance = array();
-        $this->resource = null;
+        $this->resource->setEntity($this);
     }
 }

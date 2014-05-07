@@ -424,7 +424,6 @@ class Resource extends ResourceAbstract
             );
     }
 
-
     /**
      * Get book language code from DB
      *

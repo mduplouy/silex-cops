@@ -19,12 +19,6 @@ use Silex\Application as BaseApplication;
 abstract class CollectionAbstract implements \IteratorAggregate, \Countable
 {
     /**
-     * Application instance
-     * @var \Silex\Application
-     */
-    protected $app;
-
-    /**
      * Collection elements
      * @var array
      */
@@ -47,17 +41,18 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @param Common $entity Related entity instance for collection
      */
-    public function __construct(EntityAbstract $entity) {
+    public function __construct(EntityAbstract $entity)
+    {
         $this->entity = $entity;
-        $this->app    = $entity->getApp();
     }
 
     /**
      * Entity model getter
      *
-     * @return \Cops\0EntityAbstract
+     * @return \Cops\Model\EntityAbstract
      */
-    public function getEntity() {
+    public function getEntity()
+    {
         return $this->entity;
     }
 
@@ -66,8 +61,9 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return \Silex\Application
      */
-    public function getApp() {
-        return $this->app;
+    public function getApp()
+    {
+        return $this->getEntity()->getApp();
     }
 
     /**
@@ -85,7 +81,8 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return \Cops\Model\ResourceAbstract
      */
-    public function getResource() {
+    public function getResource()
+    {
         return $this->getEntity()->getResource();
     }
 
@@ -96,7 +93,8 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return \ArrayIterator An \ArrayIterator object for iterating over collection elements
      */
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator($this->elements);
     }
 
@@ -107,7 +105,8 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return $this
      */
-    public function add($element) {
+    public function add($element)
+    {
         $this->elements[] = $element;
         $this->mapping[$element->getId()] = count($this->elements) - 1;
         return $this;
@@ -120,7 +119,8 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return mixed
      */
-    public function getById($id) {
+    public function getById($id)
+    {
         return $this->elements[$this->mapping[$id]];
     }
 
@@ -141,7 +141,8 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      * Implements \Countable
      * @return int
      */
-    public function count() {
+    public function count()
+    {
         return count($this->elements);
     }
 
@@ -152,7 +153,8 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return $this
      */
-    public function setFirstResult($offset) {
+    public function setFirstResult($offset)
+    {
         $this->getResource()->setFirstResult($offset);
         return $this;
     }
@@ -164,7 +166,8 @@ abstract class CollectionAbstract implements \IteratorAggregate, \Countable
      *
      * @return $this
      */
-    public function setMaxResults($limit) {
+    public function setMaxResults($limit)
+    {
         $this->getResource()->setMaxResults($limit);
         return $this;
     }

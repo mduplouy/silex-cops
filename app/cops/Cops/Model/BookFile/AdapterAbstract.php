@@ -9,74 +9,15 @@
  */
 namespace Cops\Model\BookFile;
 
-use Cops\Model\EntityAbstract;
-use Silex\Application as BaseApplication;
+use Cops\Model\BookFile as BaseBookFile;
 
 /**
  * Book file abstract class
  *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class AdapterAbstract extends EntityAbstract
+abstract class AdapterAbstract extends BaseBookFile
 {
-    /**
-     * Application instance
-     * @var \Silex\Application
-     */
-    protected $app;
-
-    /**
-     * Bookfile ID
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * Book ID
-     * @var int
-     */
-    protected $bookId;
-
-    /**
-     * Bookfile format
-     *
-     * @var string
-     */
-    protected $format;
-
-    /**
-     * File size in bytes
-     *
-     * @var int
-     */
-    protected $uncompressedSize = 0;
-
-    /**
-     * File name without extension
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * File storage directory
-     *
-     * @var string
-     */
-    protected $directory;
-
-    /**
-     * Constructor
-     *
-     * @param array $dataArray
-     */
-    public function __construct(BaseApplication $app, array $dataArray = array())
-    {
-        $this->app       = $app;
-        $this->directory = $app['book_storage_dir'];
-        $this->setData($dataArray);
-    }
-
     /**
      * Get the file path
      *
@@ -88,16 +29,6 @@ abstract class AdapterAbstract extends EntityAbstract
             . $this->directory . DS
             . $this->name . '.'
             . strtolower($this->format);
-    }
-
-    /**
-     * Get file name with extension
-     *
-     * @return string
-     */
-    public function getFileName()
-    {
-        return $this->name.'.'.strtolower($this->format);
     }
 
     /**
@@ -114,4 +45,13 @@ abstract class AdapterAbstract extends EntityAbstract
         return round($size, $i-1) . ' ' . $this->app['translator']->trans($label[$i]);
     }
 
+    /**
+     * Get file name with extension
+     *
+     * @return string
+     */
+    public function getFileName()
+    {
+        return $this->name.'.'.strtolower($this->format);
+    }
 }

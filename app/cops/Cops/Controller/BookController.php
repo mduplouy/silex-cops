@@ -69,7 +69,8 @@ class BookController implements ControllerProviderInterface
             $app['config']->getTemplatePrefix().'book.html',
             array(
                 'pageTitle' => $book->getTitle(),
-                'book' => $book
+                'book' => $book,
+                'allTags' => $app['model.tag']->getCollection()->getAllNames()
             )
         );
     }

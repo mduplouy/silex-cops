@@ -197,4 +197,15 @@ class Cover extends EntityAbstract
         }
         return $this->height;
     }
+
+    /**
+     * Reset properties on clone
+     */
+    public function __clone()
+    {
+        parent::__clone();
+        $this->coverFile     = null;
+        $this->thumbnailPath = null;
+        $this->thumbnailFile = null;
+    }
 }

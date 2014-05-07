@@ -34,7 +34,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
             $this->add($resource->setDataFromStatement($result));
         }
 
-        return $this->app['model.author']->getResource()->populateBookCollection($this);
+        return $this->getApp()->offsetGet('model.author')->getResource()->populateBookCollection($this);
     }
 
     /**
@@ -140,8 +140,10 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
         foreach ($resource->loadByTagId($tagId) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
-        $this->app['model.author']->getResource()->populateBookCollection($this);
-        $this->app['model.bookfile']->getResource()->populateBookCollection($this);
+
+        $app = $this->getApp();
+        $app->offsetGet('model.author')->getResource()->populateBookCollection($this);
+        $app->offsetGet('model.bookfile')->getResource()->populateBookCollection($this);
 
         return $this;
     }
@@ -170,7 +172,7 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
      */
     public function addBookFiles()
     {
-        return $this->app['model.bookfile']->populateBookCollection($this);
+        return $this->getApp()->offsetGet('model.bookfile')->populateBookCollection($this);
     }
 
 }

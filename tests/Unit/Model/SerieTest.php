@@ -84,6 +84,5 @@ class SerieTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($serie->getId() === null,   "Serie Id not null after cloning");
         $this->assertTrue($serie->getName() === null, "Serie pubdate not null after cloning");
         $this->assertTrue($serie->getSort() === null, "Serie pubdate not null after cloning");
-        $this->assertAttributeInternalType('null', '_books', $serie, 'Serie Books not null after cloning');
     }
 }

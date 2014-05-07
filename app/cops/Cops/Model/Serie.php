@@ -49,12 +49,6 @@ class Serie extends EntityAbstract
     private $book;
 
     /**
-     * Books collection
-     * @var \Cops\Model\Book\Collection
-     */
-    private $_books;
-
-    /**
      * Load serie
      *
      * @param int $serieId
@@ -134,10 +128,9 @@ class Serie extends EntityAbstract
      */
     public function __clone()
     {
+        parent::__clone();
         $this->id     = null;
         $this->name   = null;
         $this->sort   = null;
-        $this->_books = null;
-        parent::__clone();
     }
 }

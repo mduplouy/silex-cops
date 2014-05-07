@@ -155,8 +155,9 @@ class Author extends EntityAbstract
     public function __clone()
     {
         parent::__clone();
-        $this->id   = null;
-        $this->name = null;
-        $this->sort = null;
+        $this->id        = null;
+        $this->name      = null;
+        $this->sort      = null;
+        $this->bookCount = 0;
     }
 }
