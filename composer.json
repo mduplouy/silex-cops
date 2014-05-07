@@ -14,6 +14,18 @@
                     "classmap": ["EPub.php", "EPub.HtmlEntities.php", "EPub.NCX.php", "EPub.OPF.php", "EPubChapterSplitter.php", "lib.uuid.php", "Logger.php", "Zip.php"]
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "../web/assets/select2",
+                "version": "master",
+                 "source": {
+                    "url": "https://github.com/ivaynberg/select2",
+                    "type": "git",
+                    "reference": "master"
+                }
+            }
         }
     ],
     "require": {
@@ -27,7 +39,8 @@
         "symfony/yaml": "~2.3",
         "symfony/security": "~2.3",
         "grandt/phpepub": "@dev",
-        "lexpress/console-service-provider": "1.0.*@dev"
+        "lexpress/console-service-provider": "1.0.*@dev",
+        "../web/assets/select2": "@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
