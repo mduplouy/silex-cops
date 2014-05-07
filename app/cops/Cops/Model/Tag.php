@@ -48,6 +48,24 @@ class Tag extends EntityAbstract
     }
 
     /**
+     * Load tag by name
+     *
+     * @param string  $name
+     *
+     * @return Tag
+     */
+    public function loadByName($name)
+    {
+        $data = $this->getResource()->loadByName($name);
+
+        if (!empty($data)) {
+            $this->setData($data);
+        }
+
+        return $this;
+    }
+
+    /**
      * Get number of books associated to a tag
      *
      * @return int
@@ -78,6 +96,43 @@ class Tag extends EntityAbstract
         }
 
         return $collection->getByTagId($this->getId());
+    }
+
+    /**
+     * Delete all tags associated to given book id
+     *
+     * @param  int $bookId
+     *
+     * @return bool
+     */
+    public function deleteFromBook($bookId)
+    {
+        return (bool) $this->getResource()->deleteByBookId((int) $bookId);
+    }
+
+    /**
+     * Associate tag to given book ID
+     *
+     * @param  int    $bookId
+     * @param  string $name
+     *
+     * @return bool
+     */
+    public function associateToBook($bookId, $name = null)
+    {
+        if (is_null($name)) {
+            $name = $this->getName();
+        }
+
+        $resource = $this->getResource();
+
+        $resource->setEntity($this);
+
+        if (is_null($this->getId())) {
+            $this->setId($resource->insert($name));
+        }
+
+        return (bool) $resource->linkToBookId((int) $bookId);
     }
 
     /**

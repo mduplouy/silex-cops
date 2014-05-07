@@ -142,7 +142,7 @@ class IndexController implements \Silex\ControllerProviderInterface
             ->getCollection()
             ->setFirstResult(0)
             ->setMaxResults($app['config']->getValue('homepage_tags'))
-            ->getAll();
+            ->getAllWithBookCount();
         $this->nbTags = $this->tags->getResource()->getTotalRows();
     }
 }

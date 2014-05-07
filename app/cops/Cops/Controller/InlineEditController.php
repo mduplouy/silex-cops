@@ -11,6 +11,7 @@ namespace Cops\Controller;
 
 use Silex\ControllerProviderInterface;
 use Silex\Application;
+use Cops\Exception\BookException;
 
 /**
  * Inline edit controller class
@@ -18,6 +19,18 @@ use Silex\Application;
  */
 class InlineEditController implements ControllerProviderInterface
 {
+    /**
+     * Book field / controller method mapping
+     * @var array
+     */
+    private $fieldMethodMap = array(
+        'comment' => 'updateBookComment',
+        'pubdate' => 'updateBookPublicationDate',
+        'title'   => 'updateBookTitle',
+        'author'  => 'updateBookAuthor',
+        'tags'    => 'updateBookTags',
+    );
+
     /**
      * Connect method to dynamically add routes
      *
@@ -39,27 +52,35 @@ class InlineEditController implements ControllerProviderInterface
         return $controller;
     }
 
+    /**
+     * Main edit action, execute specific update action depending on sent value
+     *
+     * @param Application $app Application instance
+     * @param int         $id  Book id
+     *
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException
+     */
     public function editAction(Application $app, $id)
     {
+        try {
+            $app['model.book']->load($id);
+        } catch (BookException $e) {
+            return false;
+        }
+
         $field = $app['request']->get('name');
         $value = $app['request']->get('value');
 
-        switch ($field) {
-            case 'comment':
-                $output = $this->updateBookComment($app, $id, $value);
-                break;
-            case 'pubdate':
-                $output = $this->updateBookPublicationDate($app, $id, $value);
-                break;
-            case 'title':
-                $output = $this->updateBookTitle($app, $id, $value);
-                break;
-            case 'author':
-                $output = $this->updateBookAuthor($app, $id, $value);
-                break;
+        if (array_key_exists($field, $this->fieldMethodMap)) {
+            return call_user_func_array(
+                array($this, $this->fieldMethodMap[$field]),
+                array($app, $id, $value)
+            );
         }
 
-        return (bool) $output;
+        throw new \InvalidArgumentException(sprintf('Field %s cannot be edited', $field));
     }
 
     /**
@@ -87,7 +108,7 @@ class InlineEditController implements ControllerProviderInterface
      */
     protected function updateBookTitle(Application $app, $bookId, $title)
     {
-        return $app['model.book']->updateTitle($title, $bookId);
+        return (bool) $app['model.book']->updateTitle($title, $bookId);
     }
 
     /**
@@ -104,7 +125,7 @@ class InlineEditController implements ControllerProviderInterface
         // Translate format like in view to build DateTime object
         $dateFormat = $app['translator']->trans("m/d/Y");
         $dateTime = \DateTime::createFromFormat($dateFormat, $pubDate);
-        return $app['model.book']->updatePublicationDate($dateTime, $bookId);
+        return (bool) $app['model.book']->updatePublicationDate($dateTime, $bookId);
     }
 
     /**
@@ -118,6 +139,47 @@ class InlineEditController implements ControllerProviderInterface
      */
     protected function updateBookComment(Application $app, $bookId, $comment)
     {
-        return $app['model.book']->updateComment($comment, $bookId);
+        return (bool) $app['model.book']->updateComment($comment, $bookId);
+    }
+
+    /**
+     * Update book tags
+     *
+     * @param  Application $app
+     * @param  int         $bookId
+     * @param  array       $tagNames
+     *
+     * @return array
+     */
+    protected function updateBookTags(Application $app, $bookId, array $tagNames)
+    {
+        /**
+         * @var \Cops\Model\Tag
+         */
+        $tag = $app['model.tag'];
+
+        // Remove existing associated tags
+        $tag->deleteFromBook($bookId);
+
+        $output = array();
+        // Associate each to to book
+        foreach ($tagNames as $tagName) {
+
+            $newTag = clone($tag);
+            $newTag->setName($tagName)
+                ->loadByName($tagName)
+                ->associateToBook($bookId, $tagName);
+
+            $output[] = array(
+                'id'   => $newTag->getId(),
+                'name' => $newTag->getName(),
+                'url'  => $app['url_generator']->generate(
+                    'tag_book_list',
+                    array('id' => $newTag->getId())
+                )
+            );
+        }
+
+        return json_encode($output);
     }
 }

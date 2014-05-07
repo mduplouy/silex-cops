@@ -2,6 +2,7 @@
 
 {% set date_format = "m/d/Y"|trans %}
 {% set date_edit   = "MM/DD/YYYY" |trans %}
+{% set editableTags = '' %}
 
 {% block mainBody %}
 <div id="book_detail" class="mainContent">
@@ -44,12 +45,24 @@
         <p>{{"Publication date:"|trans}} <span class="bold editable" data-type="combodate" data-name="pubdate" data-format="{{ date_edit }}">{{ book.getPubdate()|date(date_format) }}</span></p>
 
         {% set tags = book.getTags() %}
+        <div id="js-tag-tpl">
+            <a href="#" style="display:none;"></a>
+        </div>
         {% if tags.count() > 0 %}
-        <p> {{ "Tag :"|transchoice(tags.count()) }} <span class="bold">
+        <p id="tag-list"> {{ "Tag :"|transchoice(tags.count()) }}
+            <span class="bold">
             {% for tag in tags %}
+                {% set editableTags = editableTags ~ ', ' ~ tag.getName() %}
                 <a href="{{ app.url_generator.generate('tag_book_list', {id: tag.getId()}) }}">{{ tag.getName() }}</a>{% if not(loop.last) %}, {% endif %}
             {% endfor %}
-        </span></p>
+            </span>
+
+            <a id="edit-tag" style="display:none;" data-name="tags" data-type="select2" href="javascript: void(0);" data-viewseparator=", ">
+                {% for tag in tags %}
+                    {{ tag.getName() }}{% if not(loop.last) %}, {% endif %}
+                {% endfor %}
+            </a>
+        </p>
         {% endif %}
 
         {% set serie = book.getSerie() %}
@@ -110,15 +123,53 @@
         jQuery.fn.editable.defaults.mode = 'inline';
 
         jQuery('document').ready(function() {
+
+            var myTags = [];
+            jQuery('#tag-list a').each(function() {
+                myTags.push(jQuery(this).text());
+            });
+
+            jQuery('#edit-tag').editable({
+                inputclass: 'input-large',
+                select2: {
+                    multiple: true,
+                    tags: [{% for allTag in allTags %}"{{ allTag.getName()|raw }}"{% if not(loop.last) %},{% endif %}{% endfor %}],
+                    minimumInputLength: 3,
+                    tokenSeparators: [","]
+                },
+                pk: {{ book.getId() }},
+                url: "{{ app.url_generator.generate('inline_edit_book', { id: book.getId() }) }}",
+                disabled: true,
+                success: function(response, newValue) {
+                    var newTags = new Array();
+                    jQuery.each(JSON.parse(response), function(idx, obj) {
+
+                        var myTag = jQuery('#js-tag-tpl').clone(true);
+                        myTag.find('a')
+                            .attr('href', obj.url)
+                            .text(obj.name)
+                            .show();
+
+                        newTags.push(myTag.html().trim());
+                    });
+
+                    jQuery('#tag-list > span.bold').html(newTags.join(', '));
+                }
+            });
+
             jQuery('.editable').editable({
                 pk: {{ book.getId() }},
                 url: "{{ app.url_generator.generate('inline_edit_book', { id: book.getId() }) }}",
                 disabled: true
             });
+
             jQuery('#toggle-edit').click(function () {
-                jQuery('.editable').editable('toggleDisabled');
+                jQuery('.editable, #edit-tag').editable('toggleDisabled');
+                jQuery('#tag-list > span').toggle();
+                jQuery('#edit-tag').toggle();
                 jQuery(this).children('span').toggle();
             })
+
         });
 
     </script>

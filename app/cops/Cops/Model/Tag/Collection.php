@@ -23,11 +23,26 @@ class Collection extends CollectionAbstract implements \IteratorAggregate, \Coun
      *
      * @return Collection
      */
-    public function getAll()
+    public function getAllWithBookCount()
     {
         $resource = $this->getResource();
 
-        foreach ($resource->loadAll() as $result) {
+        foreach ($resource->loadAllWithBookCount() as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+        return $this;
+    }
+
+    /**
+     * Load all tag names
+     *
+     * @return Collection
+     */
+    public function getAllNames()
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadAllNames() as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
         return $this;

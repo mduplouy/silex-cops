@@ -9,3 +9,6 @@ input.h1 {
 div#comments textarea.comments {
     width:800px;
 }
+div.editable-input ul.select2-choices {
+    padding-right:60px;
+}
