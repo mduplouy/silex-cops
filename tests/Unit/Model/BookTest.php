@@ -2,33 +2,34 @@
 
 namespace Cops\Tests\Model;
 
+use Silex\WebTestCase;
+
 /**
  * Book model test cases
  *
  * @require PHP 5.3
  */
-class BookTest extends \PHPUnit_Framework_TestCase
+class BookTest extends WebTestCase
 {
-
     private $emptyBook;
     private $book;
 
-    public function setUp()
+    public function createApplication()
     {
-        $this->app = \Cops\Model\Core::getApp();
+        return require __DIR__.'/../application.php';
     }
 
     private function getEmptyBook()
     {
         if (null === $this->emptyBook) {
-            $this->emptyBook = new \Cops\Model\Book($this->app);
+            $this->emptyBook = $this->app['model.book'];
         }
         return $this->emptyBook;
     }
 
     private function getRealBook()
     {
-        $book = new \Cops\Model\Book($this->app);
+        $book = $this->app['model.book'];
         $book->load(3);
         return $book;
     }
@@ -84,6 +85,30 @@ class BookTest extends \PHPUnit_Framework_TestCase
 
         // Revert back to original author
         $origBook->updateAuthor($origNames);
+    }
+
+    public function testUpdateTitle()
+    {
+        $book = $this->getRealBook();
+
+        $origTitle = $book->getTitle();
+
+        $this->assertTrue(
+            $book->updateTitle('dummy-title'),
+            'Book::updateTitle() failed'
+        );
+
+        $this->assertEquals(
+            $book->getTitle(),
+            'dummy-title',
+            'Book setTitle() non consistent after Book::updateTitle() call'
+        );
+
+        // Revert back original title
+        $this->assertTrue(
+            $book->updateTitle($origTitle),
+            'Book::updateTitle() failed'
+        );
     }
 
     /**

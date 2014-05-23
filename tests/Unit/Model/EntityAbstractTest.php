@@ -2,20 +2,27 @@
 
 namespace Cops\Tests\Model;
 
+use Cops\Model\Core;
+use Silex\WebTestCase;
+
 /**
- * Common model test cases
+ * EntityAbstract model test cases
  *
  * @require PHP 5.3
  */
-class CommonTest extends \PHPUnit_Framework_TestCase
+class EntityAbstractTest extends WebTestCase
 {
-
     private $book;
+
+    public function createApplication()
+    {
+        return require __DIR__.'/../application.php';
+    }
 
     private function getBook()
     {
         if (null == $this->book) {
-            $this->book = new \Cops\Model\Book(\Cops\Model\Core::getApp());
+            $this->book = $this->app['model.book'];
         }
         return $this->book;
     }
@@ -39,8 +46,7 @@ class CommonTest extends \PHPUnit_Framework_TestCase
         $model->setData(array('id' => 1));
         $this->assertEquals($model->getId(), 1);
 
-        $model = new \Cops\Model\Book(\Cops\Model\Core::getApp(), array('id' => 1));
+        $model = $this->app['model.book']->setData(array('id' => 1));
         $this->assertEquals($model->getId(), 1);
     }
-
 }

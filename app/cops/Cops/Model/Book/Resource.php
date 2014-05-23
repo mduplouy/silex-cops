@@ -374,6 +374,9 @@ class Resource extends ResourceAbstract
                 )
             );
             $con->commit();
+
+            $this->getEntity()->setTitle($title);
+
         } catch (\Exception $e) {
             $con->rollback();
         }

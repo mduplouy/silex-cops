@@ -14,7 +14,8 @@ use Silex\Application as BaseApplication;
 use Cops\Exception\Search\AdapterException;
 
 /**
- * Image processor factory
+ * Search factory
+ *
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
 class SearchFactory extends FactoryAbstract
@@ -40,7 +41,7 @@ class SearchFactory extends FactoryAbstract
         parent::__construct($app);
 
         $this->instanceTypeStorage = array(
-            self::TYPE_SQLITE      => self::TYPE_SQLITE,
+            self::TYPE_SQLITE => self::TYPE_SQLITE,
         );
     }
 
@@ -48,6 +49,8 @@ class SearchFactory extends FactoryAbstract
      * Instance getter
      *
      * @return \Cops\Model\Image\SearchInterface
+     *
+     * @throws \Cops\Exception\Search\AdapterException
      */
     public function getInstance($instance = self::TYPE_SQLITE)
     {

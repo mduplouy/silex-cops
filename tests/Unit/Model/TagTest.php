@@ -2,28 +2,29 @@
 
 namespace Cops\Tests\Model;
 
+use Cops\Model\Core;
+use Silex\WebTestCase;
+
 /**
  * Tag model test cases
  *
  * @require PHP 5.3
  */
-class TagTest extends \PHPUnit_Framework_TestCase
+class TagModelTest extends WebTestCase
 {
-    protected $app;
-
-    public function setUp()
+    public function createApplication()
     {
-        $this->app = \Cops\Model\Core::getApp();
+        return require __DIR__.'/../application.php';
     }
 
     public function testCountBookOk()
     {
-        $tag = new \Cops\Model\Tag($this->app);
-        $tag->setId(7);
+        $tag = $this->app['model.tag'];
+        $tag->load(7);
         $nbBook = $tag->getNumberOfBooks();
         $this->assertEquals(1, $nbBook);
 
-        $tag = new \Cops\Model\Tag($this->app);
+        $tag = $this->app['model.tag'];
         $nbBook = $tag->getNumberOfBooks();
         $this->assertEquals(0, $nbBook);
     }
@@ -40,7 +41,7 @@ class TagTest extends \PHPUnit_Framework_TestCase
          * @var Cops\Model\Tag
          */
         $tag = $this->app['model.tag'];
-        $this->assertTrue($tag->associateToBook($bookId, $tagName));
+        $this->assertTrue($tag->associateToBook($bookId, $tagName), 'Failed to associate tagName to bookId');
     }
 
     /**
@@ -63,7 +64,7 @@ class TagTest extends \PHPUnit_Framework_TestCase
         $tag = $this->app['model.tag'];
         $tag->setName('dummy-tag');
 
-        $this->assertTrue($tag->associateToBook(5));
+        $this->assertTrue($tag->associateToBook(5), 'Tag::AssociateToBook did not return boolean true');
     }
 
     /**
@@ -77,7 +78,7 @@ class TagTest extends \PHPUnit_Framework_TestCase
         $tag = $this->app['model.tag'];
         $tag->loadByName('dummy-tag');
 
-        $this->assertEquals($tag->getName(), 'dummy-tag');
+        $this->assertEquals($tag->getName(), 'dummy-tag', 'Unable to retrieve tag from name');
     }
 
     /**
@@ -89,12 +90,12 @@ class TagTest extends \PHPUnit_Framework_TestCase
          * @var Cops\Model\Tag
          */
         $tag = $this->app['model.tag'];
-        $this->assertTrue($tag->deleteFromBook(5));
+        $this->assertTrue($tag->deleteFromBook(5), 'Delete from book did not returned boolean true');
 
         $book = $this->app['model.book'];
         $book->load(5);
 
-        $this->assertEquals(0, $book->getTags()->count());
+        $this->assertEquals(0, $book->getTags()->count(), 'Delete from book failed');
     }
 
 }

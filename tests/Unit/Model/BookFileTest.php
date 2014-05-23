@@ -34,4 +34,16 @@ class BookFileTest extends WebTestCase
         $this->assertTrue($clone->getDirectory() === null, "BookFile directory not null after cloning");
     }
 
+    public function testPopulateBookCollection()
+    {
+        $bookFile = $this->app['model.bookfile'];
+
+        $collection = $this->app['model.book']->getCollection();
+
+        $this->assertInstanceOf(
+            '\Cops\Model\Book\Collection',
+            $bookFile->populateBookCollection($collection),
+            'BookFile::populateBookCollection() does not return Collection object'
+        );
+    }
 }

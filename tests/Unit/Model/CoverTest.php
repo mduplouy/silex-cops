@@ -2,29 +2,31 @@
 
 namespace Cops\Tests\Model;
 
-use org\bovigo\vfs\vfsStream;
-use Cops\Model\Core;
+use Silex\WebTestCase;
 
 /**
  * Cover model test cases
  *
  * @require PHP 5.3
  */
-class CoverTest extends \PHPUnit_Framework_TestCase
+class CoverTest extends WebTestCase
 {
-    protected $app;
+    public function createApplication()
+    {
+        return require __DIR__.'/../application.php';
+    }
 
     public function setUp()
     {
-        $this->app = \Cops\Model\Core::getApp();
+        parent::setUp();
         $this->oldConfigValue = $this->app['config']->getValue('data_dir');
         $this->app['config']->setValue('data_dir', 'tests/data');
-
         $this->targetPath = BASE_DIR.$this->app['config']->getValue('public_dir');
     }
 
     public function tearDown()
     {
+        parent::tearDown();
         $this->app['config']->setValue('data_dir', $this->oldConfigValue);
     }
 

@@ -2,21 +2,18 @@
 
 namespace Cops\Tests\Model;
 
-use Cops\Model\Core;
+use Silex\WebTestCase;
 
 /**
- * Config model test cases
+ * Config test cases
  *
  * @require PHP 5.3
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends WebTestCase
 {
-
-    public function testConstruct()
+    public function createApplication()
     {
-        $config = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini');
-
-        $this->assertAttributeInternalType('array', '_configValues', $config);
+        return require __DIR__.'/../application.php';
     }
 
     /**
@@ -24,10 +21,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetValue($value)
     {
-        $app = \Cops\Model\Core::getApp();
-        $returnType = $app['config']->setValue('last_added', $value);
+        $returnType = $this->app['config']->setValue('last_added', $value);
         $this->assertInstanceOf('Cops\Model\Config', $returnType);
-        $this->assertEquals($app['config']->getValue('last_added'), $value);
+        $this->assertEquals($this->app['config']->getValue('last_added'), $value);
     }
 
     public function valueProvider()
@@ -44,8 +40,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetValueKo()
     {
-        $app = \Cops\Model\Core::getApp();
-        $config = $app['config']->getValue('dummy_value');
+        $config = $this->app['config']->getValue('dummy_value');
     }
 
     /**
@@ -53,12 +48,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetTemplatePrefix($prefix, $expectedValue)
     {
-        $app = \Cops\Model\Core::getApp();
-
-        $returnType = $app['config']->setTemplatePrefix($prefix);
+        $returnType = $this->app['config']->setTemplatePrefix($prefix);
 
         $this->assertInstanceOf('Cops\Model\Config', $returnType);
-        $this->assertEquals($expectedValue, $app['config']->getTemplatePrefix());
+        $this->assertEquals($expectedValue, $this->app['config']->getTemplatePrefix());
     }
 
     public function templatePrefixProvider()

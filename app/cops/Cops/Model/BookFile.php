@@ -85,30 +85,6 @@ class BookFile extends EntityAbstract
     }
 
     /**
-     * Get book files by serie ID
-     *
-     * @param int $serieId
-     *
-     * @return \Cops\Model\BookFile\Collection
-     */
-    public function getCollectionBySerieId($serieId)
-    {
-        return $this->getResource()->loadBySerieId($serieId, $this);
-    }
-
-    /**
-     * Get book files by author ID
-     *
-     * @param int $authorId
-     *
-     * @return \Cops\Model\BookFile\Collection
-     */
-    public function getCollectionByAuthorId($authorId)
-    {
-        return $this->getResource()->loadByAuthorId($authorId, $this);
-    }
-
-    /**
      * Add book files to a book collection
      *
      * @param  \Cops\Model\Book\Collection $collection

@@ -63,12 +63,9 @@ class Author extends EntityAbstract
      */
     public function getSort()
     {
-        if ($this->sort === null && $this->name !== null)
-        {
-            $app = self::getApp();
+        if ($this->sort === null && $this->name !== null) {
             $this->sort = $this->app['model.calibre']->getAuthorSortName($this->name);
         }
-
         return $this->sort;
     }
 

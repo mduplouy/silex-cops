@@ -2,16 +2,23 @@
 
 namespace Cops\Tests\Model\Book;
 
+use Silex\WebTestCase;
+
 /**
  * Book collection test cases
  *
  * @require PHP 5.3
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends WebTestCase
 {
+    public function createApplication()
+    {
+        return require __DIR__.'/../../application.php';
+    }
+
     public function testCollection()
     {
-        $book = new \Cops\Model\Book(\Cops\Model\Core::getApp());
+        $book = $this->app['model.book'];
 
         $collection = $book->getCollection();
 

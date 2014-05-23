@@ -134,16 +134,6 @@ abstract class EntityAbstract implements EntityInterface
     }
 
     /**
-     * Config short hand getter
-     *
-     * @return \Cops\Model\Config
-     */
-    public function getConfig()
-    {
-        return $this->app['config'];
-    }
-
-    /**
      * Get the data key from a "flat" property name
      *
      * @param string $prop

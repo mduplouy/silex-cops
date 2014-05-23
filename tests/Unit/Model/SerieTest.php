@@ -2,27 +2,27 @@
 
 namespace Cops\Tests\Model;
 
+use Silex\WebTestCase;
+
 /**
  * Serie model test cases
  *
  * @require PHP 5.3
  */
-class SerieTest extends \PHPUnit_Framework_TestCase
+class SerieTest extends WebTestCase
 {
 
     protected $serie;
 
-    protected $app;
-
-    public function setUp()
+    public function createApplication()
     {
-        $this->app = \Cops\Model\Core::getApp();
+        return require __DIR__.'/../application.php';
     }
 
     private function getEmptySerie()
     {
         if (null === $this->serie) {
-            $this->serie = new \Cops\Model\Serie($this->app);
+            $this->serie = $this->app['model.serie'];
         }
         return $this->serie;
     }

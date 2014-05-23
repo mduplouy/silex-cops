@@ -278,14 +278,4 @@ class Core
         });
         return $this;
     }
-
-    /**
-     * App getter
-     *
-     * @return \Silex\Application
-     */
-    public static function getApp()
-    {
-        return self::$app;
-    }
 }

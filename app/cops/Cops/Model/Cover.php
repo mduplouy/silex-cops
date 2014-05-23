@@ -148,9 +148,7 @@ class Cover extends EntityAbstract
             mkdir(dirname($this->thumbnailFile), 0777, true);
         }
 
-        $app = self::getApp();
-
-        $app['factory.image']
+        $this->app['factory.image']
             ->getInstance($this->app['config']->getValue('image_processor'))
             ->setWidth($this->getWidth())
             ->setHeight($this->getHeight())
@@ -196,16 +194,5 @@ class Cover extends EntityAbstract
             return (int) $this->app['config']->getValue('cover_height');
         }
         return $this->height;
-    }
-
-    /**
-     * Reset properties on clone
-     */
-    public function __clone()
-    {
-        parent::__clone();
-        $this->coverFile     = null;
-        $this->thumbnailPath = null;
-        $this->thumbnailFile = null;
     }
 }
