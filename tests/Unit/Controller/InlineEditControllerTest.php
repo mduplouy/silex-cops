@@ -142,4 +142,50 @@ class InlineEditControllerTest extends WebTestCase
         );
        $this->assertTrue($this->client->getResponse()->isOk());
     }
+
+    public function testEditActionWrongNameException()
+    {
+        $session = $this->app['session'];
+
+        $firewall = 'default';
+        $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_ADMIN'));
+        $session->set('_security_'.$firewall, serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $this->client->getCookieJar()->set($cookie);
+
+        $this->client->request(
+            'POST',
+            '/fr/inline-edit/3',
+            array(
+                'name'  => 'dummy-field',
+                'pk'    => 3,
+                'value' => 'dummy-value',
+            )
+        );
+
+        $this->assertFalse($this->client->getResponse()->isOk());
+    }
+
+
+    public function testEditActionWrongBookReturnsEmptyResponse()
+    {
+        $session = $this->app['session'];
+
+        $firewall = 'default';
+        $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_ADMIN'));
+        $session->set('_security_'.$firewall, serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $this->client->getCookieJar()->set($cookie);
+
+        $this->client->request(
+            'POST',
+            '/fr/inline-edit/123456',
+            array()
+        );
+        $this->assertEquals($this->client->getResponse()->getContent(), '');
+    }
 }
