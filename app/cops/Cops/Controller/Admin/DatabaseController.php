@@ -51,7 +51,7 @@ class DatabaseController implements ControllerProviderInterface
         $checkTriggers = $app['model.calibre']->loadExistingTriggers();
 
         $foundTriggers = array();
-        foreach($checkTriggers as $trigger) {
+        foreach ($checkTriggers as $trigger) {
             $foundTriggers[$trigger['name']] = true;
         }
 
@@ -73,8 +73,7 @@ class DatabaseController implements ControllerProviderInterface
         foreach($app['request']->get('triggers') as $trigger => $value) {
             if (empty($value)) {
                 $app['model.calibre']->getResource()->dropTrigger($trigger);
-            }
-            else {
+            } else {
                 $app['model.calibre']->getResource()->restoreTrigger($trigger);
             }
         }
