@@ -1,6 +1,7 @@
 Activate / Deactivate triggers from database: Activer / Désactiver les triggers de la base de données
-Admin home: Accueil administration
 Back to website: Retour au site
 Calibre database uses trigger to fill some book informations as title sort, this page is meant to provide you the ability to enable or disable them: La base de données de Calibre utilise des triggers ("déclencheurs") pour remplir certaines informations comme le tri par titre, cette page vous permet de les activer / désactiver
 Database: Base de données
 Opds feeds: Flux OPDS
+Trigger on book insert: Déclencheur de création de livre
+Trigger on book update: Déclencheur de mise à jour

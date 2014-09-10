@@ -1,4 +1,5 @@
-    <div id="header" class="ui-corner-all ui-state-active">
-        <div style="float:right;"><a class="small" href="{{ app.url_generator.generate('homepage') }}" title="{{ "Back to website"|trans([], "admin") }}">{{ "Back to website"|trans([], "admin") }}</a></div>
-        <a href="{{ app.url_generator.generate('admin_index') }}" title="{{ "Admin home"|trans([], "admin") }}">SilexCOPS - {{ "Administration"|trans([], "admin") }}</a><br />
-    </div>
+{% extends "header.html" %}
+
+{% block switchLink %}
+    - <a href="{{ app.url_generator.generate('homepage') }}" class="small" title="{{ "Back to website"|trans([], "admin") }}">{{ "Back to website"|trans([], "admin") }}</a>
+{% endblock %}

@@ -2,6 +2,13 @@
     <div id="header" class="ui-corner-all ui-state-active">
         <a href="{{ app.url_generator.generate('homepage') }}">SilexCOPS</a>
 
+        {% if is_granted('ROLE_ADMIN') %}
+            {% block switchLink %}
+            - <a class="small" href="{{ app.url_generator.generate('admin_index') }}" title="{{ "Admin home"|trans }}">{{ "Admin home"|trans }}</a>
+            {% endblock %}
+        {% endif %}
+
+        {% block quicksearch %}
         <div style="float:right;">
             <form method="post" action="{{ app.url_generator.generate('search') }}">
                 <input type="text" id="js-search-form-input" name="keywords" value="" class="greyed" size="60" />
@@ -29,4 +36,5 @@
                 });
             </script>
         </div>
+        {% endblock %}
     </div>
