@@ -12,16 +12,19 @@
                 <div style="text-align:right">
                     {{ trigger.desc|trans([], "admin") }}
                     <input type="radio" name="triggers[{{ triggerName }}]" id="{{ triggerName }}-enabled" value="1" {% if (foundTriggers[triggerName] is defined) %}checked="checked"{% endif %}/>
-                    <label for="{{ triggerName }}-enabled">Enabled</label>
+                    <label for="{{ triggerName }}-enabled">{{ "Enabled"|trans([], "admin") }}</label>
 
                     <input type="radio" name="triggers[{{ triggerName }}]" id="{{ triggerName }}-disabled" value="0" {% if not(foundTriggers[triggerName] is defined) %}checked="checked"{% endif %}/>
-                    <label for="{{ triggerName }}-disabled">Disabled</label>
+                    <label for="{{ triggerName }}-disabled">{{ "Disabled"|trans([], "admin") }}</label>
                </div>
             {% endfor %}
         </div>
         <div class="clear"></div>
 
-        <input id="submit" type="submit" value="Save" class="ui-widget ui-button" />
+        <input id="submit" type="submit" value="{{ "Save"|trans([], "admin") }}" class="ui-widget ui-button" />
+
+        <div style="height:4em;"></div>
+
     </form>
 
     <script type="text/javascript">
