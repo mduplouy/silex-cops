@@ -73,8 +73,7 @@ abstract class EntityAbstract implements EntityInterface
                 }
 
             case 'set' :
-                $this->$propKey = $args[0];
-                return $this;
+                return $this->setData(array($propKey => $args[0]));
         }
         throw new \Exception('Invalid method name : '.get_called_class().'::'.$method);
     }
@@ -90,7 +89,10 @@ abstract class EntityAbstract implements EntityInterface
     {
         foreach ($dataArray as $prop => $value) {
             $prop = $this->getPropertyName($prop);
-            if (property_exists($this, $prop)) {
+            $setterName =  'set'.ucfirst($prop);
+            if (method_exists($this, $setterName)) {
+                $this->{$setterName}($value);
+            } elseif (property_exists($this, $prop)) {
                 $this->$prop = $value;
             }
         }

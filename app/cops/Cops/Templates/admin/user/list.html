@@ -1,0 +1,53 @@
+{% extends "admin/layout.html" %}
+{% trans_default_domain "admin" %}
+
+{% block beforeHeadEnd %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ app.request.basepath }}/assets/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="{{ app.request.basepath }}/assets/jquery.tablesorter.pager.js"></script>
+{% endblock %}
+
+{% block mainBody %}
+
+    <div class="f-right">
+        <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding:0.2em;" href="{{ path("admin_user_add") }}">
+            {{ "Add new user"|trans }}
+        </a>
+    </div>
+
+    <h2>{{ "User list"|trans }}</h2>
+
+    <table id="js-user-list" class="tablesorter">
+        <thead>
+            <th style="width:280px;">{{ "Username"|trans }}</th>
+            <th style="width:180px;">{{ "Role"|trans }}</th>
+            <th style="width:150px;"></th>
+        </thead>
+        <tbody>
+    {% for user in users %}
+            <tr>
+                <td>{{ user.getUsername() }}</td>
+                <td>{% for role in user.getRoles %}{{ role|trans }}{% endfor %}</td>
+                <td>
+                    <a href="#" class="inline-block ui-icon ui-corner-all ui-icon-pencil ui-state-active" title="{{ "Edit"|trans }}">{{ "Edit"|trans }}</a>
+                    <a href="#" class="inline-block ui-icon ui-corner-all ui-icon-trash ui-state-active" title="{{ "Delete"|trans }}">{{ "Delete"|trans }}</a>
+                </td>
+            </tr>
+    {% else %}
+            <tr>
+                <td colspan="3">{{ "No users registered yet"|trans }}</td>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="pager"></div>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery("#js-user-list")
+                .tablesorter({widthFixed: true});
+        });
+    </script>
+
+{% endblock %}

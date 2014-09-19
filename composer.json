@@ -38,6 +38,8 @@
         "symfony/config": "~2.3",
         "symfony/yaml": "~2.3",
         "symfony/security": "~2.3",
+        "symfony/form": "~2.3",
+        "symfony/validator": "~2.3",
         "grandt/phpepub": "@dev",
         "lexpress/console-service-provider": "1.0.*@dev",
         "../web/assets/select2": "@dev"
@@ -49,5 +51,15 @@
     },
     "autoload": {
         "psr-0": {"Cops": "app/cops"}
+    },
+    "scripts": {
+        "post-update-cmd": "MyVendor\\MyClass::postUpdate",
+        "post-package-install": [
+            "MyVendor\\MyClass::postPackageInstall"
+        ],
+        "post-install-cmd": [
+            "MyVendor\\MyClass::warmCache",
+            "phpunit -c app/"
+        ]
     }
 }

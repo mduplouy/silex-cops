@@ -13,12 +13,17 @@ $app['session.test'] = true;
 
 // Register special database for tests
 $app->register(new \Silex\Provider\DoctrineServiceProvider(), array(
-    'db.options' => array(
-        'driver'        => 'pdo_sqlite',
-        'path'          => DATABASE,
-        'driverOptions' => \Cops\Model\Calibre::getDBInternalFunctions(),
+    'dbs.options' => array(
+        'calibre' => array(
+            'driver'        => 'pdo_sqlite',
+            'path'          => DATABASE,
+            'driverOptions' => \Cops\Model\Calibre::getDBInternalFunctions(),
+        ),
+        'silexCops' => array(
+            'driver' => 'pdo_sqlite',
+            'path'   => BASE_DIR . $app['config']->getValue('internal_db'),
+        ),
     ),
-
 ));
 
 $users =  array(

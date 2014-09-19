@@ -1,5 +1,5 @@
 {% extends "header.html" %}
 
 {% block switchLink %}
-    - <a href="{{ app.url_generator.generate('homepage') }}" class="small" title="{{ "Back to website"|trans([], "admin") }}">{{ "Back to website"|trans([], "admin") }}</a>
+    - <a href="{{ path('homepage') }}" class="small" title="{{ "Back to website"|trans([], "admin") }}">{{ "Back to website"|trans([], "admin") }}</a>
 {% endblock %}
