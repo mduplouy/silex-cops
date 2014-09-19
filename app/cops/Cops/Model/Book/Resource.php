@@ -115,7 +115,7 @@ class Resource extends ResourceAbstract
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
-            ->setParameter('serie_id', $serieId)
+            ->setParameter('serie_id', $serieId, PDO::PARAM_INT)
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -137,7 +137,7 @@ class Resource extends ResourceAbstract
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
-            ->setParameter('author_id', $authorId)
+            ->setParameter('author_id', $authorId, PDO::PARAM_INT)
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -478,12 +478,12 @@ class Resource extends ResourceAbstract
 
         if ($this->_hasExcludedBook) {
             $qb->andWhere('main.id != :exclude_book')
-                ->setParameter('exclude_book', $this->_excludeBookId);
+                ->setParameter('exclude_book', $this->_excludeBookId, PDO::PARAM_INT);
             $this->_hasExcludedBook = false;
             $this->_excludeBookId = null;
         }
         if ($this->_hasExcludedSerie) {
-            $qb->andWhere('serie.id IS NULL OR serie.id != :exclude_serie')
+            $qb->andWhere('serie.id IS NULL OR serie.id != :exclude_serie', PDO::PARAM_INT)
                 ->setParameter('exclude_serie', $this->_excludeSerieId);
             $this->_hasExcludedSerie = false;
             $this->_excludeSerieId = null;
