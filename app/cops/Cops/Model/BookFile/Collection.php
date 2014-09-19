@@ -19,7 +19,7 @@ use Cops\Exception\BookFile\FormatUnavailableException;
  * BookFile collection model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
+class Collection extends CollectionAbstract
 {
     /**
      * Format mapping

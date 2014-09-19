@@ -17,7 +17,7 @@ use Cops\Model\CollectionAbstract;
  * Book collection model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
+class Collection extends CollectionAbstract
 {
     /**
      * Get last added books

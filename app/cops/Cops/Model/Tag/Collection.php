@@ -16,7 +16,7 @@ use Cops\Model\CollectionAbstract;
  * Tag collection model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
+class Collection extends CollectionAbstract
 {
     /**
      * Load all tags along with book count

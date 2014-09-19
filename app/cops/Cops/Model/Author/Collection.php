@@ -17,7 +17,7 @@ use Cops\Model\Core;
  * Author collection model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Collection extends CollectionAbstract implements \IteratorAggregate, \Countable
+class Collection extends CollectionAbstract
 {
     /**
      * Get collection based on first letter
