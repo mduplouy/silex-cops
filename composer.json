@@ -53,13 +53,6 @@
         "psr-0": {"Cops": "app/cops"}
     },
     "scripts": {
-        "post-update-cmd": "MyVendor\\MyClass::postUpdate",
-        "post-package-install": [
-            "MyVendor\\MyClass::postPackageInstall"
-        ],
-        "post-install-cmd": [
-            "MyVendor\\MyClass::warmCache",
-            "phpunit -c app/"
-        ]
+        "post-update-cmd": "Cops\\Scripts\\ComposerUpdate::update"
     }
 }
