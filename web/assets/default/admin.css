@@ -5,16 +5,62 @@
 
 div#left-menu {
     float:left;
-    width:180px;
+    width:210px;
 }
 
 div#main-body {
-    margin-left:188px;
+    margin-left:228px;
 }
+
+/**
+ * Generic form container
+ */
+div.form {
+    padding:12px;
+    border:1px #CCC solid;
+    margin-bottom:8px;
+}
+    div.form label {
+        display:inline-block;
+        width:25%;
+        margin-bottom:8px;
+        text-align:right;
+    }
+    div.form div.input-radio-list {
+        margin-left:25%;
+    }
+    div.form div.input-radio-list label {
+        text-align:left;
+    }
+
+    div#submit-button {
+        text-align:center;
+        margin-right:25%;
+    }
+
+    div.form div.error {
+        display:inline-block;
+    }
+        div.form div.error ul {
+            display:inline-block;
+            margin:0;
+            padding:0 0 0 22px;
+            font-style:italic;
+            color:red;
+        }
+
+        div.form div.error ul li {
+            display:inline-block;
+            margin-top:4px;
+        }
 
 /**
  * jQuery UI adjustments
  */
+.ui-button {
+    padding:0.2em 0.4em;
+}
+
 label.ui-button.ui-state-default {
     background:#CCC;
     color:#FFF;
@@ -22,4 +68,47 @@ label.ui-button.ui-state-default {
 label.ui-button.ui-state-active {
     background:lime;
     color:#666;
+}
+
+/**
+ * Table sorter
+ */
+/* tables */
+table.tablesorter {
+    font-family:arial;
+    background-color: #CDCDCD;
+    margin:10px 0pt 15px;
+    font-size: 8pt;
+    width: 100%;
+    text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+    background-color: #e6EEEE;
+    border: 1px solid #FFF;
+    font-size: 8pt;
+    padding: 4px;
+}
+table.tablesorter thead tr .header {
+    background-image: url(css/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+}
+table.tablesorter tbody td {
+    color: #3D3D3D;
+    padding: 4px;
+    background-color: #FFF;
+    vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+    background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+    background-image: url(css/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+    background-image: url(css/desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+    background-color: #8dbdd8;
 }

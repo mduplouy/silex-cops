@@ -1,27 +1,28 @@
 {% extends "admin/layout.html" %}
+{% trans_default_domain "admin" %}
 
 {% block mainBody %}
-    <h2>{{ "Activate / Deactivate triggers from database"|trans([], "admin") }}</h2>
+    <h2>{{ "Activate / Deactivate triggers from database"|trans }}</h2>
 
-    <p>{{ "Calibre database uses trigger to fill some book informations as title sort, this page is meant to provide you the ability to enable or disable them"|trans([], "admin") }}</p>
+    <p>{{ "Calibre database uses trigger to fill some book informations as title sort, this page is meant to provide you the ability to enable or disable them"|trans }}</p>
 
     <form method="post" action="">
 
         <div id="triggers" style="float:left">
             {% for triggerName, trigger in triggers %}
                 <div style="text-align:right">
-                    {{ trigger.desc|trans([], "admin") }}
+                    {{ trigger.desc|trans }}
                     <input type="radio" name="triggers[{{ triggerName }}]" id="{{ triggerName }}-enabled" value="1" {% if (foundTriggers[triggerName] is defined) %}checked="checked"{% endif %}/>
-                    <label for="{{ triggerName }}-enabled">{{ "Enabled"|trans([], "admin") }}</label>
+                    <label for="{{ triggerName }}-enabled">{{ "Enabled"|trans }}</label>
 
                     <input type="radio" name="triggers[{{ triggerName }}]" id="{{ triggerName }}-disabled" value="0" {% if not(foundTriggers[triggerName] is defined) %}checked="checked"{% endif %}/>
-                    <label for="{{ triggerName }}-disabled">{{ "Disabled"|trans([], "admin") }}</label>
+                    <label for="{{ triggerName }}-disabled">{{ "Disabled"|trans }}</label>
                </div>
             {% endfor %}
         </div>
         <div class="clear"></div>
 
-        <input id="submit" type="submit" value="{{ "Save"|trans([], "admin") }}" class="ui-widget ui-button" />
+        <input id="submit" type="submit" value="{{ "Save"|trans }}" class="ui-widget ui-button" />
 
         <div style="height:4em;"></div>
 

@@ -83,7 +83,7 @@ abstract class ResourceAbstract
      *
      * @return Doctrine\DBAL\Connection
      */
-    public function getConnection()
+    protected function getConnection()
     {
         return $this->app['db'];
     }

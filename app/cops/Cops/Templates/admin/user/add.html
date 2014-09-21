@@ -1,0 +1,59 @@
+{% extends "admin/layout.html" %}
+{% trans_default_domain "admin" %}
+
+{% block mainBody %}
+
+    {% block pageTitle %}<h2>{{ "Register new user account"|trans }}</h2>{% endblock %}
+
+    {% include 'admin/user/rights.html' %}
+
+    <div class="form" id="user-form">
+    {{ form_start(form) }}
+
+        {{ form_errors(form) }}
+
+        <div>
+            {{ form_label(form.username) }}
+            {{ form_widget(form.username) }}
+            <div class="error">
+                {{ form_errors(form.username) }}
+            </div>
+        </div>
+
+        <div>
+            {{ form_label(form.password.password) }}
+            {{ form_widget(form.password.password) }}
+            <div class="error">
+                {{ form_errors(form.password.password) }}
+            </div>
+        </div>
+
+        <div>
+            {{ form_label(form.password.password_confirm) }}
+            {{ form_widget(form.password.password_confirm) }}
+            <div class="error">
+                {{ form_errors(form.password.password_confirm) }}
+            </div>
+        </div>
+
+        {{ form_label(form.role) }}
+        <div class="error radio-list">
+            {{ form_errors(form.role) }}
+        </div>
+
+        <div class="input-radio-list">
+            {% for role in form.role %}
+                {{ form_widget(role) }} {{ form_label(role) }}<br />
+            {% endfor %}
+        </div>
+
+        <div id="submit-button">
+            <a href="{{ path("admin_user_index") }}" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">{{ "Cancel"|trans }}</a>
+
+            {{ form_widget(form.save, {"attr": {"class": "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"} } ) }}
+        </div>
+
+    {{ form_end(form) }}
+    </div>
+
+{% endblock %}

@@ -16,6 +16,7 @@ body {
 .nodecoration { text-decoration: none; }
 .clear { clear:both; }
 .f-left { float:left; }
+.f-right { float:right; }
 .center { text-align: center; }
 
 h3 a { font-size: 0.98em; text-decoration:none; color:#666; }

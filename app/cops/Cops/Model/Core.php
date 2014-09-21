@@ -10,20 +10,18 @@
 namespace Cops\Model;
 
 use Cops\Model\CoreInterface;
-
 use Cops\Provider\MobileDetectServiceProvider;
 use Cops\Provider\UrlGeneratorServiceProvider;
 use Cops\Provider\ImageProcessorServiceProvider;
 use Cops\Provider\TranslationServiceProvider;
-
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
-
+use Silex\Provider\FormServiceProvider;
+use Silex\Provider\ValidatorServiceProvider;
 use Cops\EventListener\LocaleListener;
 use Silex\Application as BaseApplication;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -80,6 +78,7 @@ class Core
         $adminPath = $app['config']->getAdminPath();
         $app->mount($adminPath,              new \Cops\Controller\AdminController($app));
         $app->mount($adminPath.'/database/', new \Cops\Controller\Admin\DatabaseController($app));
+        $app->mount($adminPath.'/users/',    new \Cops\Controller\Admin\UserController($app));
         $app->mount($adminPath.'/feed/',     new \Cops\Controller\Admin\OpdsFeedController($app));
 
         // Set default storage dir
@@ -114,6 +113,8 @@ class Core
                     'cache' => realpath(BASE_DIR . 'cache'),
                 )
             ))
+            ->register(new FormServiceProvider())
+            ->register(new ValidatorServiceProvider())
             // Translator
             ->register(new TranslationServiceProvider(array(
                 'default' => $app['config']->getValue('default_lang')
@@ -127,7 +128,7 @@ class Core
         $app['translator'] = $app->share($app->extend('translator', function($translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
 
-            foreach (array('messages', 'admin') as $domain) {
+            foreach (array('messages', 'admin', 'validators') as $domain) {
                 $translator->addResource('yaml', BASE_DIR.'locales/fr/'.$domain.'.yml', 'fr', $domain);
                 $translator->addResource('yaml', BASE_DIR.'locales/en/'.$domain.'.yml', 'en', $domain);
             }
@@ -137,10 +138,16 @@ class Core
 
        // Register doctrine DBAL service
         $app->register(new DoctrineServiceProvider(), array(
-            'db.options' => array(
-                'driver'        => 'pdo_sqlite',
-                'path'          => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
-                'driverOptions' => Calibre::getDBInternalFunctions(),
+            'dbs.options' => array(
+                'calibre' => array(
+                    'driver'        => 'pdo_sqlite',
+                    'path'          => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
+                    'driverOptions' => Calibre::getDBInternalFunctions(),
+                ),
+                'silexCops' => array(
+                    'driver' => 'pdo_sqlite',
+                    'path'   => BASE_DIR . $app['config']->getValue('internal_db'),
+                ),
             ),
         ));
 
@@ -152,9 +159,9 @@ class Core
         });
 
         $this
+            ->registerModels($app)              // Register models in DIC
             ->registerSecurityService($app)     // Security setup
-            ->registerConsoleCommands($app)     // Console commands
-            ->registerModels($app);             // Register models in DIC
+            ->registerConsoleCommands($app);     // Console commands
     }
 
     /**
@@ -166,8 +173,9 @@ class Core
      */
     private function registerSecurityService(Application $app)
     {
-        // password encoding reminder
-        // echo $app['security.encoder.digest']->encodePassword('password', '');
+        $app['provider.user'] = function($app) {
+            return new \Cops\Model\User\Provider($app['model.user']);
+        };
 
         // Register security provider
         $app->register(new SecurityServiceProvider(), array(
@@ -175,20 +183,12 @@ class Core
                 'admin' => array(
                     'pattern' => '^/admin',
                     'http' => true,
-                    'users' => array(
-                        // admin : password
-                        'admin' => array('ROLE_ADMIN', 'BFEQkknI/c+Nd7BaG7AaiyTfUFby/pkMHy3UsYqKqDcmvHoPRX/ame9TnVuOV2GrBH0JK9g4koW+CgTYI9mK+w==')
-                    )
+                    'users' => $app['provider.user'],
                 ),
                 'default' => array(
                     'pattern' => '^.*$',
                     'http' => true,
-                    'users' => array(
-                        // user : password
-                        'user' => array('ROLE_EDIT', 'BFEQkknI/c+Nd7BaG7AaiyTfUFby/pkMHy3UsYqKqDcmvHoPRX/ame9TnVuOV2GrBH0JK9g4koW+CgTYI9mK+w=='),
-                        // admin : password
-                        'admin' => array('ROLE_ADMIN', 'BFEQkknI/c+Nd7BaG7AaiyTfUFby/pkMHy3UsYqKqDcmvHoPRX/ame9TnVuOV2GrBH0JK9g4koW+CgTYI9mK+w==')
-                    )
+                    'users' => $app['provider.user'],
                 ),
             )
         ));
@@ -218,11 +218,14 @@ class Core
         // Register console
         $app->register(new \LExpress\Silex\ConsoleServiceProvider(), array(
             'console.name'    => 'SilexCops',
-            'console.version' => '0.0.5',
+            'console.version' => '1.0',
         ));
 
         $app['command.cache-warmup'] = $app->share(function ($app) {
             return new \Cops\Command\GenerateThumbnails('generate:thumbnails', $app);
+        });
+        $app['command.init-database'] = $app->share(function ($app) {
+            return new \Cops\Command\InitDatabase('generate:thumbnails', $app);
         });
 
         return $this;
@@ -258,10 +261,17 @@ class Core
         $app['model.bookfile'] = function($app) {
             return new \Cops\Model\BookFile($app);
         };
+        $app['model.user'] = function($app) {
+            return new \Cops\Model\User($app);
+        };
          // Calibre internal routines (author_sort etc..)
         $app['model.calibre'] = $app->share(function ($app) {
             return new \Cops\Model\Calibre($app);
         });
+        // Form class
+        $app['form.type.user'] = function($app) {
+            return new \Cops\Form\Type\UserType;
+        };
 
         // Factories
         $app['factory.bookfile'] = $app->share(function($app) {
