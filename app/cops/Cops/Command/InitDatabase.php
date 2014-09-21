@@ -64,7 +64,7 @@ class InitDatabase extends Command
 
         $output->writeln('Creating new database schema');
 
-        $this->app['model.user']->initTable();
+        $this->app['model.user']->getResource()->initTable();
 
         $output->writeln(
             sprintf(

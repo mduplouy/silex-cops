@@ -13,6 +13,7 @@ use Cops\Model\ResourceAbstract;
 use PDO;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Table;
+use Cops\Exception\User\UserNotFoundException;
 
 /**
  * User resource model
@@ -38,6 +39,8 @@ class Resource extends ResourceAbstract
 
     /**
      * Insert user data
+     *
+     * @return int
      */
     public function insert()
     {
@@ -58,6 +61,80 @@ class Resource extends ResourceAbstract
             )
         );
         return $con->lastInsertId();
+    }
+
+    /**
+     * Update user data
+     *
+     * @return int
+     */
+    public function update()
+    {
+        $user = $this->getEntity();
+
+        $qb = $this->getQueryBuilder()
+            ->update(self::TABLE_NAME)
+            ->set('username', ':username')
+            ->set('roles', ':roles')
+            ->where('id = :id')
+            ->setParameter('username', $user->getUsername(), PDO::PARAM_STR)
+            ->setParameter('roles',    $user->getRole(),     PDO::PARAM_STR)
+            ->setParameter('id',       $user->getId(),       PDO::PARAM_INT);
+
+        if ($password = $user->getPassword()) {
+            $qb->set('password', ':password')
+                ->setParameter(
+                    'password',
+                    $this->app['security.encoder.digest']->encodePassword($password, ''),
+                    PDO::PARAM_STR
+                );
+        }
+
+        return $qb->execute();
+    }
+
+    /**
+     * Delete user data
+     *
+     * @return bool
+     */
+    public function delete()
+    {
+        return (bool) $this->getConnection()
+            ->delete(self::TABLE_NAME,
+            array(
+                'id' => $this->getEntity()->getId(),
+            ),
+            array(
+                PDO::PARAM_INT,
+            )
+        );
+    }
+
+    /**
+     * Load by id
+     *
+     * @param  int $userId
+     *
+     * @return array
+     *
+     * @throws UserNotFoundException
+     */
+    public function load($userId)
+    {
+        $res = $this->getQueryBuilder()
+            ->select('main.*')
+            ->from(self::TABLE_NAME, 'main')
+            ->where('id = :id')
+            ->setParameter('id', $userId, PDO::PARAM_INT)
+            ->execute()
+            ->fetch(PDO::FETCH_ASSOC);
+
+        if (empty($res)) {
+            throw new UserNotFoundException(sprintf('User %s not found', $userId));
+        }
+
+        return $res;
     }
 
     /**
@@ -128,6 +205,20 @@ class Resource extends ResourceAbstract
     {
         $schema = $this->getConnection()->getSchemaManager();
 
+        $table = $this->getTableStructure();
+
+        $schema->createTable($table);
+
+        return $this;
+    }
+
+    /**
+     * Get default table structure
+     *
+     * @return Table
+     */
+    private function getTableStructure()
+    {
         $table = new Table(self::TABLE_NAME);
         $table->addColumn('id',       'integer', array('autoincrement' => true, 'unsigned' => true));
         $table->addColumn('username', 'string',  array('length' => 32));
@@ -136,9 +227,7 @@ class Resource extends ResourceAbstract
         $table->setPrimaryKey(array('id'));
         $table->addUniqueIndex(array('username'), 'uniq_username');
 
-        $schema->createTable($table);
-
-        return $this;
+        return $table;
     }
 
     /**

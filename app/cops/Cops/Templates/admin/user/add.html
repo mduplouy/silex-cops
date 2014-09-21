@@ -3,29 +3,55 @@
 
 {% block mainBody %}
 
-    <h2>{{ "Register new user account"|trans }}</h2>
+    {% block pageTitle %}<h2>{{ "Register new user account"|trans }}</h2>{% endblock %}
 
-    {{ "Rights management:"|trans }}
-    <ul>
-        <li>{{ user.getUserRole|trans}} : {{ "Can visit the website"|trans }}</li>
-        <li>{{ user.getEditRole|trans}} : {{ "Can modify the books"|trans }}</li>
-        <li>{{ user.getAdminRole|trans}} : {{ "Can access the back office"|trans }}</li>
-    </ul>
+    {% include 'admin/user/rights.html' %}
 
-    {{ form_errors(form) }}
-
-    <div class="form user-form">
+    <div class="form" id="user-form">
     {{ form_start(form) }}
 
-        {{ form_row(form.username) }}
+        {{ form_errors(form) }}
 
-        {{ form_row(form.password.password) }}
+        <div>
+            {{ form_label(form.username) }}
+            {{ form_widget(form.username) }}
+            <div class="error">
+                {{ form_errors(form.username) }}
+            </div>
+        </div>
 
-        {{ form_row(form.password.password_confirm) }}
+        <div>
+            {{ form_label(form.password.password) }}
+            {{ form_widget(form.password.password) }}
+            <div class="error">
+                {{ form_errors(form.password.password) }}
+            </div>
+        </div>
 
-        {{ form_row(form.role) }}
+        <div>
+            {{ form_label(form.password.password_confirm) }}
+            {{ form_widget(form.password.password_confirm) }}
+            <div class="error">
+                {{ form_errors(form.password.password_confirm) }}
+            </div>
+        </div>
 
-        {{ form_widget(form.save) }}
+        {{ form_label(form.role) }}
+        <div class="error radio-list">
+            {{ form_errors(form.role) }}
+        </div>
+
+        <div class="input-radio-list">
+            {% for role in form.role %}
+                {{ form_widget(role) }} {{ form_label(role) }}<br />
+            {% endfor %}
+        </div>
+
+        <div id="submit-button">
+            <a href="{{ path("admin_user_index") }}" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">{{ "Cancel"|trans }}</a>
+
+            {{ form_widget(form.save, {"attr": {"class": "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"} } ) }}
+        </div>
 
     {{ form_end(form) }}
     </div>

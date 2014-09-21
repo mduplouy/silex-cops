@@ -128,7 +128,7 @@ class Core
         $app['translator'] = $app->share($app->extend('translator', function($translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
 
-            foreach (array('messages', 'admin') as $domain) {
+            foreach (array('messages', 'admin', 'validators') as $domain) {
                 $translator->addResource('yaml', BASE_DIR.'locales/fr/'.$domain.'.yml', 'fr', $domain);
                 $translator->addResource('yaml', BASE_DIR.'locales/en/'.$domain.'.yml', 'en', $domain);
             }

@@ -123,6 +123,20 @@ class User extends EntityAbstract implements UserInterface, \Serializable
     }
 
     /**
+     * Set role
+     *
+     * @param string $role
+     *
+     * @return $this
+     */
+    public function setRole($role)
+    {
+        $this->roles = array($role);
+        return $this;
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     public function getRoles()
@@ -179,16 +193,6 @@ class User extends EntityAbstract implements UserInterface, \Serializable
     }
 
     /**
-     * Init internal table
-     *
-     * @return void
-     */
-    public function initTable()
-    {
-        return $this->resource->initTable();
-    }
-
-    /**
      * Get admin role
      *
      * @return string
@@ -233,6 +237,22 @@ class User extends EntityAbstract implements UserInterface, \Serializable
     }
 
     /**
+     * Load single user
+     *
+     * @param  int $userId
+     *
+     * @return User
+     */
+    public function load($userId)
+    {
+        $result = $this->getResource()->load($userId);
+
+        $this->setData($result);
+
+        return $this;
+    }
+
+    /**
      * Load by username
      *
      * @param  string $username
@@ -269,6 +289,16 @@ class User extends EntityAbstract implements UserInterface, \Serializable
         }
 
         return $userId;
+    }
+
+    /**
+     * Delete user
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $this->getResource()->delete();
     }
 
     /**

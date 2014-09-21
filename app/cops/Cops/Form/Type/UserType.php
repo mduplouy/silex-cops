@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints;
 
 /**
  * User create / edit formType
+ * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
 class UserType extends AbstractType
 {
@@ -43,7 +44,7 @@ class UserType extends AbstractType
                     'type'            => 'password',
                     'first_name'      => 'password',
                     'second_name'     => 'password_confirm',
-                    'invalid_message' => 'Passwords are not the same',
+                    'invalid_message' => 'Passwords do not match',
                     'first_options'   => array('label' => 'Password'),
                     'second_options'  => array('label' => 'Password confirmation'),
                 )
@@ -54,8 +55,14 @@ class UserType extends AbstractType
                     'expanded' => true,
                 )
             )
-            ->add('save', 'submit')
-            ->getForm();
+            ->add('save', 'submit');
+
+        // Password change is not required for existing users
+        if ($options['data']->getId()) {
+            $builder->get('password')->setRequired(false);
+        }
+
+        $builder->getForm();
     }
 
     /**

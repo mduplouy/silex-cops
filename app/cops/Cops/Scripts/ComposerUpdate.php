@@ -12,6 +12,7 @@ namespace Cops\Scripts;
 use Composer\Script\Event;
 use Silex\Application;
 use Symfony\Component\Console\Input\ArrayInput;
+
 /**
  * Composer update script
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
@@ -43,6 +44,8 @@ class ComposerUpdate
      */
     private static function databaseUpdate()
     {
-        self::$app['model.user']->initTable();
+        if (!file_exists(BASE_DIR . self::$app['config']->getValue('internal_db'))) {
+            self::$app['model.user']->getResource()->initTable();
+        }
     }
 }

@@ -53,6 +53,7 @@
         "psr-0": {"Cops": "app/cops"}
     },
     "scripts": {
+        "post-install-cmd": "Cops\\Scripts\\ComposerUpdate::update",
         "post-update-cmd": "Cops\\Scripts\\ComposerUpdate::update"
     }
 }
