@@ -23,6 +23,13 @@ Anyone with basic Silex / SF2 knowledge is able to modify, enhance and play with
 
 Anyone comfortable with Twig can create a theme or modify the default one.
 
+## Available features
+
+* Facet browsing (by author / serie / tag)
+* Full serie / author / tag archive download (zip / targz)
+* Edit your books information while browsing
+* Basic user & permissions management
+
 ## Requirements
 
 First you will need a Calibre database
@@ -76,25 +83,31 @@ Do not forget to deny access to all files but the index.php and assets !
 
 By default the public part is protected by simple HTTP auth.
 
-There are 2 builtin logins :
- - user / password : This user has inline edit privileges but cannot accesss the admin part
+There is one builtin account
  - admin / password : This user has admin privileges and can connect to the backoffice (url is (fr|en)/admin/)
 
-These logins can be changed in app/cops/Cops/Model/Core.php file (there is a code snippet to encrypt the desired password)
+Note : You can change default password in config file and reinit database (see below)
 
-## Misc.
+Logins can be changed in the back office under "User management" section
+
+## Available commands
 
 If you don't want your visitor to wait for thumbnails to be generated, do it using cli by running following command :
 
     $ php app/console.php generate:thumbnails
 
+Reset user account with the following command :
+
+    $ php app/console.php database:init
+
 ## License
 
 License for this is **Do What The Fuck You Want To Public License**, (http://www.wtfpl.net/about/) guess you don't need more explanations ;)
 
-## Troubleshooting
+## Troubleshooting & feature request
 
 Open an issue on github ;)
+
 
 ## Badges
 
