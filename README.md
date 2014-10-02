@@ -90,6 +90,10 @@ Note : You can change default password in config file and reinit database (see b
 
 Logins can be changed in the back office under "User management" section
 
+### 6. Configure your web server
+
+Your web server must point to the web/ directory of the app (DocumentRoot directive with Apache HTTP server)
+
 ## Available commands
 
 If you don't want your visitor to wait for thumbnails to be generated, do it using cli by running following command :
