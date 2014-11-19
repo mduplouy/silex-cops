@@ -21,7 +21,7 @@ class Config
      *
      * @var array
      */
-    private $_configValues = array(
+    private $configValues = array(
         // common
         'last_added'              => 10,
 
@@ -31,7 +31,7 @@ class Config
 
         // path
         'public_dir'              => 'web',
-        'data_dir'                => 'data',
+        'data_dir'                => array('data'),
 
         // email
         'sender'                  => 'php',
@@ -71,10 +71,19 @@ class Config
      */
     public function __construct($configFilePath)
     {
-         $confValues = parse_ini_file($configFilePath, false);
-         if (is_array($confValues)) {
-            $this->_configValues = array_merge($this->_configValues, $confValues);
-         }
+        $confValues = parse_ini_file($configFilePath, false);
+        if (is_array($confValues)) {
+            $this->configValues = array_merge($this->configValues, $confValues);
+        }
+
+        if (!is_array($this->configValues['data_dir'])) {
+            $this->configValues['data_dir'] = array('default' => $this->configValues['data_dir']);
+        }
+
+        $this->configValues['default_database_key'] = key($this->configValues['data_dir']);
+        $this->configValues['default_database_path'] = current($this->configValues['data_dir']);
+
+        $this->configValues['current_database_path'] = $this->configValues['default_database_path'];
     }
 
     /**
@@ -87,8 +96,8 @@ class Config
     public function getValue($confKey)
     {
         $confValue = null;
-        if (isset($this->_configValues[$confKey])) {
-            $confValue = $this->_configValues[$confKey];
+        if (isset($this->configValues[$confKey])) {
+            $confValue = $this->configValues[$confKey];
         } else {
             throw new \InvalidArgumentException(sprintf("Config value %s doest not exist", $confKey));
         }
@@ -106,7 +115,7 @@ class Config
      */
     public function setValue($confKey, $confValue)
     {
-        $this->_configValues[$confKey] = $confValue;
+        $this->configValues[$confKey] = $confValue;
         return $this;
     }
 

@@ -2,53 +2,39 @@
 
 namespace Cops\Tests\Controller;
 
-use Silex\WebTestCase;
+use Cops\Tests\AbstractTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class AdminControllerTest extends WebTestCase
+class AdminControllerTest extends AbstractTestCase
 {
-    protected $client;
-
-    public function createApplication()
-    {
-        return require __DIR__.'/../application.php';
-    }
-
     public function testNoAccessForNonAdmin()
     {
-        $this->client = $this->createClient();
-        $this->client->request('GET', '/fr/admin/');
-        $this->assertFalse($this->client->getResponse()->isOk());
+        // Try with default USER role
+        $client = $this->createClient();
+        $client->request('GET', '/admin/fr/');
+        $this->assertFalse($client->getResponse()->isOk());
 
-        $session = $this->app['session'];
-
-        $firewall = 'default';
-        $token = new UsernamePasswordToken('admin', 'test', $firewall, array('ROLE_USER'));
-        $session->set('_security_'.$firewall, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
-
-        $this->client->request('GET', '/fr/admin');
-        $this->assertFalse($this->client->getResponse()->isOk());
+        // Empty cookies and check there is no access
+        $client->getCookieJar()->clear();
+        $client->request('GET', '/admin/fr/');
+        $this->assertFalse($client->getResponse()->isOk());
     }
 
     public function testAccessForAdmin()
     {
-        $this->client = $this->createClient();
-        $session = $this->app['session'];
+        $client = $this->createClient();
 
-        $firewall = 'default';
+        // Override current USER role with admin one
+        $session = $this->app['session'];
+        $firewall = 'admin';
         $token = new UsernamePasswordToken('admin', 'test', $firewall, array('ROLE_ADMIN'));
         $session->set('_security_'.$firewall, serialize($token));
         $session->save();
-
         $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
+        $client->getCookieJar()->set($cookie);
 
-        $this->client->request('GET', '/fr/admin');
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $client->request('GET', '/admin/fr/');
+        $this->assertTrue($client->getResponse()->isOk());
     }
 }

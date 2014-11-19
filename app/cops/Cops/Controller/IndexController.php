@@ -66,7 +66,8 @@ class IndexController implements \Silex\ControllerProviderInterface
     public function connect(\Silex\Application $app)
     {
         $controller = $app['controllers_factory'];
-        $controller->match("/", get_called_class().'::indexAction')
+        $controller->match("/", __CLASS__.'::indexAction')
+            ->value('database', 'default')
             ->bind('homepage');
         return $controller;
     }

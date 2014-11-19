@@ -16,6 +16,7 @@
 namespace Cops\Model;
 
 use Symfony\Component\Translation\Translator as BaseTranslator;
+use Silex\Application;
 use Symfony\Component\Translation\MessageSelector;
 
 /**

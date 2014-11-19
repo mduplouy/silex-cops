@@ -14,12 +14,12 @@ class CoreTest extends WebTestCase
 {
     public function createApplication()
     {
-        $app = new \Cops\Model\Application();
+        $app = new \Silex\Application();
 
         // Define core model, no closure to ensure loading
         // Load configuration & set service providers
         $app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini', $app);
-        $app['core']   =  new \Cops\Model\Core($app);
+        $app['core']   = new \Cops\Model\Core($app);
         $app['debug']  = true;
 
         // Register special database for tests

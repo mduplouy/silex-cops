@@ -42,13 +42,17 @@ class UrlGenerator extends \Symfony\Component\Routing\Generator\UrlGenerator
      */
     protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = array())
     {
+        // @codeCoverageIgnoreStart
+        // Always inject database parameter if empty
+        $defaults['database'] = $this->app['config']->getValue('current_database_key');
+
         $url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
 
-        // @codeCoverageIgnoreStart
         // Check for mod_rewrite config then prepend script name to url
-        if ($this->app['config']->getValue('use_rewrite') !== true && php_sapi_name() != 'cli') {
+        if ($this->app['config']->getValue('use_rewrite') !== true && PHP_SAPI != 'cli') {
             $url = $this->addScriptNameToUrl($url);
         }
+
         // @codeCoverageIgnoreEnd
         return $url;
     }

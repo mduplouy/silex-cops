@@ -96,7 +96,7 @@ class Cover extends EntityAbstract
 
         if ($book->hasCover()) {
             $this->coverFile = sprintf($this->storageDir.'%s'.DS.'%s'.DS.'cover.jpg',
-                $this->app['config']->getValue('data_dir'),
+                $this->app['config']->getValue('current_database_path'),
                 $this->bookPath
             );
         }
@@ -120,7 +120,8 @@ class Cover extends EntityAbstract
         $this->setSize($width, $height);
 
         $this->thumbnailPath = sprintf(
-            DS.'assets'.DS.'books'.DS.'%d'.DS.'%dx%d'.DS.'%d.jpg',
+            DS.'assets'.DS.'books'.DS.'%s'.DS.'%d'.DS.'%dx%d'.DS.'%d.jpg',
+            $this->app['config']->getValue('current_database_key'),
             substr($this->bookId, -1),
             $this->getWidth(),
             $this->getHeight(),

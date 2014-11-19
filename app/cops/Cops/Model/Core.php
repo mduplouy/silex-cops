@@ -21,7 +21,7 @@ use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Cops\EventListener\LocaleListener;
-use Silex\Application as BaseApplication;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -41,50 +41,103 @@ class Core
 
     /**
      * App instance
-     * @var \Silex\Application
+     * @var Application
      */
     private static $app;
 
     /**
      * Constructor
      *
-     * @param \Silex\Application $app
+     * @param Application $app
      */
-    public function __construct(BaseApplication $app)
+    public function __construct(Application $app)
     {
         $this->registerServices($app);
 
         $app->get('/', function () use ($app) {
             // redirect to /default_lang/
             $redirect = $app['url_generator']->generate('homepage', array(
-                '_locale' => $app['config']->getValue('default_lang')
+                '_locale'  => $app['config']->getValue('default_lang'),
             ));
             return $app->redirect($redirect, 301);
         });
 
-        // Set the mount points for the controllers
-        $app->mount('/',                     new \Cops\Controller\IndexController($app));
-        $app->mount('/book/',                new \Cops\Controller\BookController($app));
-        $app->mount('/serie/',               new \Cops\Controller\SerieController($app));
-        $app->mount('/author/',              new \Cops\Controller\AuthorController($app));
-        $app->mount('/tag/',                 new \Cops\Controller\TagController($app));
-        $app->mount('/search/',              new \Cops\Controller\SearchController($app));
+        // Set the callback to change database on the fly
+        $app->before(function(Request $request) use($app) {
+            try {
+                if (! $dbKey = $request->get('database')) {
+                    $dbKey = $app['config']->getValue('default_database_key');
+                }
 
-        $app->mount('/inline-edit/',         new \Cops\Controller\InlineEditController($app));
+                $configuredDatabases = $app['config']->getValue('data_dir');
+                if (!empty($dbKey) && !array_key_exists($dbKey, $configuredDatabases)) {
+                    throw new \InvalidArgumentException('Database does not exist');
+                }
 
+                $app['db'] = $app->share($app->extend('db', function($db, $app) use($dbKey) {
+                    return $app['dbs'][$dbKey];
+                }));
+
+                $app['config']->setValue('current_database_key', $dbKey);
+                $app['config']->setValue('current_database_path', $configuredDatabases[$dbKey]);
+
+            } catch (\InvalidArgumentException $e) {
+                $app->abort(404, 'Inexistant database');
+            }
+        });
+
+        // Not used yet, but prefix is not needed here
         $app->mount('/login/',               new \Cops\Controller\LoginController($app));
-        $app->mount('/opds/',                new \Cops\Controller\OpdsController($app));
 
+        // Admin related controllers
         $adminPath = $app['config']->getAdminPath();
-        $app->mount($adminPath,              new \Cops\Controller\AdminController($app));
-        $app->mount($adminPath.'/database/', new \Cops\Controller\Admin\DatabaseController($app));
-        $app->mount($adminPath.'/users/',    new \Cops\Controller\Admin\UserController($app));
-        $app->mount($adminPath.'/feed/',     new \Cops\Controller\Admin\OpdsFeedController($app));
+        // Keep these up to avoid side effects on admin panel
+        $app->mount($adminPath.'/{_locale}',           new \Cops\Controller\AdminController($app));
+        $app->mount($adminPath.'/{_locale}/database/', new \Cops\Controller\Admin\DatabaseController($app));
+        $app->mount($adminPath.'/{_locale}/users/',    new \Cops\Controller\Admin\UserController($app));
+        $app->mount($adminPath.'/{_locale}/feed/',     new \Cops\Controller\Admin\OpdsFeedController($app));
 
-        // Set default storage dir
-        if (!isset($app['book_storage_dir'])) {
-            $app['book_storage_dir'] = BASE_DIR.$app['config']->getValue('data_dir');
-        }
+        $app['book_storage_dir'] = function () use ($app) {
+            return BASE_DIR.$app['config']->getValue('current_database_path');
+        };
+
+        // Set the mount points for the controllers with database prefix
+        $app->mount('{database}/{_locale}/',            new \Cops\Controller\IndexController($app));
+
+        $app->mount(
+            '{database}/{_locale}/book/',
+            new \Cops\Controller\BookController($app)
+        );
+
+        $app->mount(
+            '{database}/{_locale}/serie/',
+            new \Cops\Controller\SerieController($app)
+        );
+
+        $app->mount(
+            '{database}/{_locale}/author/',
+            new \Cops\Controller\AuthorController($app)
+        );
+
+        $app->mount(
+            '{database}/{_locale}/tag/',
+            new \Cops\Controller\TagController($app)
+        );
+
+        $app->mount(
+            '{database}/{_locale}/search/',
+            new \Cops\Controller\SearchController($app)
+        );
+
+        $app->mount(
+            '{database}/{_locale}/inline-edit/',
+            new \Cops\Controller\InlineEditController($app)
+        );
+
+        $app->mount(
+            '{database}/{_locale}/opds/',
+            new \Cops\Controller\OpdsController($app)
+        );
 
         $app['core'] = $this;
 
@@ -136,32 +189,50 @@ class Core
             return $translator;
         }));
 
-       // Register doctrine DBAL service
-        $app->register(new DoctrineServiceProvider(), array(
-            'dbs.options' => array(
-                'calibre' => array(
-                    'driver'        => 'pdo_sqlite',
-                    'path'          => BASE_DIR . $app['config']->getValue('data_dir') . '/metadata.db',
-                    'driverOptions' => Calibre::getDBInternalFunctions(),
-                ),
-                'silexCops' => array(
-                    'driver' => 'pdo_sqlite',
-                    'path'   => BASE_DIR . $app['config']->getValue('internal_db'),
-                ),
-            ),
-        ));
-
         // Remove any file marked as "to be deleted"
         $app->finish(function (Request $request, Response $response) use ($app) {
-            if (isset($app['delete_file']) && php_sapi_name() != 'cli') {
+            if (isset($app['delete_file']) && PHP_SAPI != 'cli') {
                 unlink($app['delete_file']);
             }
         });
 
         $this
+            ->registerDatabaseService($app)     // Load databases
             ->registerModels($app)              // Register models in DIC
             ->registerSecurityService($app)     // Security setup
-            ->registerConsoleCommands($app);     // Console commands
+            ->registerConsoleCommands($app);    // Console commands
+    }
+
+    /**
+     * Register database service and try to load any defined database
+     *
+     * @param  Application $app
+     *
+     * @return $this
+     */
+    private function registerDatabaseService(Application $app)
+    {
+        $options = array();
+        foreach ($app['config']->getValue('data_dir') as $key => $path) {
+            $options[$key] = array(
+                'driver' => 'pdo_sqlite',
+                'path' => BASE_DIR . $path . '/metadata.db',
+                'driverOptions' => Calibre::getDBInternalFunctions(),
+            );
+        }
+
+        // Always add silexcops for internal storage
+        $options['silexCops'] = array(
+            'driver' => 'pdo_sqlite',
+            'path' => BASE_DIR . $app['config']->getValue('internal_db'),
+        );
+
+        // Register doctrine DBAL service
+        $app->register(new DoctrineServiceProvider(), array(
+            'dbs.options' => $options
+        ));
+
+        return $this;
     }
 
     /**
@@ -198,10 +269,12 @@ class Core
             'ROLE_EDIT'  => array('ROLE_USER'),
         );
 
-        $app['security.access_rules'] = array(
-             array('^/../admin',        'ROLE_ADMIN'),
-             array('^/../inline-edit/', 'ROLE_EDIT')
-        );
+        $accessRules = array();
+        foreach($app['config']->getValue('data_dir') as $urlPrefix => $dataPath) {
+            $accessRules[] = array('^/../'.$urlPrefix.'/admin',       'ROLE_ADMIN');
+            $accessRules[] = array('^/../'.$urlPrefix.'/inline-edit', 'ROLE_EDIT');
+        }
+        $app['security.access_rules'] = $accessRules;
 
         return $this;
     }

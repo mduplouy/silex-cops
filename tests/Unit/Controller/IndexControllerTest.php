@@ -2,23 +2,20 @@
 
 namespace Cops\Tests\Controller;
 
-use Silex\WebTestCase;
+use Cops\Tests\AbstractTestCase;
 
-class IndexControllerTest extends WebTestCase
+class IndexControllerTest extends AbstractTestCase
 {
-    public function createApplication()
-    {
-        return require __DIR__.'/../application.php';
-    }
-
     public function testHomepageResponseCode()
     {
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/fr/');
-
+        $client->request('GET', '/');
         $this->assertTrue($client->getResponse()->isOk());
 
-        $crawler = $client->request('GET', '/');
+        $client->request('GET', '/default/fr/');
+        $this->assertTrue($client->getResponse()->isOk());
+
+        $client->request('GET', '/test/fr/');
         $this->assertTrue($client->getResponse()->isOk());
     }
 

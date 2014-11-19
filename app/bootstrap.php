@@ -13,7 +13,7 @@ define('DS', DIRECTORY_SEPARATOR);
 
 require_once BASE_DIR.'/vendor/autoload.php';
 
-$app = new \Cops\Model\Application();
+$app = new \Silex\Application();
 
 // Load & set configuration
 $app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini');

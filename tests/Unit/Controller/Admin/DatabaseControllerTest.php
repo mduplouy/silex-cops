@@ -6,7 +6,7 @@ use Silex\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class InlineEditControllerTest extends WebTestCase
+class DatabaseControllerTest extends WebTestCase
 {
     public function createApplication()
     {
@@ -21,7 +21,7 @@ class InlineEditControllerTest extends WebTestCase
 
     public function testNoAccessForNonAdmin()
     {
-        $this->client->request('GET', '/fr/admin/database/triggers');
+        $this->client->request('GET', '/admin/fr/database/triggers');
         $this->assertFalse($this->client->getResponse()->isOk());
 
         $session = $this->app['session'];
@@ -34,7 +34,7 @@ class InlineEditControllerTest extends WebTestCase
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
 
-        $this->client->request('GET', '/fr/admin/database/triggers');
+        $this->client->request('GET', '/admin/fr/database/triggers');
         $this->assertFalse($this->client->getResponse()->isOk());
     }
 
@@ -42,7 +42,7 @@ class InlineEditControllerTest extends WebTestCase
     {
         $session = $this->app['session'];
 
-        $firewall = 'default';
+        $firewall = 'admin';
         $token = new UsernamePasswordToken('admin', 'test', $firewall, array('ROLE_ADMIN'));
         $session->set('_security_'.$firewall, serialize($token));
         $session->save();
@@ -50,13 +50,13 @@ class InlineEditControllerTest extends WebTestCase
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
 
-        $this->client->request('GET', '/fr/admin/database/triggers');
+        $this->client->request('GET', '/admin/fr/database/triggers');
         $this->assertTrue($this->client->getResponse()->isOk());
 
         // Remove DB triggers
         $this->client->request(
             'POST',
-            '/fr/admin/database/triggers',
+            '/admin/fr/database/triggers',
             array(
                 'triggers' => array(
                     'books_insert_trg' => 0,
@@ -69,7 +69,7 @@ class InlineEditControllerTest extends WebTestCase
         // Restore DB triggers
         $this->client->request(
             'POST',
-            '/fr/admin/database/triggers',
+            '/admin/fr/database/triggers',
             array(
                 'triggers' => array(
                     'books_insert_trg' => 1,

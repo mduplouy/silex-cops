@@ -2,22 +2,17 @@
 
 namespace Cops\Tests\Controller;
 
-use Silex\WebTestCase;
+use Cops\Tests\AbstractTestCase;
 
-class SearchControllerTest extends WebTestCase
+class SearchControllerTest extends AbstractTestCase
 {
-    public function createApplication()
-    {
-        return require __DIR__.'/../application.php';
-    }
-
-    public function testHomepageResponseCode()
+    public function testSearchResponseCode()
     {
         $client = $this->createClient();
-        $crawler = $client->request('POST', '/fr/search/', array('keywords' => 'author'));
+        $client->request('POST', '/default/fr/search/', array('keywords' => 'author'));
         $this->assertTrue($client->getResponse()->isOk());
 
-        $crawler = $client->request('GET', '/fr/search/author/results');
+        $client->request('GET', '/test/fr/search/author/results');
         $this->assertTrue($client->getResponse()->isOk());
     }
 
