@@ -15,7 +15,7 @@ class SerieControllerTest extends AbstractTestCase
 
         $client->followRedirects(true);
         $client->request('GET', '/default/fr/serie/12313');
-        $this->assertTrue($client->getResponse()->isRedirect());
+        $this->assertTrue($client->getResponse()->isOk());
 
         $crawler = $client->request('GET', '/test/fr/serie/list/A');
         $this->assertTrue($client->getResponse()->isOk());
@@ -47,7 +47,7 @@ class SerieControllerTest extends AbstractTestCase
 
         // Redirect to homepage
         $client->request('GET', '/test/fr/serie/13113112/download/zip');
-        $this->assertTrue($client->getResponse()->isRedirect());
+        $this->assertTrue($client->getResponse()->isOk());
 
         // Redirect to homepage
         $client->request('GET', '/default/fr/serie/1/download/dummy');
