@@ -25,7 +25,7 @@ abstract class AdapterAbstract extends BaseBookFile
      */
     public function getFilePath()
     {
-        return $this->app['book_storage_dir'] . DS
+        return $this->app['config']->getDatabasePath() . DS
             . $this->directory . DS
             . $this->name . '.'
             . strtolower($this->format);

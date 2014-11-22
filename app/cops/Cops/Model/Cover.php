@@ -95,8 +95,8 @@ class Cover extends EntityAbstract
         $this->bookId     = $book->getId();
 
         if ($book->hasCover()) {
-            $this->coverFile = sprintf($this->storageDir.'%s'.DS.'%s'.DS.'cover.jpg',
-                $this->app['config']->getValue('current_database_path'),
+            $this->coverFile = sprintf('%s'.DS.'%s'.DS.'cover.jpg',
+                $this->app['config']->getDatabasePath(),
                 $this->bookPath
             );
         }

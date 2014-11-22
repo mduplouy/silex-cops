@@ -32,6 +32,7 @@ class Config
         // path
         'public_dir'              => 'web',
         'data_dir'                => array('data'),
+        'internal_db'             => 'data/silexCops',
 
         // email
         'sender'                  => 'php',
@@ -92,16 +93,75 @@ class Config
      * @param string $confKey
      *
      * @return mixed
+     *
+     * @throws \InvalidArgumentException
      */
     public function getValue($confKey)
     {
-        $confValue = null;
-        if (isset($this->configValues[$confKey])) {
-            $confValue = $this->configValues[$confKey];
-        } else {
+        if (!array_key_exists($confKey, $this->configValues)) {
             throw new \InvalidArgumentException(sprintf("Config value %s doest not exist", $confKey));
         }
-        return $confValue;
+
+        return $this->configValues[$confKey];
+    }
+
+    /**
+     * Get database path
+     *
+     * @param  string $dbKey Database key
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    public function getDatabasePath($dbKey = null)
+    {
+        if (null === $dbKey) {
+            $dbKey = $this->configValues['default_database_key'];
+        }
+
+        $path = $this->preprendBaseDir($this->configValues['data_dir'][$dbKey]);
+
+        if (!is_dir($path)) {
+            throw new \RuntimeException(sprintf('Database path %s does not exists', $path));
+        }
+
+        return $path;
+    }
+
+    /**
+     * Get internal database path
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    public function getInternalDatabasePath()
+    {
+        $path = $this->preprendBaseDir($this->configValues['internal_db']);
+
+        if (!file_exists($path)) {
+            throw new \RuntimeException(sprintf('Internal database file %s does not exists', $path));
+        }
+
+        return $path;
+    }
+
+    /**
+     * Prepend base dir to data path if needed
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function preprendBaseDir($path)
+    {
+        // Check if path is relative or absolute
+        if (strpos($path, DS) !== 0) {
+            $path = BASE_DIR . $path;
+        }
+
+        return $path;
     }
 
     /**

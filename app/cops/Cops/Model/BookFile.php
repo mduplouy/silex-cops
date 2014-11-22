@@ -79,7 +79,7 @@ class BookFile extends EntityAbstract
         $resourceClassName = sprintf('%s\\Resource', __CLASS__);
         $this->resource = new $resourceClassName($app, $this);
 
-        $this->storageDir = $app['book_storage_dir'];
+        $this->storageDir = $app['config']->getDatabasePath();
 
         return parent::__construct($app, $dataArray);
     }

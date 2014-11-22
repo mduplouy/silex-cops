@@ -62,30 +62,6 @@ class Core
             return $app->redirect($redirect, 301);
         });
 
-        // Set the callback to change database on the fly
-        $app->before(function(Request $request) use($app) {
-            try {
-                if (! $dbKey = $request->get('database')) {
-                    $dbKey = $app['config']->getValue('default_database_key');
-                }
-
-                $configuredDatabases = $app['config']->getValue('data_dir');
-                if (!empty($dbKey) && !array_key_exists($dbKey, $configuredDatabases)) {
-                    throw new \InvalidArgumentException('Database does not exist');
-                }
-
-                $app['db'] = $app->share($app->extend('db', function($db, $app) use($dbKey) {
-                    return $app['dbs'][$dbKey];
-                }));
-
-                $app['config']->setValue('current_database_key', $dbKey);
-                $app['config']->setValue('current_database_path', $configuredDatabases[$dbKey]);
-
-            } catch (\InvalidArgumentException $e) {
-                $app->abort(404, 'Inexistant database');
-            }
-        });
-
         // Not used yet, but prefix is not needed here
         $app->mount('/login/',               new \Cops\Controller\LoginController($app));
 
@@ -96,10 +72,6 @@ class Core
         $app->mount($adminPath.'/{_locale}/database/', new \Cops\Controller\Admin\DatabaseController($app));
         $app->mount($adminPath.'/{_locale}/users/',    new \Cops\Controller\Admin\UserController($app));
         $app->mount($adminPath.'/{_locale}/feed/',     new \Cops\Controller\Admin\OpdsFeedController($app));
-
-        $app['book_storage_dir'] = function () use ($app) {
-            return BASE_DIR.$app['config']->getValue('current_database_path');
-        };
 
         // Set the mount points for the controllers with database prefix
         $app->mount('{database}/{_locale}/',            new \Cops\Controller\IndexController($app));
@@ -214,9 +186,10 @@ class Core
     {
         $options = array();
         foreach ($app['config']->getValue('data_dir') as $key => $path) {
+
             $options[$key] = array(
                 'driver' => 'pdo_sqlite',
-                'path' => BASE_DIR . $path . '/metadata.db',
+                'path' =>  $app['config']->getDatabasePath($key) . '/metadata.db',
                 'driverOptions' => Calibre::getDBInternalFunctions(),
             );
         }
@@ -224,13 +197,37 @@ class Core
         // Always add silexcops for internal storage
         $options['silexCops'] = array(
             'driver' => 'pdo_sqlite',
-            'path' => BASE_DIR . $app['config']->getValue('internal_db'),
+            'path' => $app['config']->getInternalDatabasePath(),
         );
 
         // Register doctrine DBAL service
         $app->register(new DoctrineServiceProvider(), array(
             'dbs.options' => $options
         ));
+
+        // Set the callback to change database on the fly
+        $app->before(function(Request $request) use($app) {
+            try {
+                if (!$dbKey = $request->get('database')) {
+                    $dbKey = $app['config']->getValue('default_database_key');
+                }
+
+                $configuredDatabases = $app['config']->getValue('data_dir');
+                if (!array_key_exists($dbKey, $configuredDatabases)) {
+                    throw new \InvalidArgumentException('Database does not exist');
+                }
+
+                $app['db'] = $app->share($app->extend('db', function($db, $app) use($dbKey) {
+                    return $app['dbs'][$dbKey];
+                }));
+
+                $app['config']->setValue('current_database_key', $dbKey);
+                $app['config']->setValue('current_database_path', $app['config']->getDatabasePath($dbKey));
+
+            } catch (\InvalidArgumentException $e) {
+                $app->abort(404, 'Inexistant database');
+            }
+        });
 
         return $this;
     }
