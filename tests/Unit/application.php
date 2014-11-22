@@ -11,7 +11,6 @@ $app['config']->setValue('data_dir', array(
 ));
 
 $app['config']->setValue('internal_db', 'tests/data/silexCops');
-$app['config']->setValue('current_database_path', 'tests/data');
 $app['config']->setValue('current_database_key',  'unit-test');
 
 // Define core model

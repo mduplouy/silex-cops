@@ -134,21 +134,11 @@ class Config
     /**
      * Get internal database path
      *
-     * @param bool $quiet
-     *
      * @return string
-     *
-     * @throws \RuntimeException
      */
-    public function getInternalDatabasePath($quiet = false)
+    public function getInternalDatabasePath()
     {
-        $path = $this->preprendBaseDir($this->configValues['internal_db']);
-
-        if (!$quiet && !file_exists($path)) {
-            throw new \RuntimeException(sprintf('Internal database file %s does not exists', $path));
-        }
-
-        return $path;
+        return $this->preprendBaseDir($this->configValues['internal_db']);
     }
 
     /**
