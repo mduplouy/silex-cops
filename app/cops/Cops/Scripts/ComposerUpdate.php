@@ -49,7 +49,7 @@ class ComposerUpdate
 
         if (!file_exists($targetDB)) {
             if (!is_dir($targetDir)) {
-                @mkdir($targetDir, 0755, true);
+                mkdir($targetDir, 0755, true);
             }
 
             $output = new ConsoleOutput;

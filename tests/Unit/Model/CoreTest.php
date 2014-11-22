@@ -18,7 +18,7 @@ class CoreTest extends WebTestCase
 
         // Define core model, no closure to ensure loading
         // Load configuration & set service providers
-        $app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini', $app);
+        $app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini', new \Cops\Model\Utils);
         $app['core']   = new \Cops\Model\Core($app);
         $app['debug']  = true;
 

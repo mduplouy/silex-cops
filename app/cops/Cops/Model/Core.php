@@ -58,6 +58,7 @@ class Core
             // redirect to /default_lang/
             $redirect = $app['url_generator']->generate('homepage', array(
                 '_locale'  => $app['config']->getValue('default_lang'),
+                'database' => $app['config']->getValue('default_database_key'),
             ));
             return $app->redirect($redirect, 301);
         });
@@ -208,6 +209,7 @@ class Core
         // Set the callback to change database on the fly
         $app->before(function(Request $request) use($app) {
             try {
+
                 if (!$dbKey = $request->get('database')) {
                     $dbKey = $app['config']->getValue('default_database_key');
                 }

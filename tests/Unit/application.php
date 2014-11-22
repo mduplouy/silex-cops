@@ -3,7 +3,7 @@
 $app = new \Silex\Application();
 
 // Load & set configuration
-$app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini');
+$app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini', new \Cops\Model\Utils);
 
 $app['config']->setValue('data_dir', array(
     'default' => 'tests/data',

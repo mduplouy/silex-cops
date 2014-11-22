@@ -9,6 +9,8 @@
  */
 namespace Cops\Model;
 
+use Cops\Model\Utils;
+
 /**
  * Simple configuration class with hardcoded default values and override by ini file
  *
@@ -69,8 +71,9 @@ class Config
      * Constructor
      *
      * @param string $configFilePath
+     * @param Utils  $stringUtils
      */
-    public function __construct($configFilePath)
+    public function __construct($configFilePath, Utils $stringUtils)
     {
         $confValues = parse_ini_file($configFilePath, false);
         if (is_array($confValues)) {
@@ -82,9 +85,15 @@ class Config
         }
 
         // Sanitize db key to use it in url
+        $databases = array();
         foreach ($this->configValues['data_dir'] as $key => $path) {
+            $sanitizedKey = $stringUtils->removeAccents($key);
+            $sanitizedKey = preg_replace('/[^\w]/', '-', $sanitizedKey);
+            $sanitizedKey = preg_replace('/-{2,}/', '-', $sanitizedKey);
 
+            $databases[$sanitizedKey] = $path;
         }
+        $this->configValues['data_dir'] = $databases;
 
         $this->configValues['default_database_key'] = key($this->configValues['data_dir']);
     }
@@ -114,9 +123,9 @@ class Config
      *
      * @return string
      */
-    public function getDatabasePath($dbKey = null)
+    public function getDatabasePath($dbKey = 'default')
     {
-        if (null === $dbKey) {
+        if ($dbKey == 'default') {
             $dbKey = $this->configValues['default_database_key'];
         }
 

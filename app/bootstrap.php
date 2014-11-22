@@ -16,7 +16,7 @@ require_once BASE_DIR.'/vendor/autoload.php';
 $app = new \Silex\Application();
 
 // Load & set configuration
-$app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini');
+$app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini', new \Cops\Model\Utils);
 
 if ($app['config']->getValue('debug')) {
     $app['debug'] = true;
