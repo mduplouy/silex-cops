@@ -113,8 +113,6 @@ class Config
      * @param  string $dbKey Database key
      *
      * @return string
-     *
-     * @throws \RuntimeException
      */
     public function getDatabasePath($dbKey = null)
     {
@@ -122,13 +120,7 @@ class Config
             $dbKey = $this->configValues['default_database_key'];
         }
 
-        $path = $this->preprendBaseDir($this->configValues['data_dir'][$dbKey]);
-
-        if (!is_dir($path)) {
-            throw new \RuntimeException(sprintf('Database path %s does not exists', $path));
-        }
-
-        return $path;
+        return $this->preprendBaseDir($this->configValues['data_dir'][$dbKey]);
     }
 
     /**
