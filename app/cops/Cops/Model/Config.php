@@ -81,10 +81,12 @@ class Config
             $this->configValues['data_dir'] = array('default' => $this->configValues['data_dir']);
         }
 
-        $this->configValues['default_database_key'] = key($this->configValues['data_dir']);
-        $this->configValues['default_database_path'] = current($this->configValues['data_dir']);
+        // Sanitize db key to use it in url
+        foreach ($this->configValues['data_dir'] as $key => $path) {
 
-        $this->configValues['current_database_path'] = $this->configValues['default_database_path'];
+        }
+
+        $this->configValues['default_database_key'] = key($this->configValues['data_dir']);
     }
 
     /**
@@ -132,15 +134,17 @@ class Config
     /**
      * Get internal database path
      *
+     * @param bool $quiet
+     *
      * @return string
      *
      * @throws \RuntimeException
      */
-    public function getInternalDatabasePath()
+    public function getInternalDatabasePath($quiet = false)
     {
         $path = $this->preprendBaseDir($this->configValues['internal_db']);
 
-        if (!file_exists($path)) {
+        if (!$quiet && !file_exists($path)) {
             throw new \RuntimeException(sprintf('Internal database file %s does not exists', $path));
         }
 

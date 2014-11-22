@@ -44,7 +44,7 @@ class ComposerUpdate
      */
     private static function databaseUpdate()
     {
-        $targetDB = self::$app['config']->getInternalDatabasePath();
+        $targetDB = self::$app['config']->getInternalDatabasePath($quiet = true);
         $targetDir = dirname($targetDB);
 
         if (!file_exists($targetDB)) {
