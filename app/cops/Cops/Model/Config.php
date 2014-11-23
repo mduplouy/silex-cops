@@ -126,7 +126,7 @@ class Config
     public function getDatabasePath($dbKey = 'default')
     {
         if ($dbKey == 'default') {
-            $dbKey = $this->configValues['default_database_key'];
+            $dbKey = $this->configValues['current_database_key'];
         }
 
         return $this->preprendBaseDir($this->configValues['data_dir'][$dbKey]);
