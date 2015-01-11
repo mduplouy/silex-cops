@@ -43,6 +43,7 @@ class BookFileFactory extends FactoryAbstract
     {
         parent::__construct($app);
 
+        $this->instanceTypeStorage['ORIGINAL_EPUB'] = self::TYPE_EPUB;
         $this->instanceTypeStorage[self::TYPE_EPUB] = self::TYPE_EPUB;
         $this->instanceTypeStorage[self::TYPE_PDF]  = self::TYPE_PDF;
         $this->instanceTypeStorage[self::TYPE_MOBI] = self::TYPE_MOBI;
