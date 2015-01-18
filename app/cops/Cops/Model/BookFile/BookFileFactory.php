@@ -64,7 +64,9 @@ class BookFileFactory extends FactoryAbstract
             );
         }
 
-        $className = __NAMESPACE__.'\\Adapter\\' . ucfirst(strtolower($instance));
+        $instance = ucfirst(strtolower($this->instanceTypeStorage[$instance]));
+
+        $className = __NAMESPACE__ . '\\Adapter\\' . $instance;
         return new $className($this->app);
     }
 
