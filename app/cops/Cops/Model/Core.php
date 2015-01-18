@@ -55,10 +55,10 @@ class Core
         $this->registerServices($app);
 
         $app->get('/', function () use ($app) {
-            // redirect to /default_lang/
+            // redirect to /default_db/default_lang/
             $redirect = $app['url_generator']->generate('homepage', array(
                 '_locale'  => $app['config']->getValue('default_lang'),
-                'database' => $app['config']->getValue('default_database_key'),
+                'database' => $app['config']->getValue('current_database_key'),
             ));
             return $app->redirect($redirect, 301);
         });

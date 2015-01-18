@@ -96,6 +96,7 @@ class Config
         $this->configValues['data_dir'] = $databases;
 
         $this->configValues['default_database_key'] = key($this->configValues['data_dir']);
+        $this->configValues['current_database_key'] = $this->configValues['default_database_key'];
     }
 
     /**
