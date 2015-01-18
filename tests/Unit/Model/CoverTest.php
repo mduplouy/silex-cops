@@ -26,7 +26,6 @@ class CoverTest extends AbstractTestCase
         // cleaning
         unlink($targetPath.$thumbnail);
         rmdir(dirname($targetPath.$thumbnail));
-        rmdir($targetPath.DS.'assets'.DS.'books'.DS.$currentDb.DS.'5');
 
         $cover = $book->getCover();
         $thumbnail = '/assets/books/'.$currentDb.'/5/320x240/5.jpg';
@@ -42,7 +41,6 @@ class CoverTest extends AbstractTestCase
         // cleaning
         unlink($targetPath.$thumbnail);
         rmdir(dirname($targetPath.$thumbnail));
-        rmdir($targetPath.DS.'assets'.DS.'books'.DS.$currentDb.DS.'5');
     }
 
 }
