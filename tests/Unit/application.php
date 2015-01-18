@@ -11,7 +11,7 @@ $app['config']->setValue('data_dir', array(
 ));
 
 $app['config']->setValue('internal_db', 'tests/data/silexCops');
-$app['config']->setValue('current_database_key',  'unit-test');
+$app['config']->setValue('current_database_key',  'default');
 
 // Define core model
 $app['core'] =  new \Cops\Model\Core($app);
