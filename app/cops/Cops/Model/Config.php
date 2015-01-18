@@ -68,6 +68,12 @@ class Config
     protected $templatePrefix = '';
 
     /**
+     * String utils instance
+     * @var Utils
+     */
+    protected $utils;
+
+    /**
      * Constructor
      *
      * @param string $configFilePath
@@ -75,6 +81,8 @@ class Config
      */
     public function __construct($configFilePath, Utils $stringUtils)
     {
+        $this->utils = $stringUtils;
+
         $confValues = parse_ini_file($configFilePath, false);
         if (is_array($confValues)) {
             $this->configValues = array_merge($this->configValues, $confValues);
@@ -84,14 +92,20 @@ class Config
             $this->configValues['data_dir'] = array('default' => $this->configValues['data_dir']);
         }
 
+        $this->initDatabases();
+    }
+
+    /**
+     * Init database keys / path
+     *
+     * @return void
+     */
+    protected function initDatabases()
+    {
         // Sanitize db key to use it in url
         $databases = array();
         foreach ($this->configValues['data_dir'] as $key => $path) {
-            $sanitizedKey = $stringUtils->removeAccents($key);
-            $sanitizedKey = preg_replace('/[^\w]/', '-', $sanitizedKey);
-            $sanitizedKey = preg_replace('/-{2,}/', '-', $sanitizedKey);
-
-            $databases[$sanitizedKey] = $path;
+            $databases[$this->utils->urlSafe($key)] = $path;
         }
         $this->configValues['data_dir'] = $databases;
 

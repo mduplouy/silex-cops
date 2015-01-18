@@ -45,4 +45,18 @@ class Utils
         $str = preg_replace('#&[^;]+;#', '', $str);
         return $str;
     }
+
+    /**
+     * Make a string url safe
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public function urlSafe($string)
+    {
+        $string = $this->removeAccents($string);
+        $string = preg_replace('/[^\w]/', '-', $string);
+        return preg_replace('/-{2,}/', '-', $string);
+    }
 }
