@@ -20,7 +20,7 @@ class TagModelTest extends WebTestCase
     public function testCountBookOk()
     {
         $tag = $this->app['model.tag'];
-        $tag->load(7);
+        $tag->load(3);
         $nbBook = $tag->getNumberOfBooks();
         $this->assertEquals(1, $nbBook);
 
