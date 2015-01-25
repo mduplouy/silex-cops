@@ -3,11 +3,11 @@
 {% set date_format = "m/d/Y"|trans %}
 
 {% block mainBody %}
-<div id="search_results" class="mainContent">
+<div id="books_by_date" class="mainContent">
 
     {% set paginator %}
     <div class="center">
-        {% include 'search/paginator.html' with {'pageNum': pageNum, 'resultCount': resultCount, 'pageCount': pageCount} %}
+        {% include 'books_by_date/paginator.html' with {'pageNum': pageNum, 'totalBooks': totalBooks, 'pageCount': pageCount} %}
     </div>
     {% endset %}
 

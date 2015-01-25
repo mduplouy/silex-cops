@@ -46,6 +46,11 @@ class BookController implements ControllerProviderInterface
             ->assert('id', '\d+')
             ->bind('book_download');
 
+        $controller->get('/by-date/{page}', __CLASS__.'::listByDateAction')
+            ->assert('page', '\d+')
+            ->value('page', 1)
+            ->bind('book_by_date');
+
         return $controller;
     }
 
@@ -107,5 +112,34 @@ class BookController implements ControllerProviderInterface
             $redirect = $app->abort(404);
         }
         return $redirect;
+    }
+
+    /**
+     * Show books sorted by add date
+     *
+     * @param Application $app
+     * @param int         $page
+     *
+     * @return string
+     */
+    public function listByDateAction(Application $app, $page)
+    {
+        $itemPerPage = $app['config']->getValue('by_date_page_size');
+
+        $books = $app['model.book']->getCollection()
+            ->setFirstResult($page)
+            ->setMaxResults($itemPerPage)
+            ->getSortedByDate();
+
+        $totalBooks = $books->getResource()->getTotalRows();
+
+        return $app['twig']->render($app['config']->getTemplatePrefix().'books_by_date.html', array(
+            'books'      => $books,
+            'totalBooks' => $totalBooks,
+            'pageTitle'  => $app['translator']->trans('All books sorted by add date'),
+            'pageNum'    => $page,
+            'totalRows'  => $totalBooks,
+            'pageCount'  => ceil($totalBooks / $itemPerPage),
+        ));
     }
 }

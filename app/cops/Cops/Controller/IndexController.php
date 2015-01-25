@@ -66,9 +66,10 @@ class IndexController implements \Silex\ControllerProviderInterface
     public function connect(\Silex\Application $app)
     {
         $controller = $app['controllers_factory'];
-        $controller->match("/", __CLASS__.'::indexAction')
+        $controller->match('/', __CLASS__.'::indexAction')
             ->value('database', 'default')
             ->bind('homepage');
+
         return $controller;
     }
 
@@ -82,23 +83,25 @@ class IndexController implements \Silex\ControllerProviderInterface
      */
     public function indexAction(\Silex\Application $app)
     {
-        $latestBooks = $app['model.book']
-            ->getCollection()
-            ->getLatest($app['config']->getValue('last_added'));
+        $books = $app['model.book']->getCollection();
+
+        $latestBooks = $books->getLatest($app['config']->getValue('last_added'));
+        $countAll    = $books->countAll();
 
         $this->listSeries($app);
         $this->listAuthors($app);
         $this->listTags($app);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html', array(
-            'pageTitle'         => $app['translator']->trans('Homepage'),
-            'latestBooks'       => $latestBooks,
-            'seriesAggregated'  => $this->series,
-            'countSeries'       => $this->nbSeries,
-            'authorsAggregated' => $this->authors,
-            'countAuthors'      => $this->nbAuthors,
-            'tags'              => $this->tags,
-            'countTags'         => $this->nbTags,
+            'pageTitle'          => $app['translator']->trans('Homepage'),
+            'latestBooks'        => $latestBooks,
+            'displayShowAlllink' => $latestBooks->count() < $countAll,
+            'seriesAggregated'   => $this->series,
+            'countSeries'        => $this->nbSeries,
+            'authorsAggregated'  => $this->authors,
+            'countAuthors'       => $this->nbAuthors,
+            'tags'               => $this->tags,
+            'countTags'          => $this->nbTags,
         ));
     }
 

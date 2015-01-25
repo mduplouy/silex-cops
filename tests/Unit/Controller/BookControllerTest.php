@@ -13,6 +13,13 @@ class BookControllerTest extends AbstractTestCase
         $this->assertTrue($client->getResponse()->isOk());
     }
 
+    public function testBooksByDate()
+    {
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/default/fr/book/by-date');
+        $this->assertTrue($client->getResponse()->isOk());
+    }
+
     public function testBookDetailPageKo()
     {
         // Route not found
