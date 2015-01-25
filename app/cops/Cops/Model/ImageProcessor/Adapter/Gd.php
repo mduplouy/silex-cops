@@ -9,10 +9,12 @@
  */
 namespace Cops\Model\ImageProcessor\Adapter;
 
+use Silex\Application;
 use Cops\Model\Core;
 use Cops\Model\ImageProcessor\ImageProcessorAbstract;
 use Cops\Model\ImageProcessor\ImageProcessorInterface;
 use Cops\Exception\ImageProcessor\AdapterException;
+
 
 /**
  * GD Image processing class
@@ -36,13 +38,17 @@ class Gd extends ImageProcessorAbstract implements ImageProcessorInterface
     /**
      * Constructor
      *
+     * @param Application $app
+     *
      * @throws \Cops\Exception\ImageProcessor\AdapterException
      */
-    public function __construct()
+    public function __construct(Application $app)
     {
         if (!extension_loaded('gd')) {
-            throw new AdapterException('Please install php-gd before using it');
+            throw new AdapterException('Please install php5-gd before using it');
         }
+
+        parent::__construct($app);
     }
 
     /**

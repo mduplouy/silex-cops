@@ -23,13 +23,17 @@ class Imagick extends ImageProcessorAbstract implements ImageProcessorInterface
     /**
      * Constructor
      *
+     * @param Application $app
+     *
      * @throws \Cops\Exception\ImageProcessor\AdapterException
      */
-    public function __construct()
+    public function __construct(Application $app)
     {
         if (!extension_loaded('imagick')) {
             throw new AdapterException('Please install php5-imagick module before using it');
         }
+
+        parent::__construct($app);
     }
 
     /**

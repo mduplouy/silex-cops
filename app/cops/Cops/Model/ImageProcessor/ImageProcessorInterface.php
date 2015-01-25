@@ -9,6 +9,8 @@
  */
 namespace Cops\Model\ImageProcessor;
 
+use Silex\Application;
+
 /**
  * Image processing interface
  *
@@ -16,6 +18,13 @@ namespace Cops\Model\ImageProcessor;
  */
 interface ImageProcessorInterface
 {
+    /**
+     * Constructor
+     *
+     * @param Application $app
+     */
+    public function __construct(Application $app);
+
     /**
      * Generate a thumbnail for image
      *

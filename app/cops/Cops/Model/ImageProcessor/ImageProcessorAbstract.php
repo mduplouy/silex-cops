@@ -39,9 +39,9 @@ abstract class ImageProcessorAbstract
     /**
      * Constructor
      *
-     * @param array $dataArray
+     * @param \Silex\Application $app
      */
-    public function __construct(BaseApplication $app, array $dataArray = array())
+    public function __construct(BaseApplication $app)
     {
         $this->app = $app;
     }
