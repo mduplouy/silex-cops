@@ -2,7 +2,6 @@
 
 namespace Cops\Tests\Model;
 
-use Cops\Model\Core;
 use Silex\WebTestCase;
 
 /**
