@@ -10,7 +10,7 @@
 namespace Cops\Model\ImageProcessor;
 
 use Cops\Model\FactoryAbstract;
-use Silex\Application as BaseApplication;
+use Silex\Application;
 use Cops\Exception\ImageProcessor\AdapterException;
 
 /**
@@ -34,9 +34,9 @@ class ImageProcessorFactory extends FactoryAbstract
     /**
      * Constructor
      *
-     * @param string $processingType
+     * @param \Silex\Application $app
      */
-    public function __construct(BaseApplication $app)
+    public function __construct(Application $app)
     {
         parent::__construct($app);
 
@@ -49,7 +49,11 @@ class ImageProcessorFactory extends FactoryAbstract
     /**
      * Instance getter
      *
+     * @param string $instance
+     *
      * @return \Cops\Model\ImageProcessor\ImageProcessorInterface
+     *
+     * @throws \Cops\Exception\ImageProcessor\AdapterException
      */
     public function getInstance($instance = self::TYPE_GD )
     {
