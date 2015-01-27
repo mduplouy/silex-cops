@@ -13,7 +13,6 @@ use Silex\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Cops\Model\BookFile\BookFileFactory;
-
 use Cops\Exception\SerieException;
 use Cops\Exception\Archive\AdapterException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
