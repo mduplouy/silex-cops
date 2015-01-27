@@ -55,6 +55,7 @@ class Author extends EntityAbstract
             $name = trim(implode(' ', array_reverse(explode('|', $name))));
         }
         $this->name = $name;
+        return $this;
     }
 
     /**
