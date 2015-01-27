@@ -286,6 +286,7 @@ class User extends EntityAbstract implements UserInterface, \Serializable
             $resource->update();
         } else {
             $userId = $resource->insert();
+            $this->setId($userId);
         }
 
         return $userId;
@@ -325,5 +326,7 @@ class User extends EntityAbstract implements UserInterface, \Serializable
             $this->password,
             $this->roles
         ) = unserialize($serialized);
+
+        return $this;
     }
 }
