@@ -73,16 +73,17 @@ class Resource extends ResourceAbstract
     /**
      * Load latest added books from database
      *
-     * @param  int   $nb  Number of items to load
+     * @param  int   $nb         Number of items to load
+     * @param  int   $startFrom  Start offset
      *
      * @return array
      */
-    public function loadLatest($nb)
+    public function loadSortedByDate()
     {
-        return $this->getBaseSelect()
-            ->orderBy('main.timestamp', 'DESC')
-            ->setFirstResult(0)
-            ->setMaxResults($nb)
+        $qb = $this->getBaseSelect()
+            ->orderBy('main.timestamp', 'DESC');
+
+        return $this->paginate($qb, array('select', 'join', 'groupBy', 'orderBy'))
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -99,6 +100,20 @@ class Resource extends ResourceAbstract
             ->from('books', 'main')
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Count all books
+     *
+     * @return int
+     */
+    public function countAll()
+    {
+        return (int) $this->getQueryBuilder()
+            ->select('count()')
+            ->from('books', 'main')
+            ->execute()
+            ->fetchColumn(0);
     }
 
     /**

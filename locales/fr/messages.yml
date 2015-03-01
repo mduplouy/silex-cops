@@ -16,6 +16,7 @@ Access by Author: Accès par auteur
 Access by Series: Accès par série
 Access by Tag: Accès par tag
 Admin home: Accueil administration
+All books sorted by add date: Tous les livres par date d'ajout
 Alphabetic list of the authors: Liste alphabétique des auteurs
 Alphabetic list of the series: List alphabétique des séries
 Author:: Auteur :|Auteurs :
@@ -34,6 +35,7 @@ Last added books: Derniers livres ajoutés
 Next: Suivant
 Other book from this author:: Autre livre de cet auteur:|Autres livres de cet auteur :
 Other book in this serie:: Autre livre de cette série :|Autres livres de cette série :
+Page %d on %d (%d books): Page %s sur %d (%d livres)
 Page %d on %d (%d results): Page %d sur %d (%d résultats)
 Page %d on %d: Page %d sur %d
 Previous: Précédent
@@ -45,4 +47,5 @@ See book detail: Voir les détails du livre
 See the books from serie %s: Voir les livres de la série %s
 Series: Séries
 Series beginning by %s: Série(s) commençant par %s
+Show all: Afficher tout
 SilexCOPS is licensed under WFTPL license.: SilexCOPS est diffusé sous license "RIEN À BRANLER"

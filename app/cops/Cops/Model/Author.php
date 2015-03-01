@@ -43,6 +43,32 @@ class Author extends EntityAbstract
     protected $bookCount;
 
     /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        if (strpos($name, '|') !== false) {
+            $name = trim(implode(' ', array_reverse(explode('|', $name))));
+        }
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Load author data
      *
      * @param int $authorId

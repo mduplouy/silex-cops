@@ -66,23 +66,4 @@ class Collection extends CollectionAbstract
         }
         return implode(' & ', $name);
     }
-
-    /**
-     * Set sort name for author collection
-     *
-     * @param  \Cops\Model\Author\Collection $authors
-     *
-     * @return \Cops\Model\Author\Collection
-     */
-    public function setSortName()
-    {
-        $calibre = $this->app['calibre'];
-
-        foreach ($this as &$author) {
-            $author->setSort(
-                $calibre->getSortName($author->getName())
-            );
-        }
-        return $this;
-    }
 }

@@ -182,4 +182,86 @@ class InlineEditControllerTest extends AbstractTestCase
 
         $this->assertEquals($client->getResponse()->getContent(), '');
     }
+
+    public function testUpdateBookComment()
+    {
+        $session = $this->app['session'];
+
+        $firewall = 'default';
+        $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_EDIT'));
+        $session->set('_security_'.$firewall, serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+
+        $client = $this->createClient();
+        $client->getCookieJar()->clear();
+        $client->getCookieJar()->set($cookie);
+
+        $book = $this->app['model.book']->load(3);
+
+        $origComment = $book->getComment();
+
+        $client->request(
+            'POST',
+            '/default/fr/inline-edit/3',
+            array(
+                'name'  => 'comment',
+                'pk'    => 3,
+                'value' => 'New comment for this book',
+            )
+        );
+
+        $this->assertTrue($client->getResponse()->isOk());
+    }
+
+    public function testUpdateBookTags()
+    {
+        $session = $this->app['session'];
+
+        $firewall = 'default';
+        $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_EDIT'));
+        $session->set('_security_'.$firewall, serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+
+        $client = $this->createClient();
+        $client->getCookieJar()->clear();
+        $client->getCookieJar()->set($cookie);
+
+        $book = $this->app['model.book']->load(3);
+
+        $origTags = array();
+        foreach($book->getTags() as $tag) {
+            $origTags[] = $tag->getName();
+        }
+
+        $newTags = $origTags;
+        $newTags[] = 'new tag';
+
+        // Add new tag
+        $client->request(
+            'POST',
+            '/default/fr/inline-edit/3',
+            array(
+                'name'  => 'tags',
+                'pk'    => 3,
+                'value' => $newTags,
+            )
+        );
+
+        // Restore original tags
+        $client->request(
+            'POST',
+            '/default/fr/inline-edit/3',
+            array(
+                'name'  => 'tags',
+                'pk'    => 3,
+                'value' => $origTags,
+            )
+        );
+
+        $this->assertTrue($client->getResponse()->isOk());
+    }
 }

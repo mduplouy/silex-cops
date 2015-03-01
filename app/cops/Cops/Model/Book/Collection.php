@@ -28,13 +28,44 @@ class Collection extends CollectionAbstract
      */
     public function getLatest($nb)
     {
-        $resource = $this->getResource();
+        $resource = $this->getResource()
+            ->setMaxResults($nb);
 
-        foreach ($resource->loadLatest($nb) as $result) {
+        foreach ($resource->loadSortedByDate($nb) as $result) {
             $this->add($resource->setDataFromStatement($result));
         }
 
-        return $this->getApp()->offsetGet('model.author')->getResource()->populateBookCollection($this);
+        return $this->addAuthors();
+    }
+
+    /**
+     * Get books sorted by date
+     *
+     * @param int $nb   Number of items to load
+     * @param int $page Start offset
+     *
+     * @return $this
+     */
+    public function getSortedByDate()
+    {
+        $resource = $this->getResource();
+
+        foreach ($resource->loadSortedByDate() as $result) {
+            $this->add($resource->setDataFromStatement($result));
+        }
+
+        return $this->addBookFiles()
+            ->addAuthors();
+    }
+
+    /**
+     * Count all books
+     *
+     * @return int
+     */
+    public function countAll()
+    {
+        return (int) $this->getResource()->countAll();
     }
 
     /**
@@ -141,11 +172,8 @@ class Collection extends CollectionAbstract
             $this->add($resource->setDataFromStatement($result));
         }
 
-        $app = $this->getApp();
-        $app->offsetGet('model.author')->getResource()->populateBookCollection($this);
-        $app->offsetGet('model.bookfile')->getResource()->populateBookCollection($this);
-
-        return $this;
+        return $this->addAuthors()
+            ->addBookFiles();
     }
 
     /**
@@ -172,7 +200,21 @@ class Collection extends CollectionAbstract
      */
     public function addBookFiles()
     {
-        return $this->getApp()->offsetGet('model.bookfile')->populateBookCollection($this);
+        return $this->getApp()
+            ->offsetGet('model.bookfile')
+            ->populateBookCollection($this);
     }
 
+    /**
+     * Load and add author information to book collection
+     *
+     * @return $this
+     */
+    public function addAuthors()
+    {
+        return $this->getApp()
+            ->offsetGet('model.author')
+            ->getResource()
+            ->populateBookCollection($this);
+    }
 }

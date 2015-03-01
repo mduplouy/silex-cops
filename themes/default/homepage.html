@@ -9,6 +9,11 @@
                 <li>{% include 'book_link.html' with {'book': book, 'showAuthor': true, 'class': 'tooltip'} %}</li>
                 {% endfor %}
             </ul>
+
+            {% if displayShowAlllink %}
+            <a href="{{ path('book_by_date') }}" id="js-show-added">{{ "Show all"|trans() }}</a>
+            {% endif %}
+
         </div>
         <h3>{{"Access by Series"|trans}} ({{ countSeries }})</h3>
         <div class="books series">
@@ -18,7 +23,7 @@
                 {% if seriesAggregated[letter] is defined %}
                     {% set urlLetter = letter %}
                     {% if letter == '#' %} {% set urlLetter = 0 %} {% endif %}
-                    <strong><a href="{{ app.url_generator.generate('serie_list', {'letter': urlLetter}) }}" title="{{ letter }}">{{ letter }}</a></strong>
+                    <strong><a href="{{ path('serie_list', {'letter': urlLetter}) }}" title="{{ letter }}">{{ letter }}</a></strong>
                 {% else %}
                     {{ letter }}
                 {% endif %}
@@ -34,7 +39,7 @@
                     {% if authorsAggregated[letter] is defined %}
                         {% set urlLetter = letter %}
                         {% if letter == '#' %} {% set urlLetter = 0 %} {% endif %}
-                    <li><strong><a href="{{ app.url_generator.generate('author_list', {'letter': urlLetter}) }}" title="{{ letter }}">{{ letter }}</a></strong></li>
+                    <li><strong><a href="{{ path('author_list', {'letter': urlLetter}) }}" title="{{ letter }}">{{ letter }}</a></strong></li>
                     {% else %}
                     <li>{{ letter }}</li>
                     {% endif %}
@@ -46,7 +51,7 @@
         <div class="books tags">
             {% for tag in tags %}
                 <div style="width:24%; float:left;">
-                    <a href="{{ app.url_generator.generate('tag_book_list', {'id': tag.getId()}) }}" title="{{ tag.getName() }}">{{ tag.getName() }} ({{ tag.getNumberOfBooks() }})</a><br />
+                    <a href="{{ path('tag_book_list', {'id': tag.getId()}) }}" title="{{ tag.getName() }}">{{ tag.getName() }} ({{ tag.getNumberOfBooks() }})</a><br />
                 </div>
             {% endfor %}
         </div>

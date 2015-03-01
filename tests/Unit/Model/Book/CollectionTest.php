@@ -18,9 +18,7 @@ class CollectionTest extends WebTestCase
 
     public function testCollection()
     {
-        $book = $this->app['model.book'];
-
-        $collection = $book->getCollection();
+        $collection = $this->app['model.book']->getCollection();
 
         $this->assertInstanceOf('Cops\Model\Book\Collection', $collection->getLatest(10));
         $this->assertInstanceOf('Cops\Model\Book\Collection', $collection->getByTagId(2));
