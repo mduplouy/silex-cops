@@ -11,6 +11,7 @@ namespace Cops\Model\ImageProcessor\Adapter;
 
 use Cops\Model\ImageProcessor\ImageProcessorInterface;
 use Cops\Model\ImageProcessor\ImageProcessorAbstract;
+use Silex\Application;
 use Cops\Exception\ImageProcessor\AdapterException;
 
 /**
