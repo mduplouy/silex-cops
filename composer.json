@@ -1,5 +1,5 @@
 {
-    "name": "silex-cops",
+    "name": "mduplouy/silex-cops",
     "type": "project",
     "description": "Web based ebook management for Calibre database",
     "keywords": ["ebook", "epub", "calibre", "silex", "cops", "silex-cops"],
