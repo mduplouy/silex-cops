@@ -1,4 +1,4 @@
-{% extends "opds/layout.xml" %}
+{% extends "opds/layout.xml.twig" %}
 
 {% block entry %}
     {% for letter, nbSeries in seriesAggregated %}
@@ -9,7 +9,7 @@
         <updated>{{ updated }}</updated>
         <id>Silex-Cops:Series:Letter:{{ urlLetter }}</id>
         <content type="text">{{ "%s series"|transchoice(nbSeries)|format(nbSeries) }}</content>
-        <link href="{{ app.url_generator.generate('opds_series_alpha', {'letter': urlLetter}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+        <link href="{{ url('opds_series_alpha', {'letter': urlLetter}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
     </entry>
     {% endfor %}
 {% endblock %}

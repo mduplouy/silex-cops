@@ -1,4 +1,4 @@
-{% extends "opds/layout.xml" %}
+{% extends "opds/layout.xml.twig" %}
 
 {% block entry %}
 <entry>
@@ -6,7 +6,7 @@
     <updated>{{ "now"|date("Y-m-d\\TH:i:sP") }}</updated>
     <id>Silex-COPS:lastadded</id>
     <content type="text">{{ "%s Last added books"|trans|format(nbLastAdded) }}</content>
-    <link href="{{ app.url_generator.generate('opds_series') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+    <link href="{{ url('opds_series') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
 </entry>
 
 <entry>
@@ -14,7 +14,7 @@
     <updated>{{ "now"|date("Y-m-d\\TH:i:sP") }}</updated>
     <id>Silex-COPS:authors</id>
     <content type="text">{{ "Alphabetic list of the authors"|trans }}</content>
-    <link href="{{ app.url_generator.generate('opds_authors') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+    <link href="{{ url('opds_authors') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
 </entry>
 
 <entry>
@@ -22,6 +22,6 @@
     <updated>{{ "now"|date("Y-m-d\\TH:i:sP") }}</updated>
     <id>Silex-COPS:series</id>
     <content type="text">{{ "Alphabetic list of the series"|trans }}</content>
-    <link href="{{ app.url_generator.generate('opds_series') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+    <link href="{{ url('opds_series') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
 </entry>
 {% endblock %}

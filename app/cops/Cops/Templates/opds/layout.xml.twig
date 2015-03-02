@@ -6,13 +6,13 @@
     <updated>{{ updated }}</updated>
     <author>
         <name>{{ "Mathieu Duplouy" }} </name>
-        <uri> {{ "mathieu.duplouy@gmail.com" }}</uri>
-        <email>{{ "https://github.com/mduplouy" }}</email>
+        <uri>{{ "https://github.com/mduplouy" }}</uri>
+        <email>{{ "mathieu.duplouy@gmail.com" }}</email>
     </author>
     <opds:language>fr</opds:language>
-    <link rel="start" href="{{ app.url_generator.generate('opds_home') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="{{"Home"|trans|escape}}"/>
+    <link rel="start" href="{{ url('opds_home') }}" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="{{"Home"|trans|escape}}"/>
     <link rel="self" href="{{ app.request.getRequestUri() }}" type="application/atom+xml;profile=opds-catalog;kind=navigation" />
-    <link rel="search" href="{{ app.url_generator.generate('opds_search') }}" type="application/opensearchdescription+xml" title="{{"Search here"|trans|escape}}"/>
+    <link rel="search" href="{{ url('opds_search') }}" type="application/opensearchdescription+xml" title="{{"Search here"|trans|escape}}"/>
 
 {% block entry %}
 {% endblock %}

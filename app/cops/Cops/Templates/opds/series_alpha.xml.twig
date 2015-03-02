@@ -1,4 +1,4 @@
-{% extends "opds/layout.xml" %}
+{% extends "opds/layout.xml.twig" %}
 
 {% block entry %}
     {% for serie in series %}
@@ -7,7 +7,7 @@
     <updated>{{ updated }}</updated>
     <id>Silex-COPS:Serie:{{ serie.getId() }}</id>
     <content type="text">{{ serie.getName() }}</content>
-    <link href="{{ app.url_generator.generate('opds_serie_detail', {'id': serie.getId()}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+    <link href="{{ url('opds_serie_detail', {'id': serie.getId()}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
 </entry>
     {% endfor %}
 {% endblock %}

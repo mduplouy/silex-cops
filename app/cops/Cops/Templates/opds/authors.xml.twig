@@ -1,4 +1,4 @@
-{% extends "opds/layout.xml" %}
+{% extends "opds/layout.xml.twig" %}
 
 {% block entry %}
     {% for letter, nbAuthors in authorsAggregated %}
@@ -9,7 +9,7 @@
         <updated>{{ "now"|date("Y-m-d\\TH:i:sP") }}</updated>
         <id>Silex-Cops:Authors:Letter:{{ urlLetter }}</id>
         <content type="text">{{ "%s authors"|transchoice(nbAuthors)|format(nbAuthors) }}</content>
-        <link href="{{ app.url_generator.generate('opds_authors_alpha', {'letter': urlLetter}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+        <link href="{{ url('opds_authors_alpha', {'letter': urlLetter}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
     </entry>
     {% endfor %}
 {% endblock %}

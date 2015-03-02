@@ -27,11 +27,11 @@ class OpdsController implements ControllerProviderInterface
      *
      * @see \Silex\ControllerProviderInterface::connect()
      *
-     * @param \Application $app Application instance
+     * @param  Application $app Application instance
      *
      * @return ControllerCollection ControllerCollection instance
      */
-    public function connect(\Silex\Application $app)
+    public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
 
@@ -68,16 +68,16 @@ class OpdsController implements ControllerProviderInterface
     /**
      * Index action, render the home OPDS feed
      *
-     * @param \Application $app Application instance
+     * @param  Application $app Application instance
      *
      * @return string
      */
-    public function indexAction(\Silex\Application $app)
+    public function indexAction(Application $app)
     {
         // Todo : get the last added book date to make the update time in xml feed
 
         // Create the whole structure from twig template
-        $xml =  $app['twig']->render('opds/home.xml', array(
+        $xml =  $app['twig']->render('opds/home.xml.twig', array(
             'updated'     => date('Y-m-d\TH:i:sP'),
             'nbLastAdded' => $app['config']->getValue('last_added')
         ));
@@ -88,13 +88,13 @@ class OpdsController implements ControllerProviderInterface
     /**
      * Get the alphabetic list of authors
      *
-     * @param \Application $app Application instance
+     * @param  Application $app Application instance
      *
      * @return string
      */
-    public function authorsAction(\Silex\Application $app)
+    public function authorsAction(Application $app)
     {
-        $xml =  $app['twig']->render('opds/authors.xml', array(
+        $xml =  $app['twig']->render('opds/authors.xml.twig', array(
             'updated'           => date('Y-m-d\TH:i:sP'),
             'authorsAggregated' => $app['model.author']->getAggregatedList(),
         ));
@@ -105,19 +105,19 @@ class OpdsController implements ControllerProviderInterface
     /**
      * Get the list of authors beginning by a letter
      *
-     * @param \Application $app    Application instance
+     * @param Application  $app    Application instance
      * @param string       $letter First letter of author's name
      *
      * @return string
      */
-    public function authorsAlphaAction(\Silex\Application $app, $letter)
+    public function authorsAlphaAction(Application $app, $letter)
     {
         if ($letter === '0') {
             $letter = '#';
         }
         $authors = $app['model.author']->getCollection()->getByFirstLetter($letter);
 
-        $xml =  $app['twig']->render('opds/authors_alpha.xml', array(
+        $xml =  $app['twig']->render('opds/authors_alpha.xml.twig', array(
             'updated' => date('Y-m-d\TH:i:sP'),
             'authors' => $authors,
         ));
@@ -128,13 +128,13 @@ class OpdsController implements ControllerProviderInterface
     /**
      * Get the alphabetic list of series
      *
-     * @param \Application $app Application instance
+     * @param  Application $app Application instance
      *
      * @return string
      */
-    public function seriesAction(\Silex\Application $app)
+    public function seriesAction(Application $app)
     {
-        $xml =  $app['twig']->render('opds/series.xml', array(
+        $xml =  $app['twig']->render('opds/series.xml.twig', array(
             'updated'          => date('Y-m-d\TH:i:sP'),
             'seriesAggregated' => $app['model.serie']->getAggregatedList(),
         ));
@@ -145,19 +145,19 @@ class OpdsController implements ControllerProviderInterface
     /**
      * Get the list of series beginning by a letter
      *
-     * @param \Application $app    Application instance
+     * @param Application $app    Application instance
      * @param string       $letter First letter of serie's name
      *
      * @return string
      */
-    public function seriesAlphaAction(\Silex\Application $app, $letter)
+    public function seriesAlphaAction(Application $app, $letter)
     {
         if ($letter === '0') {
             $letter = '#';
         }
         $series = $app['model.serie']->getCollection()->getByFirstLetter($letter);
 
-        $xml =  $app['twig']->render('opds/series_alpha.xml', array(
+        $xml =  $app['twig']->render('opds/series_alpha.xml.twig', array(
             'updated' => date('Y-m-d\TH:i:sP'),
             'series'  => $series,
         ));
@@ -165,6 +165,23 @@ class OpdsController implements ControllerProviderInterface
         return $this->_checkXml($xml);
     }
 
+    /**
+     * Get a serie detail
+     *
+     * @param Application $app     Application instance
+     * @param int         $id      Serie ID
+     */
+    public function serieDetailAction(Application $app, $id)
+    {
+        $serie = $app['model.serie']->load($id);
+
+        $xml = $app['twig']->render('opds/serie_detail.xml.twig', array(
+            'updated' => date('Y-m-d\TH:i:sP'),
+            'serie'   => $serie,
+        ));
+
+        return $this->_checkXml($xml);
+    }
 
     /**
      * Check and return XML string by parsing it with DomDocument

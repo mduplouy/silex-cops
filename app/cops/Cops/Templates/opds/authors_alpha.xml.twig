@@ -1,4 +1,4 @@
-{% extends "opds/layout.xml" %}
+{% extends "opds/layout.xml.twig" %}
 
 {% block entry %}
     {% for author in authors %}
@@ -7,7 +7,7 @@
     <updated>{{ updated }}</updated>
     <id>Silex-COPS:Author:{{ author.getId() }}</id>
     <content type="text">{{ "%s books"|transchoice(author.getNumberOfBooks())|format(author.getNumberOfBooks()) }}</content>
-    <link href="{{ app.url_generator.generate('opds_author_detail', {'id': author.getId()}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+    <link href="{{ url('opds_author_detail', {'id': author.getId()}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
 </entry>
     {% endfor %}
 {% endblock %}
