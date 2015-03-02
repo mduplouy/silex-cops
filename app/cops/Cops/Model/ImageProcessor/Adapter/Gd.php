@@ -10,7 +10,6 @@
 namespace Cops\Model\ImageProcessor\Adapter;
 
 use Silex\Application;
-use Cops\Model\Core;
 use Cops\Model\ImageProcessor\ImageProcessorAbstract;
 use Cops\Model\ImageProcessor\ImageProcessorInterface;
 use Cops\Exception\ImageProcessor\AdapterException;
