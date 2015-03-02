@@ -1,4 +1,37 @@
 {
+    "name": "silex-cops",
+    "type": "project",
+    "description": "Web based ebook management for Calibre database",
+    "keywords": ["ebook", "epub", "calibre", "silex", "cops", "silex-cops"],
+    "homepage": "https://github.com/mduplouy/silex-cops",
+    "license": "WTFPL",
+    "authors": [
+        {
+            "name": "Mathieu Duplouy",
+            "email": "mathieu.duplouy@gmail.com"
+        }
+    ],
+    "require": {
+        "silex/silex"  : "~1.1",
+        "doctrine/dbal": "2.2.*",
+        "twig/twig": ">=1.8,<2.0-dev",
+        "symfony/twig-bridge": "~2.3",
+        "mobiledetect/mobiledetectlib": "~2",
+        "symfony/translation": "~2.3",
+        "symfony/config": "~2.3",
+        "symfony/yaml": "~2.3",
+        "symfony/security": "~2.3",
+        "symfony/form": "~2.3",
+        "symfony/validator": "~2.3",
+        "grandt/phpepub": "@dev",
+        "lexpress/console-service-provider": "1.0.*@dev",
+        "../web/assets/select2": "@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "phpunit/dbunit": ">=1.2",
+        "symfony/browser-kit": ">=2.3,<2.4-dev"
+    },
     "repositories": [
         {
             "type": "package",
@@ -28,27 +61,6 @@
             }
         }
     ],
-    "require": {
-        "silex/silex"  : "~1.1",
-        "doctrine/dbal": "2.2.*",
-        "twig/twig": ">=1.8,<2.0-dev",
-        "symfony/twig-bridge": "~2.3",
-        "mobiledetect/mobiledetectlib": "~2",
-        "symfony/translation": "~2.3",
-        "symfony/config": "~2.3",
-        "symfony/yaml": "~2.3",
-        "symfony/security": "~2.3",
-        "symfony/form": "~2.3",
-        "symfony/validator": "~2.3",
-        "grandt/phpepub": "@dev",
-        "lexpress/console-service-provider": "1.0.*@dev",
-        "../web/assets/select2": "@dev"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "3.7.*",
-        "phpunit/dbunit": ">=1.2",
-        "symfony/browser-kit": ">=2.3,<2.4-dev"
-    },
     "autoload": {
         "psr-0": {"Cops": "app/cops"}
     },
