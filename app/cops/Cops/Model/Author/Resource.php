@@ -220,8 +220,6 @@ class Resource extends ResourceAbstract
             return $collection;
         }
 
-        $bookIds = $collection->getAllIds();
-
         $stmt = $this->getQueryBuilder()
             ->select(
                 'main.*',
@@ -231,17 +229,14 @@ class Resource extends ResourceAbstract
             ->innerJoin('main', 'books_authors_link', 'bal',   'bal.author = main.id')
             ->innerJoin('main', 'books',              'books', 'books.id = bal.book')
             ->where('books.id IN (:book_id)')
-            ->setParameter('book_id', $bookIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('book_id', $collection->getAllIds(), Connection::PARAM_INT_ARRAY)
             ->execute();
 
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-            // Get the book that will receive the bookfiles
-            $book = $collection->getById($row['book_id']);
-
-            $author = $this->setDataFromStatement($row);
-
-            $book->getAuthors()->add($author);
+            // Add authors to the book
+            $collection->getById($row['book_id'])
+                ->getAuthors()
+                ->add($this->setDataFromStatement($row));
         }
         return $collection;
     }
