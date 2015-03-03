@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Silex\Application as BaseApplication;
 use Cops\Model\User;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 /**
  * User provider for security component
