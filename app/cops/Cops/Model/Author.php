@@ -96,9 +96,9 @@ class Author extends EntityAbstract
     }
 
     /**
-     * Get the latest added books
+     * Get the authors nb grouped by first letter
      *
-     * @return array Array of Book object
+     * @return array
      */
     public function getAggregatedList()
     {
@@ -183,4 +183,6 @@ class Author extends EntityAbstract
         $this->sort      = null;
         $this->bookCount = 0;
     }
+
+
 }

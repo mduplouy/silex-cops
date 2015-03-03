@@ -27,25 +27,25 @@ class Resource extends ResourceAbstract
      * Allow book exclusion
      * @var bool
      */
-    private $_hasExcludedBook = false;
+    private $hasExcludedBook = false;
 
     /**
      * Book id to be excluded from statement
      * @var int
      */
-    private $_excludeBookId;
+    private $excludeBookId;
 
     /**
      * Allow serie exclusion
      * @var bool
      */
-    private $_hasExcludedSerie = false;
+    private $hasExcludedSerie = false;
 
     /**
      * Serie id to be excluded
      * @var int
      */
-    private $_excludeSerieId;
+    private $excludeSerieId;
 
     /**
      * Load a book data
@@ -187,8 +187,8 @@ class Resource extends ResourceAbstract
      *
      * @return array
      */
-    public function loadByKeyword($keywords) {
-
+    public function loadByKeyword($keywords)
+    {
         $qb = $this->getBaseSelect()
             ->leftJoin('main', 'books_tags_link', 'btl', 'btl.book = main.id')
             ->leftJoin('main',  'tags',           'tag', 'tag.id = btl.tag')
@@ -201,7 +201,7 @@ class Resource extends ResourceAbstract
         // Build the where clause
         $andPath  = $qb->expr()->andX();
         $andSerie = $qb->expr()->andX();
-        //$andSerie->add($qb->expr()->isNotNull('serie_name'));
+
         foreach ($keywords as $keyword) {
             $andPath->add(
                 $qb->expr()->like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
@@ -247,9 +247,10 @@ class Resource extends ResourceAbstract
      *
      * @return Resource
      */
-    public function setExcludedBookId($id) {
-        $this->_hasExcludedBook = true;
-        $this->_excludeBookId = (int) $id;
+    public function setExcludedBookId($id)
+    {
+        $this->hasExcludedBook = true;
+        $this->excludeBookId = (int) $id;
         return $this;
     }
 
@@ -260,9 +261,10 @@ class Resource extends ResourceAbstract
      *
      * @return Resource
      */
-    public function setExcludedSerieId($id) {
-        $this->_hasExcludedSerie = true;
-        $this->_excludeSerieId = (int) $id;
+    public function setExcludedSerieId($id)
+    {
+        $this->hasExcludedSerie = true;
+        $this->excludeSerieId = (int) $id;
         return $this;
     }
 
@@ -334,9 +336,9 @@ class Resource extends ResourceAbstract
 
         // Save author data (update existing or insert new one)
         $author = $this->app['model.author'];
-        $author
-            ->setName($authorName)
+        $author->setName($authorName)
             ->setSort($sortName);
+
         if ($authorId) {
             $author->setId($authorId);
         }
@@ -491,17 +493,17 @@ class Resource extends ResourceAbstract
             ->leftJoin('main', 'ratings',            'rating', 'brl.rating = rating.id')
             ->where('1');
 
-        if ($this->_hasExcludedBook) {
+        if ($this->hasExcludedBook) {
             $qb->andWhere('main.id != :exclude_book')
-                ->setParameter('exclude_book', $this->_excludeBookId, PDO::PARAM_INT);
-            $this->_hasExcludedBook = false;
-            $this->_excludeBookId = null;
+                ->setParameter('exclude_book', $this->excludeBookId, PDO::PARAM_INT);
+            $this->hasExcludedBook = false;
+            $this->excludeBookId = null;
         }
-        if ($this->_hasExcludedSerie) {
+        if ($this->hasExcludedSerie) {
             $qb->andWhere('serie.id IS NULL OR serie.id != :exclude_serie', PDO::PARAM_INT)
-                ->setParameter('exclude_serie', $this->_excludeSerieId);
-            $this->_hasExcludedSerie = false;
-            $this->_excludeSerieId = null;
+                ->setParameter('exclude_serie', $this->excludeSerieId);
+            $this->hasExcludedSerie = false;
+            $this->excludeSerieId = null;
         }
         return $qb;
     }
