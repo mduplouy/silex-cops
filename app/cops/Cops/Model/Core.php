@@ -22,6 +22,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Symfony\Component\Translation\Translator;
 
 /**
  * Core class
@@ -140,7 +141,7 @@ class Core
             $app['config']->setTemplatePrefix($app['config']->getValue('mobile_theme'));
         }
 
-        $app['translator'] = $app->share($app->extend('translator', function($translator) {
+        $app['translator'] = $app->share($app->extend('translator', function (Translator $translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
 
             foreach (array('messages', 'admin', 'validators') as $domain) {
