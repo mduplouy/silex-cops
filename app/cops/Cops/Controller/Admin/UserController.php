@@ -11,7 +11,6 @@ namespace Cops\Controller\Admin;
 
 use Silex\ControllerProviderInterface;
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
 use Cops\Model\User;
 use Symfony\Component\Form\FormError;
 
