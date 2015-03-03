@@ -11,7 +11,6 @@ namespace Cops\Model\User;
 
 use Cops\Model\ResourceAbstract;
 use PDO;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Table;
 use Cops\Exception\User\UserNotFoundException;
 

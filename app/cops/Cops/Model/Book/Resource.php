@@ -11,11 +11,7 @@ namespace Cops\Model\Book;
 
 use Cops\Model\ResourceAbstract;
 use Cops\Exception\BookException;
-use Cops\Model\Core;
-use Cops\Model\Book\Collection;
 use PDO;
-use Doctrine\DBAL;
-use Doctrine\DBAL\Connection;
 
 /**
  * Book resource model
@@ -306,7 +302,8 @@ class Resource extends ResourceAbstract
             );
             $con->commit();
             return true;
-        } catch (\Exception $e) {         // @fixme pop exception message to the user
+        } catch (\Exception $e) {
+            // @todo pop exception message to the user
             $con->rollback();
             return false;
         }
