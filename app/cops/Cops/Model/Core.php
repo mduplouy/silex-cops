@@ -9,10 +9,8 @@
  */
 namespace Cops\Model;
 
-use Cops\Model\CoreInterface;
 use Cops\Provider\MobileDetectServiceProvider;
 use Cops\Provider\UrlGeneratorServiceProvider;
-use Cops\Provider\ImageProcessorServiceProvider;
 use Cops\Provider\TranslationServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
@@ -20,11 +18,9 @@ use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-use Cops\EventListener\LocaleListener;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 
 /**
@@ -38,12 +34,6 @@ class Core
      * @var \Cops\Model\Resource
      */
     protected $resource;
-
-    /**
-     * App instance
-     * @var Application
-     */
-    private static $app;
 
     /**
      * Constructor
@@ -75,7 +65,7 @@ class Core
         $app->mount($adminPath.'/{_locale}/feed/',     new \Cops\Controller\Admin\OpdsFeedController($app));
 
         // Set the mount points for the controllers with database prefix
-        $app->mount('{database}/{_locale}/',            new \Cops\Controller\IndexController($app));
+        $app->mount('{database}/{_locale}/',           new \Cops\Controller\IndexController($app));
 
         $app->mount(
             '{database}/{_locale}/book/',
@@ -113,8 +103,6 @@ class Core
         );
 
         $app['core'] = $this;
-
-        self::$app = $app;
     }
 
     /**
@@ -126,8 +114,7 @@ class Core
      */
     private function registerServices(Application $app)
     {
-        $app
-            ->register(new MobileDetectServiceProvider())    // Register mobile detect service
+        $app->register(new MobileDetectServiceProvider())    // Register mobile detect service
             ->register(new SessionServiceProvider)           // Register session provider
             ->register(new UrlGeneratorServiceProvider)      // Register url generator service
             ->register(new TwigServiceProvider(), array(     // Register twig service
@@ -142,9 +129,11 @@ class Core
             ->register(new FormServiceProvider())
             ->register(new ValidatorServiceProvider())
             // Translator
-            ->register(new TranslationServiceProvider(array(
-                'default' => $app['config']->getValue('default_lang')
-            )));
+            ->register(new TranslationServiceProvider(
+                array(
+                    'default' => $app['config']->getValue('default_lang')
+                )
+            ));
 
         // Detect mobile user agent
         if ($app['mobile_detect']->isMobile()) {
@@ -164,13 +153,12 @@ class Core
 
         // Remove any file marked as "to be deleted"
         $app->finish(function (Request $request, Response $response) use ($app) {
-            if (isset($app['delete_file']) && PHP_SAPI != 'cli') {
+            if (isset($app['delete_file']) && php_sapi_name() != 'cli') {
                 unlink($app['delete_file']);
             }
         });
 
-        $this
-            ->registerDatabaseService($app)     // Load databases
+        $this->registerDatabaseService($app)    // Load databases
             ->registerModels($app)              // Register models in DIC
             ->registerSecurityService($app)     // Security setup
             ->registerConsoleCommands($app);    // Console commands
