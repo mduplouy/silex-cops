@@ -119,6 +119,7 @@ class Resource extends ResourceAbstract
                 'COUNT(*) AS nb_author'
             )
             ->from('authors', 'main')
+            ->innerJoin('main', 'books_authors_link', 'bal', 'main.id = bal.author')
             ->groupBy('first_letter')
             ->orderBy('first_letter')
             ->execute()
