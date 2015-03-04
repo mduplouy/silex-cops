@@ -197,9 +197,19 @@ class Config
      * @param string      $dbKey
      *
      * @return Config
+     *
+     * @throws \InvalidArgumentException
      */
     public function setDatabaseKey(Application $app, $dbKey)
     {
+        if ($dbKey === null) {
+            $dbKey = $app['config']->getValue('default_database_key');
+        }
+
+        if (!array_key_exists($dbKey, $this->getValue('data_dir'))) {
+            throw new \InvalidArgumentException('Database does not exist');
+        }
+
         $app['db'] = $app->share($app->extend('db', function($db, $app) use($dbKey) {
             return $app['dbs'][$dbKey];
         }));

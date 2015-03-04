@@ -201,20 +201,9 @@ class Core
         ));
 
         // Set the callback to change database on the fly
-        $app->before(function(Request $request) use($app) {
+        $app->before(function (Request $request) use($app) {
             try {
-
-                if (!$dbKey = $request->get('database')) {
-                    $dbKey = $app['config']->getValue('default_database_key');
-                }
-
-                $configuredDatabases = $app['config']->getValue('data_dir');
-                if (!array_key_exists($dbKey, $configuredDatabases)) {
-                    throw new \InvalidArgumentException('Database does not exist');
-                }
-
-                $app['config']->setDatabaseKey($app, $dbKey);
-
+                $app['config']->setDatabaseKey($app, $request->get('database', null));
             } catch (\InvalidArgumentException $e) {
                 $app->abort(404, 'Inexistant database');
             }
