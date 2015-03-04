@@ -109,7 +109,7 @@ class Resource extends ResourceAbstract
     /**
      * Load aggregated list of authors
      *
-     * @return array();
+     * @return array
      */
     public function getAggregatedList()
     {
