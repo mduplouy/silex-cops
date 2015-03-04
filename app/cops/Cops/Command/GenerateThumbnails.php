@@ -83,7 +83,7 @@ class GenerateThumbnails extends Command
 
         if ($selectedDb == self::OPTION_ALL_DB) {
             foreach ($allDbs as $db => $path) {
-                $this->generateThumbnails($output, $db);
+                $this->generateThumbnailsForDb($output, $db);
             }
         } else {
 
@@ -94,7 +94,7 @@ class GenerateThumbnails extends Command
             }
 
             $output->writeln('');
-            $this->generateThumbnails($output, $selectedDb);
+            $this->generateThumbnailsForDb($output, $selectedDb);
         }
 
         return 1;
@@ -107,7 +107,7 @@ class GenerateThumbnails extends Command
      *
      * @return void
      */
-    private function generateThumbnails(OutputInterface $output, $dbName)
+    private function generateThumbnailsForDb(OutputInterface $output, $dbName)
     {
         $this->app['config']->setDatabaseKey($this->app, $dbName);
 
