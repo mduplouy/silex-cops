@@ -10,7 +10,6 @@
 
 namespace Cops\Model\Book;
 
-use Cops\Model\Book;
 use Cops\Model\CollectionAbstract;
 
 /**
