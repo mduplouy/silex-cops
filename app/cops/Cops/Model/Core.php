@@ -31,6 +31,11 @@ use Symfony\Component\Translation\Translator;
 class Core
 {
     /**
+     * Internal DB key
+     */
+    const INTERNAL_DB_KEY = 'silexCops';
+
+    /**
      * Resource instance
      * @var \Cops\Model\Resource
      */
@@ -185,7 +190,7 @@ class Core
         }
 
         // Always add silexcops for internal storage
-        $options['silexCops'] = array(
+        $options[self::INTERNAL_DB_KEY] = array(
             'driver' => 'pdo_sqlite',
             'path' => $app['config']->getInternalDatabasePath(),
         );
@@ -208,12 +213,7 @@ class Core
                     throw new \InvalidArgumentException('Database does not exist');
                 }
 
-                $app['db'] = $app->share($app->extend('db', function($db, $app) use($dbKey) {
-                    return $app['dbs'][$dbKey];
-                }));
-
-                $app['config']->setValue('current_database_key', $dbKey);
-                $app['config']->setValue('current_database_path', $app['config']->getDatabasePath($dbKey));
+                $app['config']->setDatabaseKey($app, $dbKey);
 
             } catch (\InvalidArgumentException $e) {
                 $app->abort(404, 'Inexistant database');

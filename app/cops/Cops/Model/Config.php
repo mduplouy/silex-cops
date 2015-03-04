@@ -10,6 +10,7 @@
 namespace Cops\Model;
 
 use Cops\Model\Utils;
+use Silex\Application;
 
 /**
  * Simple configuration class with hardcoded default values and override by ini file
@@ -188,6 +189,27 @@ class Config
         $this->configValues[$confKey] = $confValue;
         return $this;
     }
+
+    /**
+     * Set database key in use
+     *
+     * @param Application $app
+     * @param string      $dbKey
+     *
+     * @return Config
+     */
+    public function setDatabaseKey(Application $app, $dbKey)
+    {
+        $app['db'] = $app->share($app->extend('db', function($db, $app) use($dbKey) {
+            return $app['dbs'][$dbKey];
+        }));
+
+        $this->setValue('current_database_key', $dbKey);
+        $this->setValue('current_database_path', $this->getDatabasePath($dbKey));
+
+        return $this;
+    }
+
 
     /**
      * Template prefix setter
