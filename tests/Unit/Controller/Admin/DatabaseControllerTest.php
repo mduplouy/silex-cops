@@ -21,7 +21,7 @@ class DatabaseControllerTest extends WebTestCase
 
     public function testNoAccessForNonAdmin()
     {
-        $this->client->request('GET', '/admin/fr/database/triggers');
+        $this->client->request('GET', '/admin/fr/default/database/triggers');
         $this->assertFalse($this->client->getResponse()->isOk());
 
         $session = $this->app['session'];
@@ -34,7 +34,7 @@ class DatabaseControllerTest extends WebTestCase
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
 
-        $this->client->request('GET', '/admin/fr/database/triggers');
+        $this->client->request('GET', '/admin/fr/default/database/triggers');
         $this->assertFalse($this->client->getResponse()->isOk());
     }
 
@@ -50,13 +50,13 @@ class DatabaseControllerTest extends WebTestCase
         $cookie = new Cookie($session->getName(), $session->getId());
         $this->client->getCookieJar()->set($cookie);
 
-        $this->client->request('GET', '/admin/fr/database/triggers');
+        $this->client->request('GET', '/admin/fr/default/database/triggers');
         $this->assertTrue($this->client->getResponse()->isOk());
 
         // Remove DB triggers
         $this->client->request(
             'POST',
-            '/admin/fr/database/triggers',
+            '/admin/fr/default/database/triggers',
             array(
                 'triggers' => array(
                     'books_insert_trg' => 0,
@@ -69,7 +69,7 @@ class DatabaseControllerTest extends WebTestCase
         // Restore DB triggers
         $this->client->request(
             'POST',
-            '/admin/fr/database/triggers',
+            '/admin/fr/default/database/triggers',
             array(
                 'triggers' => array(
                     'books_insert_trg' => 1,
