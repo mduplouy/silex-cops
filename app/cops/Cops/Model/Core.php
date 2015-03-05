@@ -66,7 +66,7 @@ class Core
         $adminPath = $app['config']->getAdminPath();
         // Keep these up to avoid side effects on admin panel
         $app->mount($adminPath.'/{_locale}',           new \Cops\Controller\AdminController($app));
-        $app->mount($adminPath.'/{_locale}/database/', new \Cops\Controller\Admin\DatabaseController($app));
+        $app->mount($adminPath.'/{_locale}/{database}/database/', new \Cops\Controller\Admin\DatabaseController($app));
         $app->mount($adminPath.'/{_locale}/users/',    new \Cops\Controller\Admin\UserController($app));
         $app->mount($adminPath.'/{_locale}/feed/',     new \Cops\Controller\Admin\OpdsFeedController($app));
 

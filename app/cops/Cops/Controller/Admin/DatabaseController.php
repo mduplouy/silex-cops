@@ -58,6 +58,7 @@ class DatabaseController implements ControllerProviderInterface
         return $app['twig']->render('admin/database/trigger.html', array(
             'triggers'      => $triggers,
             'foundTriggers' => $foundTriggers,
+            'dbSelectRoute' => 'admin_database_triggers',
         ));
     }
 
