@@ -127,7 +127,7 @@ class BookController implements ControllerProviderInterface
         $itemPerPage = $app['config']->getValue('by_date_page_size');
 
         $books = $app['model.book']->getCollection()
-            ->setFirstResult($page)
+            ->setFirstResult(($page-1) * $itemPerPage)
             ->setMaxResults($itemPerPage)
             ->getSortedByDate();
 
