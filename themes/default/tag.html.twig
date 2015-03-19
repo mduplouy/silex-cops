@@ -1,0 +1,68 @@
+{% extends "layout.html.twig" %}
+
+{% block mainBody %}
+<div id="serie_detail" class="mainContent">
+
+    <h2 class="center">{{ "%s books associated to tag \"%s\""|trans|format(totalRows, tag.getName()) }}</h2>
+
+    {% set paginator %}
+    <div class="center">
+        {% include 'tag/paginator.html.twig' with {'pageNum': pageNum, 'totalRows': totalRows, 'pageCount': pageCount} %}
+    </div>
+    {% endset %}
+
+    {{ paginator }}
+
+    {% if books.count() > 1 %}
+    <p><span class="small">{{"Download all books (%s) as archive:"|trans|format(totalRows) }}
+        {% for archive in app["factory.archive"].getAdapterkeys() %}
+            <a href="{{ path('tag_download', {id: tag.getId(), format: archive}) }}">{{ archive }}</a>
+            {% if loop.revindex0 %}/ {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+
+    {% for book in books %}
+        {% set authors = book.getAuthors() %}
+
+        <div class="book">
+
+            {% include 'book_cover.html.twig' with {'book': book} %}
+
+            <h3><a href="{{ path('book_detail', {'id': book.getId()}) }}" title="{{ "See book detail"|trans }}">
+                {% if book.getSerie().getId() %}{{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} - {% endif %}
+                {{ book.getTitle() }}
+            </a></h3>
+
+            <h4>{{ authors.getName() }}</h4>
+
+            <div class="small comment">{{ book.getComment()|striptags }}</div>
+
+            {% include "book_download_link.html.twig" with {"book": book} %}
+
+            {% set serie = book.getSerie() %}
+            {% if serie.getId() %}
+                {% set serieLinkText = "See the books from serie %s"|trans|format(serie.getName()) %}
+                <a class="inline-block book_link serie" title="{{ serieLinkText }}" href="{{ path('serie_detail', {'id': serie.getId()}) }}">
+                    &rsaquo; {{ serieLinkText }}
+                </a><br />
+            {% endif %}
+
+            {% if authors.count() %}
+                <span class="book_link author">&rsaquo; {{ "See all books from"|trans }}</span>
+                {% for author in authors  %}
+                <a class="inline-block book_link author" href="{{ path('author_detail', {'id': author.getId()}) }}" title="{{ author.getName()|escape }}">
+                    {{ author.getName() }}
+                </a>{% if loop.revindex0 %}, {% endif %}
+
+                {% endfor %}
+            {% endif %}
+
+            <div class="clear"></div>
+        </div>
+    {% endfor %}
+
+    {{ paginator }}
+
+</div>
+{% endblock %}

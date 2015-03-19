@@ -1,0 +1,35 @@
+{% extends "layout.html.twig" %}
+
+{% set date_format = "m/d/Y"|trans %}
+
+{% block mainBody %}
+<div id="serie_detail" class="mainContent">
+
+    <h2 class="center">{{ serie.getName() }}</h2>
+
+    {% if books.count() > 1 %}
+    <p><span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(books.count()) }}
+        {% for archive in app["factory.archive"].getAdapterkeys() %}
+            <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: archive}) }}">{{ archive }}</a>
+            {% if loop.revindex0 %}/ {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+
+    {% for book in books %}
+        <div class="book">
+
+            {% include 'book_cover.html.twig' with {'book': book} %}
+
+            <h3><a href="{{ app.url_generator.generate('book_detail', {'id': book.getId()}) }}" title="{{ "See book detail"|trans }}">
+                {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} {{ book.getTitle() }} ({{ book.getPubdate()|date("Y") }})
+            </a></h3>
+
+            <div class="small comment">{{ book.getComment()|striptags }}</div>
+
+            {% include "book_download_link.html.twig" with {"book": book} %}
+            <div class="clear"></div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

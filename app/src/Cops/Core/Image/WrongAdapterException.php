@@ -7,14 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace Cops\Core\Image;
 
-define('BASE_DIR', __DIR__.'/../');
-define('DS', DIRECTORY_SEPARATOR);
-
-require_once BASE_DIR.'/vendor/autoload.php';
-
-$params = array(
-    'config-file' => __DIR__.'/src/config.ini'
-);
-
-return new \Cops\Core\Application($params);
+/**
+ * Exception thrown by image factory when adapter is not correct
+ * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
+ */
+class WrongAdapterException extends \InvalidArgumentException
+{
+}

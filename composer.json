@@ -62,7 +62,7 @@
         }
     ],
     "autoload": {
-        "psr-0": {"Cops": "app/cops"}
+        "psr-4": {"Cops\\": "app/src/Cops"}
     },
     "scripts": {
         "post-install-cmd": "Cops\\Scripts\\ComposerUpdate::update",

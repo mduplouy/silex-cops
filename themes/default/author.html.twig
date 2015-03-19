@@ -1,0 +1,47 @@
+{% extends "layout.html.twig" %}
+
+{% set date_format = "m/d/Y"|trans %}
+
+{% block mainBody %}
+<div id="author_detail" class="mainContent">
+
+    <h2 class="center">{{ author.getName() }}</h2>
+
+    {% if books.count() > 1 %}
+    <p><span class="small">{{"Download author's books (%s) as archive:"|trans|format(totalRows) }}
+        {% for archive in app["factory.archive"].getAdapterkeys() %}
+            <a href="{{ path("author_download", {"id": author.getId(), "format": archive}) }}">{{ archive }}</a>
+            {% if loop.revindex0 %}/ {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+
+    {% set paginator %}
+    <div class="center">
+        {% include "author/paginator.html.twig" with {"pageNum": pageNum, "totalRows": totalRows, "pageCount": pageCount} %}
+    </div>
+    {% endset %}
+
+    {{ paginator }}
+
+    {% for book in books %}
+        <div class="book ui-widget-content ui-state-active">
+
+            {% include "book_cover.html.twig" with {"book": book} %}
+
+            <h3><a href="{{ path("book_detail", {"id": book.getId()}) }}" title="{{ "See book detail"|trans }}">
+                {% if book.getSerie().getId() %}{{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} - {% endif %}
+                {{ book.getTitle() }}
+            </a></h3>
+
+            <div class="comment small">{{ book.getComment()|striptags }}</div>
+            {% include "book_download_link.html.twig" with {"book": book} %}
+
+            <div class="clear"></div>
+        </div>
+    {% endfor %}
+
+    {{ paginator }}
+
+</div>
+{% endblock %}

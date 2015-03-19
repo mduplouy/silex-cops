@@ -1,0 +1,41 @@
+{% for book in books %}
+    {% set serie = book.getSerie() %}
+    {% set authors = book.getAuthors() %}
+
+    <div class="book ui-widget-content ui-state-active">
+
+        {% include "book_cover.html.twig" with {"book": book} %}
+
+        <div style="margin-left:100px;">
+
+            <h3><a href="{{ path("book_detail", {"id": book.getId()}) }}" title="{{ "See book detail"|trans }}">
+                {% if serie.getId() %}{{ serie.getName() }} {{ "T"|trans }}.{{ book.getSeriesIndex()|number_format(0) }} - {% endif %}
+                {{ book.getTitle() }}
+            </a></h3>
+
+            <div class="comment small">{{ book.getComment()|striptags }}</div>
+            {% include "book_download_link.html.twig" with {"book": book} %}
+
+
+            {% if serie.getId() %}
+                {% set serieLinkText = "See the books from serie %s"|trans|format(serie.getName()) %}
+                <a class="inline-block book_link serie" title="{{ serieLinkText }}" href="{{ path("serie_detail", {"id": serie.getId()}) }}">
+                    &rsaquo; {{ serieLinkText }}
+                </a><br />
+            {% endif %}
+
+            {% if authors.count() %}
+                <span class="book_link author">&rsaquo; {{ "See all books from"|trans }}</span>
+                {% for author in authors  %}
+                <a class="inline-block book_link author" href="{{ path("author_detail", {"id": author.getId()}) }}" title="{{ author.getName()|escape }}">
+                    {{ author.getName() }}
+                </a>{% if loop.revindex0 %}, {% endif %}
+
+                {% endfor %}
+            {% endif %}
+            </div>
+
+        <div class="clear"></div>
+
+    </div>
+{% endfor %}

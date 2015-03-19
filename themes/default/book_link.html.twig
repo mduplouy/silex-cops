@@ -1,0 +1,13 @@
+{% if class is not defined %}
+    {% set class = '' %}
+{% endif %}
+<a href="{{ path("book_detail", {"id": book.getId()}) }}" class="{{ class }}" title="{{ book.getTitle() }}">
+{% if book.getSerie().getId() %}
+    {{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}}
+    -
+{% endif %}
+{{ book.getTitle() }}
+
+{% if showAuthor %} - {{ book.getAuthors().getName() }}{% endif %}
+ ({{ book.getPubdate()|date("Y") }})
+</a>

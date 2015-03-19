@@ -1,0 +1,11 @@
+{% extends "ajax.html.twig" %}
+
+{% block mainContent %}
+    {% for serie in series %}
+        <div style="width:24%; float:left;">
+            <a href="{{ path('serie_detail', {'id': serie.getId()}) }}" title="{{ serie.getName() }}">{{ serie.getName() }} ({{ serie.getBookCount() }})</a><br />
+        </div>
+    {% endfor %}
+{% endblock %}
+
+
