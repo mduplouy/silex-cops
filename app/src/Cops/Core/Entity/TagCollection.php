@@ -72,6 +72,7 @@ class TagCollection extends AbstractCollection
 
         return $this;
     }
+
     /**
      * Count all authors
      *

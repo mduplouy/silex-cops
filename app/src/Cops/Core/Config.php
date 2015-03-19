@@ -219,6 +219,26 @@ class Config
     }
 
     /**
+     * Set data dir
+     *
+     * @param  mixed $dataDir
+     *
+     * @return $this
+     */
+    public function setDataDir($dataDir)
+    {
+        if (!is_array($dataDir)) {
+            $dataDir = array('default' => $dataDir);
+        }
+
+        $this->configValues['data_dir'] = $dataDir;
+
+        $this->initDatabases();
+
+        return $this;
+    }
+
+    /**
      * Set database key in use
      *
      * @param Application $app

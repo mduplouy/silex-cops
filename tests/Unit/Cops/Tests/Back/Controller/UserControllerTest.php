@@ -71,7 +71,6 @@ class UserControllerTest extends AbstractTestCase
         $nbUsersBefore = $this->app['collection.user']->findAll()->count();
 
         $client->request('GET', '/admin/fr/users/add');
-        //$client->followRedirects(true);
 
         $form = $client->getCrawler()->selectButton('user_save')->form();
 
