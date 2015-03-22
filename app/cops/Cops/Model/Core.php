@@ -140,11 +140,6 @@ class Core
                 )
             ));
 
-        // Detect mobile user agent
-        if ($app['mobile_detect']->isMobile()) {
-            $app['config']->setTemplatePrefix($app['config']->getValue('mobile_theme'));
-        }
-
         $app['translator'] = $app->share($app->extend('translator', function (Translator $translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
 
