@@ -120,8 +120,7 @@ class Core
      */
     private function registerServices(Application $app)
     {
-        $app->register(new MobileDetectServiceProvider())    // Register mobile detect service
-            ->register(new SessionServiceProvider)           // Register session provider
+        $app->register(new SessionServiceProvider)           // Register session provider
             ->register(new UrlGeneratorServiceProvider)      // Register url generator service
             ->register(new TwigServiceProvider(), array(     // Register twig service
                 'twig.path' => array(
