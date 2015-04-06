@@ -4,18 +4,18 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c00b39c1608c5dd2b036a1fd61d5641d",
+    "hash": "9d6da1e12bcfcdb86d9a1631dfdf3c1c",
     "packages": [
         {
             "name": "../web/assets/select2",
-            "version": "master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ivaynberg/select2",
-                "reference": "master"
+            "version": "3.5.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/select2/select2/archive/3.5.2.zip",
+                "reference": null,
+                "shasum": null
             },
-            "type": "library",
-            "time": "2014-08-29 14:44:50"
+            "type": "library"
         },
         {
             "name": "doctrine/annotations",
@@ -638,13 +638,13 @@
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
+                "url": "https://github.com/php-fig/log",
+                "reference": "1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
+                "url": "https://github.com/php-fig/log/archive/1.0.0.zip",
+                "reference": "1.0.0",
                 "shasum": ""
             },
             "type": "library",
@@ -2678,13 +2678,18 @@
             "time": "2015-03-30 15:54:10"
         }
     ],
-    "aliases": [],
+    "aliases": [
+
+    ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "../web/assets/select2": 20
-    },
+    "stability-flags": [
+
+    ],
     "prefer-stable": false,
-    "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": []
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
 }
