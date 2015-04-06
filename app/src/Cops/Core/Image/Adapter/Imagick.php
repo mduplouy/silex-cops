@@ -10,7 +10,7 @@
 namespace Cops\Core\Image\Adapter;
 
 use Cops\Core\Image\AbstractAdapter;
-use Cops\Core\Image\AdpaterInterface;
+use Cops\Core\Image\AdapterInterface;
 use Cops\Core\Config;
 
 /**

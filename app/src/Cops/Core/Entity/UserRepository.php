@@ -185,9 +185,9 @@ class UserRepository extends AbstractRepository
      */
     public function initTable()
     {
-        $this->dropTable()
-            ->createTable()
-            ->insertDefaultValues();
+        $this->dropTable();
+        $this->createTable();
+        $this->insertDefaultValues();
     }
 
     /**

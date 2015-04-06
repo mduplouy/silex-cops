@@ -21,12 +21,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 abstract class AbstractRepository extends AbstractApplicationAware implements RepositoryInterface
 {
     /**
-     * Entity model instance
-     * @var string
-     */
-    private $entityServiceKey;
-
-    /**
      * Offset for queries
      * @var int
      */
