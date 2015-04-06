@@ -7,6 +7,5 @@ composer.phar
 # data
 data/*
 web/assets/books
-web/assets/select2
 vendor
 
