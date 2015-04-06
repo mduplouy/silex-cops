@@ -102,8 +102,6 @@ class TagRepository extends AbstractRepository
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-
     /**
      * Load all tag names
      *

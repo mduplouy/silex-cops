@@ -10,8 +10,7 @@
 namespace Cops\Front\Controller;
 
 use Silex\ControllerProviderInterface;
-use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
+use Cops\Core\Application;
 
 /**
  * OPDS controller
@@ -20,15 +19,9 @@ use Symfony\Component\HttpFoundation\Request;
 class OpdsController implements ControllerProviderInterface
 {
     /**
-     * Connect method to dynamically add routes
-     *
-     * @see \Silex\ControllerProviderInterface::connect()
-     *
-     * @param  Application $app Application instance
-     *
-     * @return ControllerCollection ControllerCollection instance
+     * {@inheritDoc}
      */
-    public function connect(Application $app)
+    public function connect(\Silex\Application $app)
     {
         $controller = $app['controllers_factory'];
 
@@ -71,9 +64,6 @@ class OpdsController implements ControllerProviderInterface
      */
     public function indexAction(Application $app)
     {
-        // Todo : get the last added book date to make the update time in xml feed
-
-        // Create the whole structure from twig template
         $xml =  $app['twig']->render('opds/home.xml.twig', array(
             'updated'     => date('Y-m-d\TH:i:sP'),
             'nbLastAdded' => $app['config']->getValue('last_added')
@@ -121,6 +111,19 @@ class OpdsController implements ControllerProviderInterface
         ));
 
         return $this->checkXml($xml);
+    }
+
+    /**
+     * Get all books from author
+     *
+     * @param Application $app
+     * @param int         $Id
+     *
+     * @return string
+     */
+    public function authorDetailAction(Application $app, $id)
+    {
+
     }
 
     /**

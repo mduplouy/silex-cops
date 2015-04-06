@@ -137,5 +137,4 @@ class SearchController implements \Silex\ControllerProviderInterface
             $app['response'] = $app->redirect($app['url_generator']->generate('search_no_result'));
         }
     }
-
 }
