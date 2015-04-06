@@ -9,7 +9,6 @@
  */
 namespace Cops\Core;
 
-use Silex\Application as BaseApplication;
 use Cops\Core\AbstractApplicationAware;
 use Cops\Core\UseRepositoryInterface;
 use Cops\Core\AbstractRepository;

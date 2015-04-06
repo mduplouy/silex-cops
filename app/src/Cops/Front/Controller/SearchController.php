@@ -12,7 +12,6 @@ namespace Cops\Front\Controller;
 use Cops\Core\Application;
 use Cops\Core\Entity\Exception\BookNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Book controller class

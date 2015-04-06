@@ -15,7 +15,6 @@ use Cops\Core\Provider\MobileDetectServiceProvider;
 use Cops\Command\Provider\CommandServiceProvider;
 use Cops\Core\Provider\UrlGeneratorServiceProvider;
 use Cops\Core\Provider\TranslationServiceProvider;
-use Silex\Provider\DoctrineServiceProvider;
 use Cops\Security\Provider\SecurityServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -26,7 +25,6 @@ use Symfony\Component\Translation\Translator;
 use Cops\Back\Controller as Back;
 use Cops\Front\Controller as Front;
 use Cops\Core\ApplicationAwareInterface;
-use Cops\Core\UserRepositoryInterface;
 use Cops\Core\UseServiceKeyInterface;
 
 /**
@@ -204,8 +202,6 @@ class Application extends BaseApplication
      */
     private function registerModels()
     {
-        $app = $this;
-
         // Calibre util
         $this['calibre-util'] = $this->share(function ($c) {
             $calibre = new \Cops\Core\Calibre\Util($c['config']);
@@ -258,8 +254,8 @@ class Application extends BaseApplication
                 'gd' => function () use ($c) {
                     return new \Cops\Core\Image\Adapter\Gd($c['config']);
                 },
-                'imagick' => function () use ($c) {
-                    return new \Cops\Core\Image\Adapter\Imagick($c['config']);
+                'targz' => function () use ($c) {
+                    return new \Cops\Core\Image\Adpater\Imagick($c['config']);
                 },
             ));
         });

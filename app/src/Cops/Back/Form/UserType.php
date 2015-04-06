@@ -10,7 +10,6 @@
 namespace Cops\Back\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Cops\Core\Entity\User;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints;
