@@ -9,10 +9,8 @@
  */
 namespace Cops\Core\Archive;
 
-use Cops\Core\Archive\AbstractAdapter;
 use Cops\Core\AbstractApplicationAware;
 use Cops\Core\Archive\AdapterInterface;
-use Cops\Core\Entity\BookCollection;
 use Cops\Core\Entity\BookFile\BookFileCollection;
 use Cops\Core\Entity\BookFile\AdapterInterface as BookFileAdapterInterface;
 use Symfony\Component\HttpFoundation\Request;

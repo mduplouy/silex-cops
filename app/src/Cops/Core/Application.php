@@ -255,7 +255,7 @@ class Application extends BaseApplication
                     return new \Cops\Core\Image\Adapter\Gd($c['config']);
                 },
                 'targz' => function () use ($c) {
-                    return new \Cops\Core\Image\Adpater\Imagick($c['config']);
+                    return new \Cops\Core\Image\Adapter\Imagick($c['config']);
                 },
             ));
         });

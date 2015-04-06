@@ -11,8 +11,6 @@ namespace Cops\Core\Entity\BookFile;
 
 use Cops\Core\AbstractEntity;
 use Cops\Core\CollectionableInterface;
-use Silex\Application as BaseApplication;
-use Cops\Core\Entity\BookCollection;
 use Cops\Core\Translator;
 
 /**

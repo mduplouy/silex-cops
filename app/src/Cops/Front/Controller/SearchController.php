@@ -125,7 +125,7 @@ class SearchController implements \Silex\ControllerProviderInterface
                 ->getResults(explode('-', $keywords), $itemsPerPage, $page);
 
             // Only one result, go to the book page
-            if (1 === $resultCount = $books->getRepository()->getTotalRows()) {
+            if (1 === $books->getRepository()->getTotalRows()) {
                 $book = $books->getIterator()->current();
                 $bookUrl = $app['url_generator']->generate('book_detail', array('id' => $book->getId()));
                 $app['response'] = $app->redirect($bookUrl, 302);

@@ -10,7 +10,6 @@
 namespace Cops\Core\Entity\BookFile;
 
 use Cops\Core\AbstractFactory;
-use Silex\Application as BaseApplication;
 use Cops\Exception\BookFile\AdapterException;
 use Cops\Core\Translator;
 
@@ -38,7 +37,7 @@ class BookFileFactory extends AbstractFactory
      *
      * @param string $instance
      *
-     * @return \Cops\Model\BookFile\BookFileInterface
+     * @return \Cops\Core\Entity\BookFile\BookFileInterface
      *
      * @throws AdapterNotFoundException
      */
