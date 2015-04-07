@@ -10,7 +10,6 @@
 namespace Cops\Core\Entity\BookFile;
 
 use Cops\Core\AbstractFactory;
-use Cops\Exception\BookFile\AdapterException;
 use Cops\Core\Translator;
 
 /**

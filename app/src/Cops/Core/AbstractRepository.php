@@ -11,7 +11,6 @@ namespace Cops\Core;
 
 use Cops\Core\AbstractApplicationAware;
 use Cops\Core\RepositoryInterface;
-use Cops\Core\Application;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 /**

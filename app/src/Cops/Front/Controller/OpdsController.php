@@ -123,7 +123,25 @@ class OpdsController implements ControllerProviderInterface
      */
     public function authorDetailAction(Application $app, $id)
     {
+        try {
+            $author = $app['entity.author']->findById($id);
+            $books = $app['collection.book']
+                ->findByAuthorId($id)
+                ->addBookFiles($app['collection.bookfile']);
 
+            $xml =  $app['twig']->render('opds/author_detail.xml.twig', array(
+                'updated' => date('Y-m-d\TH:i:sP'),
+                'author'  => $author,
+                'books'   => $books,
+            ));
+
+            $app['reponse'] = $this->checkXml($xml);
+
+        } catch (AuthorNotFoundException $e) {
+            $app['response'] = $app->redirect($app['url_generator']->generate('homepage'));
+        }
+
+        return $app['reponse'];
     }
 
     /**

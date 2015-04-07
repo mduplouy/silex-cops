@@ -12,7 +12,6 @@ namespace Cops\Core\Entity;
 use Cops\Core\AbstractBookCount;
 use Cops\Core\CollectionableInterface;
 use Cops\Core\Entity\Exception\SerieNotFoundException;
-use Cops\Core\Entity\Book;
 
 /**
  * Serie model

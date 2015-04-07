@@ -13,10 +13,8 @@ use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
 use Cops\Core\Entity\Serie;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Cops\Core\Entity\BookFile\BookFileFactory;
 use Cops\Core\Entity\Exception\SerieNotFoundException;
 use Cops\Core\AdapterNotFoundException;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Serie controller class

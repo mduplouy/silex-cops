@@ -56,6 +56,23 @@ class TagCollection extends AbstractCollection
     }
 
     /**
+     * Find from book collection
+     *
+     * @param BookCollection $books
+     *
+     * @return $this
+     */
+    public function findFromBooks(BookCollection $books)
+    {
+        if ($books->count()) {
+            $this->setDataFromArray(
+                $this->getRepository()->loadFromBooks($books)
+            );
+        }
+
+        return $this;
+    }
+    /**
      * Count all authors
      *
      * @return int

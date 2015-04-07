@@ -12,6 +12,7 @@ namespace Cops\Core\Entity;
 use Cops\Core\AbstractCollection;
 use Cops\Core\Entity\BookFile\BookFileCollection;
 use Cops\Core\Entity\AuthorCollection;
+use Cops\Core\Entity\TagCollection;
 use Cops\Core\Entity\Exception\BookNotFoundException;
 
 /**
@@ -195,6 +196,24 @@ class BookCollection extends AbstractCollection
         foreach ($authors->findFromBooks($this) as $author) {
             $this->getById($author->getBookId())
                 ->getAuthors()
+                ->add($author);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Load and add tags to current book collection
+     *
+     * @param  TagCollection $tags
+     *
+     * @return $this
+     */
+    public function addTags(TagCollection $tags)
+    {
+        foreach ($tags->findFromBooks($this) as $tag) {
+            $this->getById($author->getBookId())
+                ->getTags()
                 ->add($author);
         }
 

@@ -10,9 +10,7 @@
 namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractRepository;
-use Cops\Core\Entity\Exception\TagNotFoundException;
 use PDO;
-use Doctrine\DBAL\Connection;
 
 /**
  * Tag repository

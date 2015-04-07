@@ -14,7 +14,6 @@ use Silex\Application;
 use Cops\Core\Application as CopsApplication;
 use Silex\ServiceProviderInterface;
 use Silex\Provider\DoctrineServiceProvider;
-use Cops\Core\Calibre;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

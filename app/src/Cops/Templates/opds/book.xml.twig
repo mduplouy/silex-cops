@@ -1,0 +1,32 @@
+{% set date_format = "m/d/Y"|trans %}
+
+    <title>{{ book.getSort() }}</title>
+    <updated>{{ updated }}</updated>
+    <id>Silex-Cops:Author:{{ author.getName()|escape }}</id>
+
+    <content type="text/html">{{ book.getComment() }}</content>
+
+
+    {% set thumbnail = book.getCover().getThumbnailPath(80, 120) %}
+    {% if thumbnail %}
+    <link href="{{ app.request.basepath }}{{ thumbnail }}" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+    {% endif %}
+
+
+    {% for file in book.getFiles() %}
+    <link href="{{ path("book_download", {"id": book.getId(), "format": file.getFormat()}) }}" type="{{ file.getContentTypeHeader() }}" rel="http://opds-spec.org/acquisition" title="{{ file.getFormat()|upper }}"/>
+    {% endfor %}
+
+    {% for author in book.getAuthors() %}
+    <author>
+        <name>{{ author.getSort() }}</name>
+    </author>
+    {% endfor %}
+
+    {% for tags in book.getTags() %}
+    <category term="{{ tag.getName() }}" label="{{ tag.getName()|raw }}"/>
+    {% endfor %}
+
+    <dcterms:issued>{{ book.getPubdate()|date(date_format) }}</dcterms:issued>
+    <published>{{ book.getPubdate()|date(date_format) }}</published>
+

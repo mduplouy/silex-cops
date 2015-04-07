@@ -10,7 +10,6 @@
 namespace Cops\Security\User;
 
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Silex\Application as BaseApplication;
 use Cops\Core\Entity\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;

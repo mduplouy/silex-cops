@@ -11,7 +11,6 @@ namespace Cops\Core;
 
 use Cops\Core\AbstractApplicationAware;
 use Cops\Core\UseRepositoryInterface;
-use Cops\Core\AbstractRepository;
 
 /**
  * Entity abstract class
@@ -27,7 +26,7 @@ abstract class AbstractEntity extends AbstractApplicationAware implements UseRep
 
     /**
      * Repository instance
-     * @var \Cops\Core\AbstractRepository
+     * @var \Cops\Core\RepositoryInterface
      */
     private $repository;
 

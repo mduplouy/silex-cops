@@ -12,11 +12,9 @@ namespace Cops\Front\Controller;
 use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\Request;
 use Cops\Core\Entity\Author;
 use Cops\Core\Entity\Exception\AuthorNotFoundException;
 use Cops\Core\AdapterNotFoundException;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Author controller class

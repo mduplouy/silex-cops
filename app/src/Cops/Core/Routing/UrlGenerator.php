@@ -11,8 +11,6 @@ namespace Cops\Core\Routing;
 
 use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
 use Silex\Application as BaseApplication;
-use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
-use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RequestContext;
 use Psr\Log\LoggerInterface;

@@ -10,7 +10,6 @@
 namespace Cops\Scripts;
 
 use Composer\Script\Event;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**

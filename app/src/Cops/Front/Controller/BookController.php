@@ -11,10 +11,7 @@ namespace Cops\Front\Controller;
 
 use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Cops\Core\Entity\BookFile\BookFileFactory;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Cops\Core\Entity\Book;
 use Cops\Core\Entity\Exception\BookNotFoundException;
 use Cops\Core\Entity\BookFile\FormatUnavailableException;

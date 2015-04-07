@@ -11,7 +11,6 @@ namespace Cops\Front\Controller;
 
 use Silex\ControllerProviderInterface;
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Index controller class

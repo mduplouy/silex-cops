@@ -84,7 +84,7 @@ class BookFileRepository extends AbstractRepository
      */
     public function findFromBooks(BookCollection $books)
     {
-        return $dthis->getBaseSelect()
+        return $this->getBaseSelect()
             ->where('book_id IN (:book_id)')
             ->setParameter('book_id', $books->getAllIds(), Connection::PARAM_INT_ARRAY)
             ->execute()

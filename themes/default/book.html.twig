@@ -124,64 +124,64 @@
 </div>
 
     {% if inline_edit %}
-    <script type="text/javascript">
-        jQuery.fn.editable.defaults.mode = 'inline';
+<script type="text/javascript">
+    jQuery.fn.editable.defaults.mode = 'inline';
 
-        jQuery('document').ready(function() {
+    jQuery('document').ready(function() {
 
-            var myTags = [];
-            jQuery('#tag-list a').each(function() {
-                myTags.push(jQuery(this).text());
-            });
-
-            jQuery('#edit-tag').editable({
-                inputclass: 'input-large',
-                select2: {
-                    multiple: true,
-                    tags: [{% for tag in tags %}"{{ tag.getName()|raw }}"{% if not(loop.last) %},{% endif %}{% endfor %}],
-                    minimumInputLength: 3,
-                    tokenSeparators: [","]
-                },
-                pk: {{ book.getId() }},
-                url: "{{ url('inline_edit_book', { id: book.getId() }) }}",
-                disabled: true,
-                success: function(response, newValue) {
-                    // Remove toggle class to avoid hide
-                    jQuery('#tag-list.toggle').removeClass('toggle');
-
-                    var newTags = new Array();
-                    jQuery.each(JSON.parse(response), function(idx, obj) {
-
-                        var myTag = jQuery('#js-tag-tpl').clone(true);
-                        myTag.find('a')
-                            .attr('href', obj.url)
-                            .text(obj.name)
-                            .show();
-
-                        newTags.push(myTag.html().trim());
-                    });
-
-                    jQuery('#tag-list > span.bold').html(newTags.join(', '));
-                }
-            });
-
-            jQuery('.editable').editable({
-                pk: {{ book.getId() }},
-                url: "{{ url('inline_edit_book', { id: book.getId() }) }}",
-                disabled: true
-            });
-
-            jQuery('#toggle-edit').click(function () {
-                jQuery('#tag-list.toggle').toggle();
-                jQuery('.editable, #edit-tag').editable('toggleDisabled');
-                jQuery('#tag-list > span').toggle();
-                jQuery('#edit-tag').toggle();
-                jQuery(this).children('span').toggle();
-            })
-
+        var myTags = [];
+        jQuery('#tag-list a').each(function() {
+            myTags.push(jQuery(this).text());
         });
 
-    </script>
+        jQuery('#edit-tag').editable({
+            inputclass: 'input-large',
+            select2: {
+                multiple: true,
+                tags: [{% for tag in tags %}"{{ tag.getName()|raw }}"{% if not(loop.last) %},{% endif %}{% endfor %}],
+                minimumInputLength: 3,
+                tokenSeparators: [","]
+            },
+            pk: {{ book.getId() }},
+            url: "{{ url('inline_edit_book', { id: book.getId() }) }}",
+            disabled: true,
+            success: function(response, newValue) {
+                // Remove toggle class to avoid hide
+                jQuery('#tag-list.toggle').removeClass('toggle');
+
+                var newTags = new Array();
+                jQuery.each(JSON.parse(response), function(idx, obj) {
+
+                    var myTag = jQuery('#js-tag-tpl').clone(true);
+                    myTag.find('a')
+                        .attr('href', obj.url)
+                        .text(obj.name)
+                        .show();
+
+                    newTags.push(myTag.html().trim());
+                });
+
+                jQuery('#tag-list > span.bold').html(newTags.join(', '));
+            }
+        });
+
+        jQuery('.editable').editable({
+            pk: {{ book.getId() }},
+            url: "{{ url('inline_edit_book', { id: book.getId() }) }}",
+            disabled: true
+        });
+
+        jQuery('#toggle-edit').click(function () {
+            jQuery('#tag-list.toggle').toggle();
+            jQuery('.editable, #edit-tag').editable('toggleDisabled');
+            jQuery('#tag-list > span').toggle();
+            jQuery('#edit-tag').toggle();
+            jQuery(this).children('span').toggle();
+        })
+
+    });
+
+</script>
     {% endif %}
 
 {% endblock %}

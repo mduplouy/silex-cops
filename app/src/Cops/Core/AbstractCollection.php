@@ -10,7 +10,6 @@
 namespace Cops\Core;
 
 use Cops\Core\AbstractEntity;
-use Cops\Core\AbstractApplicationAware;
 use Cops\Core\CollectionableInterface;
 
 /**
