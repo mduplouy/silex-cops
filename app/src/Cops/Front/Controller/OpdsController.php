@@ -11,6 +11,7 @@ namespace Cops\Front\Controller;
 
 use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
+use Cops\Core\Entity\Exception\AuthorNotFoundException;
 
 /**
  * OPDS controller
@@ -138,7 +139,7 @@ class OpdsController implements ControllerProviderInterface
             $app['reponse'] = $this->checkXml($xml);
 
         } catch (AuthorNotFoundException $e) {
-            $app['response'] = $app->redirect($app['url_generator']->generate('homepage'));
+            $app['response'] = $app->redirect($app['url_generator']->generate('opds_home'));
         }
 
         return $app['reponse'];
