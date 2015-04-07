@@ -12,6 +12,7 @@ namespace Cops\Front\Controller;
 use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
 use Cops\Core\Entity\Exception\AuthorNotFoundException;
+use Cops\Core\Entity\Exception\SerieNotFoundException;
 
 /**
  * OPDS controller
