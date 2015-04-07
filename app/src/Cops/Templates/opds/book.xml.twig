@@ -1,11 +1,17 @@
 {% set date_format = "m/d/Y"|trans %}
+{% set title %}
+    {% if book.getSerie().getId() %}
+        {{ book.getSerie().getName() }} {{ "T"|trans }}.{{ book.getSeriesIndex()|number_format(0) }}
+        -
+    {% endif %}
+    {{ book.getTitle() }}
+{% endset %}
 
-    <title>{{ book.getSort() }}</title>
+    <title>{{ title|trim|raw }}</title>
     <updated>{{ updated }}</updated>
-    <id>Silex-Cops:Author:{{ author.getName()|escape }}</id>
+    <id>Silex-Cops:Book:{{ book.getId() }}</id>
 
     <content type="text/html">{{ book.getComment() }}</content>
-
 
     {% set thumbnail = book.getCover().getThumbnailPath(80, 120) %}
     {% if thumbnail %}

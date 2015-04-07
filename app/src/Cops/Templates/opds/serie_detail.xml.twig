@@ -8,10 +8,10 @@
     <content type="text">{{ serie.getName() }}</content>
     <link href="{{ url("opds_serie_detail", {"id": serie.getId()}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
 </entry>
-    {% for book in serie.getAllBooks() %}
-<entry>
-    {% include "opds/book.xml.twig" with {"book": book} %}
-</entry>
 
+    {% for book in books %}
+<entry>
+       {% include "opds/book.xml.twig" with {"book": book} %}
+</entry>
     {% endfor %}
 {% endblock %}

@@ -126,6 +126,7 @@ class OpdsController implements ControllerProviderInterface
     {
         try {
             $author = $app['entity.author']->findById($id);
+
             $books = $app['collection.book']
                 ->findByAuthorId($id)
                 ->addBookFiles($app['collection.bookfile']);
@@ -194,14 +195,26 @@ class OpdsController implements ControllerProviderInterface
      */
     public function serieDetailAction(Application $app, $id)
     {
-        $serie = $app['entity.serie']->findById($id);
+        try {
+            $serie = $app['entity.serie']->findById($id);
 
-        $xml = $app['twig']->render('opds/serie_detail.xml.twig', array(
-            'updated' => date('Y-m-d\TH:i:sP'),
-            'serie'   => $serie,
-        ));
+            $books = $app['collection.book']
+                ->findBySerieId($id)
+                ->addBookFiles($app['collection.bookfile']);
 
-        return $this->checkXml($xml);
+            $xml = $app['twig']->render('opds/serie_detail.xml.twig', array(
+                'updated' => date('Y-m-d\TH:i:sP'),
+                'serie'   => $serie,
+                'books'   => $books,
+            ));
+
+            $app['response'] = $this->checkXml($xml);
+
+        } catch (SerieNotFoundException $e) {
+            $app['response'] = $app->redirect($app['url_generator']->generate('opds_home'));
+        }
+
+        return $app['response'];
     }
 
     /**
