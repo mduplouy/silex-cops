@@ -224,7 +224,7 @@ class Book extends AbstractEntity implements CollectionableInterface
      */
     public function updateTitle($title)
     {
-        return $this->getRepository()->updateTitle($this->getId(), $title);
+        return $this->getRepository()->updateTitle($this, $title);
     }
 
     /**
@@ -260,6 +260,10 @@ class Book extends AbstractEntity implements CollectionableInterface
      */
     public function setId($id)
     {
+        if (!empty($this->id)) {
+            throw new \LogicException('You cannot change existing ID');
+        }
+
         $this->id = (int) $id;
 
         return $this;

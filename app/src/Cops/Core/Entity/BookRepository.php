@@ -14,6 +14,7 @@ use Cops\Core\ApplicationAwareInterface;
 use Cops\Core\Application as BaseApplication;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PDO;
+use Cops\Core\Entity\Book;
 
 /**
  * Book repository
@@ -93,6 +94,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     public function findSortedByDate()
     {
         $qb = $this->getBaseSelect()
+            ->addSelect('main.id')
             ->orderBy('main.timestamp', 'DESC');
 
         return $this->paginate($qb, array('select', 'join', 'groupBy', 'orderBy'))
@@ -138,6 +140,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     public function findBySerieId($serieId)
     {
         $qb = $this->getBaseSelect()
+            ->addSelect('main.id')
             ->andWhere('serie.id = :serie_id')
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
@@ -161,6 +164,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     public function findByAuthorId($authorId)
     {
         $qb = $this->getBaseSelect()
+            ->addSelect('main.id')
             ->leftJoin('main', 'books_authors_link', 'bal',    'bal.book = main.id')
             ->leftJoin('main', 'authors',            'author', 'author.id = bal.author')
             ->andWhere('author.id = :author_id')
@@ -187,6 +191,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     public function findByTagId($tagId)
     {
         $qb = $this->getBaseSelect()
+            ->addSelect('main.id')
             ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.book')
             ->innerJoin('main', 'tags'           , 'tag', 'tag.id  = btl.tag')
             ->andWhere('tag.id = :tagid')
@@ -210,6 +215,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     public function findByKeyword(array $keywords)
     {
         $qb = $this->getBaseSelect()
+            ->addSelect('main.id')
             ->orderBy('serie_name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
@@ -320,7 +326,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
      */
     private function updateAuthorSortNameAndLink($bookId, $authorName)
     {
-        $sortName = $this->app['model.calibre']->getAuthorSortName($authorName);
+        $sortName = $this->app['calibre-util']->getAuthorSortName($authorName);
 
         // Get author id if author name already exists
         $authorId = $this->getQueryBuilder()
@@ -332,7 +338,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
             ->fetchColumn();
 
         // Save author data (update existing or insert new one)
-        $author = $this->app['model.author'];
+        $author = $this->app['entity.author'];
         $author->setName($authorName)
             ->setSort($sortName);
 
@@ -359,20 +365,20 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     /**
      * Update title & title sort
      *
-     * @param int   $id
-     * @param array $title
+     * @param Book   $book
+     * @param string $title
      *
      * @return bool
      */
-    public function updateTitle($id, $title)
+    public function updateTitle($book, $title)
     {
         $con = $this->getConnection();
 
-        $con->beginTransaction();
-
         try {
-            $bookLang = $this->getBookLanguageCode($id);
-            $titleSort = $this->app['model.calibre']->getTitleSort($title, $bookLang);
+            $con->beginTransaction();
+
+            $bookLang = $this->getBookLanguageCode($book->getId());
+            $titleSort = $this->app['calibre-util']->getTitleSort($title, $bookLang);
 
             $con->update(
                 'books',
@@ -380,21 +386,26 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
                     'title' => $title,
                     'sort'  => $titleSort,
                 ),
-                array('id'  => $id),
+                array('id'  => $book->getId()),
                 array(
                     PDO::PARAM_STR,
                     PDO::PARAM_STR,
                     PDO::PARAM_INT,
                 )
             );
-            $con->commit();
 
-            $this->getEntity()->setTitle($title);
+            $con->commit();
+            $book->setTitle($title);
+
+            $return = true;
 
         } catch (\Exception $e) {
             $con->rollback();
+            $return = false;
         }
-        return true;
+
+        return $return;
+
     }
 
     /**
@@ -463,6 +474,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
         if ($lang) {
             $lang = substr($lang, 0, 2);
         }
+
         return $lang;
     }
 
@@ -475,7 +487,6 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     {
         $qb = $this->getQueryBuilder()
             ->select(
-                'main.id',
                 'main.title',
                 'main.sort',
                 'main.timestamp',
