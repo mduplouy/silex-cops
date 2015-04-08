@@ -56,24 +56,6 @@ abstract class AbstractAdapter implements AdapterInterface
     }
 
     /**
-     * Set size from params
-     *
-     * @param array $params
-     *
-     * @return void
-     */
-    protected function setSizeFromParams(array $params)
-    {
-        if (array_key_exists('width', $params)) {
-            $this->setWidth($params['width']);
-        }
-
-        if (array_key_exists('height', $params)) {
-            $this->setHeight($params['height']);
-        }
-    }
-
-    /**
      * Width setter
      *
      * @param int $width

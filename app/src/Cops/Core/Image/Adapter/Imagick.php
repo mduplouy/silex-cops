@@ -49,14 +49,11 @@ class Imagick extends AbstractAdapter implements AdapterInterface
      *
      * @param string $src    The source image file path
      * @param string $dest   The target image file path
-     * @param array  $params Options
      *
      * @return void
      */
-    public function generateThumbnail($src, $dest, array $params = array())
+    public function generateThumbnail($src, $dest)
     {
-        $this->setSizeFromParams($params);
-
         $imagick = new \Imagick($src);
         $imagick->setImageResolution (92, 92);
         $imagick->setImageCompression(\Imagick::COMPRESSION_ZIP);
