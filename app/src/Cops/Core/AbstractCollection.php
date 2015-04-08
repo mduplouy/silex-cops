@@ -126,7 +126,7 @@ abstract class AbstractCollection extends AbstractEntity implements \IteratorAgg
         if (!array_key_exists($key, $this->elements)) {
             throw new \InvalidArgumentException(sprintf(
                 'Element with KEY %s does not exists',
-                $id
+                $key
             ));
         }
 
