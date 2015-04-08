@@ -20,10 +20,27 @@ use Cops\Core\Config;
 class Util extends AbstractEntity
 {
     /**
+     * Sort methods
+     */
+    const SORT_METHOD_INVERT  = 'invert';
+    const SORT_METHOD_COMMA   = 'comma';
+    const SORT_METHOD_NOCOMMA = 'nocomma';
+
+    /**
      * Author sort copy algorithm
      * @var string
      */
     private $authorSortMethod;
+
+    /**
+     * Allowed author sort methods
+     * @var array
+     */
+    private $allowedAuthorSortMethods = array(
+        self::SORT_METHOD_INVERT,
+        self::SORT_METHOD_COMMA,
+        self::SORT_METHOD_NOCOMMA,
+    );
 
     /**
      * Article patterns per language taken from Calibre src
@@ -77,11 +94,33 @@ class Util extends AbstractEntity
     /**
      * Constructor
      *
-     * @param Config $app
+     * @param Config $config
      */
     public function __construct(Config $config)
     {
         $this->authorSortMethod = $config->getValue('author_sort_copy_method');
+    }
+
+    /**
+     * Set author sort method
+     *
+     * @param string $authorSortMethod
+     *
+     * @return $this
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setAuthorSortMethod($authorSortMethod)
+    {
+        if (!in_array($authorSortMethod, $this->allowedAuthorSortMethods)) {
+            throw new \InvalidArgumentException(
+                sprintf('Unavailable sort method %s', $authorSortMethod)
+            );
+        }
+
+        $this->authorSortMethod = $authorSortMethod;
+
+        return $this;
     }
 
     /**
@@ -135,6 +174,7 @@ class Util extends AbstractEntity
                 $name = $this->commaName($name);
                 break;
         }
+
         return $name;
     }
 
