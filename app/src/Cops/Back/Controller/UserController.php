@@ -13,6 +13,7 @@ use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
 use Cops\Core\Entity\User;
 use Symfony\Component\Form\FormError;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * User Admin related controller
@@ -147,14 +148,9 @@ class UserController implements ControllerProviderInterface
             try {
                 $user->save();
                 $app['response'] = $app->redirect($app['url_generator']->generate('admin_user_index'));
-            } catch (\PDOException $e) {
-
-                if ($e->getCode() == 23000) {
-                    $error = new FormError($app['translator']->trans('Username already in use', array(), 'validators'));
-                    $form->get('username')->addError($error);
-                } else {
-                    throw $e;
-                }
+            } catch (UniqueConstraintViolationException $e) {
+                $error = new FormError($app['translator']->trans('Username already in use', array(), 'validators'));
+                $form->get('username')->addError($error);
             }
         }
 

@@ -40,6 +40,8 @@ class AbstractFactoryTest extends AbstractTestCase
             }
         ));
 
+        $this->assertEquals($factory->getAdapterKeys(), array('test'));
+
         $this->assertInstanceOf('\stdClass', $factory->getInstance('test'));
     }
 }

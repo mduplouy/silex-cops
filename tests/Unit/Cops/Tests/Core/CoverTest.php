@@ -16,6 +16,12 @@ class CoverTest extends AbstractTestCase
         $this->assertInstanceOf('\Cops\Core\Cover', $this->getCover());
     }
 
+    public function testGetThumbnailPath()
+    {
+        $cover = $this->getCover();
+        $this->assertFalse($cover->getThumbnailPath());
+    }
+
     /**
      * Get cover
      * @return \Cops\Core\Cover

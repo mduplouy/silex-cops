@@ -71,7 +71,7 @@ class UserControllerTest extends AbstractTestCase
         $nbUsersBefore = $this->app['collection.user']->findAll()->count();
 
         $client->request('GET', '/admin/fr/users/add');
-        $client->followRedirects(true);
+        //$client->followRedirects(true);
 
         $form = $client->getCrawler()->selectButton('user_save')->form();
 
@@ -83,6 +83,8 @@ class UserControllerTest extends AbstractTestCase
         );
 
         $crawler = $client->submit($form, $values);
+
+        $this->assertTrue($client->getResponse()->isOk());
 
         $allUsers = $this->app['collection.user']->findAll();
         $nbUsers = $allUsers->count();
@@ -92,7 +94,7 @@ class UserControllerTest extends AbstractTestCase
 
         // Test another time to check it's well handled by form
         $client->request('GET', '/admin/fr/users/add');
-        $client->followRedirects(true);
+        //$client->followRedirects(true);
 
         $form = $client->getCrawler()->selectButton('user_save')->form();
 
@@ -104,6 +106,8 @@ class UserControllerTest extends AbstractTestCase
         );
 
         $crawler = $client->submit($form, $values);
+
+        $this->assertTrue($client->getResponse()->isOk());
 
         // Same numbers of users
         $this->assertEquals($this->app['collection.user']->findAll()->count(), $nbUsers);
