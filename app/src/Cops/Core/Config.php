@@ -194,25 +194,6 @@ class Config
     public function setValue($confKey, $confValue)
     {
         $this->configValues[$confKey] = $confValue;
-        return $this;
-    }
-
-    /**
-     * Set data dir
-     *
-     * @param  mixed $dataDir
-     *
-     * @return $this
-     */
-    public function setDataDir($dataDir)
-    {
-        if (!is_array($dataDir)) {
-            $dataDir = array('default' => $dataDir);
-        }
-
-        $this->configValues['data_dir'] = $dataDir;
-
-        $this->initDatabases();
 
         return $this;
     }
@@ -230,7 +211,7 @@ class Config
     public function setDatabaseKey(Application $app, $dbKey)
     {
         if ($dbKey === null) {
-            $dbKey = $app['config']->getValue('default_database_key');
+            $dbKey = $this->getValue('default_database_key');
         }
 
         if (!array_key_exists($dbKey, $this->getValue('data_dir'))) {
@@ -247,7 +228,6 @@ class Config
         return $this;
     }
 
-
     /**
      * Template prefix setter
      *
@@ -261,6 +241,7 @@ class Config
              $value .= DS;
          }
          $this->templatePrefix = $value;
+
          return $this;
      }
 
