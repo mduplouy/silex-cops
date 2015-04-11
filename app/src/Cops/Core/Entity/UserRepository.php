@@ -9,7 +9,7 @@
  */
 namespace Cops\Core\Entity;
 
-use Cops\Core\AbstractRepository;
+use Cops\Core\AbstractInternalRepository;
 use Cops\Core\Entity\User;
 use PDO;
 use Doctrine\DBAL\Schema\Table;
@@ -18,23 +18,12 @@ use Doctrine\DBAL\Schema\Table;
  * User resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class UserRepository extends AbstractRepository
+class UserRepository extends AbstractInternalRepository
 {
     /**
      * Resource table name
      */
     const TABLE_NAME = 'user';
-
-    /**
-     * Get the DB connection instance
-     * Overloaded to use internal connection
-     *
-     * @return Doctrine\DBAL\Connection
-     */
-    public function getConnection()
-    {
-        return $this->app['dbs']['silexCops'];
-    }
 
     /**
      * Save user
@@ -179,46 +168,17 @@ class UserRepository extends AbstractRepository
     }
 
     /**
-     * Initialize storage table
+     * Create table
      *
-     * @return void
+     * @return bool
      */
-    public function initTable()
+    public function createTable()
     {
-        $this->dropTable();
-        $this->createTable();
-        $this->insertDefaultValues();
-    }
-
-    /**
-     * Drop resource table
-     *
-     * @return $this
-     */
-    private function dropTable()
-    {
-        $schema = $this->getConnection()->getSchemaManager();
-        if ($schema->tablesExist(self::TABLE_NAME)) {
-            $schema->dropTable(self::TABLE_NAME);
+        if ($return = parent::createTable()) {
+            $this->insertDefaultValues();
         }
 
-        return $this;
-    }
-
-    /**
-     * Create resource table
-     *
-     * @return $this
-     */
-    private function createTable()
-    {
-        $schema = $this->getConnection()->getSchemaManager();
-
-        $table = $this->getTableStructure();
-
-        $schema->createTable($table);
-
-        return $this;
+        return $return;
     }
 
     /**
@@ -226,7 +186,7 @@ class UserRepository extends AbstractRepository
      *
      * @return Table
      */
-    private function getTableStructure()
+    public function getTableStructure()
     {
         $table = new Table(self::TABLE_NAME);
         $table->addColumn('id',       'integer', array('autoincrement' => true, 'unsigned' => true));

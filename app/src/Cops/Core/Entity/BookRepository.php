@@ -14,6 +14,7 @@ use Cops\Core\ApplicationAwareInterface;
 use Cops\Core\Application as BaseApplication;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PDO;
+use Doctrine\DBAL\Connection;
 use Cops\Core\Entity\Book;
 
 /**
@@ -69,18 +70,27 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     /**
      * Find by id
      *
-     * @param  int              $bookId
+     * @param  mixed            $bookId
      * @param  \Cops\Model\Book $book
      *
      * @return array
      */
     public function findById($bookId)
     {
-        return $this->getBaseSelect()
-            ->where('main.id = :book_id')
-            ->setParameter('book_id', $bookId, PDO::PARAM_INT)
-            ->execute()
-            ->fetch(PDO::FETCH_ASSOC);
+        if (!is_array($bookId)) {
+            $bookId = array($bookId);
+        }
+
+        $qb = $this->getBaseSelect()
+            ->where('main.id IN (:book_id)')
+            ->setParameter('book_id', $bookId, Connection::PARAM_INT_ARRAY);
+
+        if (count($bookId) > 1) {
+            $qb = $this->paginate($qb);
+        }
+
+        return $qb->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -481,12 +491,13 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     /**
      * Get the base select from QueryBuilder
      *
-     * @return QueryBuilder
+     * @return \Doctrine\DBAL\Query\QueryBuilder
      */
     protected function getBaseSelect()
     {
         $qb = $this->getQueryBuilder()
             ->select(
+                'main.id',
                 'main.title',
                 'main.sort',
                 'main.timestamp',

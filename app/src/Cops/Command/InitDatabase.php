@@ -72,7 +72,7 @@ class InitDatabase extends Command
 
         $output->writeln('Creating new database schema');
 
-        $this->app['repository.user']->initTable();
+        $this->app['repository.user']->dropTable()->createTable();
 
         $output->writeln(
             sprintf(
@@ -82,6 +82,8 @@ class InitDatabase extends Command
             )
         );
         $output->writeln('');
+
+        $this->app['repository.user-book']->dropTable()->createTable();
 
         return 1;
     }

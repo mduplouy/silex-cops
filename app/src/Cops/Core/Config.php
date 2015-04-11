@@ -36,6 +36,10 @@ class Config
         'homepage_tags'           => 30,
         'book_per_page'           => 30,
 
+        // User actions
+        'user_actions_enable'     => true,
+        'user_actions_page_size'  => 20,
+
         // Paths
         'theme'                   => 'default',
         'mobile_theme'            => 'mobile',

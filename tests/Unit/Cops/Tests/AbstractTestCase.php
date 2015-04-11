@@ -24,6 +24,13 @@ abstract class AbstractTestCase extends WebTestCase
 
         $app = new \Cops\Core\Application($params, $override);
 
+        $internalDb = $app['config']->getValue('internal_db');
+
+        // Create internal DB & tables
+        $app['repository.user']->getConnection()->getSchemaManager()->createDatabase($internalDb);
+        $app['repository.user']->createTable();
+        $app['repository.user-book']->createTable();
+
         $app['debug'] = true;
         $app['session.test'] = true;
         return $app;

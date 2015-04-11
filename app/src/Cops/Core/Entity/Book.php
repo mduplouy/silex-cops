@@ -183,15 +183,14 @@ class Book extends AbstractEntity implements CollectionableInterface
      */
     public function findById($bookId)
     {
-        $result = $this->setId($bookId)
-            ->getRepository()
+        $result = $this->getRepository()
             ->findById($bookId);
 
-        if (empty($result)) {
+        if (empty($result[0])) {
             throw new BookNotFoundException(sprintf('Book width id %s not found', $bookId));
         }
 
-        $this->setDataFromArray($result);
+        $this->setDataFromArray($result[0]);
         $this->authorCollection->findByBookId($bookId);
         $this->bookFileCollection->findFromBook($this);
 

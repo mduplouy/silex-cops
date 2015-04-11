@@ -15,6 +15,8 @@ Tag :: Tag :| Tags :
 Access by Author: Accès par auteur
 Access by Series: Accès par série
 Access by Tag: Accès par tag
+Add to download cart: Ajouter à la liste de téléchargement
+Add to favorites: Ajouter aux favoris
 Admin home: Accueil administration
 All books sorted by add date: Tous les livres par date d'ajout
 Alphabetic list of the authors: Liste alphabétique des auteurs
@@ -24,14 +26,18 @@ Author / Serie / Book title: Auteur / Série / Titre de livre
 Authors: Auteurs
 Authors beginning by %s: Auteurs commençant par %s
 Disable inline edit: Désactiver le mode édition
-Download in %s format (%s): Télécharger au format %s (%s)
 Download all books (%s) as archive:: Télécharger tous les livres (%s) comme archive :
 Download author's books (%s) as archive:: Télécharger tous les livres de cet auteur (%s) comme archive :
+Download cart: Liste de téléchargement
+Download in %s format (%s): Télécharger au format %s (%s)
 Download whole serie (%s books) as archive:: Télécharger toute la série (%s livres) sous forme d'archive :
 Enable inline edit: Activer le mode édition
+Favorites: Favoris
 Homepage: Accueil
 Last added: Derniers ajouts
 Last added books: Derniers livres ajoutés
+Mark as to read: Ajouter à la liste de lecture
+My books:: Mes livres :
 Next: Suivant
 No result found for your search..: Aucun résultat ne correspond à votre recherche..
 Other book from this author:: Autre livre de cet auteur:|Autres livres de cet auteur :
@@ -51,3 +57,4 @@ Series beginning by %s: Série(s) commençant par %s
 Show all: Afficher tout
 SilexCOPS is licensed under WFTPL license.: SilexCOPS est diffusé sous license "RIEN À BRANLER"
 Switch database:: Basculer vers la base :
+To read: A lire

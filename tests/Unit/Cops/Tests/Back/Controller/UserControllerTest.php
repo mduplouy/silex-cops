@@ -31,7 +31,7 @@ class UserControllerTest extends AbstractTestCase
     public function testNoAccessForNonAdmin()
     {
         // Create temporary database
-        $this->app['repository.user']->initTable();
+        $this->app['repository.user']->createTable();
 
         $client = $this->createClient();
 

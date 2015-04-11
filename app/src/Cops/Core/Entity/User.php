@@ -12,6 +12,7 @@ namespace Cops\Core\Entity;
 use Cops\Core\AbstractEntity;
 use Cops\Core\CollectionableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Cops\Core\Entity\UserBookCollection;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Cops\Core\Entity\Exception\UserNotFoundException;
 
@@ -24,9 +25,10 @@ class User extends AbstractEntity implements CollectionableInterface, UserInterf
     /**
      * User roles
      */
-    const ROLE_USER   = 'ROLE_USER';
-    const ROLE_EDIT   = 'ROLE_EDIT';
-    const ROLE_ADMIN  = 'ROLE_ADMIN';
+    const ROLE_USER         = 'ROLE_USER';
+    const ROLE_USER_ACTIONS = 'ROLE_USER_ACTIONS';
+    const ROLE_EDIT         = 'ROLE_EDIT';
+    const ROLE_ADMIN        = 'ROLE_ADMIN';
 
     /**
      * Id
@@ -51,6 +53,22 @@ class User extends AbstractEntity implements CollectionableInterface, UserInterf
      * @var string
      */
     private $roles = array(self::ROLE_USER);
+
+    /**
+     * User books
+     * @var UserBooksCollection
+     */
+    private $userBooks;
+
+    /**
+     * Constructor
+     *
+     * @param UserBookCollection $userBooks
+     */
+    public function __construct(UserBookCollection $userBooks)
+    {
+        $this->userBooks = $userBooks;
+    }
 
     /**
      * Find by username
@@ -313,6 +331,17 @@ class User extends AbstractEntity implements CollectionableInterface, UserInterf
      }
 
     /**
+     * Get user actions role
+     *
+     * @return string
+     */
+     public function getUserACtionsRole()
+     {
+         return self::ROLE_USER_ACTIONS;
+     }
+
+
+    /**
      * Get all roles as array
      *
      * @return array
@@ -320,9 +349,32 @@ class User extends AbstractEntity implements CollectionableInterface, UserInterf
     public function getAllRoles()
     {
         return array(
-            self::ROLE_USER  => self::ROLE_USER,
-            self::ROLE_EDIT  => self::ROLE_EDIT,
-            self::ROLE_ADMIN => self::ROLE_ADMIN,
+            self::ROLE_USER          => self::ROLE_USER,
+            self::ROLE_USER_ACTIONS  => self::ROLE_USER_ACTIONS,
+            self::ROLE_EDIT          => self::ROLE_EDIT,
+            self::ROLE_ADMIN         => self::ROLE_ADMIN,
         );
+    }
+
+    /**
+     * Get user books
+     *
+     * @return \Cops\Core\Entity\UserBookCollection
+     */
+    public function getUserBooks()
+    {
+        return $this->userBooks;
+    }
+
+    /**
+     * Load user books from book Id
+     *
+     * @param int $bookId
+     *
+     * @return \Cops\Core\Entity\UserBookCollection
+     */
+    public function findUserBooksFromBookId($bookId)
+    {
+        return $this->userBooks->findFromBookIdAndUserId($bookId, $this->getId());
     }
 }

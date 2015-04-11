@@ -45,14 +45,16 @@ class SecurityServiceProvider extends BaseProvider
         );
 
         $app['security.role_hierarchy'] = array(
-            'ROLE_ADMIN' => array('ROLE_USER','ROLE_EDIT'),
-            'ROLE_EDIT'  => array('ROLE_USER'),
+            'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_EDIT', 'ROLE_USER_ACTIONS'),
+            'ROLE_EDIT'  => array('ROLE_USER', 'ROLE_USER_ACTIONS'),
+            'ROLE_USER_ACTIONS' => array('ROLE_USER'),
         );
 
         $accessRules = array();
         foreach($app['config']->getValue('data_dir') as $urlPrefix => $dataPath) {
             $accessRules[] = array('^/../'.$urlPrefix.'/admin',       'ROLE_ADMIN');
             $accessRules[] = array('^/../'.$urlPrefix.'/inline-edit', 'ROLE_EDIT');
+            $accessRules[] = array('^/../'.$urlPrefix.'/user-books',  'ROLE_USER_ACTIONS');
         }
         $app['security.access_rules'] = $accessRules;
 

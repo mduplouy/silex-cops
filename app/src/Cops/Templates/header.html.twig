@@ -4,7 +4,7 @@
         {% block quicksearch %}
         <div style="float:right;">
             <form method="post" action="{{ path('search') }}">
-                <input type="text" id="js-search-form-input" name="keywords" value="" class="greyed" size="60" />
+                <input type="text" id="js-search-form-input" name="keywords" value="" class="greyed" size="40" />
                 <input type="hidden" id="js-default-search-value" value="{{ "Author / Serie / Book title"|trans|escape }}" />
                 <input type="submit" value="{{ 'Search'|trans }}" />
             </form>
@@ -28,6 +28,7 @@
                     });
                 });
             </script>
+
         </div>
         {% endblock %}
 
@@ -66,5 +67,18 @@
             | <a href="{{ path('admin_index') }}" title="{{ "Admin home"|trans }}">{{ "Admin home"|trans }}</a>
             {% endblock %}
         {% endif %}
+
+        {% block user_actions %}
+            {% if is_granted('ROLE_USER_ACTIONS') %}
+        <div style="padding:4px 0; font-size:0.82em;">
+            {{ "My books:"|trans }}
+            {% for action, label in app['entity.user-book'].getAvailableLists() %}
+            <a href="{{ path('user_books_list', {'action': action}) }}" class="user_action" title="{{ label|trans }}">{{ label|trans }}</a>
+            {% endfor %}
+        </div>
+            {% endif %}
+        {% endblock %}
+
+        <div class="clear"></div>
 
     </div>

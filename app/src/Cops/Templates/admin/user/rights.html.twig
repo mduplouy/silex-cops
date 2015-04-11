@@ -3,6 +3,7 @@
 {{ "Rights management:"|trans }}
 <ul>
     <li>{{ user.getUserRole|trans}} : {{ "Can visit the website"|trans }}</li>
+    <li>{{ user.getUserActionsRole|trans}} : {{ "Can save lists like 'favorites' or 'to read'"|trans }}</li>
     <li>{{ user.getEditRole|trans}} : {{ "Can modify the books"|trans }}</li>
     <li>{{ user.getAdminRole|trans}} : {{ "Can access the back office"|trans }}</li>
 </ul>

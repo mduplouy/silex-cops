@@ -87,6 +87,22 @@
 
         {% include "book_download_link.html.twig" with {"book": book} %}
 
+        {% if is_granted('ROLE_USER_ACTIONS') %}
+        {% set savedActions = app['security'].getToken().getUser().findUserBooksFromBookId(book.getId()) %}
+        <div id="user_actions">
+            {% for action, label in app['entity.user-book'].getAvailableActions() %}
+                {% set checked = "" %}
+                {% if savedActions.hasOneByAction(action) %}
+                    {% set checked = 'checked="checked"' %}
+                {% endif %}
+            <div class="action">
+                <input type="checkbox" {{ checked }} id="js-{{ action }}" autocomplete="off" data-action="{{ action }}" data-url="{{ path('user_books_action', {'id': book.getId()}) }}" />
+                <label for="js-{{ action }}" class="book_link">{{ label|trans }}</label>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <div id="comments">
             <div class="editable" data-type="textarea" data-name="comment" data-inputclass="comments">{{ book.getComment()|striptags('<br>')|raw }}</div>
         </div>
@@ -178,6 +194,29 @@
             jQuery('#edit-tag').toggle();
             jQuery(this).children('span').toggle();
         })
+
+
+        {% if is_granted('ROLE_USER_ACTIONS') %}
+
+        jQuery('#user_actions input:checked').next('label').addClass('disabled')
+
+        // User book Actions
+        jQuery('#user_actions input').change(function(e) {
+
+            var target = jQuery(this);
+
+            // Do ajax request to process change
+            jQuery.post(
+                target.attr('data-url'),
+                {'action': target.attr('data-action'), 'status': target.is(':checked')},
+                function () {
+                    // Toggle link
+                    target.next('label').toggleClass('disabled');
+                }
+            );
+
+        });
+        {% endif %}
 
     });
 

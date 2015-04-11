@@ -58,6 +58,20 @@ class BookCollection extends AbstractCollection
     }
 
     /**
+     * Find by id
+     *
+     * @param array $ids
+     *
+     * @return $this
+     */
+    public function findById(array $ids)
+    {
+        return $this->setDataFromArray(
+            $this->getRepository()->findById($ids)
+        );
+    }
+
+    /**
      * Find all books
      *
      * @return $this

@@ -6,6 +6,7 @@ Calibre database uses trigger to fill some book informations as title sort, this
 Can visit the website: Peut accéder au site
 Can modify the books: Permet de modifier les livres
 Can access the back office: Peut accéder à l'administration du site
+Can save lists like 'favorites' or 'to read': Peut sauver des listes comme "favoris" ou "à lire"
 Cancel: Annuler
 Confirm delete: Confirmer la suppression
 Database: Base de données
@@ -24,6 +25,7 @@ Role: Rôle
 ROLE_ADMIN: Administrateur
 ROLE_EDIT: Editeur
 ROLE_USER: Utilisateur
+ROLE_USER_ACTIONS: Utilisateur avec actions
 Save: Enregistrer
 Trigger on book insert: Déclencheur de création de livre
 Trigger on book update: Déclencheur de mise à jour

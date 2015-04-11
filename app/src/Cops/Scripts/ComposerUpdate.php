@@ -33,15 +33,41 @@ class ComposerUpdate
     {
         self::$app = require __DIR__ . '/../../../bootstrap.php';
 
-        self::databaseUpdate();
+        $output = new ConsoleOutput;
+
+        try {
+            self::initStorageDir();
+
+            self::initDatabase($output);
+
+        } catch (\Exception $e) {
+
+            $output->writeln(sprintf(
+                '%s Exception thrown in %s:%s',
+                get_class($e),
+                $e->getFile(),
+                $e->getLine()
+            ));
+
+            $output->writeLn(sprintf(
+                'Message was %s',
+                $e->getMessage()
+            ));
+
+            $output->writeLn('Fix and relaunch "composer run-script post-update-cm"');
+
+            $output->writeln('');
+        }
     }
 
     /**
-     * Make any needed change to internal database
+     * Check and create internal database storage dir
      *
      * @return void
+     *
+     * @throws \RuntimeException
      */
-    private static function databaseUpdate()
+    private static function initStorageDir()
     {
         $targetDB = self::$app['config']->getInternalDatabasePath();
         $targetDir = dirname($targetDB);
@@ -52,33 +78,37 @@ class ComposerUpdate
                 mkdir($targetDir, 0755, true);
             }
 
-            $output = new ConsoleOutput;
-            $output->writeln('');
-
-            if (is_dir($targetDir)) {
-                self::$app['repository.user']->initTable();
-
-                $output->writeln('<info>Internal database setup : Done !</info>');
-                $output->writeln(
-                    sprintf(
-                        '<info>Admin login set to %s : %s</info>',
-                        self::$app['config']->getValue('default_login'),
-                        self::$app['config']->getValue('default_password')
-                    )
-                );
-                $output->writeln('');
-
-                return;
+            if (!is_dir($targetDir)) {
+                throw new \RuntimeException(sprintf(
+                    'Unable to create target dir %s please check permissions',
+                    $targetDir
+                ));
             }
+        }
+    }
 
+    /**
+     * Create internal DB if needed
+     *
+     * @return void
+     */
+    private static function initDatabase(ConsoleOutput $output)
+    {
+        if (self::$app['repository.user']->createTable()) {
+            $output->writeln('<info>Internal database setup : Ok !</info>');
             $output->writeln(
                 sprintf(
-                    '<error> Unable to create directory %s, please check permissions, then run
-                    "composer run-script post-update-cmd" command </error>',
-                    realpath($targetDB)
+                    '<info>Admin login set to %s : %s</info>',
+                    self::$app['config']->getValue('default_login'),
+                    self::$app['config']->getValue('default_password')
                 )
             );
-            $output->writeln('');
         }
+
+        if (self::$app['repository.user-book']->createTable()) {
+            $output->writeln('<info>User books read list table creation : Ok !</info>');
+        }
+
+        $output->writeln('Done');
     }
 }
