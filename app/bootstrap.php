@@ -13,16 +13,8 @@ define('DS', DIRECTORY_SEPARATOR);
 
 require_once BASE_DIR.'/vendor/autoload.php';
 
-$app = new \Silex\Application();
+$params = array(
+    'config-file' => __DIR__.'/src/config.ini'
+);
 
-// Load & set configuration
-$app['config'] = new \Cops\Model\Config(BASE_DIR.'app/cops/config.ini', new \Cops\Model\Utils);
-
-if ($app['config']->getValue('debug')) {
-    $app['debug'] = true;
-}
-
-// Define core model
-$app['core'] =  new \Cops\Model\Core($app);
-
-return $app;
+return new \Cops\Core\Application($params);

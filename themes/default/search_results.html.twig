@@ -1,0 +1,21 @@
+{% extends "layout.html.twig" %}
+
+{% set date_format = "m/d/Y"|trans %}
+
+{% block mainBody %}
+<div id="search_results" class="mainContent">
+
+    {% set paginator %}
+    <div class="center">
+        {% include "search/paginator.html.twig" with {"pageNum": pageNum, "resultCount": resultCount, "pageCount": pageCount} %}
+    </div>
+    {% endset %}
+
+    {{ paginator }}
+
+    {% include "book_listing.html.twig" with {"books": books} %}
+
+    {{ paginator }}
+
+</div>
+{% endblock %}

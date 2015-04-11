@@ -120,3 +120,5 @@ Open an issue on github ;)
 [![Code Coverage](https://scrutinizer-ci.com/g/mduplouy/silex-cops/badges/coverage.png?s=7f1e330f0fe400db7beacece040df1ea36e7ce2e)](https://scrutinizer-ci.com/g/mduplouy/silex-cops/)
 
 [![Build Status](https://travis-ci.org/mduplouy/silex-cops.png?branch=master)](https://travis-ci.org/mduplouy/silex-cops)
+
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f143beee-52c5-4ada-9162-1f707650b9d4/mini.png)](https://insight.sensiolabs.com/projects/f143beee-52c5-4ada-9162-1f707650b9d4)

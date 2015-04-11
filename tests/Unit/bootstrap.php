@@ -1,10 +1,9 @@
 <?php
 
-define('BASE_DIR', __DIR__.'/../../');
-define('DS', DIRECTORY_SEPARATOR);
-define('DATABASE', __DIR__ . '/../data/metadata.db');
+$loader = require __DIR__.'/../../vendor/autoload.php';
 
-$loader = require BASE_DIR.'vendor/autoload.php';
-$loader->addPsr4('Cops\\Tests\\', __DIR__, true);
+$loader->addPsr4('Cops\\Tests\\', __DIR__.'/Cops/Tests', true);
 
-return require __DIR__.'/application.php';
+$app = require __DIR__.'/../../app/bootstrap.php';
+
+return $app;

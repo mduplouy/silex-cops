@@ -1,0 +1,9 @@
+{% extends "ajax.html.twig" %}
+
+{% block mainContent %}
+    {% for author in authors %}
+        <div style="width:24%; float:left;">
+            <a href="{{ path("author_detail", {"id": author.getId()}) }}" title="{{ author.getName() }}">{{ author.getSort() }} ({{ author.getBookCount() }})</a><br />
+        </div>
+    {% endfor %}
+{% endblock %}

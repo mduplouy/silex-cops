@@ -1,9 +1,0 @@
-{% extends 'ajax.html' %}
-
-{% block mainContent %}
-    {% for author in authors %}
-        <div style="width:24%; float:left;">
-            <a href="{{ path('author_detail', {'id': author.getId()}) }}" title="{{ author.getName() }}">{{ author.getSort() }} ({{ author.getNumberOfBooks() }})</a><br />
-        </div>
-    {% endfor %}
-{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "opds/layout.xml.twig" %}
+
+{% block entry %}
+<entry>
+    <title>{{ serie.getSort() }}</title>
+    <updated>{{ updated }}</updated>
+    <id>Silex-COPS:Serie:{{ serie.getId() }}</id>
+    <content type="text">{{ serie.getName() }}</content>
+    <link href="{{ url("opds_serie_detail", {"id": serie.getId()}) }}" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+</entry>
+
+    {% for book in books %}
+<entry>
+       {% include "opds/book.xml.twig" with {"book": book} %}
+</entry>
+    {% endfor %}
+{% endblock %}
