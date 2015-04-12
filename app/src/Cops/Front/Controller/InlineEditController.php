@@ -87,7 +87,7 @@ class InlineEditController implements ControllerProviderInterface
      *
      * @return bool
      */
-    protected function updateBookAuthor(Application $app, $book, $authors)
+    protected function updateBookAuthor(Application $app, Book $book, $authors)
     {
         return (bool) $book->updateAuthor($authors);
     }
@@ -101,7 +101,7 @@ class InlineEditController implements ControllerProviderInterface
      *
      * @return bool
      */
-    protected function updateBookTitle(Application $app, $book, $title)
+    protected function updateBookTitle(Application $app, Book $book, $title)
     {
         return (bool) $book->updateTitle($title);
     }
@@ -115,7 +115,7 @@ class InlineEditController implements ControllerProviderInterface
      *
      * @return bool
      */
-    protected function updateBookPubDate(Application $app, $book, $pubDate)
+    protected function updateBookPubDate(Application $app, Book $book, $pubDate)
     {
         // Translate format like in view to build DateTime object
         $dateFormat = $app['translator']->trans("m/d/Y");
@@ -128,12 +128,12 @@ class InlineEditController implements ControllerProviderInterface
      * Update book comment
      *
      * @param Application $app
-     * @param int         $bookId
+     * @param Book        $book
      * @param string      $comment
      *
      * @return bool
      */
-    protected function updateBookComment(Application $app, $book, $comment)
+    protected function updateBookComment(Application $app, Book $book, $comment)
     {
         return (bool) $book->updateComment($comment);
     }

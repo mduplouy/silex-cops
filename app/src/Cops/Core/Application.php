@@ -163,7 +163,7 @@ class Application extends BaseApplication
     private function registerEntities()
     {
         $this['entity.book'] = function ($c) {
-            $book = new \Cops\Core\Entity\Book(
+            $book = new \Cops\Core\Entity\EditableBook(
                 $c['cover'],
                 $c['entity.serie'],
                 $c['collection.author'],

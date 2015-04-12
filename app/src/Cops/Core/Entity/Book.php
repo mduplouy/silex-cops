@@ -199,59 +199,6 @@ class Book extends AbstractEntity implements CollectionableInterface
     }
 
     /**
-     * Update author
-     *
-     * @param string|array $authors
-     * @param int          $bookId
-     *
-     * @return bool
-     */
-    public function updateAuthor($authors)
-    {
-        if (!is_array($authors)) {
-            $authors = explode('&', $authors);
-        }
-
-        return $this->getRepository()->updateAuthor($this->getId(), $authors);
-    }
-
-    /**
-     * Update title
-     *
-     * @param string $title
-     *
-     * @return bool
-     */
-    public function updateTitle($title)
-    {
-        return $this->getRepository()->updateTitle($this, $title);
-    }
-
-    /**
-     * Update publication date
-     *
-     * @param \DateTime $dateTime
-     *
-     * @return bool
-     */
-    public function updatePubDate(\DateTime $dateTime)
-    {
-        return $this->getRepository()->updatePubDate($this->getId(), $dateTime);
-    }
-
-    /**
-     * Update book comment
-     *
-     * @param string $comment
-     *
-     * @return bool
-     */
-    public function updateComment($comment)
-    {
-        return $this->getRepository()->updateComment($this->getId(), $comment);
-    }
-
-    /**
      * Set id
      *
      * @param int $id
