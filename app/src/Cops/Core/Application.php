@@ -82,7 +82,6 @@ class Application extends BaseApplication
             ->register(new SecurityServiceProvider())
             ->register(new DatabaseServiceProvider())
             ->register(new CommandServiceProvider())
-            ->register(new MobileDetectServiceProvider())
             ->register(new SessionServiceProvider)
             ->register(new UrlGeneratorServiceProvider)
             ->register(new TwigServiceProvider(), array(
@@ -102,11 +101,6 @@ class Application extends BaseApplication
                     'default' => $this['config']->getValue('default_lang')
                 )
             ));
-
-        // Detect mobile user agent
-        if ($this['mobile_detect']->isMobile()) {
-            $this['config']->setTemplatePrefix($this['config']->getValue('mobile_theme'));
-        }
 
         $this['translator'] = $this->share($this->extend('translator', function (Translator $translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
