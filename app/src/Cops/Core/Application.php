@@ -237,6 +237,9 @@ class Application extends BaseApplication
                 'mobi' => function () {
                     return new \Cops\Core\Entity\BookFile\Adapter\Mobi;
                 },
+                'azw3' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Azw3;
+                },
             ));
 
             return $factory->setTranslator($c['translator'])
