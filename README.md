@@ -63,7 +63,7 @@ The application is still under heavy development tough the book browsing feature
 
 ### 4. Configure the app
 
-* Give apache access to your Calibre library database change accordingly the **app/cops/config.ini** file (you can also create a symlink)
+* Give apache access to your Calibre library database change accordingly the **app/src/config.ini** file (you can also create a symlink)
 * Check apache user has write permissions on the following folders :
     * /cache (create it if needed)
     * /web/assets/
