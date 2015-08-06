@@ -1,10 +1,35 @@
 filter:
     path: [app/*]
     excluded_paths: [vendor/*, tests/*]
+checks:
+    php:
+        code_rating: true
+        duplication: true
+build:
+    environment:
+        mongodb: false
+        redis: false
+        mysql: false
+        postgresql: false
+    dependencies:
+        before:
+            - 'cat /dev/null'
+        override:
+            - 'cat /dev/null'
+        after:
+            - 'cat /dev/null'
+    tests:
+        override:
+            - 'cat /dev/null'
 tools:
+    php_mess_detector: true
+    php_analyzer: true
+    php_code_sniffer:
+        enabled: true
+        config:
+            standard: PSR2
     external_code_coverage: true
     php_mess_detector: true
-    php_code_sniffer: true
     php_pdepend: true
     php_cpd:
        enabled: true
