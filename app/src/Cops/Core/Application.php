@@ -11,7 +11,6 @@ namespace Cops\Core;
 
 use Silex\Application as BaseApplication;
 use Cops\Core\Provider\DatabaseServiceProvider;
-use Cops\Core\Provider\MobileDetectServiceProvider;
 use Cops\Command\Provider\CommandServiceProvider;
 use Cops\Core\Provider\UrlGeneratorServiceProvider;
 use Cops\Core\Provider\TranslationServiceProvider;
