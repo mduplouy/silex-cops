@@ -141,11 +141,16 @@ class BookCollection extends AbstractCollection
         $authors = $book->getAuthors();
 
         if ($authors->count() == 1) {
+
+            // Force int cast
+            $authorId = $authors->getAllIds();
+            $authorId = current($authorId);
+
             $this->getRepository()
                 ->setExcludedBookId($book->getId())
                 ->setExcludedSerieId($book->getSerie()->getId());
             // Only one id in collection
-            $this->findByAuthorId($authors->getAllIds());
+            $this->findByAuthorId($authorId);
         }
 
         return $this;
