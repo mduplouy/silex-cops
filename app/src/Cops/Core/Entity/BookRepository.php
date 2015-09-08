@@ -237,7 +237,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
 
         $qb->orWhere($andPath, $andSerie);
 
-         return $this->paginate($qb, array('select', 'orderBy'))
+         return $this->paginate($qb)
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
