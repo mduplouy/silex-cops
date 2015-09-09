@@ -61,7 +61,7 @@ abstract class AbstractCollection extends AbstractEntity implements \IteratorAgg
     /**
      * Set data from array
      *
-     * @param array $data
+     * @param array $elementsData
      *
      * @return self
      */

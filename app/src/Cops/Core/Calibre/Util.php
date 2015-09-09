@@ -234,7 +234,7 @@ class Util extends AbstractEntity
         foreach($patterns as $pattern) {
             $pattern = sprintf('/^(%s)(.*)/i', $pattern);
             $titleSort = preg_replace($pattern, '\2, \1', $title, -1, $count);
-            if ($count) {
+            if ($count > 0) {
                 break;
             }
         }

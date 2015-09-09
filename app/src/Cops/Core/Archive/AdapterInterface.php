@@ -49,7 +49,7 @@ interface AdapterInterface
      *
      * @param  BookCollection $collection
      *
-     * @return ArchiveInterface
+     * @return self
      */
     public function addFiles(BookFileCollection $bookfiles);
 

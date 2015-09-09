@@ -122,14 +122,16 @@ class AuthorRepository extends AbstractRepository
     /**
      * Delete author
      *
+     * @param  Author $author
+     *
      * @return bool
      */
-    public function delete()
+    public function delete(Author $author)
     {
         return (bool) $this->getConnection()
             ->delete('authors',
             array(
-                'id' => $this->getEntity()->getId(),
+                'id' => $author->getId(),
             ),
             array(
                 PDO::PARAM_INT,

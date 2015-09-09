@@ -20,7 +20,7 @@ use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
-use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\Translator as SymfonyTranslator;
 use Cops\Back\Controller as Back;
 use Cops\Front\Controller as Front;
 use Cops\Core\ApplicationAwareInterface;
@@ -51,7 +51,7 @@ class Application extends BaseApplication
             return new \Cops\Core\Config($app['config-file'], $c['string-utils'], $overrideConfig);
         });
 
-        $this['string-utils'] = $this->share(function ($c) {
+        $this['string-utils'] = $this->share(function () {
             return new \Cops\Core\StringUtils;
         });
 
@@ -92,16 +92,14 @@ class Application extends BaseApplication
                     'cache' => realpath(BASE_DIR . 'cache'),
                 )
             ))
-            ->register(new FormServiceProvider())
-            ->register(new ValidatorServiceProvider())
+            ->register(new FormServiceProvider)
+            ->register(new ValidatorServiceProvider)
             // Translator
-            ->register(new TranslationServiceProvider(
-                array(
-                    'default' => $this['config']->getValue('default_lang')
-                )
+            ->register(new TranslationServiceProvider, array(
+                'default' => $this['config']->getValue('default_lang')
             ));
 
-        $this['translator'] = $this->share($this->extend('translator', function (Translator $translator) {
+        $this['translator'] = $this->share($this->extend('translator', function (SymfonyTranslator $translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
             foreach (array('messages', 'admin', 'validators') as $domain) {
                 $translator->addResource('yaml', BASE_DIR.'locales/fr/'.$domain.'.yml', 'fr', $domain);
@@ -133,19 +131,19 @@ class Application extends BaseApplication
         // Admin related controllers
         $adminPath = $this['config']->getAdminPath();
         // Keep these up to avoid side effects on admin panel
-        $this->mount($adminPath.'/{_locale}',                      new Back\IndexController($this));
-        $this->mount($adminPath.'/{_locale}/{database}/database/', new Back\DatabaseController($this));
-        $this->mount($adminPath.'/{_locale}/users/',               new Back\UserController($this));
+        $this->mount($adminPath.'/{_locale}',                      new Back\IndexController);
+        $this->mount($adminPath.'/{_locale}/{database}/database/', new Back\DatabaseController);
+        $this->mount($adminPath.'/{_locale}/users/',               new Back\UserController);
 
         // Set the mount points for the controllers with database prefix
-        $this->mount('{database}/{_locale}/',             new Front\IndexController($this));
-        $this->mount('{database}/{_locale}/book/',        new Front\BookController($this));
-        $this->mount('{database}/{_locale}/serie/',       new Front\SerieController($this));
-        $this->mount('{database}/{_locale}/author/',      new Front\AuthorController($this));
-        $this->mount('{database}/{_locale}/tag/',         new Front\TagController($this));
-        $this->mount('{database}/{_locale}/search/',      new Front\SearchController($this));
-        $this->mount('{database}/{_locale}/inline-edit/', new Front\InlineEditController($this));
-        $this->mount('{database}/{_locale}/opds/',        new Front\OpdsController($this));
+        $this->mount('{database}/{_locale}/',             new Front\IndexController);
+        $this->mount('{database}/{_locale}/book/',        new Front\BookController);
+        $this->mount('{database}/{_locale}/serie/',       new Front\SerieController);
+        $this->mount('{database}/{_locale}/author/',      new Front\AuthorController);
+        $this->mount('{database}/{_locale}/tag/',         new Front\TagController);
+        $this->mount('{database}/{_locale}/search/',      new Front\SearchController);
+        $this->mount('{database}/{_locale}/inline-edit/', new Front\InlineEditController);
+        $this->mount('{database}/{_locale}/opds/',        new Front\OpdsController);
     }
 
     /**
@@ -301,11 +299,11 @@ class Application extends BaseApplication
             return new \Cops\Core\Entity\TagRepository;
         });
 
-        $this['repository.bookfile'] = $this->share(function ($c) {
+        $this['repository.bookfile'] = $this->share(function () {
             return new \Cops\Core\Entity\BookFile\BookFileRepository;
         });
 
-        $this['repository.user'] = $this->share(function ($c) {
+        $this['repository.user'] = $this->share(function () {
             return new \Cops\Core\Entity\UserRepository;
         });
 

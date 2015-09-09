@@ -40,14 +40,14 @@ class Author extends AbstractBookCount implements CollectionableInterface
 
     /**
      * Calibre instance for sort operations
-     * @var Calibre
+     * @var CalibreUtil
      */
     private $calibre;
 
     /**
      * Constructor
      *
-     * @param Calibre $calibre
+     * @param CalibreUtil $calibre
      */
     public function __construct(CalibreUtil $calibre)
     {
