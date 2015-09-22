@@ -56,7 +56,7 @@ class User extends AbstractEntity implements CollectionableInterface, UserInterf
 
     /**
      * User books
-     * @var UserBooksCollection
+     * @var UserBookCollection
      */
     private $userBooks;
 

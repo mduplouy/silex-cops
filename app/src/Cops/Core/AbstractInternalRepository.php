@@ -16,9 +16,7 @@ use Cops\Core\RepositoryInterface;
  * Internal Repository abstract class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class AbstractInternalRepository
-    extends AbstractRepository
-    implements InternalRepositoryInterface
+abstract class AbstractInternalRepository extends AbstractRepository implements InternalRepositoryInterface
 {
     /**
      * Get the DB connection instance
@@ -41,7 +39,7 @@ abstract class AbstractInternalRepository
         $schema = $this->getConnection()->getSchemaManager();
 
         $created = false;
-        if (!$schema->tablesExist($this->getTableName())) {
+        if (!$schema->tablesExist(array($this->getTableName()))) {
             $schema->createTable($this->getTableStructure());
             $created = true;
         }
@@ -58,7 +56,7 @@ abstract class AbstractInternalRepository
     {
         $schema = $this->getConnection()->getSchemaManager();
 
-        if ($schema->tablesExist($this->getTableName())) {
+        if ($schema->tablesExist(array($this->getTableName()))) {
             $this->getConnection()
                 ->getSchemaManager()
                 ->dropTable($this->getTableName());
