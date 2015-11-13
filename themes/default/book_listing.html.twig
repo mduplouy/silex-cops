@@ -4,9 +4,11 @@
 
     <div class="book ui-widget-content ui-state-active">
 
+        {% block first_column %}{% endblock %}
+
         {% include "book_cover.html.twig" with {"book": book} %}
 
-        <div style="margin-left:100px;">
+        <div style="margin-left:125px;">
 
             <h3><a href="{{ path("book_detail", {"id": book.getId()}) }}" title="{{ "See book detail"|trans }}">
                 {% if serie.getId() %}{{ serie.getName() }} {{ "T"|trans }}.{{ book.getSeriesIndex()|number_format(0) }} - {% endif %}
@@ -15,7 +17,6 @@
 
             <div class="comment small">{{ book.getComment()|striptags }}</div>
             {% include "book_download_link.html.twig" with {"book": book} %}
-
 
             {% if serie.getId() %}
                 {% set serieLinkText = "See the books from serie %s"|trans|format(serie.getName()) %}

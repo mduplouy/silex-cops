@@ -13,9 +13,47 @@
 
     {{ paginator }}
 
-    {% include "book_listing.html.twig" with {"books": books} %}
+    <form method="post" action="">
+
+        <div id="user-actions">
+            <p class="small" style="margin-bottom:0">{{ "Select / Deselect all"|trans }}</p>
+
+            <input id="js-select-all" type="checkbox" style="margin-left:13px; margin-bottom:-8px;" />
+
+            <input name="remove" type="submit" class="ui-button" style="margin-left:85px; margin-bottom:8px; padding:1px 1px 0 1px;" id="js-submit-multi" value="{{ "Remove selection"|trans }}" />
+
+            {% for archive in app["factory.archive"].getAdapterkeys() %}
+            <input type="submit" name="download_{{ archive }}" class="ui-button" style="margin-bottom:8px; padding:1px 1px 0 1px;" id="js-submit-download" value="{{ "Download as %s"|trans|format(archive) }}" />
+            {% endfor %}
+
+        </div>
+
+        <div id="user-books">
+            {% include "user_books_listing.html.twig" with {"books": books} %}
+        </div>
+
+    </form>
 
     {{ paginator }}
 
 </div>
+
+<script type="text/javascript">
+
+    var buttons = jQuery(".ui-button", jQuery("#user-actions"));
+    var context = jQuery("#user-books");
+
+    buttons.addClass("ui-state-disabled");
+
+    jQuery("input", context).change(function() {
+        if (jQuery("input:checked", context).length > 0) {
+            buttons.removeClass("ui-state-disabled");
+        } else {
+            buttons.addClass("ui-state-disabled");
+        }
+    });
+
+    jQuery("input:checked:eq(0)", context).change();
+
+</script>
 {% endblock %}

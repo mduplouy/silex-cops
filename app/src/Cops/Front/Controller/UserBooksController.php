@@ -11,6 +11,10 @@ namespace Cops\Front\Controller;
 
 use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
+use Cops\Core\Entity\User;
+use Cops\Core\Entity\UserBookCollection;
+use Cops\Core\Entity\BookFile\BookFileCollection;
+use Cops\Core\Archive\AdapterInterface as ArchiveAdapterInterface;
 
 /**
  * User Books controller class
@@ -36,6 +40,10 @@ class UserBooksController implements ControllerProviderInterface
             ->assert('page', '\d+')
             ->value('page', 1)
             ->bind('user_books_list');
+
+        $controller->post('/{action}', __CLASS__.'::selectionAction')
+            ->assert('action', implode('|', array_keys($actions)))
+            ->bind('user_books_selection_action');
 
         return $controller;
     }
@@ -79,6 +87,7 @@ class UserBooksController implements ControllerProviderInterface
      *
      * @param Application $app
      * @param string      $action
+     * @param int         $page
      *
      * @return string
      */
@@ -112,6 +121,87 @@ class UserBooksController implements ControllerProviderInterface
                 'pageCount'  => ceil($totalBooks / $itemPerPage),
             )
         );
+    }
 
+    /**
+     * Make changes to selection
+     *
+     * @param Application $app
+     * @param string      $action
+     *
+     * @return string
+     */
+    public function selectionAction(Application $app, $action)
+    {
+        $user = $app['security']->getToken()->getUser();
+
+        $modifiedBooks = $app['collection.user-book'];
+
+        $userBooks = $app['collection.user-book']
+            ->findFromUserIdAndAction($user->getId(), $action);
+
+        foreach ($app['request']->get('book_id', array()) as $bookId) {
+
+            $userBook = $app['entity.user-book'];
+
+            $userBook->setUserId($user->getId())
+                ->setBookId($bookId)
+                ->setAction($action);
+
+            // Check book is in the loaded collection
+            if ($userBooks->getById($userBook->getId())) {
+                $modifiedBooks->add($userBook);
+            }
+        }
+
+        // Handle download
+        if (preg_match('/download_(\w+)/', $app['request']->getContent(), $match)) {
+            $archive = $app['factory.archive']->getInstance($match[1]);
+
+            $books = $app['collection.book']
+                ->findById($userBooks->getAllBookIds());
+
+            $bookFiles = $app['collection.bookfile']->findFromBooks($books);
+
+            $response = $this->downloadSelection($app, $bookFiles, $archive);
+        }
+
+        // Handle removal
+        if ($app['request']->get('remove', false)) {
+            $modifiedBooks->delete();
+
+            $response = $app->redirect(
+                $app['url_generator']->generate('user_books_list', array('action' => $action))
+            );
+        }
+
+
+        return $output;
+    }
+
+    /**
+     * Download selected books
+     *
+     * @param Application              $app
+     * @param BookFileCollection       $bookFiles
+     * @param ArchiveAdapterInterface  $archive
+     *
+     * @return null
+     */
+    protected function downloadSelection(
+        Application $app,
+        BookFileCollection $bookFiles,
+        ArchiveAdapterInterface $archive
+    ) {
+
+        $archive = $archive->setFiles($bookFiles)
+            ->generateArchive();
+
+        return $app
+            ->sendFile($archive)
+            ->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                'SELECTION'
+            );
     }
 }

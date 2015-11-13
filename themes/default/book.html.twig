@@ -36,8 +36,11 @@
                 {% if nbBooks > 1 %}
                 <br />
                 <span class="small">{{"Download author's books (%s) as archive:"|trans|format(nbBooks) }}
-                <a href="{{ path('author_download', {id: author.getId(), format: "zip"}) }}">zip</a> /
-                <a href="{{ path('author_download', {id: author.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+                    {% for archive in app["factory.archive"].getAdapterkeys() %}
+                        <a href="{{ path('author_download', {id: author.getId(), format: archive}) }}">{{ archive }}</a>
+                        {% if loop.revindex0 %}/ {% endif %}
+                    {% endfor %}
+                </span>
                 {% endif %}
             </p>
         {% endif %}
@@ -65,7 +68,7 @@
             {% endfor %}
             </span>
 
-            <a id="edit-tag" style="display:none;" data-name="tags" data-type="select2" href="javascript: void(0);" data-viewseparator=", ">
+            <a id="edit-tag" style="display:none;" data-name="tags" data-type="select2" href="#" data-viewseparator=", ">
                 {% for tag in tags %}
                     {{ tag.getName() }}{% if not(loop.last) %}, {% endif %}
                 {% endfor %}

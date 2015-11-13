@@ -27,6 +27,7 @@ Authors: Auteurs
 Authors beginning by %s: Auteurs commençant par %s
 Disable inline edit: Désactiver le mode édition
 Download all books (%s) as archive:: Télécharger tous les livres (%s) comme archive :
+Download as %s: Télécharger en %s
 Download author's books (%s) as archive:: Télécharger tous les livres de cet auteur (%s) comme archive :
 Download cart: Liste de téléchargement
 Download in %s format (%s): Télécharger au format %s (%s)
@@ -47,6 +48,7 @@ Page %d on %d (%d results): Page %d sur %d (%d résultats)
 Page %d on %d: Page %d sur %d
 Previous: Précédent
 Publication date:: Date de publication :
+Remove selection: Retirer la sélection
 Search: Rechercher
 Search results: Résultats de la recherche
 See all books from: Voir tous les livres de

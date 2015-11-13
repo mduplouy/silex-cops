@@ -1,0 +1,7 @@
+{% extends "book_listing.html.twig" %}
+
+{% block first_column %}
+    <div style="float:left; clear:left; margin-left:11px; margin-top:4px;">
+        <input type="checkbox" name="book_id[]" value="{{ book.getId() }}"  style="margin:0;" />
+    </div>
+{% endblock %}

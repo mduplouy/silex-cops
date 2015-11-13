@@ -163,7 +163,7 @@ abstract class AbstractAdapter extends AbstractEntity implements CollectionableI
      */
     public function setUncompressedSize($uncompressedSize)
     {
-        $this->uncompressedSize = (int)$uncompressedSize;
+        $this->uncompressedSize = (int) $uncompressedSize;
 
         return $this;
     }

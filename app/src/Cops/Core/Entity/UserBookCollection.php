@@ -11,6 +11,7 @@ namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractCollection;
 use Cops\Core\CollectionableInterface;
+use Cops\Core\Entity\UserBook;
 
 /**
  * User book collection
@@ -108,5 +109,19 @@ class UserBookCollection extends AbstractCollection
         return $this->setDataFromArray(
             $this->getRepository()->findFromBookIdAndUserId($bookId, $userId)
         );
+    }
+
+    /**
+     * Delete existing collection content
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $repository = $this->getRepository();
+
+        foreach ($this as $book) {
+            $repository->delete($book);
+        }
     }
 }

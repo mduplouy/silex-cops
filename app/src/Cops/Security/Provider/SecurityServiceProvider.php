@@ -30,17 +30,21 @@ class SecurityServiceProvider extends BaseProvider
             return new \Cops\Security\User\Provider($app['entity.user']);
         });
 
-        // Register security provider
         $app['security.firewalls'] = array(
             'admin' => array(
                 'pattern' => '^/admin',
-                'http' => true,
-                'users' => $app['provider.user'],
+                'http'    => true,
+                'users'   => $app['provider.user'],
+            ),
+            'user-books' => array(
+                'pattern' => '^/user-books',
+                'http'    => true,
+                'users'   => $app['provider.user'],
             ),
             'default' => array(
                 'pattern' => '^.*$',
-                'http' => true,
-                'users' => $app['provider.user'],
+                'http'    => true,
+                'users'   => $app['provider.user'],
             ),
         );
 
