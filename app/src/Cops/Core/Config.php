@@ -24,40 +24,48 @@ class Config
      * @var array
      */
     private $configValues = array(
-        // common
-        'last_added'              => 10,
+        // Language
+        'default_lang'            => 'fr',
 
-        // web
-        'theme'                   => 'default',
-        'mobile_theme'            => 'mobile',
-
-        // path
-        'public_dir'              => 'web',
-        'data_dir'                => array('data'),
-        'internal_db'             => 'data/silexCops',
-
-        // email
-        'sender'                  => 'php',
-
-        // misc
-        'debug'                   => false,
-        'use_rewrite'             => false,
-
-        // cover
-        'image_processor'         => 'gd',
-        'cover_width'             => 320,
-        'cover_height'            => 240,
-
-        // Author
+        // Page size
+        'last_added'              => 15,
+        'by_date_page_size'       => 25,
         'author_page_size'        => 25,
-
-        // tags
+        'tag_page_size'           => 25,
+        'serie_page_size'         => 25,
         'homepage_tags'           => 30,
         'book_per_page'           => 30,
 
+        // Paths
+        'theme'                   => 'default',
+        'mobile_theme'            => 'mobile',
+        'public_dir'              => 'web',
+        'data_dir'                => array('default' => 'data'),
+        'internal_db'             => 'data/silexCops',
+
+        // Email
+        'sender'                  => 'php',
+
+        // cover
+        'image_processor'         => 'gd',
+        'cover_width'             => 160,
+        'cover_height'            => 260,
+
         // admin
-        'path'                    => '/admin',
-        'inline_edit'             => false,
+        'admin_path'              => '/admin',
+        'default_login'           => 'admin',
+        'default_password'        => 'password',
+
+        // Inline edit
+        'inline_edit'             => true,
+
+        // Misc.
+        'debug'                   => false,
+        'use_rewrite'             => false,
+
+        // Search
+        'search_engine'           => 'sqlite',
+        'search_page_size'        => 25,
 
         // calibre
         'author_sort_copy_method' => 'invert',
@@ -87,19 +95,31 @@ class Config
     {
         $this->utils = $stringUtils;
 
-        $confValues = parse_ini_file($configFilePath, false);
-
-        if (is_array($confValues)) {
-            $this->configValues = array_merge($this->configValues, $confValues);
-        }
-
-        $this->configValues = array_merge($this->configValues, $override);
+        $this->readParams($configFilePath, $override);
 
         if (!is_array($this->configValues['data_dir'])) {
             $this->configValues['data_dir'] = array('default' => $this->configValues['data_dir']);
         }
 
         $this->initDatabases();
+    }
+
+    /**
+     * Read params and handle override
+     *
+     * @param string $configFilePath
+     * @param array  $override
+     *
+     * @return void
+     */
+    protected function readParams($configFilePath, array $override)
+    {
+        if (file_exists($configFilePath)) {
+            $confValues = (array) parse_ini_file($configFilePath, false);
+            $this->configValues = array_merge($this->configValues, $confValues);
+        }
+
+        $this->configValues = array_merge($this->configValues, $override);
     }
 
     /**

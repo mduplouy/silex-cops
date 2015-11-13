@@ -38,8 +38,8 @@ sender            = "sendmail"         ; Email sender (sendmail | php | smtp)
 from              = "me@you.com"       ; From email address
 
 [misc]
-debug             = true               ; Set to true to activate debug mode
-use_rewrite       = false              ; Put this to true if mod_rewrite is enabled
+debug             = false               ; Set to true to activate debug mode
+use_rewrite       = true                ; Put this to true if mod_rewrite is enabled
 
 [covers]
 image_processor   = gd                 ; The image rendering processor (gd | imagick)
