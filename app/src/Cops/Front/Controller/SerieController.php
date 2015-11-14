@@ -49,7 +49,7 @@ class SerieController implements ControllerProviderInterface
      * List series action
      *
      * @param Application $app
-     * @param string|0    $letter
+     * @param string|int  $letter
      *
      * @return string
      */

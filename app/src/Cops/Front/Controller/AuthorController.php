@@ -83,7 +83,7 @@ class AuthorController implements ControllerProviderInterface
      * List author action
      *
      * @param Silex\Application $app
-     * @param string|0          $letter
+     * @param string|int        $letter
      *
      * @return string
      */
