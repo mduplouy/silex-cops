@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Cops\Core\Application;
 use Cops\Core\Entity\BookCollection;
-use Symfony\Component\Console\Helper\ProgressHelper;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Thumbnail generation command
@@ -115,8 +115,8 @@ class GenerateThumbnails extends Command
         $allBooks = $this->app['collection.book']->findAll();
 
         // Progress bar
-        $progress = $this->getHelperSet()->get('progress');
-        $progress->start($output, $allBooks->count());
+        $progress = new ProgressBar($output);
+        $progress->start($allBooks->count());
 
         $this->processBooks($allBooks, $progress);
 
@@ -131,11 +131,11 @@ class GenerateThumbnails extends Command
      * Process books
      *
      * @param BookCollection $books
-     * @param ProgressHelper $progress
+     * @param ProgressBar    $progressBar
      *
      * @return void
      */
-    private function processBooks(BookCollection $books, ProgressHelper $progress)
+    private function processBooks(BookCollection $books, ProgressBar $progressBar)
     {
         foreach ($books as $book) {
 
@@ -144,7 +144,7 @@ class GenerateThumbnails extends Command
             $cover->getThumbnailPath(160, 260);
             $cover->getThumbnailPath(80, 120);
 
-            $progress->advance();
+            $progressBar->advance();
         }
     }
 }
