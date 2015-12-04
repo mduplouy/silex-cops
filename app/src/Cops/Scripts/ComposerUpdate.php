@@ -27,6 +27,8 @@ class ComposerUpdate
     /**
      * Launch update (triggered after any composer install/update command)
      *
+     * @param  Event $event
+     *
      * @return void
      */
     public static function update(Event $event)
@@ -54,7 +56,7 @@ class ComposerUpdate
                 $e->getMessage()
             ));
 
-            $output->writeLn('Fix and relaunch "composer run-script post-update-cm"');
+            $output->writeLn('Fix and relaunch "composer run-script post-update-cmd"');
 
             $output->writeln('');
         }
@@ -89,6 +91,8 @@ class ComposerUpdate
 
     /**
      * Create internal DB if needed
+     *
+     * @param  ConsoleOutput $output
      *
      * @return void
      */
