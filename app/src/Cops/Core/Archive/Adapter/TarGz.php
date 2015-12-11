@@ -25,7 +25,7 @@ class TarGz extends AbstractAdapter implements AdapterInterface
      */
     public function getExtension()
     {
-        return '.tar.gz';
+        return '.tgz';
     }
 
     /**
@@ -46,7 +46,7 @@ class TarGz extends AbstractAdapter implements AdapterInterface
             }
         }
 
-        $fileName = $archive.'.gz';
+        $fileName = $archive.'.tgz';
 
         file_put_contents($fileName , gzencode(file_get_contents($archive)));
 

@@ -87,6 +87,8 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
 
         if (count($bookId) > 1) {
             $qb = $this->paginate($qb);
+        } else {
+            $this->totalRows = 1;
         }
 
         return $qb->execute()

@@ -9,9 +9,6 @@
  */
 namespace Cops\Core;
 
-use Cops\Core\AbstractRepository;
-use Cops\Core\RepositoryInterface;
-
 /**
  * Internal Repository abstract class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>

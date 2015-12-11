@@ -68,8 +68,7 @@ class BookFileRepository extends AbstractRepository
         return $this->getBaseSelect()
             ->addSelect('books.path as directory')
             ->where('main.book = :book_id')
-            ->innerJoin('main', 'data',  '', 'data.book = main.book')
-            ->innerJoin('main', 'books', '', 'books.id = data.book')
+            ->innerJoin('main', 'books', '', 'books.id = main.book')
             ->setParameter('book_id', $bookId, PDO::PARAM_INT)
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
@@ -85,7 +84,9 @@ class BookFileRepository extends AbstractRepository
     public function findFromBooks(BookCollection $books)
     {
         return $this->getBaseSelect()
+            ->addSelect('books.path as directory')
             ->where('book_id IN (:book_id)')
+            ->innerJoin('main', 'books', '', 'books.id = main.book')
             ->setParameter('book_id', $books->getAllIds(), Connection::PARAM_INT_ARRAY)
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);

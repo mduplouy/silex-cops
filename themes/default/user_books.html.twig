@@ -7,7 +7,7 @@
 
     {% set paginator %}
     <div class="center">
-        {% include "books_by_date/paginator.html.twig" with {"pageNum": pageNum, "totalBooks": totalBooks, "pageCount": pageCount} %}
+        {% include "user_books/paginator.html.twig" with {"action": action, "pageNum": pageNum, "totalBooks": totalBooks, "pageCount": pageCount} %}
     </div>
     {% endset %}
 
@@ -40,20 +40,24 @@
 
 <script type="text/javascript">
 
-    var buttons = jQuery(".ui-button", jQuery("#user-actions"));
+    var buttons = jQuery(".ui-button", jQuery("#user-actions")).attr('disabled', 'disabled');
     var context = jQuery("#user-books");
 
-    buttons.addClass("ui-state-disabled");
-
-    jQuery("input", context).change(function() {
-        if (jQuery("input:checked", context).length > 0) {
-            buttons.removeClass("ui-state-disabled");
+    jQuery("div.book > div > input", context).change(function() {
+        console.log('change');
+        if (jQuery("div.book > div > input:checked", context).length > 0) {
+            buttons.removeClass("ui-state-disabled").removeAttr('disabled');
         } else {
-            buttons.addClass("ui-state-disabled");
+            buttons.addClass("ui-state-disabled").attr('disabled', 'disabled');
         }
     });
 
-    jQuery("input:checked:eq(0)", context).change();
+    jQuery("#js-select-all").change(function() {
+        jQuery("div.book > div > input", context).prop("checked", jQuery(this).prop("checked"));
+        jQuery("div.book > div > input:eq(0)", context).change();
+    });
+
+    jQuery("div.book > div > input:eq(0)", context).change();
 
 </script>
 {% endblock %}

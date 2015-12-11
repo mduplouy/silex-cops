@@ -11,7 +11,6 @@ namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractCollection;
 use Cops\Core\CollectionableInterface;
-use Cops\Core\Entity\UserBook;
 
 /**
  * User book collection

@@ -15,6 +15,7 @@ use Cops\Core\Entity\User;
 use Cops\Core\Entity\UserBookCollection;
 use Cops\Core\Entity\BookFile\BookFileCollection;
 use Cops\Core\Archive\AdapterInterface as ArchiveAdapterInterface;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * User Books controller class
@@ -98,27 +99,54 @@ class UserBooksController implements ControllerProviderInterface
         $userBooks = $app['collection.user-book']
             ->findFromUserIdAndAction($user->getId(), $action);
 
+        $actions = $app['entity.user-book']->getAvailableLists();
+        $pageTitle = $app['translator']->trans($actions[$action]);
+
+        if (!$userBooks->count()) {
+            return $app['twig']->render(
+                sprintf('%suser_books_empty.html.twig', $app['config']->getTemplatePrefix()),
+                array(
+                    'pageTitle'  => $pageTitle,
+                )
+            );
+        }
+
+        return $this->displayListAction($app, $userBooks, $action, $page, $pageTitle);
+    }
+
+    /**
+     * Display list action
+     *
+     * @param Application        $app
+     * @param UserBookCollection $userBooks
+     * @param string             $action
+     * @param int                $page
+     * @param string             $pageTitle
+     *
+     * @return string
+     */
+    protected function displayListAction(Application $app, UserBookCollection $userBooks, $action, $page, $pageTitle)
+    {
+        $itemsPerPage = $app['config']->getValue('user_actions_page_size');
+
         $books = $app['collection.book']
-            ->setFirstResult(0)
-            ->setMaxResults(25)
+            ->setFirstResult(($page - 1) * $itemsPerPage)
+            ->setMaxResults($itemsPerPage)
             ->findById($userBooks->getAllBookIds())
             ->addAuthors($app['collection.author'])
             ->addBookFiles($app['collection.bookfile']);
 
         $totalBooks = $books->getRepository()->getTotalRows();
-        $itemPerPage = $app['config']->getValue('user_actions_page_size');
-
-        $actions = $app['entity.user-book']->getAvailableLists();
 
         return $app['twig']->render(
             sprintf('%suser_books_%s.html.twig', $app['config']->getTemplatePrefix(), $action),
             array(
                 'books'      => $books,
                 'totalBooks' => $totalBooks,
-                'pageTitle'  => $app['translator']->trans($actions[$action]),
+                'pageTitle'  => $pageTitle,
                 'pageNum'    => $page,
                 'totalRows'  => $totalBooks,
-                'pageCount'  => ceil($totalBooks / $itemPerPage),
+                'pageCount'  => ceil($totalBooks / $itemsPerPage),
             )
         );
     }
@@ -159,7 +187,7 @@ class UserBooksController implements ControllerProviderInterface
             $archive = $app['factory.archive']->getInstance($match[1]);
 
             $books = $app['collection.book']
-                ->findById($userBooks->getAllBookIds());
+                ->findById($modifiedBooks->getAllBookIds());
 
             $bookFiles = $app['collection.bookfile']->findFromBooks($books);
 
@@ -175,8 +203,7 @@ class UserBooksController implements ControllerProviderInterface
             );
         }
 
-
-        return $output;
+        return $response;
     }
 
     /**
@@ -194,14 +221,14 @@ class UserBooksController implements ControllerProviderInterface
         ArchiveAdapterInterface $archive
     ) {
 
-        $archive = $archive->setFiles($bookFiles)
+        $archiveFile = $archive->setFiles($bookFiles)
             ->generateArchive();
 
         return $app
-            ->sendFile($archive)
+            ->sendFile($archiveFile)
             ->setContentDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                'SELECTION'
+                sprintf('selection%s', $archive->getExtension())
             );
     }
 }
