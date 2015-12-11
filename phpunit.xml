@@ -30,10 +30,13 @@
     </testsuites>
 
     <filter>
-      <blacklist>
-        <directory suffix=".php">./tests/Unit/application.php</directory>
-        <directory suffix=".php">vendor/*</directory>
-        <directory suffix=".php">cache/*</directory>
-      </blacklist>
+        <blacklist>
+            <directory suffix=".php">./tests/Unit/application.php</directory>
+            <directory suffix=".php">vendor/*</directory>
+            <directory suffix=".php">cache/*</directory>
+        </blacklist>
+        <whitelist>
+            <directory suffix=".pĥp">app/src/*</directory>
+        </whitelist>
     </filter>
 </phpunit>
