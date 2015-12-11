@@ -7,7 +7,7 @@ php:
   - 5.4
   - 5.5
 
-install: composer install --dev
+install: composer install
 
 script: ./vendor/bin/phpunit --coverage-clover=coverage.clover
 
