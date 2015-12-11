@@ -30,9 +30,11 @@ class SecurityServiceProvider extends BaseProvider
             return new \Cops\Security\User\Provider($app['entity.user']);
         });
 
+        $adminPath = '^'.$app['config']->getValue('admin_path');
+
         $app['security.firewalls'] = array(
             'admin' => array(
-                'pattern' => '^/admin',
+                'pattern' => $adminPath,
                 'http'    => true,
                 'users'   => $app['provider.user'],
             ),
@@ -54,9 +56,8 @@ class SecurityServiceProvider extends BaseProvider
             'ROLE_USER_ACTIONS' => array('ROLE_USER'),
         );
 
-        $accessRules = array();
+        $accessRules[] = array($adminPath, 'ROLE_ADMIN');
         foreach($app['config']->getValue('data_dir') as $urlPrefix => $dataPath) {
-            $accessRules[] = array('^/../'.$urlPrefix.'/admin',       'ROLE_ADMIN');
             $accessRules[] = array('^/../'.$urlPrefix.'/inline-edit', 'ROLE_EDIT');
             $accessRules[] = array('^/../'.$urlPrefix.'/user-books',  'ROLE_USER_ACTIONS');
         }
