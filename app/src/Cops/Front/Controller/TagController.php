@@ -60,7 +60,9 @@ class TagController implements ControllerProviderInterface
             $books = $app['collection.book']
                 ->setFirstResult(($page - 1) * $itemsPerPage)
                 ->setMaxResults($itemsPerPage)
-                ->findByTagId($id);
+                ->findByTagId($id)
+                ->addAuthors($app['collection.author'])
+                ->addBookFiles($app['collection.bookfile']);
 
             $totalBooks = $books->getRepository()->getTotalRows();
 
