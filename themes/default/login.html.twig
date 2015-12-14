@@ -1,0 +1,40 @@
+{% extends "layout.html.twig" %}
+
+{% block head %}
+    {% include "head.html.twig" with {'pageTitle': 'Login'|trans} %}
+{% endblock %}
+
+{% block header %}
+    <div id="header" class="ui-corner-all ui-state-active">
+        <a href="{{ path('homepage') }}">SilexCOPS</a>
+        <div class="clear"></div>
+    </div>
+{% endblock %}
+
+{% block mainBody %}
+<div id="login" class="mainContent">
+
+    <h2 class="center">{{ "Please login to continue"|trans }}</h2>
+
+    <form action="{{ path('login_check') }}" method="post">
+        {{ error }}
+        <div class="form" id="login-form">
+
+            <div>
+                <label>{{ "Username"|trans([], "admin") }}</label>
+                <input type="text" name="_username" value="{{ last_username }}" />
+            </div>
+
+            <div>
+                <label>{{ "Password"|trans([], "admin") }}</label>
+                <input type="password" name="_password" value="" />
+            </div>
+
+            <div class="center">
+                <input type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" />
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

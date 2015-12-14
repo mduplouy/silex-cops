@@ -37,6 +37,15 @@ internal_db       = data/silexCops     ; Internal database file name - needs wri
 sender            = "sendmail"         ; Email sender (sendmail | php | smtp)
 from              = "me@you.com"       ; From email address
 
+[auth]
+use_auth            = false              ; Use authentication for non admin pages ?
+auth_method         = http               ; Authentication method (http | form)
+inline_edit_enable  = true               ; Enable inline edit of books
+user_actions_enable = true               ; Enable user specific actions (wish list..)
+
+[user_actions]
+user_actions_page_size  = 20             ;
+
 [misc]
 debug             = false               ; Set to true to activate debug mode
 use_rewrite       = true                ; Put this to true if mod_rewrite is enabled
@@ -50,7 +59,6 @@ cover_height      = 260                ; Thumbnail height
 admin_path        = /admin             ; Backoffice path
 default_login     = admin              ; Administrator default login (used on db init / reset)
 default_password  = password           ; Administrator default password (used on db init / reset)
-inline_edit       = true               ; Allow inline editing for specified roles (true|false) needs write access to Calibre DB
 
 [calibre]
 author_sort_copy_method = invert       ; Author sort copy algorithm when modifying books from Silex-Cops -(invert | comma | copy | nocomma)
