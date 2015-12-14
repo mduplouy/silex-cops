@@ -2,7 +2,7 @@
 {% set date_format = "m/d/Y"|trans %}
 
 {% set inline_edit = false %}
-{% if app.config.getValue('inline_edit') and is_granted('ROLE_EDIT') %}
+{% if app.config.getValue('inline_edit_enable') and is_granted('ROLE_EDIT') %}
     {% set inline_edit = true %}
 {% endif %}
 <!doctype html>

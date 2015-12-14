@@ -29,7 +29,7 @@ class InlineEditControllerTest extends AbstractTestCase
     public function testUpdateAuthorKoWhenUser()
     {
         $client = $this->createClient();
-        $client->getCookieJar()->clear();
+        //$client->getCookieJar()->clear();
 
         $client->request(
             'POST',
@@ -46,16 +46,18 @@ class InlineEditControllerTest extends AbstractTestCase
 
     public function testUpdateBook()
     {
-        $session = $this->app['session'];
+        $client = $this->createClient();
+        $client->getCookieJar()->clear();
 
         $firewall = 'default';
-        $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_ADMIN'));
+        $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_EDIT'));
+
+        $session = $this->app['session'];
+        $session->clear();
         $session->set('_security_'.$firewall, serialize($token));
         $session->save();
 
         $cookie = new Cookie($session->getName(), $session->getId());
-
-        $client = $this->createClient();
         $client->getCookieJar()->set($cookie);
 
         // Update author
@@ -68,6 +70,7 @@ class InlineEditControllerTest extends AbstractTestCase
                 'value' => 'John Smith',
             )
         );
+
         $this->assertTrue($client->getResponse()->isOk());
 
         // Set back correct author
@@ -132,17 +135,18 @@ class InlineEditControllerTest extends AbstractTestCase
 
     public function testEditActionWrongNameException()
     {
-        $session = $this->app['session'];
+        $client = $this->createClient();
+        $client->getCookieJar()->clear();
 
         $firewall = 'default';
         $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_EDIT'));
+
+        $session = $this->app['session'];
+        $session->clear();
         $session->set('_security_'.$firewall, serialize($token));
         $session->save();
 
         $cookie = new Cookie($session->getName(), $session->getId());
-
-        $client = $this->createClient();
-        $client->getCookieJar()->clear();
         $client->getCookieJar()->set($cookie);
 
         $client->request(
@@ -161,17 +165,19 @@ class InlineEditControllerTest extends AbstractTestCase
 
     public function testEditActionWrongBookReturnsEmptyResponse()
     {
-        $session = $this->app['session'];
+
+        $client = $this->createClient();
+        $client->getCookieJar()->clear();
 
         $firewall = 'default';
         $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_EDIT'));
+
+        $session = $this->app['session'];
+        $session->clear();
         $session->set('_security_'.$firewall, serialize($token));
         $session->save();
 
         $cookie = new Cookie($session->getName(), $session->getId());
-
-        $client = $this->createClient();
-        $client->getCookieJar()->clear();
         $client->getCookieJar()->set($cookie);
 
         $client->request(
@@ -185,17 +191,18 @@ class InlineEditControllerTest extends AbstractTestCase
 
     public function testUpdateBookComment()
     {
-        $session = $this->app['session'];
+        $client = $this->createClient();
+        $client->getCookieJar()->clear();
 
         $firewall = 'default';
         $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_EDIT'));
+
+        $session = $this->app['session'];
+        $session->clear();
         $session->set('_security_'.$firewall, serialize($token));
         $session->save();
 
         $cookie = new Cookie($session->getName(), $session->getId());
-
-        $client = $this->createClient();
-        $client->getCookieJar()->clear();
         $client->getCookieJar()->set($cookie);
 
         $book = $this->app['entity.book']->findById(3);
@@ -217,17 +224,18 @@ class InlineEditControllerTest extends AbstractTestCase
 
     public function testUpdateBookTags()
     {
-        $session = $this->app['session'];
+        $client = $this->createClient();
+        $client->getCookieJar()->clear();
 
         $firewall = 'default';
         $token = new UsernamePasswordToken('test', 'test', $firewall, array('ROLE_EDIT'));
+
+        $session = $this->app['session'];
+        $session->clear();
         $session->set('_security_'.$firewall, serialize($token));
         $session->save();
 
         $cookie = new Cookie($session->getName(), $session->getId());
-
-        $client = $this->createClient();
-        $client->getCookieJar()->clear();
         $client->getCookieJar()->set($cookie);
 
         $book = $this->app['entity.book']->findById(3);

@@ -11,7 +11,7 @@ abstract class AbstractTestCase extends WebTestCase
     public function createApplication()
     {
         $params = array(
-            'config-file' => __DIR__.'/../../../../app/src/config.ini',
+            'config-file' => '',
         );
 
         $override = array(

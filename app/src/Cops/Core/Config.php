@@ -36,10 +36,6 @@ class Config
         'homepage_tags'           => 30,
         'book_per_page'           => 30,
 
-        // User actions
-        'user_actions_enable'     => true,
-        'user_actions_page_size'  => 20,
-
         // Paths
         'theme'                   => 'default',
         'mobile_theme'            => 'mobile',
@@ -60,8 +56,14 @@ class Config
         'default_login'           => 'admin',
         'default_password'        => 'password',
 
-        // Inline edit
-        'inline_edit'             => true,
+        // Auth & rights
+        'use_auth'                => true,
+        'auth_method'             => 'http',
+        'inline_edit_enable'      => true,
+        'user_actions_enable'     => true,
+
+        // User actions
+        'user_actions_page_size'  => 20,
 
         // Misc.
         'debug'                   => false,
