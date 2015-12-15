@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    Options -MultiViews
+
+    RewriteEngine On
+
+    # Uncomment this if silex cops is placed in a subfolder
+    # of the document root
+    #RewriteBase /myfolder/web/
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    RewriteRule ^ index.php [QSA,L]
+
+</IfModule>

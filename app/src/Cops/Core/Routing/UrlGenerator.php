@@ -47,7 +47,7 @@ class UrlGenerator extends BaseUrlGenerator
         $url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
 
         // Check for mod_rewrite config then prepend script name to url
-        if ($this->app['config']->getValue('use_rewrite') !== true && PHP_SAPI != 'cli') {
+        if (!$this->app['config']->getValue('use_rewrite') && PHP_SAPI != 'cli') {
             $url = $this->addScriptNameToUrl($url);
         }
 
