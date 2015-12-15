@@ -60,7 +60,9 @@ class SecurityServiceProvider extends BaseProvider
 
         $app['security.role_hierarchy'] = $roles;
 
-        $accessRules[] = array($adminPath, 'ROLE_ADMIN');
+        $accessRules = array(
+            array($adminPath, 'ROLE_ADMIN'),
+        );
         foreach($app['config']->getValue('data_dir') as $urlPrefix => $dataPath) {
             $accessRules[] = array('^/'.$urlPrefix.'/../inline-edit', 'ROLE_EDIT');
             $accessRules[] = array('^/'.$urlPrefix.'/../user-books',  'ROLE_USER_ACTIONS');

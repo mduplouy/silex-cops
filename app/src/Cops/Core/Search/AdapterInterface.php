@@ -21,7 +21,7 @@ interface AdapterInterface
      * @param array $searchTerms
      * @param int   $page
      *
-     * @return self
+     * @return \Cops\Core\Entity\BookCollection
      */
     public function getResults(array $searchTerms, $page);
 }

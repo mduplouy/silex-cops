@@ -50,7 +50,7 @@ class User extends AbstractEntity implements CollectionableInterface, UserInterf
 
     /**
      * Role
-     * @var string
+     * @var array
      */
     private $roles = array(self::ROLE_USER);
 

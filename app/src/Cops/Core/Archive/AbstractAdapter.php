@@ -13,8 +13,6 @@ use Cops\Core\AbstractApplicationAware;
 use Cops\Core\Archive\AdapterInterface;
 use Cops\Core\Entity\BookFile\BookFileCollection;
 use Cops\Core\Entity\BookFile\AdapterInterface as BookFileAdapterInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Abstract archive adapter
@@ -85,11 +83,13 @@ abstract class AbstractAdapter extends AbstractApplicationAware implements Adapt
     /**
      * Delete file on request terminate
      *
-     * @return string The path to archive file
+     * @param string The path to archive file
+     *
+     * @return void
      */
     protected function deleteOnRequestTerminate($file)
     {
-        $this->app->finish(function (Request $request, Response $response) use ($file) {
+        $this->app->finish(function () use ($file) {
             if (php_sapi_name() != 'cli') {
                 unlink($file);
             }
