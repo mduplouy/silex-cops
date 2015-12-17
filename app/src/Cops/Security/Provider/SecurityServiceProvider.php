@@ -91,6 +91,7 @@ class SecurityServiceProvider extends BaseProvider
             $firewalls['login'] = array(
                 'pattern'   => '^/login$',
                 'anonymous' => true,
+                'context'   => 'default',
             );
 
             $app->get('/login', function(\Symfony\Component\HttpFoundation\Request $request) use ($app) {
@@ -117,6 +118,7 @@ class SecurityServiceProvider extends BaseProvider
             $userProvider
         );
 
+
         return $firewalls;
     }
 
@@ -127,7 +129,6 @@ class SecurityServiceProvider extends BaseProvider
      * @param bool                  $useAuth
      * @param string                $authMethod
      * @param UserProviderInterface $userProvider
-     *
      *
      * @return array
      */
@@ -146,6 +147,7 @@ class SecurityServiceProvider extends BaseProvider
 
         return array(
             'pattern'   => $pattern,
+            'context'   => 'default',
             'anonymous' => !$useAuth,
             'http'      => $http,
             'form'      => $form,

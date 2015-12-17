@@ -35,7 +35,7 @@ class DatabaseControllerTest extends AbstractTestCase
 
         $session = $this->app['session'];
 
-        $firewall = 'admin';
+        $firewall = 'default';
         $token = new UsernamePasswordToken('admin', 'test', $firewall, array('ROLE_ADMIN'));
         $session->set('_security_'.$firewall, serialize($token));
         $session->save();
