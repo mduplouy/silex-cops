@@ -20,7 +20,7 @@
         "symfony/translation": "2.6.12",
         "symfony/config": "2.6.12",
         "symfony/yaml": "2.6.12",
-        "symfony/security": "2.6.12",
+        "symfony/security": "2.6.13",
         "symfony/form": "2.6.12",
         "symfony/validator": "2.6.12",
         "lexpress/console-service-provider": "1.0.0",
