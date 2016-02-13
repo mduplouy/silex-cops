@@ -244,7 +244,7 @@ class AuthorRepository extends AbstractRepository
     /**
      * Load author data from a book collection
      *
-     * @param  Collection $books
+     * @param  BookCollection $books
      *
      * @return array
      */

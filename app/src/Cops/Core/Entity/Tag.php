@@ -20,10 +20,40 @@ use Cops\Core\Entity\Exception\TagNotFoundException;
 class Tag extends AbstractBookCount implements CollectionableInterface
 {
     /**
+     * Book ID for book linking
+     * @var int
+     */
+    private $bookId;
+
+    /**
      * Name
      * @var string
      */
     private $name;
+
+    /**
+     * Set bookId
+     *
+     * @param  int   $bookId
+     *
+     * @return $this
+     */
+    public function setBookId($bookId)
+    {
+        $this->bookId = (int) $bookId;
+
+        return $this;
+    }
+
+    /**
+     * Get bookId
+     *
+     * @return int
+     */
+    public function getBookId()
+    {
+        return $this->bookId;
+    }
 
     /**
      * Set name

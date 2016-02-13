@@ -231,9 +231,9 @@ class BookCollection extends AbstractCollection
     public function addTags(TagCollection $tags)
     {
         foreach ($tags->findFromBooks($this) as $tag) {
-            $this->getById($author->getBookId())
+            $this->getById($tag->getBookId())
                 ->getTags()
-                ->add($author);
+                ->add($tag);
         }
 
         return $this;
