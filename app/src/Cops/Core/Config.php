@@ -11,6 +11,7 @@ namespace Cops\Core;
 
 use Cops\Core\StringUtils;
 use Cops\Core\Application;
+use Cops\Security\Provider\SecurityServiceProvider;
 
 /**
  * Simple configuration class with hardcoded default values and override by ini file
@@ -310,4 +311,15 @@ class Config
      {
          return DS.trim($this->getValue('admin_path'), '/');
      }
+
+    /**
+     * Display logout link ?
+     *
+     * @return bool
+     */
+    public function displayLogoutLink()
+    {
+        return $this->configValues['use_auth'] &&
+            $this->configValues['auth_method'] == SecurityServiceProvider::AUTH_METHOD_FORM;
+    }
 }

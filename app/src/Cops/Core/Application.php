@@ -44,36 +44,30 @@ class Application extends BaseApplication
     {
         parent::__construct($values);
 
-        $app = $this;
-
-        // Load & set configuration
-        $this['config'] = $this->share(function ($c) use ($app, $overrideConfig) {
-            return new \Cops\Core\Config($app['config-file'], $c['string-utils'], $overrideConfig);
-        });
-
         $this['string-utils'] = $this->share(function () {
             return new \Cops\Core\StringUtils;
         });
 
-        if ($this['config']->getValue('debug')) {
-            $app['debug'] = true;
-        }
+        // Load & set configuration
+        $this['config'] = $this->share(function ($c) use ($overrideConfig) {
+            return new \Cops\Core\Config($c['config-file'], $c['string-utils'], $overrideConfig);
+        });
+
+        $this['debug'] = (bool) $this['config']->getValue('debug');
 
         $this->registerEntities();
         $this->registerFactories();
         $this->registerRepositories();
         $this->registerCollections();
         $this->registerModels();
-
         $this->registerServiceProviders();
         $this->registerRouting();
-
     }
 
     /**
      * Register the various app services
      *
-     * @return void
+     * @return $this
      */
     private function registerServiceProviders()
     {
@@ -108,12 +102,14 @@ class Application extends BaseApplication
             return $translator;
         }));
 
+        return $this;
+
     }
 
     /**
      * Register routing
      *
-     * @return void
+     * @return $this
      */
     private function registerRouting()
     {
@@ -150,7 +146,7 @@ class Application extends BaseApplication
     /**
      * Register entities in DIC
      *
-     * @return void
+     * @return $this
      */
     private function registerEntities()
     {
@@ -190,12 +186,14 @@ class Application extends BaseApplication
             $userBook = new \Cops\Core\Entity\UserBook();
             return $userBook->setRepository($c['repository.user-book']);
         };
+
+        return $this;
     }
 
     /**
      * Register models in DIC
      *
-     * @return void
+     * @return $this
      */
     private function registerModels()
     {
@@ -222,7 +220,7 @@ class Application extends BaseApplication
     /**
      * Register factories
      *
-     * @return void
+     * @return $this
      */
     private function registerFactories()
     {
@@ -280,12 +278,14 @@ class Application extends BaseApplication
                 },
             ));
         });
+
+        return $this;
     }
 
     /**
      * Register repositories in DIC
      *
-     * @return void
+     * @return $this
      */
     private function registerRepositories()
     {
@@ -320,14 +320,16 @@ class Application extends BaseApplication
         $this['repository.calibre-util'] = $this->share(function () {
             return new \Cops\Core\Calibre\UtilRepository;
         });
+
+        return $this;
     }
 
     /**
      * Register collections in DIC
      *
-     * @return void
+     * @return $this
      */
-    public function registerCollections()
+    private function registerCollections()
     {
         $this['collection.book'] = function ($c) {
             $collection = new \Cops\Core\Entity\BookCollection;
@@ -377,6 +379,8 @@ class Application extends BaseApplication
                 return $c['repository.user-book'];
             });
         };
+
+        return $this;
     }
 
     /**
