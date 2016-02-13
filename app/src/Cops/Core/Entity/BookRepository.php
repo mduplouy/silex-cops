@@ -11,7 +11,7 @@ namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractRepository;
 use Cops\Core\ApplicationAwareInterface;
-use Cops\Core\Application as BaseApplication;
+use Cops\Core\Application;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PDO;
 use Doctrine\DBAL\Connection;
@@ -56,11 +56,11 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     /**
      * Set application
      *
-     * @param  BaseApplication $app
+     * @param  Application $app
      *
      * @return self
      */
-    public function setApp(BaseApplication $app)
+    public function setApp(Application $app)
     {
         $this->app = $app;
 

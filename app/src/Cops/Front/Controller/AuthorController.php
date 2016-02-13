@@ -89,7 +89,7 @@ class AuthorController implements ControllerProviderInterface
      */
     public function listAction(Application $app, $letter=0)
     {
-        if ($letter === '0') {
+        if ($letter == '0') {
             $letter = '#';
         }
 

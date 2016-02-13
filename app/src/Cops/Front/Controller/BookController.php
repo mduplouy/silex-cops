@@ -115,7 +115,8 @@ class BookController implements ControllerProviderInterface
             ->setMaxResults($itemPerPage)
             ->findSortedByDate()
             ->addAuthors($app['collection.author'])
-            ->addTags($app['collection.tag']);
+            ->addTags($app['collection.tag'])
+            ->addBookFiles($app['collection.bookfile']);
 
         $totalBooks = $app['collection.book']->countAll();
 

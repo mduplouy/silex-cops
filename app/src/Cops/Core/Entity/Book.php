@@ -33,7 +33,7 @@ class Book extends AbstractEntity implements CollectionableInterface
 
     /**
      * Publication date
-     * @var string
+     * @var \DateTime|null
      */
     private $pubdate;
 
@@ -81,7 +81,7 @@ class Book extends AbstractEntity implements CollectionableInterface
 
     /**
      * Serie index
-     * @var int
+     * @var string
      */
     private $seriesIndex = 0;
 
@@ -148,7 +148,6 @@ class Book extends AbstractEntity implements CollectionableInterface
     /**
      * Constructor
      *
-     * @param BaseApplication    $app
      * @param Cover              $cover
      * @param Serie              $serie
      * @param AuthorCollection   $authorCollection
@@ -301,7 +300,7 @@ class Book extends AbstractEntity implements CollectionableInterface
     /**
      * Set cover present
      *
-     * @param bool $hasCover
+     * @param bool $coverPresent
      *
      * @return $this
      */
