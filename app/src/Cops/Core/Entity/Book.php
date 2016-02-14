@@ -11,7 +11,6 @@ namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractEntity;
 use Cops\Core\CollectionableInterface;
-use Silex\Application as BaseApplication;
 use Cops\Core\Entity\AuthorCollection;
 use Cops\Core\Cover;
 use Cops\Core\Entity\Serie;
