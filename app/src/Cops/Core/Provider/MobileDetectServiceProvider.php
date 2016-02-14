@@ -23,7 +23,7 @@ class MobileDetectServiceProvider implements ServiceProviderInterface
 
     public function register(Application $app)
     {
-        $app['mobile_detect'] = $app->share(function ($app) {
+        $app['mobile_detect'] = $app->share(function () {
             return new MobileDetect();
         });
     }

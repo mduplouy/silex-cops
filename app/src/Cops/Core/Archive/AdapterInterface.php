@@ -47,7 +47,7 @@ interface AdapterInterface
     /**
      * Add files to archive
      *
-     * @param  BookCollection $collection
+     * @param  BookCollection $bookfiles
      *
      * @return self
      */

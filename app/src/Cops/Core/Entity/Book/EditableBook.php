@@ -48,7 +48,6 @@ class EditableBook extends BookEntity
      */
     public function updateTitle($title)
     {
-        $output = false;
         if ($output = $this->getRepository()->updateTitle($this->getId(), $title)) {
             $this->setTitle($title);
         }

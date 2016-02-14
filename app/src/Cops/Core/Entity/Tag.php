@@ -143,7 +143,6 @@ class Tag extends AbstractBookCount implements CollectionableInterface
      * Associate tag to given book ID
      *
      * @param  Book   $book
-     * @param  string $name
      *
      * @return bool
      */

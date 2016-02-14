@@ -36,7 +36,7 @@ class BookFileFactory extends AbstractFactory
      *
      * @param string $instance
      *
-     * @return \Cops\Core\Entity\BookFile\BookFileInterface
+     * @return \Cops\Core\Entity\BookFile\AdapterInterface
      *
      * @throws AdapterNotFoundException
      */
@@ -50,7 +50,8 @@ class BookFileFactory extends AbstractFactory
             );
         }
 
-        return $adapter->setTranslator($this->translator)
+        return $adapter
+            ->setTranslator($this->translator)
             ->setStorageDir($this->storageDir);
     }
 
@@ -68,7 +69,6 @@ class BookFileFactory extends AbstractFactory
         return $this;
     }
 
-
     /**
      * Set translator
      *
@@ -82,14 +82,4 @@ class BookFileFactory extends AbstractFactory
 
         return $this;
      }
-
-    /**
-     * File types getter
-     *
-     * @return array
-     */
-    public function getFileTypes()
-    {
-        return $this->_instanceTypeStorage;
-    }
 }
