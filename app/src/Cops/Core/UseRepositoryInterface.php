@@ -32,6 +32,15 @@ interface UseRepositoryInterface
     public function getRepositoryClosure();
 
     /**
+     * Set repository
+     *
+     * @param mixed $repository
+     *
+     * @return self
+     */
+    public function setRepository($repository);
+
+    /**
      * Get repository
      *
      * @return RepositoryInterface

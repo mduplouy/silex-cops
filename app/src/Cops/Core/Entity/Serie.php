@@ -20,6 +20,11 @@ use Cops\Core\Entity\Exception\SerieNotFoundException;
 class Serie extends AbstractBookCount implements CollectionableInterface
 {
     /**
+     * Repository interface to be checked
+     */
+    const REPOSITORY_INTERFACE = 'Cops\Core\Entity\RepositoryInterface\SerieRepositoryInterface';
+
+    /**
      * Serie name
      * @var string
      */

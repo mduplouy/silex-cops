@@ -21,6 +21,11 @@ use Cops\Core\Entity\Exception\AuthorNotFoundException;
 class Author extends AbstractBookCount implements CollectionableInterface
 {
     /**
+     * Repository interface to be checked
+     */
+    const REPOSITORY_INTERFACE = 'Cops\Core\Entity\RepositoryInterface\AuthorRepositoryInterface';
+
+    /**
      * Book ID for book linking
      * @var int
      */

@@ -151,7 +151,7 @@ class Application extends BaseApplication
     private function registerEntities()
     {
         $this['entity.book'] = function ($c) {
-            $book = new \Cops\Core\Entity\EditableBook(
+            $book = new \Cops\Core\Entity\Book\EditableBook(
                 $c['cover'],
                 $c['entity.serie'],
                 $c['collection.author'],
@@ -290,7 +290,7 @@ class Application extends BaseApplication
     private function registerRepositories()
     {
         $this['repository.book'] = $this->share(function () {
-            return new \Cops\Core\Entity\BookRepository;
+            return new \Cops\Core\Entity\Book\EditableBookRepository;
         });
 
         $this['repository.author'] = $this->share(function ($c) {

@@ -10,6 +10,7 @@
 namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractInternalRepository;
+use Cops\Core\Entity\RepositoryInterface\UserRepositoryInterface;
 use Cops\Core\Entity\User;
 use PDO;
 use Doctrine\DBAL\Schema\Table;
@@ -18,7 +19,7 @@ use Doctrine\DBAL\Schema\Table;
  * User resource model
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class UserRepository extends AbstractInternalRepository
+class UserRepository extends AbstractInternalRepository implements UserRepositoryInterface
 {
     /**
      * Resource table name

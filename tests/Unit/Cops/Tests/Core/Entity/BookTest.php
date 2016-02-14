@@ -17,6 +17,24 @@ class BookTest extends AbstractTestCase
     }
 
     /**
+     * @expectedException \LogicException
+     */
+    public function testSetIdException()
+    {
+        $book = $this->getBook();
+
+        $book->setId(1)->setId(2);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSetRepositoryException()
+    {
+        $this->getBook()->setRepository(new \stdClass);
+    }
+
+    /**
      * @expectedException \Cops\Core\Entity\Exception\BookNotFoundException
      */
     public function testFindByIdException()
@@ -177,61 +195,25 @@ class BookTest extends AbstractTestCase
      */
     protected function getBook()
     {
-        return $this->app['entity.book'];
+        return new \Cops\Core\Entity\Book(
+            $this->app['cover'],
+            $this->app['entity.serie'],
+            $this->app['collection.author'],
+            $this->app['collection.tag'],
+            $this->app['collection.bookfile'],
+            new \DateTime
+        );
     }
 
-    public function BasicGetters()
+    public function testBasicGetters()
     {
         $book = $this->getBook();
 
-        $this->assertInstanceOf('Cops\Model\Cover', $book->getCover());
-        $this->assertInstanceOf('Cops\Model\Serie', $book->getSerie());
-        $this->assertInstanceOf('Cops\Model\Author\Collection', $book->getAuthors());
-        $this->assertInstanceOf('Cops\Model\BookFile\Collection', $book->getFiles());
+        $this->assertInstanceOf('Cops\Core\Cover', $book->getCover());
+        $this->assertInstanceOf('Cops\Core\Entity\Serie', $book->getSerie());
+        $this->assertInstanceOf('Cops\Core\Entity\AuthorCollection', $book->getAuthors());
+        $this->assertInstanceOf('Cops\Core\Entity\BookFile\BookFileCollection', $book->getFiles());
         $this->assertFalse($book->hasCover());
     }
-
-    public function UpdateAuthor()
-    {
-        $origBook = $this->getRealBook();
-
-        // Check there is 1 author
-        $origAuthors = $origBook->getAuthors();
-        $origNames = $origAuthors->getName();
-        $this->assertEquals(1, $origAuthors->count());
-
-        // Check now there are 2
-        $origBook->updateAuthor('John Smith & Jane Doe');
-        $modifiedBook = $this->getRealBook();
-        $this->assertEquals(2, $modifiedBook->getAuthors()->count());
-
-        // Revert back to original author
-        $origBook->updateAuthor($origNames);
-    }
-
-    public function UpdateTitle()
-    {
-        $book = $this->getRealBook();
-
-        $origTitle = $book->getTitle();
-
-        $this->assertTrue(
-            $book->updateTitle('dummy-title'),
-            'Book::updateTitle() failed'
-        );
-
-        $this->assertEquals(
-            $book->getTitle(),
-            'dummy-title',
-            'Book setTitle() non consistent after Book::updateTitle() call'
-        );
-
-        // Revert back original title
-        $this->assertTrue(
-            $book->updateTitle($origTitle),
-            'Book::updateTitle() failed'
-        );
-    }
-
 
 }

@@ -161,11 +161,6 @@ class Util extends AbstractEntity
     public function getAuthorSortName($name)
     {
         switch ($this->authorSortMethod) {
-            case 'invert':
-            default:
-                $name = $this->invertName($name);
-                break;
-
             case 'nocomma':
                 $name = $this->invertName($name, '');
                 break;
@@ -173,6 +168,10 @@ class Util extends AbstractEntity
             case 'comma':
                 $name = $this->commaName($name);
                 break;
+
+            case 'invert':
+            default:
+                $name = $this->invertName($name);
         }
 
         return $name;

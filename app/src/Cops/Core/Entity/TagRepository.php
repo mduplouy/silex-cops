@@ -10,6 +10,7 @@
 namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractRepository;
+use Cops\Core\Entity\RepositoryInterface\TagRepositoryInterface;
 use PDO;
 use Doctrine\DBAL\Connection;
 use Cops\Core\Entity\BookCollection;
@@ -18,7 +19,7 @@ use Cops\Core\Entity\BookCollection;
  * Tag repository
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class TagRepository extends AbstractRepository
+class TagRepository extends AbstractRepository implements TagRepositoryInterface
 {
     /**
      * Load a tag data

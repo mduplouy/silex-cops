@@ -14,12 +14,13 @@ use Cops\Core\Config;
 use Doctrine\DBAL\Schema\Table;
 use PDO;
 use Cops\Core\Entity\UserBook;
+use Cops\Core\Entity\RepositoryInterface\UserBookRepositoryInterface;
 
 /**
  * User book repository
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class UserBookRepository extends AbstractInternalRepository
+class UserBookRepository extends AbstractInternalRepository implements UserBookRepositoryInterface
 {
     /**
      * Resource table name

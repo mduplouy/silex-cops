@@ -10,6 +10,7 @@
 namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractRepository;
+use Cops\Core\Entity\RepositoryInterface\AuthorRepositoryInterface;
 use Cops\Core\StringUtils;
 use Doctrine\DBAL\Connection;
 use PDO;
@@ -20,7 +21,7 @@ use Cops\Core\Entity\BookCollection;
  * Author repository
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class AuthorRepository extends AbstractRepository
+class AuthorRepository extends AbstractRepository implements AuthorRepositoryInterface
 {
     /**
      * String utils instance

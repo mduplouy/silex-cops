@@ -71,7 +71,7 @@ class InlineEditController implements ControllerProviderInterface
         if (array_key_exists($field, $this->fieldMethodMap)) {
             return call_user_func_array(
                 array($this, $this->fieldMethodMap[$field]),
-                array($app, $book, $value)
+                array($book, $value, $app)
             );
         }
 
@@ -81,13 +81,12 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update book author & author sort
      *
-     * @param Application $app
      * @param Book        $book
      * @param string      $authors
      *
      * @return bool
      */
-    protected function updateBookAuthor(Application $app, Book $book, $authors)
+    protected function updateBookAuthor(Book $book, $authors)
     {
         return (bool) $book->updateAuthor($authors);
     }
@@ -95,13 +94,12 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update book title
      *
-     * @param Application $app
      * @param Book        $book
      * @param string      $title
      *
      * @return bool
      */
-    protected function updateBookTitle(Application $app, Book $book, $title)
+    protected function updateBookTitle(Book $book, $title)
     {
         return (bool) $book->updateTitle($title);
     }
@@ -109,16 +107,16 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update boook publication date
      *
-     * @param Application $app
      * @param Book        $book
      * @param string      $pubDate
-     *
+     * @param Application $app
+     *      *
      * @return bool
      */
-    protected function updateBookPubDate(Application $app, Book $book, $pubDate)
+    protected function updateBookPubDate(Book $book, $pubDate, Application $app)
     {
         // Translate format like in view to build DateTime object
-        $dateFormat = $app['translator']->trans("m/d/Y");
+        $dateFormat = $app['translator']->trans('m/d/Y');
         $dateTime = \DateTime::createFromFormat($dateFormat, $pubDate);
 
         return (bool) $book->updatePubDate($dateTime);
@@ -127,13 +125,12 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update book comment
      *
-     * @param Application $app
      * @param Book        $book
      * @param string      $comment
      *
      * @return bool
      */
-    protected function updateBookComment(Application $app, Book $book, $comment)
+    protected function updateBookComment(Book $book, $comment)
     {
         return (bool) $book->updateComment($comment);
     }
@@ -141,13 +138,13 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update book tags
      *
-     * @param  Application $app
      * @param  Book        $book
      * @param  array       $tagNames
-     *
+     * @param  Application $app
+     *      *
      * @return array
      */
-    protected function updateBookTags(Application $app, Book $book, array $tagNames)
+    protected function updateBookTags(Book $book, array $tagNames, Application $app)
     {
         /**
          * @var \Cops\Core\Entity\Tag

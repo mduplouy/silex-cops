@@ -20,6 +20,11 @@ use Cops\Core\Entity\Exception\TagNotFoundException;
 class Tag extends AbstractBookCount implements CollectionableInterface
 {
     /**
+     * Repository interface to be checked
+     */
+    const REPOSITORY_INTERFACE = 'Cops\Core\Entity\RepositoryInterface\TagRepositoryInterface';
+
+    /**
      * Book ID for book linking
      * @var int
      */

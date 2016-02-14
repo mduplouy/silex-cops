@@ -103,7 +103,7 @@ abstract class AbstractRepository extends AbstractApplicationAware implements Re
      */
     protected function paginate(
         QueryBuilder $queryBuilder,
-        $resetParts = array('select', 'groupBy', 'orderBy')
+        array $resetParts = array('select', 'groupBy', 'orderBy')
     ) {
         // Count total rows when using limit
         if ($this->maxResults !== null) {

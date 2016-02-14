@@ -10,14 +10,18 @@
 namespace Cops\Core;
 
 use Cops\Core\AbstractApplicationAware;
-use Cops\Core\UseRepositoryInterface;
 
 /**
  * Entity abstract class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class AbstractEntity extends AbstractApplicationAware implements UseRepositoryInterface
+abstract class AbstractEntity extends AbstractApplicationAware
 {
+    /**
+     * Repository interface to be checked
+     */
+    const REPOSITORY_INTERFACE = 'Cops\Core\RepositoryInterface';
+
     /**
      * Repository closure
      * @var \Closure
@@ -77,12 +81,20 @@ abstract class AbstractEntity extends AbstractApplicationAware implements UseRep
     /**
      * Set repository
      *
-     * @param RepositoryInterface
+     * @param mixed $repository
      *
      * @return self
+     *
+     * @throws \InvalidArgumentException
      */
-    public function setRepository(RepositoryInterface $repository)
+    public function setRepository($repository)
     {
+        $interface = static::REPOSITORY_INTERFACE;
+
+        if (!is_object($repository) || !array_key_exists($interface, class_implements($repository))) {
+            throw new \InvalidArgumentException(sprintf('Repository must implement %s', $interface));
+        }
+
         $this->repository = $repository;
 
         return $this;

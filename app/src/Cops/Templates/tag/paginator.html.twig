@@ -17,11 +17,10 @@
         {% endset %}
     {% endif %}
 
-{% endif %}
-
 <div class="paginator">
     {{ previousPage }}
     {{ "Page %d on %d"|trans|format(pageNum, pageCount) }}
     {{ nextPage }}
 </div>
 
+{% endif %}

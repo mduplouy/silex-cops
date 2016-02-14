@@ -7,16 +7,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Cops\Core\Entity;
+namespace Cops\Core\Entity\Book;
 
-use Cops\Core\Entity\Book;
+use Cops\Core\Entity\Book as BookEntity;
 
 /**
  * Editable book entity
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class EditableBook extends Book
+class EditableBook extends BookEntity
 {
+    /**
+     * Repository interface to be checked
+     */
+    const REPOSITORY_INTERFACE = 'Cops\Core\Entity\RepositoryInterface\Book\EditableBookRepositoryInterface';
+
     /**
      * Update author
      *
@@ -43,7 +48,12 @@ class EditableBook extends Book
      */
     public function updateTitle($title)
     {
-        return $this->getRepository()->updateTitle($this, $title);
+        $output = false;
+        if ($output = $this->getRepository()->updateTitle($this->getId(), $title)) {
+            $this->setTitle($title);
+        }
+
+        return $output;
     }
 
     /**

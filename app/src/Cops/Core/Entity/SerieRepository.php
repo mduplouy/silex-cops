@@ -10,6 +10,7 @@
 namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractRepository;
+use Cops\Core\Entity\RepositoryInterface\SerieRepositoryInterface;
 use Cops\Core\StringUtils;
 use PDO;
 use Doctrine\DBAL\Connection;
@@ -18,7 +19,7 @@ use Doctrine\DBAL\Connection;
  * Serie repository
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class SerieRepository extends AbstractRepository
+class SerieRepository extends AbstractRepository implements SerieRepositoryInterface
 {
     /**
      * String utils instance
@@ -106,7 +107,6 @@ class SerieRepository extends AbstractRepository
             ->execute()
             ->fetchColumn();
     }
-
 
     /**
      * Find by first letter

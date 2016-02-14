@@ -25,6 +25,11 @@ use Cops\Core\Entity\Exception\BookNotFoundException;
 class Book extends AbstractEntity implements CollectionableInterface
 {
     /**
+     * Repository interface to be checked
+     */
+    const REPOSITORY_INTERFACE = 'Cops\Core\Entity\RepositoryInterface\BookRepositoryInterface';
+
+    /**
      * Object ID
      * @var int
      */
@@ -74,7 +79,7 @@ class Book extends AbstractEntity implements CollectionableInterface
 
     /**
      * Last modified
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $lastModified;
 
@@ -233,7 +238,9 @@ class Book extends AbstractEntity implements CollectionableInterface
      */
     public function setPubdate($pubdate, $format = '!Y-m-d H:i:sP')
     {
-        $this->pubdate = $this->dateHelper->createfromformat($format, $pubdate);
+        if ($pubDate = $this->dateHelper->createfromformat($format, $pubdate)) {
+            $this->pubdate = $pubDate;
+        }
 
         return $this;
     }
@@ -401,7 +408,9 @@ class Book extends AbstractEntity implements CollectionableInterface
      */
     public function setLastModified($lastModified, $format = '!Y-m-d H:i:s#??????P')
     {
-        $this->lastModified = $this->dateHelper->createfromformat($format, $lastModified);
+        if ($lastModified = $this->dateHelper->createfromformat($format, $lastModified)) {
+            $this->lastModified = $lastModified;
+        }
 
         return $this;
     }

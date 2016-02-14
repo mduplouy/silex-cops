@@ -19,6 +19,11 @@ use Cops\Core\CollectionableInterface;
 class UserBook extends AbstractEntity implements CollectionableInterface
 {
     /**
+     * Repository interface to be checked
+     */
+    const REPOSITORY_INTERFACE = 'Cops\Core\Entity\RepositoryInterface\UserBookRepositoryInterface';
+
+    /**
      * Actions
      */
     const ACTION_DOWNLOAD = 'to_download';
@@ -152,7 +157,7 @@ class UserBook extends AbstractEntity implements CollectionableInterface
         return $this->availableLists;
     }
 
-	/**
+    /**
      * Set bookId
      *
      * @param  int $bookId
@@ -166,7 +171,7 @@ class UserBook extends AbstractEntity implements CollectionableInterface
         return $this;
     }
 
-	/**
+    /**
      * Get book ID
      *
      * @return int

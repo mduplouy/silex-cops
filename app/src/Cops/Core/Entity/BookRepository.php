@@ -11,17 +11,17 @@ namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractRepository;
 use Cops\Core\ApplicationAwareInterface;
+use Cops\Core\Entity\RepositoryInterface\BookRepositoryInterface;
 use Cops\Core\Application;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PDO;
 use Doctrine\DBAL\Connection;
-use Cops\Core\Entity\Book;
 
 /**
  * Book repository
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class BookRepository extends AbstractRepository implements ApplicationAwareInterface
+class BookRepository extends AbstractRepository implements ApplicationAwareInterface, BookRepositoryInterface
 {
     /**
      * Allow book exclusion
@@ -71,7 +71,6 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
      * Find by id
      *
      * @param  mixed            $bookId
-     * @param  \Cops\Model\Book $book
      *
      * @return array
      */
@@ -97,9 +96,6 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
 
     /**
      * Find books sorted by date
-     *
-     * @param  int   $nb         Number of items to load
-     * @param  int   $startFrom  Start offset
      *
      * @return array
      */
@@ -280,214 +276,6 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
         $this->hasExcludedSerie = true;
         $this->excludeSerieId = (int) $id;
         return $this;
-    }
-
-    /**
-     * Update author & author_sort
-     *
-     * @param int   $id
-     * @param array $authors
-     *
-     * @return bool
-     */
-    public function updateAuthor($id, $authors)
-    {
-        $con = $this->getConnection();
-        $con->beginTransaction();
-
-        try {
-            // Delete book <=> author link
-            $con->createQueryBuilder()
-                ->delete('books_authors_link')
-                ->where('book = :book_id')
-                ->setParameter('book_id', $id, PDO::PARAM_INT)
-                ->execute();
-
-            $allAuthorsSort = array();
-            foreach ($authors as $authorName) {
-                $allAuthorsSort[] = $this->updateAuthorSortNameAndLink($id, $authorName);
-            }
-
-            // Update author_sort in book table (no relation)
-            $con->update(
-                'books',
-                array('author_sort' => implode(' & ', $allAuthorsSort)),
-                array('id'          => $id),
-                array(
-                    PDO::PARAM_STR,
-                    PDO::PARAM_INT,
-                )
-            );
-            $con->commit();
-            return true;
-        } catch (\Exception $e) {
-            // @todo pop exception message to the user
-            $con->rollback();
-            return false;
-        }
-    }
-
-    /**
-     * Update author name and author <=> book link
-     *
-     * @param int    $id         Book ID
-     * @param string $authorName Author name
-     *
-     * @return string $sortName
-     *
-     */
-    private function updateAuthorSortNameAndLink($bookId, $authorName)
-    {
-        $sortName = $this->app['calibre-util']->getAuthorSortName($authorName);
-
-        // Get author id if author name already exists
-        $authorId = $this->getQueryBuilder()
-            ->select('id')
-            ->from('authors', 'main')
-            ->where('main.name = :author_name')
-            ->setParameter('author_name', $authorName, PDO::PARAM_STR)
-            ->execute()
-            ->fetchColumn();
-
-        // Save author data (update existing or insert new one)
-        $author = $this->app['entity.author'];
-        $author->setName($authorName)
-            ->setSort($sortName);
-
-        if ($authorId) {
-            $author->setId($authorId);
-        }
-        $authorId = $author->save();
-
-        // Create new book <=> author link
-        $this->getConnection()->insert(
-            'books_authors_link',
-            array(
-                'book'   => $bookId,
-                'author' => $authorId
-            ),
-            array(
-                PDO::PARAM_INT,
-                PDO::PARAM_INT
-            )
-        );
-        return $sortName;
-    }
-
-    /**
-     * Update title & title sort
-     *
-     * @param Book   $book
-     * @param string $title
-     *
-     * @return bool
-     */
-    public function updateTitle($book, $title)
-    {
-        $con = $this->getConnection();
-
-        try {
-            $con->beginTransaction();
-
-            $bookLang = $this->getBookLanguageCode($book->getId());
-            $titleSort = $this->app['calibre-util']->getTitleSort($title, $bookLang);
-
-            $con->update(
-                'books',
-                array(
-                    'title' => $title,
-                    'sort'  => $titleSort,
-                ),
-                array('id'  => $book->getId()),
-                array(
-                    PDO::PARAM_STR,
-                    PDO::PARAM_STR,
-                    PDO::PARAM_INT,
-                )
-            );
-
-            $con->commit();
-            $book->setTitle($title);
-
-            $return = true;
-
-        } catch (\Exception $e) {
-            $con->rollback();
-            $return = false;
-        }
-
-        return $return;
-
-    }
-
-    /**
-     * Update publication date
-     *
-     * @param int       $id
-     * @param \DateTime $pubDate
-     *
-     * @return bool
-     */
-    public function updatePubDate($id, \DateTime $pubDate)
-    {
-        return (bool) $this->getConnection()
-            ->update(
-                'books',
-                array('pubdate' => $pubDate),
-                array('id' => $id),
-                array(
-                    'datetime',
-                    PDO::PARAM_INT
-                )
-            );
-    }
-
-    /**
-     * Update comment
-     *
-     * @param int       $id
-     * @param string    $comment
-     *
-     * @return bool
-     */
-    public function updateComment($id, $comment)
-    {
-        return (bool) $this->getConnection()
-            ->update(
-                'comments',
-                array('text' => $comment),
-                array('book' => $id),
-                array(
-                    PDO::PARAM_STR,
-                    PDO::PARAM_INT
-                )
-            );
-    }
-
-    /**
-     * Get book language code from DB
-     *
-     * @param  int    $bookId
-     *
-     * @return string
-     */
-    public function getBookLanguageCode($bookId)
-    {
-        $lang = $this->getQueryBuilder()
-            ->select('lang.lang_code')
-            ->from('books_languages_link', 'main')
-            ->innerJoin('main', 'books',     'books', 'books.id = main.book')
-            ->innerJoin('main', 'languages', 'lang',  'main.lang_code = lang.id')
-            ->where('main.book = :id')
-            ->setParameter('id', $bookId, PDO::PARAM_INT)
-            ->execute()
-            ->fetchColumn();
-
-        if ($lang) {
-            $lang = substr($lang, 0, 2);
-        }
-
-        return $lang;
     }
 
     /**
