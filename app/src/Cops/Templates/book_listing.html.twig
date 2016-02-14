@@ -1,0 +1,68 @@
+{% for book in books %}
+    {% set serie = book.getSerie() %}
+    {% set authors = book.getAuthors() %}
+    {% set tags = book.getTags() %}
+
+    <div class="book row">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+
+                {% block first_column %}{% endblock %}
+
+                <h3 class="panel-title">
+                    <a href="{{ path('book_detail', {'id': book.getId()}) }}" title="{{ "See book detail"|trans }}">
+                    {% if book.getSerie().getId() %}{{book.getSerie().getName()}} {{"T"|trans}}.{{book.getSeriesIndex()|number_format(0)}} - {% endif %}
+                    {{ book.getTitle() }}
+                    </a>
+                </h3>
+
+            </div>
+
+
+            <div class="panel-body">
+
+                <div class="col-xs-1 text-center">
+                    {% include 'book_cover.html.twig' with {'book': book} %}
+                </div>
+
+                <div class="col-xs-11">
+                    <h4>{{ authors.getName() }}</h4>
+
+                    <p class="small">{{ book.getComment()|striptags }}</p>
+
+                    {% include "book_download_link.html.twig" with {"book": book} %}
+
+                </div>
+            </div>
+
+            <div class="panel-footer">
+
+                <div class="row">
+                    <div class="col-xs-6">
+
+                    {% if authors.count() %}
+                        <span class="book_link author">&rsaquo; {{ "See all books from"|trans }}</span>
+                        {% for author in authors  %}
+                        <a class="inline-block book_link author" href="{{ path('author_detail', {'id': author.getId()}) }}" title="{{ author.getName()|escape }}">
+                            {{ author.getName() }}
+                        </a>{% if loop.revindex0 %}, {% endif %}
+
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+
+                    <div class="col-xs-5">
+                    {%  if tags.count() > 0 %} {{ "Tag :"|transchoice(tags.count()) }}
+                        {% for tag in book.getTags() %}
+                            <a href="{{ path("tag_book_list", {id: tag.getId()}) }}">{{ tag.getName() }}</a>{% if not(loop.last) %}, {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endfor %}

@@ -1,7 +1,8 @@
 {% extends "header.html.twig" %}
+{% trans_default_domain "admin" %}
 
 {% block switchLink %}
-    - <a href="{{ path("homepage") }}" class="small" title="{{ "Back to website"|trans([], "admin") }}">{{ "Back to website"|trans([], "admin") }}</a>
+    <li><a href="{{ path("homepage") }}" title="{{ "Back to website"|trans }}">{{ "Back to website"|trans }}</a></li>
 {% endblock %}
 
 {% block selectdb %}{% endblock %}

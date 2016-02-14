@@ -1,0 +1,8 @@
+{% set thumbnail = book.getCover().getThumbnailPath(80, 120) %}
+
+{% if thumbnail %}
+    <a href="{{ path("book_detail", {"id": book.getId()}) }}" title="{{ book.getTitle()|escape }}">
+        <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
+    </a>
+{% endif %}
+

@@ -1,23 +1,17 @@
 {% extends "admin/layout.html.twig" %}
 {% trans_default_domain "admin" %}
 
-{% block beforeHeadEnd %}
-    {{ parent() }}
-    <script type="text/javascript" src="{{ app.request.basepath }}/assets/jquery.tablesorter.min.js"></script>
-    <script type="text/javascript" src="{{ app.request.basepath }}/assets/jquery.tablesorter.pager.js"></script>
-{% endblock %}
+{% block rightContent %}
 
-{% block mainBody %}
 
-    <div class="f-right">
-        <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="{{ path("admin_user_add") }}">
-            {{ "Add new user"|trans }}
-        </a>
+    <div class="col-md-4">
+        <h2>{{ "User list"|trans }}</h2>
+    </div>
+    <div class="col-md-8 text-right">
+        <a href="{{ path("admin_user_add") }}" class="btn btn-info">{{ "Add new user"|trans }}</a>
     </div>
 
-    <h2>{{ "User list"|trans }}</h2>
-
-    <table id="js-user-list" class="tablesorter">
+    <table class="table table-striped table-hover ">
         <thead>
             <th style="width:280px;">{{ "Username"|trans }}</th>
             <th style="width:180px;">{{ "Role"|trans }}</th>
@@ -29,8 +23,10 @@
                 <td>{{ user.getUsername() }}</td>
                 <td>{% for role in user.getRoles %}{{ role|trans }}{% endfor %}</td>
                 <td>
-                    <a href="{{ path("admin_user_edit", {'id': user.getId}) }}" class="inline-block ui-icon ui-corner-all ui-icon-pencil ui-state-active" title="{{ "Edit"|trans }}">{{ "Edit"|trans }}</a>
-                    <a href="{{ path("admin_user_delete", {'id': user.getId}) }}" class="js-delete inline-block ui-icon ui-corner-all ui-icon-trash ui-state-active" title="{{ "Delete"|trans }}">{{ "Delete"|trans }}</a>
+                    <a href="{{ path("admin_user_edit", {'id': user.getId}) }}" class="btn btn-sm btn-info" title="{{ "Edit"|trans }}">{{ "Edit"|trans }}</a>
+                    {% if app.user.getUsername() != user.getUsername() %}
+                    <a href="{{ path("admin_user_delete", {'id': user.getId}) }}" class="js-delete btn btn-sm btn-warning" title="{{ "Delete"|trans }}">{{ "Delete"|trans }}</a>
+                    {% endif %}
                 </td>
             </tr>
     {% else %}
@@ -41,38 +37,45 @@
         </tbody>
     </table>
 
-    <div id="pager"></div>
-
-    <div style="display:none;" id="js-confirm-delete" title="{{ "Confirm delete"|trans }}">
-        <span class="placeholder"></span>
-        <p>{{ "Are you sure you want to delete this user?"|trans }}</p>
+    <div class="modal" id="js-confirm-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">{{ "Confirm delete"|trans }}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{ "Are you sure you want to delete this user?"|trans }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ "Cancel"|trans }}</button>
+                    <button id="confirm-delete" type="button" class="btn btn-danger">{{ "Delete user account"|trans }}</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+{% endblock %}
+
+{% block beforeBodyEnd %}
+
+    {{ parent() }}
 
     <script type="text/javascript">
         jQuery(document).ready(function() {
-            jQuery("#js-user-list")
-                .tablesorter({widthFixed: true});
 
-            jQuery(".js-delete").click(function() {
+            jQuery(".js-delete").click(function(e) {
+
+                e.preventDefault();
 
                 var target = jQuery(this).attr("href");
 
-                jQuery("#js-confirm-delete").dialog({
-                    width:450,
-                    modal: true,
-                    buttons: {
-                        "{{ "Cancel"|trans|escape }}": function() {
-                            jQuery(this).dialog( "close" );
-                        },
-                        "{{ "Delete user account"|trans|escape }}": function() {
-                            window.location.href = target;
-                        }
-                    }
-                });
+                jQuery("#js-confirm-delete").modal();
 
-                return false;
+                jQuery("#confirm-delete").click(function() {
+                    window.location.href = target;
+                });
             });
         });
     </script>
-
 {% endblock %}

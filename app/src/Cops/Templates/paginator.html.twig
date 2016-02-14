@@ -1,0 +1,36 @@
+{% set previousPage = '' %}
+{% set nextPage = '' %}
+
+{% if pageCount > 1 %}
+    <ul class="pager">
+
+    {% if pageNum <= 1 %}
+        {% set class = "disabled" %}
+        {% set url = "javascript:void(0);" %}
+    {% else %}
+        {% set class = "" %}
+        {% set url = path(routeName, {"page": pageNum-1}|merge(params))|split("?")|first %}
+    {% endif %}
+
+        <li class="{{ class }}">
+            <a href="{{ url }}" title="{{ "Previous"|trans|escape }}" class="inline-block ui-corner-all ui-icon ui-icon-triangle-1-w">&larr; {{ "Previous"|trans }}</a>
+        </li>
+
+        <li>{{ "Page %d on %d"|trans|format(pageNum, pageCount) }}</li>
+
+    {% if pageNum < pageCount %}
+        {% set class = "" %}
+        {% set url = path(routeName, {"page": pageNum+1}|merge(params))|split("?")|first %}
+    {%  else %}
+        {% set class = "disabled" %}
+        {% set url = "javascript:void(0);" %}
+    {% endif %}
+
+        <li class="{{ class }}">
+            <a href="{{ url }}" title="{{ "Next"|trans|escape }}" class="inline-block ui-corner-all ui-icon ui-icon-triangle-1-e">{{ "Next"|trans }} &rarr;</a>
+        </li>
+
+    </ul>
+
+    <div class="row">&nbsp;</div>
+{% endif %}

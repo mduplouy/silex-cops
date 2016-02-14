@@ -1,0 +1,24 @@
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <link rel="shortcut icon" href="{{ app.request.basepath }}/favicon.ico" />
+    {% block themeCss %}
+
+    {% endblock %}
+
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/algolia/algolia.css" media="screen"/>
+
+    {% if inline_edit %}
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/select2/select2.css" media="all" />
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/x-editable/css/bootstrap-editable.css" />
+
+    <style type="text/css">
+    .form-control.h1 {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    </style>
+    {% endif %}
+
+    <title>SilexCOPS - {{pageTitle}}</title>

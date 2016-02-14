@@ -1,6 +1,6 @@
 Activate / Deactivate triggers from database: Activer / Désactiver les triggers de la base de données
 Add new user: Ajouter un utilisateur
-Algolia index status: État de l'index Algolia
+Algolia index status for database "%s": État de l'index Algolia pour la base "%s"
 Algolia service returned an error:%s: Le service Algolia a retourné une erreur : %s
 Are you sure you want to delete this user?: Êtes-vous sûr de vouloir supprimer ce compte ?
 Back to website: Retour au site
@@ -11,6 +11,7 @@ Can access the back office: Peut accéder à l'administration du site
 Can save lists like 'favorites' or 'to read': Peut sauver des listes comme "favoris" ou "à lire"
 Cancel: Annuler
 Confirm delete: Confirmer la suppression
+Create index now: Créer l'index maintenant
 Creation date:%s: Date de création : %s
 Database: Base de données
 Delete: Supprimer
@@ -19,6 +20,7 @@ Disabled: Désactivé
 Edit: Modifier
 Edit user account: Modifier un compte utilisateur
 Enabled: Activé
+Index for this database does not exist: L'index de cette base n'existe pas
 Index size:%s: Nombre d'éléments : %s
 Last operations: Dernières opérations
 Last update:%s: Dernière mise à jour : %s
@@ -38,6 +40,7 @@ ROLE_EDIT: Editeur
 ROLE_USER: Utilisateur
 ROLE_USER_ACTIONS: Utilisateur avec actions
 Save: Enregistrer
+See user list: Voir les utilisateurs
 Time: Durée
 Trigger on book insert: Déclencheur de création de livre
 Trigger on book update: Déclencheur de mise à jour

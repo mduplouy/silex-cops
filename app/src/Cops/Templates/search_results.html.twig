@@ -1,0 +1,27 @@
+{% extends "layout.html.twig" %}
+
+{% block mainBody %}
+<div class="container">
+
+    {% set paginator %}
+    <div class="center">
+        {% include "paginator.html.twig" with {
+            "routeName": "search_results",
+            "params": {
+                "pageNum": pageNum,
+                "totalRows": totalRows,
+                "pageCount": pageCount,
+                "keywords": app.request.get("keywords")
+            }
+        } %}
+    </div>
+    {% endset %}
+
+    {{ paginator }}
+
+    {% include "book_listing.html.twig" with {"books": books} %}
+
+    {{ paginator }}
+
+</div>
+{% endblock %}

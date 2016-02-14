@@ -1,6 +1,8 @@
-        <div style="float:right;">
-            <input type="text" id="search-input" name="keywords" value="" size="60" />
-        </div>
+        <form class="navbar-form navbar-right" role="search" method="post" action="{{ path('search') }}">
+            <div class="form-group">
+                <input id="search-input" name="keywords" class="form-control" placeholder="{{ "Author / Serie / Book title"|trans|escape }}" type="text" />
+            </div>
+        </form>
 
         <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
         <script src="//cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
@@ -9,7 +11,7 @@
             var url = "{{ path("book_detail", {"id": 10001}) }}"
 
             var client = algoliasearch("{{ app.config.getValue('algolia_app_id') }}", "{{ app.config.getValue('algolia_api_read_key') }}")
-            var index = client.initIndex('{{ app.config.getValue('algolia_index_name') }}');
+            var index = client.initIndex('{{ app['algolia-index-name'] }}');
             autocomplete('#search-input', {hint: false}, [
             {
                 source: autocomplete.sources.hits(index, {hitsPerPage: 8}),

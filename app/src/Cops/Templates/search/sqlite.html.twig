@@ -2,5 +2,5 @@
 
 {% block searchInput %}
     {# Remove algolia background from default block #}
-    <input type="text" id="search-input" name="keywords" value="" size="40" style="background-image:none;" />
+    <input type="text" id="search-input" name="keywords" class="form-control" value="" placeholder="{{ "Author / Serie / Book title"|trans|escape }}" style="background-image:none;" />
 {% endblock %}

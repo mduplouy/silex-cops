@@ -1,59 +1,47 @@
 {% extends "admin/layout.html.twig" %}
 {% trans_default_domain "admin" %}
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' _self %}
 
-{% block mainBody %}
+{% block form_label_class -%}
+col-md-3
+{%- endblock form_label_class %}
 
-    {% block pageTitle %}<h2>{{ "Register new user account"|trans }}</h2>{% endblock %}
+{% block form_group_class -%}
+col-md-9
+{%- endblock form_group_class %}
 
-    {% include "admin/user/rights.html.twig" %}
+{% block rightContent %}
 
-    <div class="form" id="user-form">
-    {{ form_start(form) }}
+    <div class="row">
 
-        {{ form_errors(form) }}
+        <div class="col-md-6">
+            {{ form_start(form) }}
 
-        <div>
-            {{ form_label(form.username) }}
-            {{ form_widget(form.username) }}
-            <div class="error">
-                {{ form_errors(form.username) }}
-            </div>
+            {{ form_errors(form) }}
+
+                <fieldset>
+                    <legend>{{ "Register new user account"|trans }}</legend>
+
+                    {{ form_row(form.username) }}
+                    {{ form_row(form.password.password) }}
+                    {{ form_row(form.password.password_confirm) }}
+
+                    {{ form_row(form.role) }}
+
+                    <div class="form-group">
+                        <div class="col-md-offset-3 col-md-9">
+                            <a href="{{ path("admin_user_index") }}" class="btn btn-default">{{ "Cancel"|trans }}</a>
+
+                            {{ form_widget(form.save, {"attr": {"class": "btn-primary"} } ) }}
+                        </div>
+
+                </fieldset>
+
+            {{ form_end(form) }}
         </div>
 
-        <div>
-            {{ form_label(form.password.password) }}
-            {{ form_widget(form.password.password) }}
-            <div class="error">
-                {{ form_errors(form.password.password) }}
-            </div>
+        <div class="col-md-6">
+            {% include "admin/user/rights.html.twig" %}
         </div>
-
-        <div>
-            {{ form_label(form.password.password_confirm) }}
-            {{ form_widget(form.password.password_confirm) }}
-            <div class="error">
-                {{ form_errors(form.password.password_confirm) }}
-            </div>
-        </div>
-
-        {{ form_label(form.role) }}
-        <div class="error radio-list">
-            {{ form_errors(form.role) }}
-        </div>
-
-        <div class="input-radio-list">
-            {% for role in form.role %}
-                {{ form_widget(role) }} {{ form_label(role) }}<br />
-            {% endfor %}
-        </div>
-
-        <div id="submit-button">
-            <a href="{{ path("admin_user_index") }}" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">{{ "Cancel"|trans }}</a>
-
-            {{ form_widget(form.save, {"attr": {"class": "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"} } ) }}
-        </div>
-
-    {{ form_end(form) }}
     </div>
-
 {% endblock %}

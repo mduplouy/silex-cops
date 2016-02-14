@@ -1,0 +1,6 @@
+{% extends 'search/default.html.twig' %}
+
+{% block searchInput %}
+    {# Remove algolia background from default block #}
+    <input type="text" id="search-input" name="keywords" value="" size="40" style="background-image:none;" />
+{% endblock %}
