@@ -23,7 +23,12 @@ build:
             - 'cat /dev/null'
 tools:
     php_mess_detector: true
-    php_analyzer: true
+    php_analyzer:
+        config:
+            metrics_coupling:
+                stable_code:
+                    classes:
+                        - Cops\Core\Application
     php_code_sniffer:
         enabled: true
         config:
