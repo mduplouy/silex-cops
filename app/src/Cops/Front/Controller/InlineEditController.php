@@ -11,7 +11,7 @@ namespace Cops\Front\Controller;
 
 use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
-use Cops\Core\Entity\Book;
+use Cops\Core\Entity\Book\EditableBook;
 use Cops\Core\Entity\Exception\BookNotFoundException;
 
 /**
@@ -39,9 +39,9 @@ class InlineEditController implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
 
-        $controller->post('/{id}', __CLASS__.'::editAction')
-            ->assert('id', '\d+')
-            ->convert('id', function ($id) { return (int) $id; })
+        $controller->post('/{bookId}', __CLASS__.'::editAction')
+            ->assert('bookId', '\d+')
+            ->convert('bookId', function ($bookId) { return (int) $bookId; })
             ->bind('inline_edit_book');
 
         return $controller;
@@ -50,17 +50,17 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Main edit action, execute specific update action depending on sent value
      *
-     * @param Application $app   Application instance
-     * @param Book        $book  Book id
+     * @param Application $app    Application instance
+     * @param int         $bookId
      *
      * @return mixed
      *
      * @throws \InvalidArgumentException
      */
-    public function editAction(Application $app, $id)
+    public function editAction(Application $app, $bookId)
     {
         try {
-            $book = $app['entity.book']->findById($id);
+            $book = $app['entity.book']->findById($bookId);
         } catch (BookNotFoundException $e) {
             return false;
         }
@@ -81,12 +81,12 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update book author & author sort
      *
-     * @param Book        $book
-     * @param string      $authors
+     * @param EditableBook $book
+     * @param string       $authors
      *
      * @return bool
      */
-    protected function updateBookAuthor(Book $book, $authors)
+    protected function updateBookAuthor(EditableBook $book, $authors)
     {
         return (bool) $book->updateAuthor($authors);
     }
@@ -94,12 +94,12 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update book title
      *
-     * @param Book        $book
-     * @param string      $title
+     * @param EditableBook $book
+     * @param string       $title
      *
      * @return bool
      */
-    protected function updateBookTitle(Book $book, $title)
+    protected function updateBookTitle(EditableBook $book, $title)
     {
         return (bool) $book->updateTitle($title);
     }
@@ -107,30 +107,34 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update boook publication date
      *
-     * @param Book        $book
-     * @param string      $pubDate
-     * @param Application $app
-     *      *
+     * @param EditableBook $book
+     * @param string       $pubDate
+     * @param Application  $app
+     *
      * @return bool
      */
-    protected function updateBookPubDate(Book $book, $pubDate, Application $app)
+    protected function updateBookPubDate(EditableBook $book, $pubDate, Application $app)
     {
         // Translate format like in view to build DateTime object
         $dateFormat = $app['translator']->trans('m/d/Y');
-        $dateTime = \DateTime::createFromFormat($dateFormat, $pubDate);
 
-        return (bool) $book->updatePubDate($dateTime);
+        $output = false;
+        if ($dateTime = \DateTime::createFromFormat($dateFormat, $pubDate)) {
+            $output = (bool) $book->updatePubDate($dateTime);
+        }
+
+        return $output;
     }
 
     /**
      * Update book comment
      *
-     * @param Book        $book
-     * @param string      $comment
+     * @param EditableBook $book
+     * @param string       $comment
      *
      * @return bool
      */
-    protected function updateBookComment(Book $book, $comment)
+    protected function updateBookComment(EditableBook $book, $comment)
     {
         return (bool) $book->updateComment($comment);
     }
@@ -138,13 +142,13 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Update book tags
      *
-     * @param  Book        $book
-     * @param  array       $tagNames
-     * @param  Application $app
+     * @param  EditableBook $book
+     * @param  array        $tagNames
+     * @param  Application  $app
      *      *
      * @return array
      */
-    protected function updateBookTags(Book $book, array $tagNames, Application $app)
+    protected function updateBookTags(EditableBook $book, array $tagNames, Application $app)
     {
         /**
          * @var \Cops\Core\Entity\Tag

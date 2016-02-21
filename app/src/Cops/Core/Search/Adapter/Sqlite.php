@@ -22,7 +22,7 @@ class Sqlite extends AbstractAdapter implements AdapterInterface
     /**
      * Get a book collection matching search results
      *
-     * @param array $searchTerm
+     * @param array $searchTerms
      * @param int   $nbItems
      * @param int   $page
      *
