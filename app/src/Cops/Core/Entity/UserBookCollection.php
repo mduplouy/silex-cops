@@ -11,6 +11,7 @@ namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractCollection;
 use Cops\Core\CollectionableInterface;
+use Cops\Core\Entity\UserBookInterface;
 
 /**
  * User book collection
@@ -45,10 +46,16 @@ class UserBookCollection extends AbstractCollection
     /**
      * {@inheritDoc}
      *
-     * Overriden to get book ids
+     * Overloaded to get book ids
+     *
+     * @throws \InvalidArgumentException
      */
     public function add(CollectionableInterface $element)
     {
+        if (!$element instanceof UserBookInterface) {
+            throw new \InvalidArgumentException('Element must implement UserBookInterface');
+        }
+
         parent::add($element);
         $this->bookIds[] = $element->getBookId();
 

@@ -52,7 +52,6 @@ class UserBooksController implements ControllerProviderInterface
      *
      * @param Application $app
      * @param int         $id     Book ID
-     * @param string      $action Action to make
      *
      * @return string
      */
@@ -208,7 +207,7 @@ class UserBooksController implements ControllerProviderInterface
 
             case $app['request']->get('remove', false):
                 $modifiedBooks->delete();
-                // Do not break so redirect will happen upon exception thrown
+                // Do not break to redirect after deletion
 
             default:
                 throw new EmptySelectionException('Nothing to do');

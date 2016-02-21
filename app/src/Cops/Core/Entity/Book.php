@@ -22,7 +22,7 @@ use Cops\Core\Entity\Exception\BookNotFoundException;
  * Book entity
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Book extends AbstractEntity implements CollectionableInterface
+class Book extends AbstractEntity implements BookInterface, CollectionableInterface
 {
     /**
      * Repository interface to be checked

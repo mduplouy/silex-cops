@@ -34,9 +34,17 @@ class BookFileCollection extends AbstractCollection
 
     /**
      * @inheritDoc
+     *
+     * Overloaded to add format mapping
+     *
+     * @throws \InvalidArgumentException
      */
     public function add(CollectionableInterface $element)
     {
+        if (!$element instanceof AdapterInterface) {
+            throw new \InvalidArgumentException('Element must implement AdapterInterface');
+        }
+
         parent::add($element);
         $this->formatMapping[$element->getBookId()][$element->getFormat()] = count($this->elements) - 1;
 

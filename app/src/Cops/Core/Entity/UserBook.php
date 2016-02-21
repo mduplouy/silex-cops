@@ -16,7 +16,7 @@ use Cops\Core\CollectionableInterface;
  * User books
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class UserBook extends AbstractEntity implements CollectionableInterface
+class UserBook extends AbstractEntity implements CollectionableInterface, UserBookInterface
 {
     /**
      * Repository interface to be checked

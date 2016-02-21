@@ -26,7 +26,6 @@ class EditableBook extends BookEntity
      * Update author
      *
      * @param string|array $authors
-     * @param int          $bookId
      *
      * @return bool
      */
