@@ -25,6 +25,24 @@ class UserBookCollection extends AbstractCollection
     protected $bookIds = array();
 
     /**
+     * Try to get book silently
+     *
+     * @param int    $userId
+     * @param int    $bookId
+     * @param string $action
+     *
+     * @return \Cops\Core\Entity\UserBook|false
+     */
+    public function getBook($userId, $bookId, $action)
+    {
+        try {
+            return $this->getById($userId.$action.$bookId);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * {@inheritDoc}
      *
      * Overriden to get book ids

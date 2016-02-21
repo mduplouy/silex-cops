@@ -11,11 +11,9 @@ namespace Cops\Front\Controller;
 
 use Silex\ControllerProviderInterface;
 use Cops\Core\Application;
-use Cops\Core\Entity\User;
 use Cops\Core\Entity\UserBookCollection;
-use Cops\Core\Entity\BookFile\BookFileCollection;
-use Cops\Core\Archive\AdapterInterface as ArchiveAdapterInterface;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Cops\Front\EmptySelectionException;
 
 /**
  * User Books controller class
@@ -161,43 +159,11 @@ class UserBooksController implements ControllerProviderInterface
      */
     public function selectionAction(Application $app, $action)
     {
-        $user = $app['security']->getToken()->getUser();
+        $userId = $app['security']->getToken()->getUser()->getId();
 
-        $modifiedBooks = $app['collection.user-book'];
-
-        $userBooks = $app['collection.user-book']
-            ->findFromUserIdAndAction($user->getId(), $action);
-
-        foreach ($app['request']->get('book_id', array()) as $bookId) {
-
-            $userBook = $app['entity.user-book'];
-
-            $userBook->setUserId($user->getId())
-                ->setBookId($bookId)
-                ->setAction($action);
-
-            // Check book is in the loaded collection
-            if ($userBooks->getById($userBook->getId())) {
-                $modifiedBooks->add($userBook);
-            }
-        }
-
-        // Handle download
-        if (preg_match('/download_(\w+)/', $app['request']->getContent(), $match)) {
-            $archive = $app['factory.archive']->getInstance($match[1]);
-
-            $books = $app['collection.book']
-                ->findById($modifiedBooks->getAllBookIds());
-
-            $bookFiles = $app['collection.bookfile']->findFromBooks($books);
-
-            $response = $this->downloadSelection($app, $bookFiles, $archive);
-        }
-
-        // Handle removal
-        if ($app['request']->get('remove', false)) {
-            $modifiedBooks->delete();
-
+        try {
+            $response = $this->handleSelection($app, $userId, $action);
+        } catch (EmptySelectionException $e) {
             $response = $app->redirect(
                 $app['url_generator']->generate('user_books_list', array('action' => $action))
             );
@@ -207,19 +173,65 @@ class UserBooksController implements ControllerProviderInterface
     }
 
     /**
+     * Handle book selection
+     *
+     * @param Application  $app
+     * @param int          $userId
+     * @param string       $action
+     *
+     * @return mixed
+     *
+     * @throws EmptySelectionException
+     *
+     */
+    protected function handleSelection(Application $app, $userId, $action)
+    {
+        $userBooks = $app['collection.user-book']
+            ->findFromUserIdAndAction($userId, $action);
+
+        $modifiedBooks = $app['collection.user-book'];
+
+        foreach ($app['request']->get('book_id', array()) as $bookId) {
+            // Check book is in the loaded collection
+            if ($modifiedBook = $userBooks->getBook($userId, $bookId, $action)) {
+                $modifiedBooks->add($modifiedBook);
+            }
+        }
+
+        switch (true) {
+
+            case $modifiedBooks->count() == 0:
+                throw new EmptySelectionException('No books selected');
+
+            case preg_match('/download_(\w+)/', $app['request']->getContent(), $match) > 0:
+                return $this->downloadSelection($app, $userBooks, $match[1]);
+
+            case $app['request']->get('remove', false):
+                $modifiedBooks->delete();
+                // Do not break so redirect will happen upon exception thrown
+
+            default:
+                throw new EmptySelectionException('Nothing to do');
+        }
+    }
+
+    /**
      * Download selected books
      *
-     * @param Application              $app
-     * @param BookFileCollection       $bookFiles
-     * @param ArchiveAdapterInterface  $archive
+     * @param Application         $app
+     * @param UserBookCollection  $userBooks
+     * @param string              $archiveType
      *
-     * @return null
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    protected function downloadSelection(
-        Application $app,
-        BookFileCollection $bookFiles,
-        ArchiveAdapterInterface $archive
-    ) {
+    protected function downloadSelection(Application $app, UserBookCollection $userBooks, $archiveType)
+    {
+        $downloadBooks = $app['collection.book']
+                ->findById($userBooks->getAllBookIds());
+
+        $bookFiles = $app['collection.bookfile']->findFromBooks($downloadBooks);
+
+        $archive = $app['factory.archive']->getInstance($archiveType);
 
         $archiveFile = $archive->setFiles($bookFiles)
             ->generateArchive();
