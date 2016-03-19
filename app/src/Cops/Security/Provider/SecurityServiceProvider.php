@@ -151,6 +151,7 @@ class SecurityServiceProvider extends BaseProvider
             'anonymous' => !$useAuth,
             'http'      => $http,
             'form'      => $form,
+            'logout'    => array('logout_path' => '/logout', 'invalidate_session' => true),
             'users'     => $userProvider,
         );
 

@@ -141,13 +141,41 @@
     </div>
 
 </div>
+{% endblock %}
+
+{% block beforeBodyEnd %}
+    {{ parent() }}
+
+<script type="text/javascript">
 
     {% if inline_edit %}
-<script type="text/javascript">
-    jQuery.fn.editable.defaults.mode = 'inline';
+        jQuery.fn.editable.defaults.mode = 'inline';
+    {% endif %}
 
-    jQuery('document').ready(function() {
+    jQuery(document).ready(function() {
 
+    {% if is_granted('ROLE_USER_ACTIONS') %}
+        jQuery('#user_actions input:checked').next('label').addClass('disabled')
+
+        // User book Actions
+        jQuery('#user_actions input').change(function(e) {
+
+            var target = jQuery(this);
+
+            // Do ajax request to process change
+            jQuery.post(
+                target.attr('data-url'),
+                {'action': target.attr('data-action'), 'status': target.is(':checked')},
+                function () {
+                    // Toggle link
+                    target.next('label').toggleClass('disabled');
+                }
+            );
+
+        });
+    {% endif %}
+
+    {%  if inline_edit %}
         var myTags = [];
         jQuery('#tag-list a').each(function() {
             myTags.push(jQuery(this).text());
@@ -197,33 +225,11 @@
             jQuery('#edit-tag').toggle();
             jQuery(this).children('span').toggle();
         })
-
-
-        {% if is_granted('ROLE_USER_ACTIONS') %}
-
-        jQuery('#user_actions input:checked').next('label').addClass('disabled')
-
-        // User book Actions
-        jQuery('#user_actions input').change(function(e) {
-
-            var target = jQuery(this);
-
-            // Do ajax request to process change
-            jQuery.post(
-                target.attr('data-url'),
-                {'action': target.attr('data-action'), 'status': target.is(':checked')},
-                function () {
-                    // Toggle link
-                    target.next('label').toggleClass('disabled');
-                }
-            );
-
-        });
-        {% endif %}
+    {% endif %}
 
     });
 
 </script>
-    {% endif %}
-
 {% endblock %}
+
+

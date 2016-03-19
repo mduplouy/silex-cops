@@ -29,10 +29,6 @@
                 });
             </script>
 
-
-            {% if app.config.displayLogoutLink() %}
-                FORM
-            {% endif %}
         </div>
         {% endblock %}
 
@@ -70,6 +66,10 @@
             {% block switchLink %}
             | <a href="{{ path('admin_index') }}" title="{{ "Admin home"|trans }}">{{ "Admin home"|trans }}</a>
             {% endblock %}
+        {% endif %}
+
+        {% if app.config.displayLogoutLink() %}
+            | <a href="{{ path('logout') }}" title="{{ "Logout"|trans }}">{{ "Logout"|trans }}</a>
         {% endif %}
 
         {% block user_actions %}

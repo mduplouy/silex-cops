@@ -39,9 +39,9 @@ class InlineEditController implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
 
-        $controller->post('/{bookId}', __CLASS__.'::editAction')
-            ->assert('bookId', '\d+')
-            ->convert('bookId', function ($bookId) { return (int) $bookId; })
+        $controller->post('/{id}', __CLASS__.'::editAction')
+            ->assert('id', '\d+')
+            ->convert('id', function ($id) { return (int) $id; })
             ->bind('inline_edit_book');
 
         return $controller;
@@ -51,16 +51,16 @@ class InlineEditController implements ControllerProviderInterface
      * Main edit action, execute specific update action depending on sent value
      *
      * @param Application $app    Application instance
-     * @param int         $bookId
+     * @param int         $id
      *
      * @return mixed
      *
      * @throws \InvalidArgumentException
      */
-    public function editAction(Application $app, $bookId)
+    public function editAction(Application $app, $id)
     {
         try {
-            $book = $app['entity.book']->findById($bookId);
+            $book = $app['entity.book']->findById($id);
         } catch (BookNotFoundException $e) {
             return false;
         }
