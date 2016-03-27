@@ -48,8 +48,8 @@ class SearchController implements \Silex\ControllerProviderInterface
      * Search action
      * Sanitize keywords and redirect to result page
      *
-     * @param Request     $request Request
-     * @param Application $app     Silex application instance
+     * @param Request     $request
+     * @param Application $app
      *
      */
     public function searchAction(Request $request, Application $app)
@@ -71,8 +71,11 @@ class SearchController implements \Silex\ControllerProviderInterface
      * Result action
      * Shows books matching the keywords
      *
+     * @param Application $app
      * @param string      $keywords
-     * @param Application Silex application instance
+     * @param int         $page
+     *
+     * @return string
      */
     public function resultAction(Application $app, $keywords, $page)
     {
@@ -82,14 +85,18 @@ class SearchController implements \Silex\ControllerProviderInterface
             return $app['response'];
         }
 
-        $resultCount = $books->getRepository()->getTotalRows();
+        $books->addAuthors($app['collection.author'])
+            ->addTags($app['collection.tag'])
+            ->addBookFiles($app['collection.bookfile']);
+
+        $totalRows = $books->getRepository()->getTotalRows();
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'search_results.html.twig', array(
             'pageTitle'   => $app['translator']->trans('Search results'),
             'books'       => $books,
-            'resultCount' => $resultCount,
+            'totalRows'   => $totalRows,
             'pageNum'     => $page,
-            'pageCount'   => ceil($resultCount / $itemsPerPage),
+            'pageCount'   => ceil($totalRows / $itemsPerPage),
         ));
     }
 

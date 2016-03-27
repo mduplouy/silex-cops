@@ -18,7 +18,7 @@ interface RepositoryInterface
     /**
      * Get the DB connection instance
      *
-     * @return Doctrine\DBAL\Connection
+     * @return \Doctrine\DBAL\Connection
      */
     public function getConnection();
 

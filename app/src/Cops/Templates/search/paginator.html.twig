@@ -19,7 +19,7 @@
 
 <div class="paginator">
     {{ previousPage }}
-    {{ "Page %d on %d (%d results)"|trans|format(pageNum, pageCount, resultCount) }}
+    {{ "Page %d on %d (%d results)"|trans|format(pageNum, pageCount, totalRows) }}
     {{ nextPage }}
 </div>
 
