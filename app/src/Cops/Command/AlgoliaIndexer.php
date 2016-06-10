@@ -14,11 +14,23 @@ use Cops\Core\Entity\BookCollection;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
- * Thumbnail generation command
+ * Algolia indexer command
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class GenerateThumbnails extends AbstractProcessBookCommand
+class AlgoliaIndexer extends AbstractProcessBookCommand
 {
+    /**
+     * Chunk size
+     * @var int
+     */
+    const CHUNK_SIZE = 100;
+
+    /**
+     * Algolia index instance
+     * @var \AlgoliaSearch\Index
+     */
+    private $algoliaIndex;
+
     /**
      * Constructor
      *
@@ -27,8 +39,10 @@ class GenerateThumbnails extends AbstractProcessBookCommand
      */
     public function __construct($name, Application $app)
     {
-        parent::__construct('generate:thumbnails', $app);
-        $this->setDescription('Generate the thumbnails for every book');
+        parent::__construct('algolia:reindex', $app);
+        $this->setDescription('Update algolia index by sending all books information');
+
+        $this->algoliaIndex = $app['algolia'];
     }
 
     /**
@@ -41,14 +55,25 @@ class GenerateThumbnails extends AbstractProcessBookCommand
      */
     protected function doProcessBooks(BookCollection $books, ProgressBar $progressBar)
     {
+        $i = 0;
+        $chunk = array();
+
         foreach ($books as $book) {
+            $chunk[$i] = $book->jsonSerialize();
+            $chunk[$i]['objectID'] = $book->getId();
+            $i++;
 
-            $cover = $book->getCover();
-
-            $cover->getThumbnailPath(160, 260);
-            $cover->getThumbnailPath(80, 120);
+            if ($i == self::CHUNK_SIZE) {
+                $this->algoliaIndex->addObjects($chunk);
+                $chunk = array();
+                $i = 0;
+            }
 
             $progressBar->advance();
+        }
+
+        if (!empty($chunk)) {
+            $this->algoliaIndex->addObjects($chunk);
         }
     }
 }

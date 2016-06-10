@@ -210,8 +210,20 @@ class Application extends BaseApplication
         });
 
         // Form class
-        $this['form.type.user'] = $this->share(function() {
+        $this['form.type.user'] = $this->share(function () {
             return new \Cops\Back\Form\UserType;
+        });
+
+        // Algolia client
+        $this['algolia'] = $this->share(function ($c) {
+            $config = $c['config'];
+            $client = new \AlgoliaSearch\Client(
+                $config->getValue('algolia_app_id'),
+                $config->getValue('algolia_api_key'),
+                $config->getValue('algolia_hosts'),
+                $config->getValue('algolia_options')
+            );
+            return $client->initIndex($config->getValue('algolia_index_name'));
         });
 
         return $this;
@@ -276,7 +288,11 @@ class Application extends BaseApplication
                 'sqlite' => function () use ($c) {
                     return new \Cops\Core\Search\Adapter\Sqlite($c['collection.book']);
                 },
+                'algolia' => function() use ($c) {
+                    return new \Cops\Core\Search\Adapter\Algolia($c['algolia']);
+                },
             ));
+
         });
 
         return $this;

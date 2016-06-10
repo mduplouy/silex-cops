@@ -22,7 +22,7 @@ use Cops\Core\Entity\Exception\BookNotFoundException;
  * Book entity
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class Book extends AbstractEntity implements BookInterface, CollectionableInterface
+class Book extends AbstractEntity implements BookInterface, CollectionableInterface, \JsonSerializable
 {
     /**
      * Repository interface to be checked
@@ -721,5 +721,23 @@ class Book extends AbstractEntity implements BookInterface, CollectionableInterf
     public function getFiles()
     {
         return $this->bookFileCollection;
+    }
+
+    /**
+     * Json serialize
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return array(
+            'id'         => $this->getId(),
+            'title'      => $this->getTitle(),
+            'authors'    => $this->getAuthors()->jsonSerialize(),
+            'pubDate'    => $this->getPubdate(),
+            'serie'      => $this->getSerie()->jsonSerialize(),
+            'serieIndex' => $this->getSeriesIndex(),
+            'tags'       => $this->getTags()->jsonSerialize(),
+        );
     }
 }

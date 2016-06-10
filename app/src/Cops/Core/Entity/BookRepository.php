@@ -117,9 +117,10 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
      */
     public function findAll()
     {
-        return $this->getQueryBuilder()
-            ->select('main.*')
-            ->from('books', 'main')
+        $qb = $this->getBaseSelect()
+             ->orderBy('main.id');
+
+        return $this->paginate($qb, array('select', 'join', 'groupBy', 'orderBy'))
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -29,6 +29,7 @@ Anyone comfortable with Twig can create a theme or modify the default one.
 * Full serie / author / tag archive download (zip / targz)
 * Edit your books information while browsing
 * Basic user & permissions management
+* Algolia search adapter
 
 ## Requirements
 
@@ -103,6 +104,10 @@ If you don't want your visitor to wait for thumbnails to be generated, do it usi
 Reset user account with the following command :
 
     $ php app/console.php database:init
+
+Index your database with algolia :
+
+    $ php app/console.php algolia:reindex
 
 ## License
 
