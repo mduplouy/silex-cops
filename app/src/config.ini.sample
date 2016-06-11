@@ -18,8 +18,12 @@ homepage_tags     = 50                 ; Number of tags per page on homepage
 tag_page_size     = 25                 ; Book pagination when browing tag
 
 [search]
-search_engine     = sqlite             ; more later..
-search_page_size  = 25                 ; Books pagination when browing search results
+search_engine        = sqlite          ; sqlite|algolia
+search_page_size     = 25              ; Books pagination when browing search results
+algolia_app_id       = ""              ; Algolia application id
+algolia_api_key      = ""              ; Algolia admin api key (used to reindex)
+algolia_api_read_key = ""              ; Algolia read only  api key (used for search on frontend)
+algolia_index_name   = ""              ; Algolia index name
 
 [web]
 theme             = default            ; The theme directory

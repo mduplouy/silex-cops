@@ -2,34 +2,7 @@
         <a href="{{ path('homepage') }}">SilexCOPS</a>
 
         {% block quicksearch %}
-        <div style="float:right;">
-            <form method="post" action="{{ path('search') }}">
-                <input type="text" id="js-search-form-input" name="keywords" value="" class="greyed" size="40" />
-                <input type="hidden" id="js-default-search-value" value="{{ "Author / Serie / Book title"|trans|escape }}" />
-                <input type="submit" value="{{ 'Search'|trans }}" />
-            </form>
-            <script type="text/javascript">
-                jQuery('document').ready(function() {
-
-                    var searchElm = jQuery('#js-search-form-input');
-                    var defaultValue = jQuery('#js-default-search-value').val();
-
-                    searchElm.val(defaultValue);
-
-                    searchElm.focus(function(){
-                        if (jQuery(this).val() === defaultValue) {
-                            jQuery(this).val('').removeClass('greyed');
-                        }
-                    });
-                    searchElm.blur(function () {
-                        if (jQuery(this).val() == '') {
-                            jQuery(this).val(defaultValue).addClass('greyed');
-                        }
-                    });
-                });
-            </script>
-
-        </div>
+            {% include "search/" ~ app.config.getValue('search_engine') ~ ".html.twig" %}
         {% endblock %}
 
         {% block selectdb %}

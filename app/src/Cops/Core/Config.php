@@ -75,6 +75,7 @@ class Config
         'search_page_size'        => 25,
         'algolia_app_id'          => '',
         'algolia_api_key'         => '',
+        'algolia_api_read_key'    => '',
         'algolia_index_name'      => '',
         'algolia_options'         => array(),
         'algolia_hosts'           => array(),

@@ -17,7 +17,7 @@ use Silex\Provider\DoctrineServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Mobile Detect service provider
+ * Database service provider
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
 class DatabaseServiceProvider implements ServiceProviderInterface

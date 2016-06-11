@@ -14,6 +14,7 @@ use Cops\Core\Provider\DatabaseServiceProvider;
 use Cops\Command\Provider\CommandServiceProvider;
 use Cops\Core\Provider\UrlGeneratorServiceProvider;
 use Cops\Core\Provider\TranslationServiceProvider;
+use Cops\Core\Provider\AlgoliaSearchServiceProvider;
 use Cops\Security\Provider\SecurityServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -91,7 +92,8 @@ class Application extends BaseApplication
             // Translator
             ->register(new TranslationServiceProvider, array(
                 'default' => $this['config']->getValue('default_lang')
-            ));
+            ))
+            ->register(new AlgoliaSearchServiceProvider);
 
         $this['translator'] = $this->share($this->extend('translator', function (SymfonyTranslator $translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
@@ -212,18 +214,6 @@ class Application extends BaseApplication
         // Form class
         $this['form.type.user'] = $this->share(function () {
             return new \Cops\Back\Form\UserType;
-        });
-
-        // Algolia client
-        $this['algolia'] = $this->share(function ($c) {
-            $config = $c['config'];
-            $client = new \AlgoliaSearch\Client(
-                $config->getValue('algolia_app_id'),
-                $config->getValue('algolia_api_key'),
-                $config->getValue('algolia_hosts'),
-                $config->getValue('algolia_options')
-            );
-            return $client->initIndex($config->getValue('algolia_index_name'));
         });
 
         return $this;
