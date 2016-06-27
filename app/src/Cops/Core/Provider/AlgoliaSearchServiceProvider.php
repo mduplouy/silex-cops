@@ -34,19 +34,22 @@ class AlgoliaSearchServiceProvider implements ServiceProviderInterface
                 $config->getValue('algolia_options')
             );
 
-            return $client->initIndex($config->getValue('algolia_index_name'))
-                ->setSettings(array(
-                    'attributesToIndex' => array(
-                        'title',
-                        'authors',
-                        'serie',
-                        'tags',
-                        'serieIndex',
-                    ),
-                    'customRanking' => array(
-                        'desc(serieIndex)',
-                    ),
-                ));
+            $index = $client->initIndex($config->getValue('algolia_index_name'));
+
+            $index->setSettings(array(
+                'attributesToIndex' => array(
+                    'title',
+                    'authors',
+                    'serie',
+                    'tags',
+                    'serieIndex',
+                ),
+                'customRanking' => array(
+                    'desc(serieIndex)',
+                ),
+            ));
+
+            return $index;
         });
     }
 
