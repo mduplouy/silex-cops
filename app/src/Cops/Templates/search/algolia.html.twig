@@ -28,14 +28,13 @@
                             output = output + " - " + author.name.value;
                         }
 
-                        var link = url;
-                        link = link.replace("10001", suggestion.id);
-
-                        return '<a href="' + link + '" title="' + output + '">' + output + '</a>';
+                        return output;
                     }
                 }
             }
             ]).on('autocomplete:selected', function(event, suggestion, dataset) {
-                return true;
+
+                var link = url;
+                window.location.href = link.replace("10001", suggestion.id);
             });
         </script>
