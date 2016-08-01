@@ -104,14 +104,14 @@ class SecurityServiceProvider extends BaseProvider
             });
         }
 
-        $firewalls['admin'] = $this->getFirewalParams(
+        $firewalls['admin'] = $this->getFirewallParams(
             $adminPath,
             true, // Always enforce auth for administration
             $authMethod,
             $userProvider
         );
 
-        $firewalls['default'] = $this->getFirewalParams(
+        $firewalls['default'] = $this->getFirewallParams(
             '^.*$',
             (bool) $app['config']->getValue('use_auth'),
             $authMethod,
@@ -132,7 +132,7 @@ class SecurityServiceProvider extends BaseProvider
      *
      * @return array
      */
-    private function getFirewalParams($pattern, $useAuth, $authMethod, UserProviderInterface $userProvider)
+    private function getFirewallParams($pattern, $useAuth, $authMethod, UserProviderInterface $userProvider)
     {
         $http = true;
         $form = false;
