@@ -24,33 +24,36 @@ class AlgoliaSearchServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        // Algolia client
-        $app['algolia'] = $app->share(function ($c) {
+        $app['algolia-client'] = $app->share(function ($c) {
+
             $config = $c['config'];
-            $client = new \AlgoliaSearch\Client(
+
+            return new \AlgoliaSearch\Client(
                 $config->getValue('algolia_app_id'),
                 $config->getValue('algolia_api_key'),
                 $config->getValue('algolia_hosts'),
                 $config->getValue('algolia_options')
             );
-
-            $index = $client->initIndex($config->getValue('algolia_index_name'));
-
-            $index->setSettings(array(
-                'attributesToIndex' => array(
-                    'title',
-                    'authors',
-                    'serie',
-                    'tags',
-                    'serieIndex',
-                ),
-                'customRanking' => array(
-                    'desc(serieIndex)',
-                ),
-            ));
-
-            return $index;
         });
+
+        // Algolia client
+        $app['algolia'] = $app->share(function ($c) {
+            return $c['algolia-client']->initIndex($c['config']->getValue('algolia_index_name'));
+        });
+
+        // Settings
+        $app['algolia-settings'] = array(
+            'attributesToIndex' => array(
+                'title',
+                'authors',
+                'serie',
+                'tags',
+                'serieIndex',
+            ),
+            'customRanking' => array(
+                'desc(serieIndex)',
+            ),
+        );
     }
 
     /**

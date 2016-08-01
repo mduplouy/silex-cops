@@ -249,10 +249,14 @@ div.form {
  * Algolia search
  */
 #search-input {
-    background-image: url('/assets/Algolia_logo_bg-white.jpg');
-    background-repeat: no-repeat;
-    background-position:  99% 2px;
+    background: #FFF url('/assets/Algolia_logo_bg-white.jpg') 99% 2px no-repeat;
+    min-height: 30px;
+    text-indent:10px;
 }
+#search-submit {
+    min-height: 30px;
+}
+
 .algolia-autocomplete {
   width: 100%;
 }

@@ -82,8 +82,10 @@
             {% if nbBooks > 1 %}
             <br />
             <span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(nbBooks) }}
-            <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: "zip"}) }}">zip</a> /
-            <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: "tar.gz"}) }}">tar.gz</a></span>
+                {% for archive in app["factory.archive"].getAdapterkeys() %}
+                <a href="{{ path("serie_download", {"id": serie.getId(), "format": archive}) }}">{{ archive }}</a>
+                    {% if loop.revindex0 %}/ {% endif %}
+                    {% endfor %}
             {% endif %}
         </p>
         {% endif %}

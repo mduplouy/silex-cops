@@ -736,7 +736,7 @@ class Book extends AbstractEntity implements BookInterface, CollectionableInterf
             'authors'    => $this->getAuthors()->jsonSerialize(),
             'pubDate'    => $this->getPubdate(),
             'serie'      => $this->getSerie()->jsonSerialize(),
-            'serieIndex' => $this->getSeriesIndex(),
+            'serieIndex' => (float) $this->getSeriesIndex(),
             'tags'       => $this->getTags()->jsonSerialize(),
         );
     }

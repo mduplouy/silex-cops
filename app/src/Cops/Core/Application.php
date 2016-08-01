@@ -133,6 +133,10 @@ class Application extends BaseApplication
         $this->mount($adminPath.'/{_locale}/{database}/database/', new Back\DatabaseController);
         $this->mount($adminPath.'/{_locale}/users/',               new Back\UserController);
 
+        if ($this['config']->getValue('search_engine') == 'algolia') {
+            $this->mount($adminPath.'/{_locale}/algolia/', new Back\AlgoliaController);
+        }
+
         // Set the mount points for the controllers with database prefix
         $this->mount('{database}/{_locale}/',             new Front\IndexController);
         $this->mount('{database}/{_locale}/book/',        new Front\BookController);
@@ -279,7 +283,7 @@ class Application extends BaseApplication
                     return new \Cops\Core\Search\Adapter\Sqlite($c['collection.book']);
                 },
                 'algolia' => function() use ($c) {
-                    return new \Cops\Core\Search\Adapter\Algolia($c['algolia']);
+                    return new \Cops\Core\Search\Adapter\Algolia($c['collection.book'], $c['algolia']);
                 },
             ));
 

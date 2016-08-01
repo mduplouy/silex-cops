@@ -2,7 +2,11 @@
         <a href="{{ path('homepage') }}">SilexCOPS</a>
 
         {% block quicksearch %}
-            {% include "search/" ~ app.config.getValue('search_engine') ~ ".html.twig" %}
+            {% set searchEngine = app.config.getValue('search_engine') %}
+            {% if searchEngine == 'algolia' and not(app.config.getValue('algolia_use_autocomplete')) %}
+                {% set searchEngine = 'default' %}
+            {% endif %}
+            {% include "search/" ~ searchEngine ~ ".html.twig" %}
         {% endblock %}
 
         {% block selectdb %}

@@ -1,0 +1,78 @@
+{% extends "admin/layout.html.twig" %}
+
+{% trans_default_domain "admin" %}
+
+{% block mainBody %}
+    <h2>{{ "Algolia index status"|trans }}</h2>
+
+    <form id="algolia-index" method="post" action="{{ path("admin_algolia_reindex_books") }}">
+
+        <ul style="width:60%;">
+            <li>{{ "Name:%s"|trans|format(algoliaIndex["name"]) }}</li>
+            <li>{{ "Creation date:%s"|trans|format(algoliaIndex["createdAt"]|date("d/m/Y H:i")) }}</li>
+            <li>{{ "Index size:%s"|trans|format(algoliaIndex["entries"]) }}</li>
+            <li>{{ "Last update:%s"|trans|format(algoliaIndex["updatedAt"]|date("d/m/Y H:i")) }}</li>
+        </ul>
+
+        <button style="min-height:30px;">{{ "Reindex now"|trans }}</button>
+
+    </form>
+
+    {% if logs|length %}
+    <h3>{{ "Last operations"|trans }}</h3>
+    <table id="algolia-logs">
+        <thead>
+            <th width="14%">{{ "Date"|trans }}</th>
+            <th width="20%">{{ "Url"|trans }}</th>
+            <th width="20%">{{ "Query body"|trans }}</th>
+            <th width="3%">{{ "Response code"|trans }}</th>
+            <th width="40%">{{ "Response body"|trans }}</th>
+            <th width="3%">{{ "Time"|trans }}</th>
+        </thead>
+        <tbody>
+        {% for log in logs['logs'] %}
+
+            <tr class="{{ cycle(["odd", "even"], loop.index0) }}">
+                <td> {{ log["timestamp"]|date("d/m/Y H:i") }}</td>
+                <td class="small">{{ log["url"] }}</td>
+                <td class="small"><pre>{{ log["query_body"] }}</pre></td>
+                <td>{{ log["answer_code"] }}</td>
+                <td class="small"><pre>{{ log["answer"] }}</pre></td>
+                <td>{{ log["processing_time_ms"] }}ms</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <script type="text/javascript">
+    function doIndex(start)
+    {
+        start = start || 0;
+
+        jQuery("#algolia-index button").attr("disabled", "disabled").html("{{ "Please wait.."|trans }}");
+
+        var target = jQuery("#algolia-index").attr("action");
+
+        jQuery.post(
+            target,
+            { 'start': start},
+            function(data) {
+                if (!data.end) {
+                    doIndex(start + 1);
+                } else {
+                    window.location.href = "{{ path("admin_algolia_index") }}";
+                }
+            },
+            "json"
+        );
+    }
+
+    jQuery("#algolia-index button").on("click", function(e) {
+        e.preventDefault();
+
+        doIndex();
+    });
+
+    </script>
+{% endblock %}

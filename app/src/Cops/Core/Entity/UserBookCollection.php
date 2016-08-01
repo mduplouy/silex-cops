@@ -148,4 +148,18 @@ class UserBookCollection extends AbstractCollection
             $repository->delete($book);
         }
     }
+
+    /**
+     * Remove all elements
+     *
+     * @return self
+     */
+    public function clear()
+    {
+        parent::clear();
+
+        $this->bookIds = array();
+
+        return $this;
+    }
 }

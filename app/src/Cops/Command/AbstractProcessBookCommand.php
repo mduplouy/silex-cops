@@ -91,6 +91,9 @@ abstract class AbstractProcessBookCommand extends Command
             }
 
             $output->writeln('');
+
+            $this->beforeBookProcessing($output, $selectedDb);
+
             $this->processBooksFromDatabase($output, $selectedDb);
         }
 
@@ -108,14 +111,11 @@ abstract class AbstractProcessBookCommand extends Command
     {
         $this->app['config']->setDatabaseKey($this->app, $dbName);
 
-        $output->writeLn('');
-        $output->writeln(sprintf('<fg=green>Generating all book thumbnails for "%s" database</fg=green>', $dbName));
-
         $books = $this->app['collection.book'];
 
         $totalBooks = $books->countAll();
         $page = 1;
-        $pageSize = 400;
+        $pageSize = 200;
 
         // Progress bar
         $progress = new ProgressBar($output);
@@ -151,6 +151,21 @@ abstract class AbstractProcessBookCommand extends Command
 
     /**
      * Do the process on books
+     *
+     * @param  BookCollection $books
+     * @param  ProgressBar    $progressBar
+     *
+     * @return void
      */
     abstract protected function doProcessBooks(BookCollection $books, ProgressBar $progressBar);
+
+    /**
+     * Launched before executing processing
+     *
+     * @param  OutputInterface $output
+     * @param  string          $dbName
+     *
+     * @return void
+     */
+    abstract protected function beforeBookProcessing(OutputInterface $output, $dbName);
 }

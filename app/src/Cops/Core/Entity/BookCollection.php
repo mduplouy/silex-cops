@@ -131,6 +131,8 @@ class BookCollection extends AbstractCollection
      * @param  array $keyword
      *
      * @return $this
+     *
+     * @throws BookNotFoundException
      */
     public function findByKeyword(array $keyword)
     {
@@ -234,6 +236,26 @@ class BookCollection extends AbstractCollection
             $this->getById($tag->getBookId())
                 ->getTags()
                 ->add($tag);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sort existing elements
+     *
+     * @param array $sort
+     *
+     * @return $this
+     */
+    public function sortElementsById(array $sort)
+    {
+        $elements = $this->elements;
+
+        $this->elements = array();
+
+        foreach ($sort as $elementId) {
+            $this->elements[] = $elements[$this->mapping[$elementId]];
         }
 
         return $this;

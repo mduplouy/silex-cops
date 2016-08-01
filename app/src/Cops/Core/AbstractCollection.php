@@ -173,6 +173,19 @@ abstract class AbstractCollection extends AbstractEntity implements \IteratorAgg
     }
 
     /**
+     * Remove all elements
+     *
+     * @return self
+     */
+    public function clear()
+    {
+        $this->elements = array();
+        $this->mapping  = array();
+
+        return $this;
+    }
+
+    /**
      * Json serialize
      *
      * @return array

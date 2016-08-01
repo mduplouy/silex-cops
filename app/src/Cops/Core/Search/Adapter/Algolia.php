@@ -11,6 +11,9 @@ namespace Cops\Core\Search\Adapter;
 
 use Cops\Core\Search\AbstractAdapter;
 use Cops\Core\Search\AdapterInterface;
+use Cops\Core\Entity\BookCollection;
+use Cops\Core\Entity\Book;
+use AlgoliaSearch\Index as AlgoliaIndex;
 
 /**
  * Algolia search adapter class
@@ -19,6 +22,31 @@ use Cops\Core\Search\AdapterInterface;
  */
 class Algolia extends AbstractAdapter implements AdapterInterface
 {
+    /**
+     * Chunk size for mass indexing
+     * @var int
+     */
+    const CHUNK_SIZE = 100;
+
+    /**
+     * AlgoliaIndex instance
+     * @var AlgoliaIndex
+     */
+    private $algoliaIndex;
+
+    /**
+     * Constructor
+     *
+     * @param BookCollection $bookCollection
+     * @param AlgoliaIndex   $algoliaIndex
+     */
+    public function __construct(BookCollection $bookCollection, AlgoliaIndex $algoliaIndex)
+    {
+        parent::__construct($bookCollection);
+
+        $this->algoliaIndex = $algoliaIndex;
+    }
+
     /**
      * Get a book collection matching search results
      *
@@ -30,11 +58,76 @@ class Algolia extends AbstractAdapter implements AdapterInterface
      */
     public function getResults(array $searchTerms, $nbItems = 25, $page = 1)
     {
+        $results = $this->algoliaIndex->search(
+            implode(' ', $searchTerms),
+            array(
+                'attributesToRetrieve' => array('id'),
+                'ignorePlurals' => true,
+                'page' => $page - 1,
+                'hitsPerPage' => $nbItems,
+            )
+        );
+
         $this->bookCollection->setFirstResult(($page-1) * $nbItems);
-        if ($nbItems > 0) {
-            $this->bookCollection->setMaxResults($nbItems);
+        $this->bookCollection->getRepository()->setTotalRows($results['nbHits']);
+
+        $bookIds = array();
+        foreach ($results['hits'] as $book) {
+            $bookIds[] = $book['id'];
         }
 
-        return $this->bookCollection->findByKeyword($searchTerms);
+        $books = $this->bookCollection->findById($bookIds);
+        $books->sortElementsById($bookIds);
+
+        return $books;
+    }
+
+    /**
+     * Index a single book
+     *
+     * @param  Book $book
+     *
+     * @return $this
+     */
+    public function indexBook(Book $book)
+    {
+        $this->algoliaIndex->addObject($book->jsonSerialize(), $book->getId());
+
+        return $this;
+    }
+
+    /**
+     * Index a book collection
+     *
+     * @param  BookCollection $bookCollection
+     *
+     * @return $this
+     */
+    public function indexBooks(BookCollection $bookCollection)
+    {
+        $algoliaObject = array();
+        $i = 1;
+
+        foreach ($bookCollection as $book) {
+
+            $bookData = $book->jsonSerialize();
+            $bookData['objectID'] = $book->getId();
+
+            $algoliaObject[$i] = $bookData;
+
+            if ($i == self::CHUNK_SIZE) {
+                $this->algoliaIndex->addObjects($algoliaObject);
+                $algoliaObject = array();
+                $i = 0;
+            }
+
+            $i++;
+        }
+
+        if (!empty($algoliaObject)) {
+            $this->algoliaIndex->addObjects($algoliaObject);
+        }
+
+        return $this;
     }
 }

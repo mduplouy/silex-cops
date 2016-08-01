@@ -1,5 +1,5 @@
         <div style="float:right;">
-            <input type="text" id="search-input" name="keywords" value="" class="greyed" size="60" />
+            <input type="text" id="search-input" name="keywords" value="" size="60" />
         </div>
 
         <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
@@ -20,7 +20,7 @@
 
                         var serie = suggestion._highlightResult.serie;
                         if (serie && serie.name.value) {
-                            output = output + " - " + serie.name.value + " " + parseInt(suggestion._highlightResult.serieIndex.value);
+                            output = output + " - " + serie.name.value + " " + parseInt(suggestion.serieIndex);
                         }
 
                         var author = suggestion._highlightResult.authors[0];

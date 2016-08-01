@@ -26,62 +26,63 @@ class Config
      */
     private $configValues = array(
         // Language
-        'default_lang'            => 'fr',
+        'default_lang'             => 'fr',
 
         // Page size
-        'last_added'              => 15,
-        'by_date_page_size'       => 25,
-        'author_page_size'        => 25,
-        'tag_page_size'           => 25,
-        'serie_page_size'         => 25,
-        'homepage_tags'           => 30,
-        'book_per_page'           => 30,
+        'last_added'               => 15,
+        'by_date_page_size'        => 25,
+        'author_page_size'         => 25,
+        'tag_page_size'            => 25,
+        'serie_page_size'          => 25,
+        'homepage_tags'            => 30,
+        'book_per_page'            => 30,
 
         // Paths
-        'theme'                   => 'default',
-        'mobile_theme'            => 'mobile',
-        'public_dir'              => 'web',
-        'data_dir'                => array('default' => 'data'),
-        'internal_db'             => 'data/silexCops',
+        'theme'                    => 'default',
+        'mobile_theme'             => 'mobile',
+        'public_dir'               => 'web',
+        'data_dir'                 => array('default' => 'data'),
+        'internal_db'              => 'data/silexCops',
 
         // Email
-        'sender'                  => 'php',
+        'sender'                   => 'php',
 
         // cover
-        'image_processor'         => 'gd',
-        'cover_width'             => 160,
-        'cover_height'            => 260,
+        'image_processor'          => 'gd',
+        'cover_width'              => 160,
+        'cover_height'             => 260,
 
         // admin
-        'admin_path'              => '/admin',
-        'default_login'           => 'admin',
-        'default_password'        => 'password',
+        'admin_path'               => '/admin',
+        'default_login'            => 'admin',
+        'default_password'         => 'password',
 
         // Auth & rights
-        'use_auth'                => true,
-        'auth_method'             => 'http',
-        'inline_edit_enable'      => true,
-        'user_actions_enable'     => true,
+        'use_auth'                 => true,
+        'auth_method'              => 'http',
+        'inline_edit_enable'       => true,
+        'user_actions_enable'      => true,
 
         // User actions
-        'user_actions_page_size'  => 20,
+        'user_actions_page_size'   => 20,
 
         // Misc.
-        'debug'                   => false,
-        'use_rewrite'             => false,
+        'debug'                    => false,
+        'use_rewrite'              => false,
 
         // Search
-        'search_engine'           => 'sqlite',
-        'search_page_size'        => 25,
-        'algolia_app_id'          => '',
-        'algolia_api_key'         => '',
-        'algolia_api_read_key'    => '',
-        'algolia_index_name'      => '',
-        'algolia_options'         => array(),
-        'algolia_hosts'           => array(),
+        'search_engine'            => 'sqlite',
+        'search_page_size'         => 25,
+        'algolia_app_id'           => '',
+        'algolia_api_key'          => '',
+        'algolia_api_read_key'     => '',
+        'algolia_index_name'       => '',
+        'algolia_options'          => array(),
+        'algolia_hosts'            => array(),
+        'algolia_use_autocomplete' => true,
 
         // calibre
-        'author_sort_copy_method' => 'invert',
+        'author_sort_copy_method'  => 'invert',
     );
 
     /**

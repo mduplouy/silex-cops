@@ -12,6 +12,7 @@ namespace Cops\Command;
 use Cops\Core\Application;
 use Cops\Core\Entity\BookCollection;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Algolia indexer command
@@ -20,16 +21,10 @@ use Symfony\Component\Console\Helper\ProgressBar;
 class AlgoliaIndexer extends AbstractProcessBookCommand
 {
     /**
-     * Chunk size
-     * @var int
+     * Algolia search adapter instance
+     * @var \Cops\Core\Search\Adapter\Algolia
      */
-    const CHUNK_SIZE = 100;
-
-    /**
-     * Algolia index instance
-     * @var \AlgoliaSearch\Index
-     */
-    private $algoliaIndex;
+    private $algolia;
 
     /**
      * Constructor
@@ -42,7 +37,20 @@ class AlgoliaIndexer extends AbstractProcessBookCommand
         parent::__construct('algolia:reindex', $app);
         $this->setDescription('Update algolia index by sending all books information');
 
-        $this->algoliaIndex = $app['algolia'];
+        $this->algolia = $app['factory.search']->getInstance('algolia');
+    }
+
+    /**
+     * Launched before executing processing
+     *
+     * @param OutputInterface $output
+     * @param string          $dbName
+     *
+     * @return void
+     */
+    protected function beforeBookProcessing(OutputInterface $output, $dbName)
+    {
+        $output->writeln(sprintf('<fg=green>Reindex all books from "%s" database</fg=green>', $dbName));
     }
 
     /**
@@ -55,25 +63,8 @@ class AlgoliaIndexer extends AbstractProcessBookCommand
      */
     protected function doProcessBooks(BookCollection $books, ProgressBar $progressBar)
     {
-        $i = 0;
-        $chunk = array();
+        $this->algolia->indexBooks($books);
 
-        foreach ($books as $book) {
-            $chunk[$i] = $book->jsonSerialize();
-            $chunk[$i]['objectID'] = $book->getId();
-            $i++;
-
-            if ($i == self::CHUNK_SIZE) {
-                $this->algoliaIndex->addObjects($chunk);
-                $chunk = array();
-                $i = 0;
-            }
-
-            $progressBar->advance();
-        }
-
-        if (!empty($chunk)) {
-            $this->algoliaIndex->addObjects($chunk);
-        }
+        $progressBar->advance($books->count());
     }
 }

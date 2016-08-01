@@ -12,6 +12,7 @@ namespace Cops\Command;
 use Cops\Core\Application;
 use Cops\Core\Entity\BookCollection;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Thumbnail generation command
@@ -29,6 +30,19 @@ class GenerateThumbnails extends AbstractProcessBookCommand
     {
         parent::__construct('generate:thumbnails', $app);
         $this->setDescription('Generate the thumbnails for every book');
+    }
+
+    /**
+     * Launched before executing processing
+     *
+     * @param OutputInterface $output
+     * @param string          $dbName
+     *
+     * @return void
+     */
+    protected function beforeBookProcessing(OutputInterface $output, $dbName)
+    {
+        $output->writeln(sprintf('<fg=green>Generating all book thumbnails for "%s" database</fg=green>', $dbName));
     }
 
     /**
