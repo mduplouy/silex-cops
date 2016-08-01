@@ -75,11 +75,24 @@ abstract class AbstractRepository extends AbstractApplicationAware implements Re
      *
      * @param int $limit
      *
-     * @return \Cops\Resource
+     * @return self
      */
     public function setMaxResults($limit)
     {
         $this->maxResults = (int) $limit;
+        return $this;
+    }
+
+    /**
+     * Set total number of rows
+     *
+     * @param int $total
+     *
+     * @return self
+     */
+    public function setTotalRows($total)
+    {
+        $this->totalRows = (int) $total;
         return $this;
     }
 

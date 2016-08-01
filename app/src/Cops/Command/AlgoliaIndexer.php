@@ -15,11 +15,17 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Thumbnail generation command
+ * Algolia indexer command
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class GenerateThumbnails extends AbstractProcessBookCommand
+class AlgoliaIndexer extends AbstractProcessBookCommand
 {
+    /**
+     * Algolia search adapter instance
+     * @var \Cops\Core\Search\Adapter\Algolia
+     */
+    private $algolia;
+
     /**
      * Constructor
      *
@@ -28,8 +34,10 @@ class GenerateThumbnails extends AbstractProcessBookCommand
      */
     public function __construct($name, Application $app)
     {
-        parent::__construct('generate:thumbnails', $app);
-        $this->setDescription('Generate the thumbnails for every book');
+        parent::__construct('algolia:reindex', $app);
+        $this->setDescription('Update algolia index by sending all books information');
+
+        $this->algolia = $app['factory.search']->getInstance('algolia');
     }
 
     /**
@@ -42,7 +50,7 @@ class GenerateThumbnails extends AbstractProcessBookCommand
      */
     protected function beforeBookProcessing(OutputInterface $output, $dbName)
     {
-        $output->writeln(sprintf('<fg=green>Generating all book thumbnails for "%s" database</fg=green>', $dbName));
+        $output->writeln(sprintf('<fg=green>Reindex all books from "%s" database</fg=green>', $dbName));
     }
 
     /**
@@ -55,14 +63,8 @@ class GenerateThumbnails extends AbstractProcessBookCommand
      */
     protected function doProcessBooks(BookCollection $books, ProgressBar $progressBar)
     {
-        foreach ($books as $book) {
+        $this->algolia->indexBooks($books);
 
-            $cover = $book->getCover();
-
-            $cover->getThumbnailPath(160, 260);
-            $cover->getThumbnailPath(80, 120);
-
-            $progressBar->advance();
-        }
+        $progressBar->advance($books->count());
     }
 }

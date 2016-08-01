@@ -112,3 +112,24 @@ table.tablesorter thead tr .headerSortDown {
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
     background-color: #8dbdd8;
 }
+
+/**
+ * Algolia log table
+ */
+table#algolia-logs {
+    border: 1px #000 solid;
+    border-collapse: collapse;
+}
+    table#algolia-logs tr td,
+    table#algolia-logs thead th {
+        border: 1px #000 solid;
+        text-align: center;
+    }
+
+    table#algolia-logs pre {
+        text-align:left;
+    }
+
+    table#algolia-logs tr.even td {
+        background-color: #EEE;
+    }

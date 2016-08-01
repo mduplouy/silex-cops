@@ -1,5 +1,7 @@
 Activate / Deactivate triggers from database: Activer / Désactiver les triggers de la base de données
 Add new user: Ajouter un utilisateur
+Algolia index status: État de l'index Algolia
+Algolia service returned an error:%s: Le service Algolia a retourné une erreur : %s
 Are you sure you want to delete this user?: Êtes-vous sûr de vouloir supprimer ce compte ?
 Back to website: Retour au site
 Calibre database uses trigger to fill some book informations as title sort, this page is meant to provide you the ability to enable or disable them: La base de données de Calibre utilise des triggers ("déclencheurs") pour remplir certaines informations comme le tri par titre, cette page vous permet de les activer / désactiver
@@ -9,6 +11,7 @@ Can access the back office: Peut accéder à l'administration du site
 Can save lists like 'favorites' or 'to read': Peut sauver des listes comme "favoris" ou "à lire"
 Cancel: Annuler
 Confirm delete: Confirmer la suppression
+Creation date:%s: Date de création : %s
 Database: Base de données
 Delete: Supprimer
 Delete user account: Supprimer ce compte
@@ -16,10 +19,18 @@ Disabled: Désactivé
 Edit: Modifier
 Edit user account: Modifier un compte utilisateur
 Enabled: Activé
+Index size:%s: Nombre d'éléments : %s
+Last operations: Dernières opérations
+Last update:%s: Dernière mise à jour : %s
+Name:%s: Nom : %s
 Opds feeds: Flux OPDS
 Password: Mot de passe
 Password confirmation: Confirmation mot de passe
+Query body: Requête
 Register new user account: Créer un nouveau compte utilisateur
+Reindex now: Relancer l'indexation
+Response body: Corps de la réponse
+Response code: Code retour
 Rights management:: Gestion des droits :
 Role: Rôle
 ROLE_ADMIN: Administrateur
@@ -27,6 +38,7 @@ ROLE_EDIT: Editeur
 ROLE_USER: Utilisateur
 ROLE_USER_ACTIONS: Utilisateur avec actions
 Save: Enregistrer
+Time: Durée
 Trigger on book insert: Déclencheur de création de livre
 Trigger on book update: Déclencheur de mise à jour
 User list: Liste des utilisateurs

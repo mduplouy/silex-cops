@@ -14,6 +14,7 @@ use Cops\Core\Provider\DatabaseServiceProvider;
 use Cops\Command\Provider\CommandServiceProvider;
 use Cops\Core\Provider\UrlGeneratorServiceProvider;
 use Cops\Core\Provider\TranslationServiceProvider;
+use Cops\Core\Provider\AlgoliaSearchServiceProvider;
 use Cops\Security\Provider\SecurityServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -91,7 +92,8 @@ class Application extends BaseApplication
             // Translator
             ->register(new TranslationServiceProvider, array(
                 'default' => $this['config']->getValue('default_lang')
-            ));
+            ))
+            ->register(new AlgoliaSearchServiceProvider);
 
         $this['translator'] = $this->share($this->extend('translator', function (SymfonyTranslator $translator) {
             $translator->addLoader('yaml', new YamlFileLoader());
@@ -130,6 +132,10 @@ class Application extends BaseApplication
         $this->mount($adminPath.'/{_locale}',                      new Back\IndexController);
         $this->mount($adminPath.'/{_locale}/{database}/database/', new Back\DatabaseController);
         $this->mount($adminPath.'/{_locale}/users/',               new Back\UserController);
+
+        if ($this['config']->getValue('search_engine') == 'algolia') {
+            $this->mount($adminPath.'/{_locale}/algolia/', new Back\AlgoliaController);
+        }
 
         // Set the mount points for the controllers with database prefix
         $this->mount('{database}/{_locale}/',             new Front\IndexController);
@@ -210,7 +216,7 @@ class Application extends BaseApplication
         });
 
         // Form class
-        $this['form.type.user'] = $this->share(function() {
+        $this['form.type.user'] = $this->share(function () {
             return new \Cops\Back\Form\UserType;
         });
 
@@ -276,7 +282,11 @@ class Application extends BaseApplication
                 'sqlite' => function () use ($c) {
                     return new \Cops\Core\Search\Adapter\Sqlite($c['collection.book']);
                 },
+                'algolia' => function() use ($c) {
+                    return new \Cops\Core\Search\Adapter\Algolia($c['collection.book'], $c['algolia']);
+                },
             ));
+
         });
 
         return $this;

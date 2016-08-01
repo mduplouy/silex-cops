@@ -122,7 +122,7 @@ class SearchController implements \Silex\ControllerProviderInterface
      * @param int         $page
      * @param int         $itemsPerPage
      *
-     * @return \Cops\Core\Entity\BookCollection
+     * @return void|\Cops\Core\Entity\BookCollection
      */
     protected function loadBooksOrRedirect(Application $app, $keywords, $page, $itemsPerPage)
     {

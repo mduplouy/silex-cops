@@ -16,7 +16,7 @@ use Cops\Core\CollectionableInterface;
  * Collection abstract class
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-abstract class AbstractCollection extends AbstractEntity implements \IteratorAggregate, \Countable
+abstract class AbstractCollection extends AbstractEntity implements \IteratorAggregate, \Countable, \JsonSerializable
 {
     /**
      * Collection elements
@@ -170,5 +170,34 @@ abstract class AbstractCollection extends AbstractEntity implements \IteratorAgg
         $this->getRepository()->setMaxResults((int) $limit);
 
         return $this;
+    }
+
+    /**
+     * Remove all elements
+     *
+     * @return self
+     */
+    public function clear()
+    {
+        $this->elements = array();
+        $this->mapping  = array();
+
+        return $this;
+    }
+
+    /**
+     * Json serialize
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $out = array();
+
+        foreach ($this as $elm) {
+            $out[] = $elm->jsonSerialize();
+        }
+
+        return $out;
     }
 }

@@ -7,7 +7,7 @@
 
     {% set paginator %}
     <div class="center">
-        {% include "search/paginator.html.twig" with {"pageNum": pageNum, "resultCount": resultCount, "pageCount": pageCount} %}
+        {% include "search/paginator.html.twig" with {"pageNum": pageNum, "totalRows": totalRows, "pageCount": pageCount} %}
     </div>
     {% endset %}
 

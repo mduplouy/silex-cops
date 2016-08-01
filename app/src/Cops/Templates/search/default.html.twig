@@ -1,0 +1,29 @@
+        <div style="float:right;">
+            <form method="post" action="{{ path('search') }}">
+                {% block searchInput %}<input type="text" id="search-input" name="keywords" value="" size="40" />{% endblock %}
+                <input type="hidden" id="js-default-search-value" value="{{ "Author / Serie / Book title"|trans|escape }}" />
+                <input id="search-submit" type="submit" value="{{ 'Search'|trans }}" />
+            </form>
+
+            <script type="text/javascript">
+                jQuery('document').ready(function() {
+
+                    var searchElm = jQuery('#search-input');
+                    var defaultValue = jQuery('#js-default-search-value').val();
+
+                    searchElm.val(defaultValue);
+
+                    searchElm.focus(function(){
+                        if (jQuery(this).val() === defaultValue) {
+                            jQuery(this).val('');
+                        }
+                    });
+                    searchElm.blur(function () {
+                        if (jQuery(this).val() == '') {
+                            jQuery(this).val(defaultValue);
+                        }
+                    });
+                });
+            </script>
+
+        </div>

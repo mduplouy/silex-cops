@@ -40,5 +40,8 @@ class CommandServiceProvider extends ConsoleServiceProvider
         $app['command.init-database'] = $app->share(function ($app) {
             return new \Cops\Command\InitDatabase('generate:thumbnails', $app);
         });
+        $app['command.algolia-index'] = $app->share(function ($app) {
+            return new \Cops\Command\AlgoliaIndexer('algolia:reindex', $app);
+        });
     }
 }

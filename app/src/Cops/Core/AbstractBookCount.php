@@ -16,7 +16,7 @@ use Cops\Core\CollectionableInterface;
  * Abstract book count
  * @author Mathieu Duuplouy <mathieu.duplouy@gmail.com>
  */
-abstract class AbstractBookCount extends AbstractEntity implements CollectionableInterface
+abstract class AbstractBookCount extends AbstractEntity implements CollectionableInterface, \JsonSerializable
 {
     /**
      * Number of books
@@ -80,5 +80,22 @@ abstract class AbstractBookCount extends AbstractEntity implements Collectionabl
         }
 
         return $this->bookCount;
+    }
+
+    /**
+     * Json serialize
+     *
+     * @return array|null
+     */
+    public function jsonSerialize()
+    {
+        if (null === $this->id) {
+            return null;
+        }
+
+        return array(
+            'id'   => $this->id,
+            'name' => $this->getName(),
+        );
     }
 }
