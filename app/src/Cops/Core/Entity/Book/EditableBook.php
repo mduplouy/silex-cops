@@ -77,4 +77,16 @@ class EditableBook extends BookEntity
     {
         return $this->getRepository()->updateComment($this->getId(), $comment);
     }
+
+    /**
+     * Update book serie index
+     *
+     * @param float $serieIndex
+     *
+     * @return bool
+     */
+    public function updateSerieIndex($serieIndex)
+    {
+        return $this->getRepository()->updateSerieIndex($this->getId(), $serieIndex);
+    }
 }

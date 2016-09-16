@@ -233,7 +233,7 @@ class TagRepository extends AbstractRepository implements TagRepositoryInterface
             ),
             array(
                 PDO::PARAM_INT,
-                PDO::PARAM_STR,
+                PDO::PARAM_INT,
             )
         );
 

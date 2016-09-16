@@ -42,7 +42,7 @@ class SerieRepository extends AbstractRepository implements SerieRepositoryInter
      *
      * @param  int   $serieId
      *
-     * @return array
+     * @return array|false
      */
     public function findById($serieId)
     {
@@ -51,6 +51,24 @@ class SerieRepository extends AbstractRepository implements SerieRepositoryInter
             ->from('series', 'main')
             ->where('id = :serie_id')
             ->setParameter('serie_id', $serieId, PDO::PARAM_INT)
+            ->execute()
+            ->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Find by name
+     *
+     * @param  string $name
+     *
+     * @return array
+     */
+    public function findByName($name)
+    {
+        return (array) $this->getQueryBuilder()
+            ->select('main.*')
+            ->from('series', 'main')
+            ->where('name = :name')
+            ->setParameter('name', $name, PDO::PARAM_STR)
             ->execute()
             ->fetch(PDO::FETCH_ASSOC);
     }
@@ -135,5 +153,63 @@ class SerieRepository extends AbstractRepository implements SerieRepositoryInter
             ->orderBy('sort')
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Insert new serie into database
+     *
+     * @param  Serie $serie
+     *
+     * @return int Inserted ID
+     */
+    public function insert(Serie $serie)
+    {
+        $con = $this->getConnection();
+        $con->insert('series',
+            array(
+                'name' => $serie->getName(),
+                'sort' => $serie->getSort(),
+            ),
+            array(
+                PDO::PARAM_STR,
+                PDO::PARAM_STR,
+            )
+        );
+        return $con->lastInsertId();
+    }
+
+    /**
+     * Associate serie to book
+     *
+     * @param  Serie $serie
+     * @param  Book  $book
+     *
+     * @return int    Updated or inserted relation ID
+     */
+    public function associateToBook(Serie $serie, Book $book)
+    {
+        if (!$serie->getId()) {
+            $serie->setId($this->insert($serie));
+        }
+
+        $this->getQueryBuilder()
+            ->delete('books_series_link')
+            ->where('book = :book_id')
+            ->setParameter('book_id', $book->getId(), PDO::PARAM_INT)
+            ->execute();
+
+        $con = $this->getConnection();
+        $con->insert('books_series_link',
+            array(
+                'book'   => $book->getId(),
+                'series' => $serie->getId()
+            ),
+            array(
+                PDO::PARAM_INT,
+                PDO::PARAM_INT,
+            )
+        );
+
+        return $con->lastInsertId();
     }
 }

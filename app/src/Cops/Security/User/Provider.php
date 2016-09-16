@@ -29,7 +29,7 @@ class Provider implements UserProviderInterface
     /**
      * Constructor
      *
-     * @param Application $app
+     * @param User $user
      */
     public function __construct(User $user)
     {

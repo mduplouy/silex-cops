@@ -11,7 +11,6 @@ namespace Cops\Core\Entity\Book;
 
 use Cops\Core\Entity\BookRepository;
 use Cops\Core\Entity\RepositoryInterface\Book\EditableBookRepositoryInterface;
-use Cops\Core\Entity\Book as BookEntity;
 use PDO;
 
 /**
@@ -219,6 +218,28 @@ class EditableBookRepository extends BookRepository implements EditableBookRepos
                 'comments',
                 array('text' => $comment),
                 array('book' => $bookId),
+                array(
+                    PDO::PARAM_STR,
+                    PDO::PARAM_INT
+                )
+            );
+    }
+
+    /**
+     * Update serie index
+     *
+     * @param int       $bookId
+     * @param float     $serieIndex
+     *
+     * @return bool
+     */
+    public function updateSerieIndex($bookId, $serieIndex)
+    {
+        return (bool) $this->getConnection()
+            ->update(
+                'books',
+                array('series_index' => (float) $serieIndex),
+                array('id' => $bookId),
                 array(
                     PDO::PARAM_STR,
                     PDO::PARAM_INT

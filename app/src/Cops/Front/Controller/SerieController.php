@@ -78,11 +78,16 @@ class SerieController implements ControllerProviderInterface
     {
         if (null !== $serie = $this->loadSerieOrRedirect($app, $id)) {
 
+            $books = $app['collection.book']->findBySerieId($id)
+                ->addBookFiles($app['collection.bookfile'])
+                ->addAuthors($app['collection.author'])
+                ->addTags($app['collection.tag']);
+
             $template = $app['config']->getTemplatePrefix().'serie.html.twig';
 
             $app['response'] =  $app['twig']->render($template, array(
                 'serie'     => $serie,
-                'books'     => $app['collection.book']->findBySerieId($id),
+                'books'     => $books,
                 'pageTitle' => $serie->getName(),
             ));
         }

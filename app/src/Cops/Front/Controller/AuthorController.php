@@ -118,7 +118,9 @@ class AuthorController implements ControllerProviderInterface
             $books = $app['collection.book']
                 ->setFirstResult(($page - 1) * $itemsPerPage)
                 ->setMaxResults($itemsPerPage)
-                ->findByAuthorId($id);
+                ->findByAuthorId($id)
+                ->addBookFiles($app['collection.bookfile'])
+                ->addTags($app['collection.tag']);
 
             $totalBooks = $books->getRepository()->getTotalRows();
 
