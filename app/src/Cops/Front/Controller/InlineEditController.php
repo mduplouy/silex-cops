@@ -25,11 +25,13 @@ class InlineEditController implements ControllerProviderInterface
      * @var array
      */
     private $fieldMethodMap = array(
-        'comment' => 'updateBookComment',
-        'pubdate' => 'updateBookPubDate',
-        'title'   => 'updateBookTitle',
-        'author'  => 'updateBookAuthor',
-        'tags'    => 'updateBookTags',
+        'comment'     => 'updateBookComment',
+        'pubdate'     => 'updateBookPubDate',
+        'title'       => 'updateBookTitle',
+        'author'      => 'updateBookAuthor',
+        'tags'        => 'updateBookTags',
+        'serie-name'  => 'updateBookSerie',
+        'serie-index' => 'updateBookSerieIndex',
     );
 
     /**
@@ -145,8 +147,8 @@ class InlineEditController implements ControllerProviderInterface
      * @param  EditableBook $book
      * @param  array        $tagNames
      * @param  Application  $app
-     *      *
-     * @return array
+     *
+     * @return string
      */
     protected function updateBookTags(EditableBook $book, array $tagNames, Application $app)
     {
@@ -176,5 +178,35 @@ class InlineEditController implements ControllerProviderInterface
         }
 
         return json_encode($output);
+    }
+
+    /**
+     * Update book serie index
+     *
+     * @param  EditableBook $book
+     * @param  string       $serieIndex
+     *
+     * @return bool
+     */
+    protected function updateBookSerieIndex(EditableBook $book, $serieIndex)
+    {
+        return (bool) $book->updateSerieIndex($serieIndex);
+    }
+
+    /**
+     * Update book serie
+     *
+     * @param  EditableBook $book
+     * @param  string       $serie
+     * @param  Application  $app
+     *
+     * @return bool
+     */
+    protected function updateBookSerie(EditableBook $book, $serie, Application $app)
+    {
+        return (bool) $app['entity.serie']
+            ->setName($serie)
+            ->setSort($serie)
+            ->associateToBook($book);
     }
 }

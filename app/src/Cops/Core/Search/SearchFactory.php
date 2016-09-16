@@ -34,7 +34,7 @@ class SearchFactory extends AbstractFactory
 
         if (!$adapter instanceof AdapterInterface) {
             throw new WrongAdapterException(
-                'Image adapter must implement \Cops\Core\Search\SearchInterface'
+                'Search adapter must implement \Cops\Core\Search\SearchInterface'
             );
         }
 

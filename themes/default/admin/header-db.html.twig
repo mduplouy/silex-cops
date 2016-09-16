@@ -1,0 +1,38 @@
+{% extends "header.html.twig" %}
+
+{% block switchLink %}
+    - <a href="{{ path("homepage") }}" class="small" title="{{ "Back to website"|trans([], "admin") }}">{{ "Back to website"|trans([], "admin") }}</a>
+{% endblock %}
+
+{% block selectdb %}
+    {% set databases = app.config.getValue('data_dir') %}
+    {% if databases|length > 1 %}
+    <span>
+        <label for="js-select-db">| {{ "Switch database:"|trans }}</label>
+        <select size="1" id="js-select-db">
+        {% for dbKey, path in databases %}
+            {% set selected = '' %}
+            {% if dbKey == app.config.getValue('current_database_key') %}
+                {% set selected = 'selected="selected"' %}
+            {% endif %}
+            <option {{ selected }} value="{{ path(dbSelectRoute, {'database' : dbKey}) }}">{{ dbKey }}</option>
+        {% endfor %}
+        </select>
+    </span>
+    <script type="text/javascript">
+        jQuery('document').ready(function() {
+            jQuery("#js-select-db").select2({
+                minimumResultsForSearch: -1,
+                dropdownAutoWidth: true,
+            });
+
+            jQuery('#js-select-db').change(function() {
+                window.location.href = jQuery(this).val();
+            });
+        });
+    </script>
+    {% endif %}
+{% endblock %}
+
+{% block quicksearch %}{% endblock %}
+

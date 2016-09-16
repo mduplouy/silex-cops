@@ -1,65 +1,92 @@
-    <div id="header" class="ui-corner-all ui-state-active">
-        <a href="{{ path('homepage') }}">SilexCOPS</a>
 
-        {% block quicksearch %}
-            {% set searchEngine = app.config.getValue('search_engine') %}
-            {% if searchEngine == 'algolia' and not(app.config.getValue('algolia_use_autocomplete')) %}
-                {% set searchEngine = 'default' %}
-            {% endif %}
-            {% include "search/" ~ searchEngine ~ ".html.twig" %}
-        {% endblock %}
+<div id="header" class="container-fluid navbar navbar-default navbar-fixed-top">
+    <div class="container">
 
-        {% block selectdb %}
-            {% set databases = app.config.getValue('data_dir') %}
-            {% if databases|length > 1 %}
-            <span>
-                <label for="js-select-db">| {{ "Switch database:"|trans }}</label>
-                <select size="1" id="js-select-db">
-                {% for dbKey, path in databases %}
-                    {% set selected = '' %}
-                    {% if dbKey == app.config.getValue('current_database_key') %}
-                        {% set selected = 'selected="selected"' %}
-                    {% endif %}
-                    <option {{ selected }} value="{{ path('homepage', {'database' : dbKey}) }}">{{ dbKey }}</option>
-                {% endfor %}
-                </select>
-            </span>
-            <script type="text/javascript">
-                jQuery('document').ready(function() {
-                    jQuery("#js-select-db").select2({
-                        minimumResultsForSearch: -1,
-                        dropdownAutoWidth: true,
-                    });
-
-                    jQuery('#js-select-db').change(function() {
-                        window.location.href = jQuery(this).val();
-                    });
-                });
-            </script>
-            {% endif %}
-        {% endblock %}
-
-        {% if is_granted('ROLE_ADMIN') %}
-            {% block switchLink %}
-            | <a href="{{ path('admin_index') }}" title="{{ "Admin home"|trans }}">{{ "Admin home"|trans }}</a>
-            {% endblock %}
-        {% endif %}
-
-        {% if app.config.displayLogoutLink() %}
-            | <a href="{{ path('logout') }}" title="{{ "Logout"|trans }}">{{ "Logout"|trans }}</a>
-        {% endif %}
-
-        {% block user_actions %}
-            {% if is_granted('ROLE_USER_ACTIONS') %}
-        <div style="padding:4px 0; font-size:0.82em;">
-            {{ "My books:"|trans }}
-            {% for action, label in app['entity.user-book'].getAvailableLists() %}
-            <a href="{{ path('user_books_list', {'action': action}) }}" class="user_action" title="{{ label|trans }}">{{ label|trans }}</a>
-            {% endfor %}
+        <div class="navbar-header">
+            <a href="{{ path('homepage') }}" class="navbar-brand">SilexCOPS</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
         </div>
-            {% endif %}
-        {% endblock %}
 
-        <div class="clear"></div>
+        <div id="main-menu" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+
+                {% block selectdb %}
+                    {% set databases = app.config.getValue('data_dir') %}
+
+                    {% if databases|length > 1 %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        {{ "Switch database:"|trans }} {{ app.config.getValue('current_database_key') }} <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        {% for dbKey, path in databases %}
+                            {% if dbKey != app.config.getValue('current_database_key') %}
+                        <li><a href="{{ path("homepage", {"database" : dbKey}) }}">{{ dbKey }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+                    {% endif %}
+                {% endblock %}
+
+                {% block user_actions %}
+                    {% if is_granted('ROLE_USER_ACTIONS') %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        {{ "My books:"|trans }} <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                    {% for action, label in app['entity.user-book'].getAvailableLists() %}
+                        <li>
+                            <a href="{{ path('user_books_list', {'action': action}) }}" class="user_action" title="{{ label|trans }}">{{ label|trans }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </li>
+                    {% endif %}
+                {% endblock %}
+
+                {% set isAdmin = is_granted('ROLE_ADMIN') %}
+                {% set showLogoutLink = app.config.displayLogoutLink() %}
+
+                {% if isAdmin or showLogoutLink %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        {{ "Actions"|trans }} <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                    {% if isAdmin %}
+                        {% block switchLink %}
+                    <li><a href="{{ path('admin_index') }}" title="{{ "Admin home"|trans }}">{{ "Admin home"|trans }}</a></li>
+                        {% endblock %}
+                    {% endif %}
+
+                    {% if showLogoutLink %}
+                    <li><a href="{{ path('logout') }}" title="{{ "Logout"|trans }}">{{ "Logout"|trans }}</a></li>
+                {% endif %}
+            </ul>
+
+                </li>
+                {% endif %}
+            </ul>
+
+            {% block quicksearch %}
+                {% set searchEngine = app.config.getValue('search_engine') %}
+                {% if searchEngine == 'algolia' and not(app.config.getValue('algolia_use_autocomplete')) %}
+                    {% set searchEngine = 'default' %}
+                {% endif %}
+                {% include "search/" ~ searchEngine ~ ".html.twig" %}
+            {% endblock %}
+
+        </div>
 
     </div>
+</div>
+
+<div class="page-header">
+
+</div>

@@ -1,0 +1,281 @@
+{% extends "layout.html.twig" %}
+
+{% set date_format = "m/d/Y"|trans %}
+{% set date_edit   = "MM/DD/YYYY" |trans %}
+{% set editableTags = '' %}
+{% set serie = book.getSerie() %}
+
+{% block mainBody %}
+<div class="container">
+
+    {% if inline_edit %}
+    <div class="row">
+        <div class="col-xs-2 text-center">
+            <a href="#" id="toggle-edit">
+                <span>{{ "Enable inline edit"|trans }}</span>
+                <span style="display:none;">{{ "Disable inline edit"|trans }}</span>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <div class="row">
+
+        <div class="col-xs-2 text-center">
+            {% set thumbnail = book.getCover().getThumbnailPath(160, 260) %}
+            {% if thumbnail %}
+                <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
+            {% endif %}
+        </div>
+
+        <div class="col-xs-10">
+
+            <div>
+                <h1 class="editable" data-type="text" data-inputclass="h1" data-name="title">{{ book.getTitle() }}</h1>
+            </div>
+
+            <div class="row">
+
+            <div class="col-xs-7">
+
+                {% if serie.getId() %}
+                <p>{{"Serie:"|trans}}
+                    <strong>
+                        <span class="editable" data-type="text" data-name="serie-name">{{ serie.getName()}}</span>
+                        - {{ "T"|trans }}.
+                        <span class="editable" data-type="number" data-name="serie-index">{{ book.getSeriesIndex()|number_format(0) }}</span>
+                    </strong>
+                    {% set nbBooks = serie.getBookCount() %}
+                    {% if nbBooks > 1 %}
+                    <br />
+                    <span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(nbBooks) }}
+                        {% for archive in app["factory.archive"].getAdapterkeys() %}
+                        <a href="{{ path("serie_download", {"id": serie.getId(), "format": archive}) }}">{{ archive }}</a>
+                            {% if loop.revindex0 %}/ {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </p>
+                {% endif %}
+
+                {% set authors = book.getAuthors() %}
+                <p>{{ "Author:"|transchoice(authors.count()) }}
+                    <strong><span class="editable" data-type="text" data-name="author">{{ authors.getName() }}</span></strong>
+                {% if authors.count() == 1 %}
+                    {% set author = authors.getByKey(0) %}
+                    {% set nbBooks = author.getBookCount() %}
+                        {% if nbBooks > 1 %}
+                        <br />
+                        <span class="small">{{"Download author's books (%s) as archive:"|trans|format(nbBooks) }}
+                            {% for archive in app["factory.archive"].getAdapterkeys() %}
+                                <a href="{{ path('author_download', {id: author.getId(), format: archive}) }}">{{ archive }}</a>
+                                {% if loop.revindex0 %}/ {% endif %}
+                            {% endfor %}
+                        </span>
+                        {% endif %}
+                {% endif %}
+                </p>
+
+                <p>{{"Last modified date:"|trans}} <strong><span>{{ book.getLastModified()|date(date_format) }}</span></strong></p>
+
+                <p>{{"Publication date:"|trans}}
+                    <strong><span class="bold editable" data-type="combodate" data-name="pubdate" data-format="{{ date_edit }}">{{ book.getPubdate()|date(date_format) }}</span></strong>
+                </p>
+
+                <div id="js-tag-tpl">
+                    <a href="#" style="display:none;"></a>
+                </div>
+
+                {% set tagStyle = "" %}
+                {% set tagClass = "" %}
+                {% if tags.count() == 0 %}
+                    {% set tagStyle = 'style="display:none;"' %}
+                    {% set tagClass = "toggle" %}
+                {% endif %}
+
+                <p id="tag-list" class="{{ tagClass|raw }}" {{ tagStyle|raw }}> {{ "Tag :"|transchoice(tags.count()) }}
+                    <span class="bold">
+                    {% for tag in tags %}
+                        {% set editableTags = editableTags ~ ", " ~ tag.getName() %}
+                        <a href="{{ path("tag_book_list", {id: tag.getId()}) }}">{{ tag.getName() }}</a>{% if not(loop.last) %}, {% endif %}
+                    {% endfor %}
+                    </span>
+
+                    <a id="edit-tag" style="display:none;" data-name="tags" data-type="select2" href="#" data-viewseparator=", ">
+                        {% for tag in tags %}
+                            {{ tag.getName() }}{% if not(loop.last) %}, {% endif %}
+                        {% endfor %}
+                    </a>
+                </p>
+
+                {% include "book_download_link.html.twig" with {"book": book} %}
+
+            </div>
+
+            <div class="col-xs-5">
+
+                {% if is_granted('ROLE_USER_ACTIONS') %}
+                    {% set savedActions = app['security'].getToken().getUser().findUserBooksFromBookId(book.getId()) %}
+
+                <div class="panel panel-default" id="user_actions">
+                  <div class="panel-body">
+                    {% for action, label in app['entity.user-book'].getAvailableActions() %}
+                        {% set checked = "" %}
+                        {% if savedActions.hasOneByAction(action) %}
+                            {% set checked = 'checked="checked"' %}
+                        {% endif %}
+                    <div class="checkbox action">
+                        <label for="js-{{ action }}">
+                        <input type="checkbox" {{ checked }} id="js-{{ action }}" autocomplete="off" data-action="{{ action }}" data-url="{{ path('user_books_action', {'id': book.getId()}) }}" />
+                            {{ label|trans }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% endif %}
+            </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="editable" data-type="textarea" data-name="comment" data-inputclass="comments"><small>{{ book.getComment()|striptags('<br>')|raw }}</small></div>
+    </div>
+
+    <div class="row page-header">
+        <div class="col-xs-6">
+            {% if authors.count() == 1 %}
+                {% if authorBooks|length %}
+            <div id="author">
+                {{ "Other book from this author:"|transchoice(authorBooks|length) }} <br />
+                <ul>
+                {% for authorBook in authorBooks %}
+                    <li>{% include "book_link.html.twig" with {"book": authorBook, "showAuthor": false} %}</li>
+                {% endfor %}
+                </ul>
+            </div>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="col-xs-6">
+
+            {% if book.getSerie().getId() %}
+                {% if serieBooks|length > 0 %}
+            <div id="serie">
+                {{ "Other book in this serie:"|transchoice(serieBooks|length) }} <br />
+                <ul>
+                    {% for serieBook in serieBooks %}
+                    <li>{% include "book_link.html.twig" with {"book": serieBook, "showAuthor": false} %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+                {% endif %}
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block beforeBodyEnd %}
+
+    {{ parent() }}
+
+<script type="text/javascript">
+    {% if inline_edit %}
+        jQuery.fn.editable.defaults.mode = 'inline';
+    {% endif %}
+
+    jQuery(document).ready(function() {
+
+    {% if is_granted('ROLE_USER_ACTIONS') %}
+        jQuery('#user_actions input:checked').next('label').addClass('disabled')
+
+        // User book Actions
+        jQuery('#user_actions input').change(function(e) {
+
+            var target = jQuery(this);
+
+            // Do ajax request to process change
+            jQuery.post(
+                target.attr('data-url'),
+                {'action': target.attr('data-action'), 'status': target.is(':checked')},
+                function () {
+                    // Toggle link
+                    target.next('label').toggleClass('disabled');
+                }
+            );
+
+        });
+    {% endif %}
+
+    {%  if inline_edit %}
+        var myTags = [];
+        jQuery('#tag-list a').each(function() {
+            myTags.push(jQuery(this).text());
+        });
+
+        jQuery('#edit-tag').editable({
+            inputclass: 'input-large',
+            select2: {
+                multiple: true,
+                tags: [{% for tag in tags %}"{{ tag.getName()|raw }}"{% if not(loop.last) %},{% endif %}{% endfor %}],
+                minimumInputLength: 3,
+                tokenSeparators: [","]
+            },
+            pk: {{ book.getId() }},
+            url: "{{ url('inline_edit_book', { id: book.getId() }) }}",
+            disabled: true,
+            success: function(response, newValue) {
+                // Remove toggle class to avoid hide
+                jQuery('#tag-list.toggle').removeClass('toggle');
+
+                var newTags = new Array();
+                jQuery.each(JSON.parse(response), function(idx, obj) {
+
+                    var myTag = jQuery('#js-tag-tpl').clone(true);
+                    myTag.find('a')
+                        .attr('href', obj.url)
+                        .text(obj.name)
+                        .show();
+
+                    newTags.push(myTag.html().trim());
+                });
+
+                jQuery('#tag-list > span.bold').html(newTags.join(', '));
+            }
+        });
+
+        jQuery('.editable').editable({
+            pk: {{ book.getId() }},
+            url: "{{ url('inline_edit_book', { id: book.getId() }) }}",
+            disabled: true
+        });
+
+        jQuery('#toggle-edit').click(function () {
+            jQuery('#tag-list.toggle').toggle();
+            jQuery('.editable, #edit-tag').editable('toggleDisabled');
+            jQuery('#tag-list > span').toggle();
+            jQuery('#edit-tag').toggle();
+            jQuery(this).children('span').toggle();
+        })
+
+
+        {% endif %}
+
+    });
+
+</script>
+{% endblock %}

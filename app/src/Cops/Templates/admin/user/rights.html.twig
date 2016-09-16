@@ -1,9 +1,18 @@
 {% trans_default_domain "admin" %}
 
-{{ "Rights management:"|trans }}
-<ul>
-    <li>{{ user.getUserRole|trans}} : {{ "Can visit the website"|trans }}</li>
-    <li>{{ user.getUserActionsRole|trans}} : {{ "Can save lists like 'favorites' or 'to read'"|trans }}</li>
-    <li>{{ user.getEditRole|trans}} : {{ "Can modify the books"|trans }}</li>
-    <li>{{ user.getAdminRole|trans}} : {{ "Can access the back office"|trans }}</li>
-</ul>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ "Rights management:"|trans }}</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li><strong>{{ user.getUserRole|trans}}</strong> : {{ "Can visit the website"|trans }}</li>
+            <li><strong>{{ user.getUserActionsRole|trans}}</strong> : {{ "Can save lists like 'favorites' or 'to read'"|trans }}</li>
+            <li><strong>{{ user.getEditRole|trans}}</strong> : {{ "Can modify the books"|trans }}</li>
+            <li><strong>{{ user.getAdminRole|trans}}</strong> : {{ "Can access the back office"|trans }}</li>
+        </ul>
+    </div>
+</div>
+
+
+

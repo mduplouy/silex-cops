@@ -1,0 +1,88 @@
+{% extends "layout.html.twig" %}
+
+{% set date_format = "m/d/Y"|trans %}
+
+{% block mainBody %}
+<div class="container">
+
+    {% set paginator %}
+    <div class="row">
+        {% include "paginator.html.twig" with {
+            "routeName": "user_books_list",
+            "params": {
+                "action": action,
+                "pageNum": pageNum,
+                "totalBooks": totalBooks,
+                "pageCount": pageCount
+            }
+        } %}
+    </div>
+    {% endset %}
+
+    {{ paginator }}
+
+    <form method="post" action="">
+
+        <div class="row">
+            <p class="small" style="margin-bottom:0;">{{ "Select / Deselect all"|trans }}</p>
+        </div>
+
+        <div id="user-actions" class="row" style="padding-bottom:8px;">
+
+            <div class="col-md-1">
+                <input id="js-select-all" type="checkbox" style="margin-left:13px; margin-bottom:-8px;" />
+            </div>
+
+            <div class="col-md-11">
+
+                <button name="remove" value="remove" type="submit" id="js-submit-multi" class="btn btn-sm btn-notice">
+                    {{ "Remove selection"|trans }}
+                </button>
+
+                {% for archive in app["factory.archive"].getAdapterkeys() %}
+                <button type="submit" name="download_{{ archive }}" class="btn btn-sm btn-info" id="js-submit-download">
+                    {{ "Download as %s"|trans|format(archive) }}
+                </button>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <div id="user-books">
+            {% include "user_books_listing.html.twig" with {"books": books} %}
+        </div>
+    </form>
+
+    {{ paginator }}
+
+</div>
+{% endblock %}
+
+{% block beforeBodyEnd %}
+
+    {{ parent() }}
+
+    <script type="text/javascript">
+
+        var buttons = jQuery("button", jQuery("#user-actions")).addClass('disabled');
+        var context = jQuery("#user-books");
+
+        jQuery("input", context).change(function() {
+            if (jQuery("input:checked", context).length > 0) {
+                buttons.removeClass("disabled");
+            } else {
+                buttons.addClass("disabled");
+            }
+        });
+
+        jQuery("#js-select-all").change(function() {
+            jQuery("input", context).prop("checked", jQuery(this).prop("checked"));
+            jQuery("input:eq(0)", context).change();
+        });
+
+        jQuery("div.book input:eq(0)", context).change();
+
+    </script>
+{% endblock %}

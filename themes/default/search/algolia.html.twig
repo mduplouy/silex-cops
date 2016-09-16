@@ -1,0 +1,40 @@
+        <div style="float:right;">
+            <input type="text" id="search-input" name="keywords" value="" size="60" />
+        </div>
+
+        <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+        <script src="//cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+        <script>
+
+            var url = "{{ path("book_detail", {"id": 10001}) }}"
+
+            var client = algoliasearch("{{ app.config.getValue('algolia_app_id') }}", "{{ app.config.getValue('algolia_api_read_key') }}")
+            var index = client.initIndex('{{ app.config.getValue('algolia_index_name') }}');
+            autocomplete('#search-input', {hint: false}, [
+            {
+                source: autocomplete.sources.hits(index, {hitsPerPage: 8}),
+                displayKey: 'title serie',
+                templates: {
+                    suggestion: function(suggestion) {
+                        var output = suggestion._highlightResult.title.value;
+
+                        var serie = suggestion._highlightResult.serie;
+                        if (serie && serie.name.value) {
+                            output = output + " - " + serie.name.value + " " + parseInt(suggestion.serieIndex);
+                        }
+
+                        var author = suggestion._highlightResult.authors[0];
+                        if (author && author.name.value) {
+                            output = output + " - " + author.name.value;
+                        }
+
+                        return output;
+                    }
+                }
+            }
+            ]).on('autocomplete:selected', function(event, suggestion, dataset) {
+
+                var link = url;
+                window.location.href = link.replace("10001", suggestion.id);
+            });
+        </script>

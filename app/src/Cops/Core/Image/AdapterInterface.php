@@ -18,8 +18,8 @@ interface AdapterInterface
     /**
      * Generate a thumbnail for image
      *
-     * @param string $src    The source image file path
-     * @param string $dest   The target image file path
+     * @param string $src The source image file path
+     * @param string $dst The target image file path
      *
      * @return void
      */

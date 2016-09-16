@@ -1,0 +1,129 @@
+{% extends "layout.html.twig" %}
+
+{% block mainBody %}
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{"Last added books"|trans}}</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <ul>
+                        {% for book in latestBooks %}
+                        <li>{% include "book_link.html.twig" with {"book": book, "showAuthor": true, "class": "text-primary"} %}</li>
+                        {% endfor %}
+                    </ul>
+
+                    {% if displayShowAlllink %}
+                    <a href="{{ path("book_by_date") }}" id="js-show-added">{{ "Show all"|trans() }}</a>
+                    {% endif %}
+
+                </div>
+            </div>
+
+
+            <div class="panel panel-default aggregated">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{"Access by Series"|trans}} ({{ countSeries }})</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <ul class="nav nav-pills">
+                    {% for letter in letters %}
+
+                        {% set urlLetter = letter %}
+                        {% if letter == '#' %}
+                            {% set urlLetter = 0 %}
+                        {% endif %}
+
+                        {% set class = "disabled" %}
+                        {% set url = "#" %}
+                        {% if seriesAggregated[letter] is defined %}
+                            {% set class="" %}
+                            {% set url = path("serie_list", {'letter': urlLetter}) %}
+                        {% endif %}
+
+                        <li class="{{ class }}"><a href="{{ url }}" title="{{ letter }}">{{ letter }}</a></li>
+                    {% endfor %}
+                    </ul>
+
+                    <div class="row col-md-12"></div>
+                </div>
+            </div>
+
+            <div class="panel panel-default aggregated">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{"Access by Author"|trans}} ({{ countAuthors }})</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <ul class="nav nav-pills">
+                    {% for letter in letters %}
+                        {% set urlLetter = letter %}
+                        {% if letter == '#' %}
+                            {% set urlLetter = 0 %}
+                        {% endif %}
+
+                        {% set class = "disabled" %}
+                        {% set url = "#" %}
+                        {% if authorsAggregated[letter] is defined %}
+                            {% set class="" %}
+                            {% set url = path("author_list", {'letter': urlLetter}) %}
+                        {% endif %}
+
+                        <li class="{{ class }}"><a href="{{ url }}" title="{{ letter }}">{{ letter }}</a></li>
+
+                    {% endfor %}
+                    </ul>
+
+                    <div class="row col-md-12"></div>
+
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{"Access by Tag"|trans}} ({{ countTags }})</h3>
+                </div>
+
+                <div class="panel-body">
+
+                {% for tag in tags %}
+                    <div style="width:24%; float:left;">
+                        <a href="{{ path('tag_book_list', {'id': tag.getId()}) }}" title="{{ tag.getName() }}">{{ tag.getName() }} ({{ tag.getBookCount() }})</a><br />
+                    </div>
+                {% endfor %}
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block beforeBodyEnd %}
+
+    {{ parent() }}
+
+    <script type="text/javascript">
+        jQuery(".nav-pills a").click(function(e) {
+
+            e.preventDefault();
+
+            jQuery(this).parent().parent().find("li").removeClass("active");
+            jQuery(this).parent().addClass("active");
+
+            var url = jQuery(this).attr("href");
+            jQuery(this).parents(".panel-body").find(".row").load(url);
+        });
+
+    </script>
+{% endblock %}

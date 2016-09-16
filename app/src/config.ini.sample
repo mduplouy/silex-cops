@@ -27,7 +27,7 @@ algolia_index_name       = ""          ; Algolia index name
 algolia_use_autocomplete = true        ; Use autocomplete in search form entry (makes more algolia requests)
 
 [web]
-theme             = default            ; The theme directory
+theme             = flatly             ; The theme directory(default | flatly | spacelab)
 mobile_theme      = mobile             ; The subdir for mobile template
 
 [path]

@@ -1,0 +1,40 @@
+{% set letters = ['#']|merge('A'..'Z') %}
+{% set date_format = "m/d/Y"|trans %}
+
+{% set inline_edit = false %}
+{% if app.config.getValue('inline_edit_enable') and is_granted('ROLE_EDIT') %}
+    {% set inline_edit = true %}
+{% endif %}
+<!doctype html>
+<html>
+    <head>
+        {% block head %}
+            {% include "head.html.twig" %}
+        {% endblock %}
+        {# beforeHeadEnd placeholder #}
+        {% block beforeHeadEnd %}{% endblock %}
+    </head>
+
+    <body>
+        {# afterBodyStart placeholder #}
+        {% block afterBodyStart %}{% endblock %}
+
+        <div id="main">
+            {% block header %}
+                {% include "header.html.twig" %}
+            {% endblock %}
+
+            {% block mainBody %}
+            {% endblock %}
+
+            {% block footer %}
+                {% include "footer.html.twig" %}
+            {% endblock %}
+        </div>
+
+        {# beforeBodyEnd placeholder #}
+        {% block beforeBodyEnd %}
+        {% endblock %}
+    </body>
+
+</html>

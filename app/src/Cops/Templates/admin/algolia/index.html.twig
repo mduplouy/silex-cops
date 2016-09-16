@@ -1,11 +1,12 @@
-{% extends "admin/layout.html.twig" %}
-
+{% extends "admin/layout-db.html.twig" %}
 {% trans_default_domain "admin" %}
 
-{% block mainBody %}
-    <h2>{{ "Algolia index status"|trans }}</h2>
+{% block rightContent %}
+    <h2>{{ "Algolia index status for database \"%s\""|trans|format(app.config.getValue('current_database_key')) }}</h2>
 
     <form id="algolia-index" method="post" action="{{ path("admin_algolia_reindex_books") }}">
+
+        {% if algoliaIndex is not null %}
 
         <ul style="width:60%;">
             <li>{{ "Name:%s"|trans|format(algoliaIndex["name"]) }}</li>
@@ -14,20 +15,27 @@
             <li>{{ "Last update:%s"|trans|format(algoliaIndex["updatedAt"]|date("d/m/Y H:i")) }}</li>
         </ul>
 
-        <button style="min-height:30px;">{{ "Reindex now"|trans }}</button>
+        <button class="btn btn-info">{{ "Reindex now"|trans }}</button>
+
+        {% else %}
+
+        <p class="text-warning">{{ "Index for this database does not exist"|trans }}</p>
+
+        <button class="btn btn-info">{{ "Create index now"|trans }}</button>
+        {% endif %}
 
     </form>
 
     {% if logs|length %}
     <h3>{{ "Last operations"|trans }}</h3>
-    <table id="algolia-logs">
+    <table id="algolia-logs" class="table table-striped">
         <thead>
-            <th width="14%">{{ "Date"|trans }}</th>
-            <th width="20%">{{ "Url"|trans }}</th>
-            <th width="20%">{{ "Query body"|trans }}</th>
-            <th width="3%">{{ "Response code"|trans }}</th>
-            <th width="40%">{{ "Response body"|trans }}</th>
-            <th width="3%">{{ "Time"|trans }}</th>
+            <th>{{ "Date"|trans }}</th>
+            <th>{{ "Url"|trans }}</th>
+            <th>{{ "Query body"|trans }}</th>
+            <th>{{ "Response code"|trans }}</th>
+            <th width="35%">{{ "Response body"|trans }}</th>
+            <th>{{ "Time"|trans }}</th>
         </thead>
         <tbody>
         {% for log in logs['logs'] %}
@@ -35,15 +43,20 @@
             <tr class="{{ cycle(["odd", "even"], loop.index0) }}">
                 <td> {{ log["timestamp"]|date("d/m/Y H:i") }}</td>
                 <td class="small">{{ log["url"] }}</td>
-                <td class="small"><pre>{{ log["query_body"] }}</pre></td>
+                <td class="small">{% if log["query_body"] %}<pre class="small" style="width:50em; height:15em;">{{ log["query_body"] }}</pre> {% endif %}</td>
                 <td>{{ log["answer_code"] }}</td>
-                <td class="small"><pre>{{ log["answer"] }}</pre></td>
-                <td>{{ log["processing_time_ms"] }}ms</td>
+                <td class="small"><pre class="small" style="height:15em;">{{ log["answer"] }}</pre></td>
+                <td class="text-right">{{ log["processing_time_ms"] }}ms</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     {% endif %}
+
+{% endblock %}
+
+{% block beforeBodyEnd %}
+    {{ parent() }}
 
     <script type="text/javascript">
     function doIndex(start)
@@ -75,4 +88,5 @@
     });
 
     </script>
+
 {% endblock %}

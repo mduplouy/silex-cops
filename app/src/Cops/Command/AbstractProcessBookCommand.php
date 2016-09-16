@@ -92,8 +92,6 @@ abstract class AbstractProcessBookCommand extends Command
 
             $output->writeln('');
 
-            $this->beforeBookProcessing($output, $selectedDb);
-
             $this->processBooksFromDatabase($output, $selectedDb);
         }
 
@@ -110,6 +108,8 @@ abstract class AbstractProcessBookCommand extends Command
     private function processBooksFromDatabase(OutputInterface $output, $dbName)
     {
         $this->app['config']->setDatabaseKey($this->app, $dbName);
+
+        $this->beforeBookProcessing($output, $dbName);
 
         $books = $this->app['collection.book'];
 

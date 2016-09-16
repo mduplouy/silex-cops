@@ -30,6 +30,7 @@ Anyone comfortable with Twig can create a theme or modify the default one.
 * Edit your books information while browsing
 * Basic user & permissions management
 * Algolia search adapter
+* 2 responsive bootstrap themes available
 
 ## Requirements
 
@@ -43,7 +44,7 @@ The following PHP modules are required :
 * **imagick** or **gd**
 * **DOM** for the opds feed
 
-**apc** (opcode and data cache) is not required but **highly recommended**
+**apc** or **opcache** (opcode and data cache) are not required but **highly recommended**
 
 ## Installation
 

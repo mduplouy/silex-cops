@@ -134,7 +134,7 @@ class Application extends BaseApplication
         $this->mount($adminPath.'/{_locale}/users/',               new Back\UserController);
 
         if ($this['config']->getValue('search_engine') == 'algolia') {
-            $this->mount($adminPath.'/{_locale}/algolia/', new Back\AlgoliaController);
+            $this->mount($adminPath.'/{_locale}/{database}/algolia/', new Back\AlgoliaController);
         }
 
         // Set the mount points for the controllers with database prefix

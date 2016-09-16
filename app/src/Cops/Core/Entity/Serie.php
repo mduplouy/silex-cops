@@ -42,6 +42,8 @@ class Serie extends AbstractBookCount implements CollectionableInterface
      * @param  int   $serieId
      *
      * @return $this
+     *
+     * @throws SerieNotFoundException
      */
     public function findById($serieId)
     {
@@ -50,7 +52,25 @@ class Serie extends AbstractBookCount implements CollectionableInterface
         $result = $this->getRepository()->findById($serieId);
 
         if (empty($result)) {
-            throw new SerieNotFoundException(sprintf('Serie width id %s not found', $serieId));
+            throw new SerieNotFoundException(sprintf('Serie with id %s not found', $serieId));
+        }
+
+        return $this->setDataFromArray($result);
+    }
+
+    /**
+     * Find by name
+     *
+     * @param  string $name
+     *
+     * @return $this
+     */
+    public function findByName($name)
+    {
+        $result = $this->getRepository()->findByName($name);
+
+        if (empty($result)) {
+            throw new SerieNotFoundException(sprintf('Serie with name %s was not found', $name));
         }
 
         return $this->setDataFromArray($result);
@@ -102,5 +122,26 @@ class Serie extends AbstractBookCount implements CollectionableInterface
     public function getSort()
     {
         return $this->sort;
+    }
+
+    /**
+     * Associate current serie to given book
+     *
+     * @param  Book   $book
+     *
+     * @return bool
+     */
+    public function associateToBook(Book $book)
+    {
+        if (!$this->getId()) {
+            try {
+                $this->findByName($this->getName());
+            } catch (SerieNotFoundException $e) {
+                // Do noting it's a new serie
+            }
+        }
+
+        return (bool) $this->getRepository()
+            ->associateToBook($this, $book);
     }
 }

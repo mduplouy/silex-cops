@@ -1,36 +1,22 @@
-{% extends "header.html.twig" %}
-
-{% block switchLink %}
-    - <a href="{{ path("homepage") }}" class="small" title="{{ "Back to website"|trans([], "admin") }}">{{ "Back to website"|trans([], "admin") }}</a>
-{% endblock %}
+{% extends "admin/header.html.twig" %}
 
 {% block selectdb %}
-    {% set databases = app.config.getValue('data_dir') %}
-    {% if databases|length > 1 %}
-    <span>
-        <label for="js-select-db">| {{ "Switch database:"|trans }}</label>
-        <select size="1" id="js-select-db">
-        {% for dbKey, path in databases %}
-            {% set selected = '' %}
-            {% if dbKey == app.config.getValue('current_database_key') %}
-                {% set selected = 'selected="selected"' %}
-            {% endif %}
-            <option {{ selected }} value="{{ path(dbSelectRoute, {'database' : dbKey}) }}">{{ dbKey }}</option>
-        {% endfor %}
-        </select>
-    </span>
-    <script type="text/javascript">
-        jQuery('document').ready(function() {
-            jQuery("#js-select-db").select2({
-                minimumResultsForSearch: -1,
-                dropdownAutoWidth: true,
-            });
 
-            jQuery('#js-select-db').change(function() {
-                window.location.href = jQuery(this).val();
-            });
-        });
-    </script>
+    {% set databases = app.config.getValue('data_dir') %}
+
+    {% if databases|length > 1 %}
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+        {{ "Switch database:"|trans }} {{ app.config.getValue('current_database_key') }} <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu" role="menu">
+        {% for dbKey, path in databases %}
+            {% if dbKey != app.config.getValue('current_database_key') %}
+        <li><a href="{{ path(dbSelectRoute, {'database' : dbKey}) }}">{{ dbKey }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</li>
     {% endif %}
 {% endblock %}
 

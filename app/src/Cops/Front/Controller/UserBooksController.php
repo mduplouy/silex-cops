@@ -131,7 +131,8 @@ class UserBooksController implements ControllerProviderInterface
             ->setMaxResults($itemsPerPage)
             ->findById($userBooks->getAllBookIds())
             ->addAuthors($app['collection.author'])
-            ->addBookFiles($app['collection.bookfile']);
+            ->addBookFiles($app['collection.bookfile'])
+            ->addTags($app['collection.tag']);
 
         $totalBooks = $books->getRepository()->getTotalRows();
 
@@ -178,7 +179,7 @@ class UserBooksController implements ControllerProviderInterface
      * @param int          $userId
      * @param string       $action
      *
-     * @return mixed
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|void
      *
      * @throws EmptySelectionException
      *

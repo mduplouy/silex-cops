@@ -1,0 +1,25 @@
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width" />
+
+    <link rel="shortcut icon" href="{{ app.request.basepath }}/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/assets/themes/default/css/black-tie/jquery-ui-1.10.4.custom.min.css" medias="all" />
+    <link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/assets/themes/default/main.css" media="all" />
+
+    <script type="text/javascript" src="{{ app.request.basepath }}/assets/js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="{{ app.request.basepath }}/assets/js/jquery-ui-1.10.4.custom.min.js"></script>
+
+    <script type="text/javascript" src="{{ app.request.basepath }}/assets/select2/select2.js"></script>
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/select2/select2.css" />
+
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/algolia/algolia.css" />
+
+{% if inline_edit %}
+    <script type="text/javascript" src="{{ app.request.basepath }}/assets/x-editable/js/jqueryui-editable.min.js"></script>
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/x-editable/css/jqueryui-editable.css" />
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/themes/default/x-editable.css" />
+    <script type="text/javascript" src="{{ app.request.basepath }}/assets/x-editable/js/moment-with-langs.min.js"></script>
+{% endif %}
+
+    <title>SilexCOPS - {{pageTitle}}</title>

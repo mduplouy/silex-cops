@@ -48,13 +48,21 @@ class AlgoliaController implements ControllerProviderInterface
 
             $indexes = $app['algolia-client']->listIndexes();
 
+            $algoliaIndex = null;
+            foreach ($indexes['items'] as $index) {
+                if ($index['name'] == $app['algolia-index-name']) {
+                    $algoliaIndex = $index;
+                }
+            }
+
             $logs    = $app['algolia-client']->getLogs();
             if (!is_array($logs) || !array_key_exists('logs', $logs)) {
                 $logs = array('logs' => array());
             }
 
             $response = $app['twig']->render('admin/algolia/index.html.twig', array(
-                'algoliaIndex' => $indexes['items'][0],
+                'dbSelectRoute' => 'admin_algolia_index',
+                'algoliaIndex' => $algoliaIndex,
                 'logs'         => $logs,
             ));
 

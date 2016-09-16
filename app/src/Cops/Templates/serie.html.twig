@@ -1,0 +1,22 @@
+{% extends "layout.html.twig" %}
+
+{% set date_format = "m/d/Y"|trans %}
+
+{% block mainBody %}
+<div id="serie_detail" class="container">
+
+    <h3>{{ serie.getName() }}</h3>
+
+    {% if books.count() > 1 %}
+    <p><span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(books.count()) }}
+        {% for archive in app["factory.archive"].getAdapterkeys() %}
+            <a href="{{ app.url_generator.generate('serie_download', {id: serie.getId(), format: archive}) }}">{{ archive }}</a>
+            {% if loop.revindex0 %}/ {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+
+    {% include "book_listing.html.twig" with {"books": books} %}
+
+</div>
+{% endblock %}

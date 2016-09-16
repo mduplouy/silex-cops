@@ -1,11 +1,23 @@
+{% trans_default_domain "admin" %}
 
-<div id="left-menu">
-    <ul>
-        <li><a href="{{ path("admin_user_index") }}" title="{{ "User management"|trans([], "admin") }}">{{ "User management"|trans([], "admin") }}</a></li>
-        {# <li><a href="{{ path("admin_opdsfeed_index") }}" title="{{ "Opds feeds"|trans([], "admin") }}">{{ "Opds feeds"|trans([], "admin") }}</a></li> #}
-        <li><a href="{{ path("admin_database_triggers") }}" title="{{ "Database"|trans([], "admin") }}">{{ "Database"|trans([], "admin") }}</a></li>
-        {% if app.config.getValue('search_engine') == 'algolia' %}
-        <li><a href="{{ path("admin_algolia_index") }}" title="{{ "Algolia"|trans([], "admin") }}">{{ "Algolia"|trans([], "admin") }}</a></li>
-        {% endif %}
-    </ul>
-</div>
+<ul class="nav nav-pills nav-stacked">
+    <li class="dropdown">
+        <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#">
+          {{ "User management"|trans([], "admin") }} <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="{{ path("admin_user_index") }}">{{ "See user list"|trans }}</a></li>
+            <li><a href="{{ path("admin_user_add") }}">{{ "Add new user"|trans }}</a></li>
+        </ul>
+    </li>
+
+    <li>
+        <a href="{{ path("admin_database_triggers") }}" title="{{ "Database"|trans([], "admin") }}">{{ "Database"|trans([], "admin") }}</a>
+    </li>
+
+{% if app.config.getValue('search_engine') == 'algolia' %}
+    <li>
+        <a href="{{ path("admin_algolia_index") }}" title="{{ "Algolia"|trans([], "admin") }}">{{ "Algolia"|trans([], "admin") }}</a>
+    </li>
+{% endif %}
+</ul>
