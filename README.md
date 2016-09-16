@@ -30,6 +30,7 @@ Anyone comfortable with Twig can create a theme or modify the default one.
 * Edit your books information while browsing
 * Basic user & permissions management
 * Algolia search adapter
+* 2 responsive bootstrap themes available
 
 ## Requirements
 
