@@ -134,7 +134,7 @@ class UserController implements ControllerProviderInterface
      * @param  Application $app
      * @param  User        $user
      *
-     * @return Form
+     * @return Form|null
      */
     private function handleForm(Application $app, User $user)
     {
@@ -148,6 +148,8 @@ class UserController implements ControllerProviderInterface
             try {
                 $user->save();
                 $app['response'] = $app->redirect($app['url_generator']->generate('admin_user_index'));
+                $form = null; // Set to null to avoid form display
+
             } catch (UniqueConstraintViolationException $e) {
                 $error = new FormError($app['translator']->trans('Username already in use', array(), 'validators'));
                 $form->get('username')->addError($error);
