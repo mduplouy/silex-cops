@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="shortcut icon" href="{{ app.request.basepath }}/assets/favicon.ico" />
-    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/flatly/bootstrap.min.css" media="screen">
+
+    {% block themeCss %}
+
+    {% endblock %}
 
     <title>SilexCOPS - {{ "Administration"|trans }}</title>
 
-    <link rel="shortcut icon" href="{{ app.request.basepath }}/assets/favicon.ico" />
-
-    <title>SilexCOPS - {{ "Administration"|trans }}</title>
 {% endblock %}
 
 {% block mainBody %}
