@@ -24,6 +24,7 @@ class AlgoliaSearchServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
+        // Algolia client
         $app['algolia-client'] = $app->share(function ($c) {
 
             $config = $c['config'];
@@ -36,10 +37,15 @@ class AlgoliaSearchServiceProvider implements ServiceProviderInterface
             );
         });
 
-        // Algolia client
-        $app['algolia'] = $app->share(function ($c) {
-            return $c['algolia-client']->initIndex($c['config']->getValue('algolia_index_name'));
-        });
+        $app['algolia-index-name'] = function($c) {
+            return $c['config']->getValue('algolia_index_name').'_'.$c['config']->getValue('current_database_key');
+        };
+
+        // Algolia index
+        $app['algolia'] = function ($c) {
+            // Set index name on the fly to allow indexing of multiple databases
+            return $c['algolia-client']->initIndex($c['algolia-index-name']);
+        };
 
         // Settings
         $app['algolia-settings'] = array(

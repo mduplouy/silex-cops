@@ -21,6 +21,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class AlgoliaIndexer extends AbstractProcessBookCommand
 {
     /**
+     * Search factory instance
+     * @var \Cops\Core\Search\SearchFactory
+     */
+    private $searchFactory;
+
+
+    /**
      * Algolia search adapter instance
      * @var \Cops\Core\Search\Adapter\Algolia
      */
@@ -37,7 +44,7 @@ class AlgoliaIndexer extends AbstractProcessBookCommand
         parent::__construct('algolia:reindex', $app);
         $this->setDescription('Update algolia index by sending all books information');
 
-        $this->algolia = $app['factory.search']->getInstance('algolia');
+        $this->searchFactory = $app['factory.search'];
     }
 
     /**
@@ -50,6 +57,9 @@ class AlgoliaIndexer extends AbstractProcessBookCommand
      */
     protected function beforeBookProcessing(OutputInterface $output, $dbName)
     {
+        // Get a new algolia index instance to modify database scope
+        $this->algolia = $this->searchFactory->getInstance('algolia');
+
         $output->writeln(sprintf('<fg=green>Reindex all books from "%s" database</fg=green>', $dbName));
     }
 
