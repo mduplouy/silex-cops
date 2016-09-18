@@ -22,119 +22,121 @@
 
     <div class="row">
 
-        <div class="col-xs-2 text-center">
+        <div class="col-xs-1 col-md-2 text-center">
             {% set thumbnail = book.getCover().getThumbnailPath(160, 260) %}
             {% if thumbnail %}
-                <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
+                <img class="img-responsive" src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
             {% endif %}
         </div>
 
-        <div class="col-xs-10">
+        <div class="col-xs-10 col-md-10">
 
-            <div>
-                <h1 class="editable" data-type="text" data-inputclass="h1" data-name="title">{{ book.getTitle() }}</h1>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1 class="editable" data-type="text" data-inputclass="h1" data-name="title">{{ book.getTitle() }}</h1>
+                </div>
             </div>
 
             <div class="row">
 
-            <div class="col-xs-7">
+                <div class="col-xs-7">
 
-                {% if serie.getId() %}
-                <p>{{"Serie:"|trans}}
-                    <strong>
-                        <span class="editable" data-type="text" data-name="serie-name">{{ serie.getName()}}</span>
-                        - {{ "T"|trans }}.
-                        <span class="editable" data-type="number" data-name="serie-index">{{ book.getSeriesIndex()|number_format(0) }}</span>
-                    </strong>
-                    {% set nbBooks = serie.getBookCount() %}
-                    {% if nbBooks > 1 %}
-                    <br />
-                    <span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(nbBooks) }}
-                        {% for archive in app["factory.archive"].getAdapterkeys() %}
-                        <a href="{{ path("serie_download", {"id": serie.getId(), "format": archive}) }}">{{ archive }}</a>
-                            {% if loop.revindex0 %}/ {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </p>
-                {% endif %}
-
-                {% set authors = book.getAuthors() %}
-                <p>{{ "Author:"|transchoice(authors.count()) }}
-                    <strong><span class="editable" data-type="text" data-name="author">{{ authors.getName() }}</span></strong>
-                {% if authors.count() == 1 %}
-                    {% set author = authors.getByKey(0) %}
-                    {% set nbBooks = author.getBookCount() %}
+                    {% if serie.getId() %}
+                    <p>{{"Serie:"|trans}}
+                        <strong>
+                            <span class="editable" data-type="text" data-name="serie-name">{{ serie.getName()}}</span>
+                            - {{ "T"|trans }}.
+                            <span class="editable" data-type="number" data-name="serie-index">{{ book.getSeriesIndex()|number_format(0) }}</span>
+                        </strong>
+                        {% set nbBooks = serie.getBookCount() %}
                         {% if nbBooks > 1 %}
                         <br />
-                        <span class="small">{{"Download author's books (%s) as archive:"|trans|format(nbBooks) }}
+                        <span class="small">{{"Download whole serie (%s books) as archive:"|trans|format(nbBooks) }}
                             {% for archive in app["factory.archive"].getAdapterkeys() %}
-                                <a href="{{ path('author_download', {id: author.getId(), format: archive}) }}">{{ archive }}</a>
+                            <a href="{{ path("serie_download", {"id": serie.getId(), "format": archive}) }}">{{ archive }}</a>
                                 {% if loop.revindex0 %}/ {% endif %}
                             {% endfor %}
-                        </span>
                         {% endif %}
-                {% endif %}
-                </p>
+                    </p>
+                    {% endif %}
 
-                <p>{{"Last modified date:"|trans}} <strong><span>{{ book.getLastModified()|date(date_format) }}</span></strong></p>
+                    {% set authors = book.getAuthors() %}
+                    <p>{{ "Author:"|transchoice(authors.count()) }}
+                        <strong><span class="editable" data-type="text" data-name="author">{{ authors.getName() }}</span></strong>
+                    {% if authors.count() == 1 %}
+                        {% set author = authors.getByKey(0) %}
+                        {% set nbBooks = author.getBookCount() %}
+                            {% if nbBooks > 1 %}
+                            <br />
+                            <span class="small">{{"Download author's books (%s) as archive:"|trans|format(nbBooks) }}
+                                {% for archive in app["factory.archive"].getAdapterkeys() %}
+                                    <a href="{{ path('author_download', {id: author.getId(), format: archive}) }}">{{ archive }}</a>
+                                    {% if loop.revindex0 %}/ {% endif %}
+                                {% endfor %}
+                            </span>
+                            {% endif %}
+                    {% endif %}
+                    </p>
 
-                <p>{{"Publication date:"|trans}}
-                    <strong><span class="bold editable" data-type="combodate" data-name="pubdate" data-format="{{ date_edit }}">{{ book.getPubdate()|date(date_format) }}</span></strong>
-                </p>
+                    <p>{{"Last modified date:"|trans}} <strong><span>{{ book.getLastModified()|date(date_format) }}</span></strong></p>
 
-                <div id="js-tag-tpl">
-                    <a href="#" style="display:none;"></a>
-                </div>
+                    <p>{{"Publication date:"|trans}}
+                        <strong><span class="bold editable" data-type="combodate" data-name="pubdate" data-format="{{ date_edit }}">{{ book.getPubdate()|date(date_format) }}</span></strong>
+                    </p>
 
-                {% set tagStyle = "" %}
-                {% set tagClass = "" %}
-                {% if tags.count() == 0 %}
-                    {% set tagStyle = 'style="display:none;"' %}
-                    {% set tagClass = "toggle" %}
-                {% endif %}
-
-                <p id="tag-list" class="{{ tagClass|raw }}" {{ tagStyle|raw }}> {{ "Tag :"|transchoice(tags.count()) }}
-                    <span class="bold">
-                    {% for tag in tags %}
-                        {% set editableTags = editableTags ~ ", " ~ tag.getName() %}
-                        <a href="{{ path("tag_book_list", {id: tag.getId()}) }}">{{ tag.getName() }}</a>{% if not(loop.last) %}, {% endif %}
-                    {% endfor %}
-                    </span>
-
-                    <a id="edit-tag" style="display:none;" data-name="tags" data-type="select2" href="#" data-viewseparator=", ">
-                        {% for tag in tags %}
-                            {{ tag.getName() }}{% if not(loop.last) %}, {% endif %}
-                        {% endfor %}
-                    </a>
-                </p>
-
-                {% include "book_download_link.html.twig" with {"book": book} %}
-
-            </div>
-
-            <div class="col-xs-5">
-
-                {% if is_granted('ROLE_USER_ACTIONS') %}
-                    {% set savedActions = app['security'].getToken().getUser().findUserBooksFromBookId(book.getId()) %}
-
-                <div class="panel panel-default" id="user_actions">
-                  <div class="panel-body">
-                    {% for action, label in app['entity.user-book'].getAvailableActions() %}
-                        {% set checked = "" %}
-                        {% if savedActions.hasOneByAction(action) %}
-                            {% set checked = 'checked="checked"' %}
-                        {% endif %}
-                    <div class="checkbox action">
-                        <label for="js-{{ action }}">
-                        <input type="checkbox" {{ checked }} id="js-{{ action }}" autocomplete="off" data-action="{{ action }}" data-url="{{ path('user_books_action', {'id': book.getId()}) }}" />
-                            {{ label|trans }}
-                        </label>
+                    <div id="js-tag-tpl">
+                        <a href="#" style="display:none;"></a>
                     </div>
-                    {% endfor %}
-                  </div>
+
+                    {% set tagStyle = "" %}
+                    {% set tagClass = "" %}
+                    {% if tags.count() == 0 %}
+                        {% set tagStyle = 'style="display:none;"' %}
+                        {% set tagClass = "toggle" %}
+                    {% endif %}
+
+                    <p id="tag-list" class="{{ tagClass|raw }}" {{ tagStyle|raw }}> {{ "Tag :"|transchoice(tags.count()) }}
+                        <span class="bold">
+                        {% for tag in tags %}
+                            {% set editableTags = editableTags ~ ", " ~ tag.getName() %}
+                            <a href="{{ path("tag_book_list", {id: tag.getId()}) }}">{{ tag.getName() }}</a>{% if not(loop.last) %}, {% endif %}
+                        {% endfor %}
+                        </span>
+
+                        <a id="edit-tag" style="display:none;" data-name="tags" data-type="select2" href="#" data-viewseparator=", ">
+                            {% for tag in tags %}
+                                {{ tag.getName() }}{% if not(loop.last) %}, {% endif %}
+                            {% endfor %}
+                        </a>
+                    </p>
+
+                    {% include "book_download_link.html.twig" with {"book": book} %}
+
                 </div>
-                {% endif %}
-            </div>
+
+                <div class="col-xs-5">
+
+                    {% if is_granted('ROLE_USER_ACTIONS') %}
+                        {% set savedActions = app['security'].getToken().getUser().findUserBooksFromBookId(book.getId()) %}
+
+                    <div class="panel panel-default" id="user_actions">
+                      <div class="panel-body">
+                        {% for action, label in app['entity.user-book'].getAvailableActions() %}
+                            {% set checked = "" %}
+                            {% if savedActions.hasOneByAction(action) %}
+                                {% set checked = 'checked="checked"' %}
+                            {% endif %}
+                        <div class="checkbox action">
+                            <label for="js-{{ action }}">
+                            <input type="checkbox" {{ checked }} id="js-{{ action }}" autocomplete="off" data-action="{{ action }}" data-url="{{ path('user_books_action', {'id': book.getId()}) }}" />
+                                {{ label|trans }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    {% endif %}
+                </div>
 
             </div>
 
@@ -143,7 +145,9 @@
     </div>
 
     <div class="row">
-        <div class="editable" data-type="textarea" data-name="comment" data-inputclass="comments"><small>{{ book.getComment()|striptags('<br>')|raw }}</small></div>
+        <div class="col-xs-12">
+            <div class="editable" data-type="textarea" data-name="comment" data-inputclass="comments"><small>{{ book.getComment()|striptags('<br>')|raw }}</small></div>
+        </div>
     </div>
 
     <div class="row page-header">

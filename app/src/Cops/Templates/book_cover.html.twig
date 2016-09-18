@@ -2,7 +2,7 @@
 
 {% if thumbnail %}
     <a href="{{ path("book_detail", {"id": book.getId()}) }}" title="{{ book.getTitle()|escape }}">
-        <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
+        <img class="img-responsive" src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
     </a>
 {% endif %}
 

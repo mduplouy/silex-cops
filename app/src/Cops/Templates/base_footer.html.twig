@@ -1,4 +1,7 @@
     <div class="container">
-        <div class="col-xs-6 text-muted">{{ "SilexCOPS is licensed under WFTPL license."|trans }}</div>
-        <div class="col-xs-6">{% block footerThemeLink %}{% endblock %}</div>
+        <div class="row">
+            <div class="visible-lg visible-md col-xs-8"><a class="text-muted" href="https://github.com/mduplouy/silex-cops">{{ "SilexCOPS is licensed under WFTPL license."|trans }}</a></div>
+            <div class="visible-xs visible-sm col-xs-8"><a class="text-muted" href="https://github.com/mduplouy/silex-cops">{{ "License & legal info"|trans }}</a></div>
+            <div class="col-xs-4">{% block footerThemeLink %}{% endblock %}</div>
+        </div>
     </div>
