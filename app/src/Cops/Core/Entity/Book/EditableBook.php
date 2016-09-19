@@ -89,4 +89,14 @@ class EditableBook extends BookEntity
     {
         return $this->getRepository()->updateSerieIndex($this->getId(), $serieIndex);
     }
+
+    /**
+     * Remove serie
+     *
+     * @return bool
+     */
+    public function removeSerie()
+    {
+        return $this->getRepository()->removeSerie($this->getId());
+    }
 }

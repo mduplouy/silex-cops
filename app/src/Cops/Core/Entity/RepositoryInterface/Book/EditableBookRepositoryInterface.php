@@ -65,4 +65,23 @@ interface EditableBookRepositoryInterface extends BookRepositoryInterface
      * @return string
      */
     public function getBookLanguageCode($bookId);
+
+    /**
+     * Update serie index
+     *
+     * @param int   $bookId
+     * @param float $serieIndex
+     *
+     * @return bool
+     */
+    public function updateSerieIndex($bookId, $serieIndex);
+
+    /**
+     * Remove serie
+     *
+     * @param  int  $bookId
+     *
+     * @return bool
+     */
+    public function removeSerie($bookId);
 }

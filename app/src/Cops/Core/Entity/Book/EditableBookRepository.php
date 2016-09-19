@@ -206,8 +206,8 @@ class EditableBookRepository extends BookRepository implements EditableBookRepos
     /**
      * Update comment
      *
-     * @param int       $bookId
-     * @param string    $comment
+     * @param int    $bookId
+     * @param string $comment
      *
      * @return bool
      */
@@ -228,8 +228,8 @@ class EditableBookRepository extends BookRepository implements EditableBookRepos
     /**
      * Update serie index
      *
-     * @param int       $bookId
-     * @param float     $serieIndex
+     * @param int   $bookId
+     * @param float $serieIndex
      *
      * @return bool
      */
@@ -245,6 +245,22 @@ class EditableBookRepository extends BookRepository implements EditableBookRepos
                     PDO::PARAM_INT
                 )
             );
+    }
+
+    /**
+     * Remove serie
+     *
+     * @param  int  $bookId
+     *
+     * @return bool
+     */
+    public function removeSerie($bookId)
+    {
+        return (bool) $this->getQueryBuilder()
+            ->delete('books_series_link')
+            ->where('book = :book_id')
+            ->setParameter('book_id', $bookId, PDO::PARAM_INT)
+            ->execute();
     }
 }
 

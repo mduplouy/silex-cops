@@ -52,7 +52,7 @@ class InlineEditController implements ControllerProviderInterface
     /**
      * Main edit action, execute specific update action depending on sent value
      *
-     * @param Application $app    Application instance
+     * @param Application $app
      * @param int         $id
      *
      * @return mixed
@@ -177,7 +177,7 @@ class InlineEditController implements ControllerProviderInterface
             );
         }
 
-        return json_encode($output);
+        return $app->json($output);
     }
 
     /**
@@ -204,6 +204,12 @@ class InlineEditController implements ControllerProviderInterface
      */
     protected function updateBookSerie(EditableBook $book, $serie, Application $app)
     {
+        if (empty($serie)) {
+            $book->updateSerieIndex(0);
+
+            return $book->removeSerie();
+        }
+
         return (bool) $app['entity.serie']
             ->setName($serie)
             ->setSort($serie)

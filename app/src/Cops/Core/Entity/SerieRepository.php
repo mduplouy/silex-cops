@@ -14,6 +14,8 @@ use Cops\Core\Entity\RepositoryInterface\SerieRepositoryInterface;
 use Cops\Core\StringUtils;
 use PDO;
 use Doctrine\DBAL\Connection;
+use Cops\Core\Entity\Book;
+use Cops\Core\Entity\Serie;
 
 /**
  * Serie repository

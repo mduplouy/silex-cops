@@ -10,6 +10,9 @@
 namespace Cops\Core\Entity\RepositoryInterface;
 
 use Cops\Core\RepositoryInterface;
+use Cops\Core\Entity\Serie;
+use Cops\Core\Entity\Book;
+
 
 /**
  * Serie repository interface
@@ -57,4 +60,23 @@ interface SerieRepositoryInterface extends RepositoryInterface
      * @return array
      */
     public function findByFirstLetter($letter);
+
+    /**
+     * Insert new serie into database
+     *
+     * @param  Serie $serie
+     *
+     * @return int Inserted ID
+     */
+    public function insert(Serie $serie);
+
+    /**
+     * Associate serie to book
+     *
+     * @param  Serie $serie
+     * @param  Book  $book
+     *
+     * @return int    Updated or inserted relation ID
+     */
+    public function associateToBook(Serie $serie, Book $book);
 }
