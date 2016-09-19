@@ -6,6 +6,15 @@ Silex-Cops is a web based Ebook sharing (and later full management) software.
 
 It's a port and enhancement of COPS (Calibre OPDS PHP Server) on the Silex micro framework.
 
+## Demo
+
+A live demo is available at http://silex-cops.solocreation.com
+
+* User login : test / test
+* Administrator login : admin / admin
+
+You can play without limit, the database is reset once per hour
+
 ## Why ?
 
 Because like many people i use Calibre as library manager, but the html export doesn't suit my needs.
