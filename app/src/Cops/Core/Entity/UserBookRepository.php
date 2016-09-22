@@ -72,8 +72,10 @@ class UserBookRepository extends AbstractInternalRepository implements UserBookR
      *
      * @param UserBook $userBook
      * @param string   $action
+     *
+     * @return mixed
      */
-    private function modifyRow(UserBook $userBook, $action)
+    protected function modifyRow(UserBook $userBook, $action)
     {
         return $this->getConnection()
             ->$action(

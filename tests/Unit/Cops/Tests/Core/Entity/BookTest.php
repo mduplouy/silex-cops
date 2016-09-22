@@ -172,25 +172,11 @@ class BookTest extends AbstractTestCase
         $book->getCover();
     }
 
-    public function notestUpdateAuthor()
-    {
-        $book = $this->getBook()->findById(5);
-        // Check there is 1 author
-        $origAuthors = $origBook->getAuthors();
-        $origNames = $origAuthors->getName();
-        $this->assertEquals(1, $origAuthors->count());
-
-        // Check now there are 2
-        $origBook->updateAuthor('John Smith & Jane Doe');
-        $modifiedBook = $this->getRealBook();
-        $this->assertEquals(2, $modifiedBook->getAuthors()->count());
-
-        // Revert back to original author
-        $origBook->updateAuthor($origNames);
-    }
-
     /**
      * Get book
+     *
+     * Do not use the container as it returns an editable book
+     *
      * @return \Cops\Core\Èntity\Book
      */
     protected function getBook()
