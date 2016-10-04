@@ -14,6 +14,7 @@ use Cops\Core\Search\AdapterInterface;
 use Cops\Core\Entity\BookCollection;
 use Cops\Core\Entity\Book;
 use AlgoliaSearch\Index as AlgoliaIndex;
+use Cops\Core\Entity\Exception\BookNotFoundException;
 
 /**
  * Algolia search adapter class
@@ -55,6 +56,8 @@ class Algolia extends AbstractAdapter implements AdapterInterface
      * @param int   $page
      *
      * @return \Cops\Core\Entity\BookCollection
+     *
+     * @throws BookNotFoundException
      */
     public function getResults(array $searchTerms, $nbItems = 25, $page = 1)
     {
@@ -68,18 +71,21 @@ class Algolia extends AbstractAdapter implements AdapterInterface
             )
         );
 
-        $this->bookCollection->setFirstResult(($page-1) * $nbItems);
-        $this->bookCollection->getRepository()->setTotalRows($results['nbHits']);
+        if (empty($results['nbHits'])) {
+            throw new BookNotFoundException('Your search matched no results');
+        }
+
+        // By default, algolia restrict browsing on the first 1000 items
+        $this->bookCollection->getRepository()->setTotalRows(min($results['nbHits'], 1000));
 
         $bookIds = array();
         foreach ($results['hits'] as $book) {
             $bookIds[] = $book['id'];
         }
 
-        $books = $this->bookCollection->findById($bookIds);
-        $books->sortElementsById($bookIds);
-
-        return $books;
+        return $this->bookCollection
+            ->findById($bookIds)
+            ->sortElementsById($bookIds);
     }
 
     /**

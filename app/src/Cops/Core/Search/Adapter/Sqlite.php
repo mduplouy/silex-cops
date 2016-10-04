@@ -11,6 +11,7 @@ namespace Cops\Core\Search\Adapter;
 
 use Cops\Core\Search\AbstractAdapter;
 use Cops\Core\Search\AdapterInterface;
+use Cops\Core\Entity\Exception\BookNotFoundException;
 
 /**
  * Sqlite search adapter class
@@ -27,14 +28,20 @@ class Sqlite extends AbstractAdapter implements AdapterInterface
      * @param int   $page
      *
      * @return \Cops\Core\Entity\BookCollection
+     *
+     * @throws BookNotFoundException
      */
     public function getResults(array $searchTerms, $nbItems = 25, $page = 1)
     {
-        $this->bookCollection->setFirstResult(($page-1) * $nbItems);
-        if ($nbItems > 0) {
-            $this->bookCollection->setMaxResults($nbItems);
+        $this->bookCollection
+            ->setFirstResult(($page-1) * $nbItems)
+            ->setMaxResults($nbItems)
+            ->findByKeyword($searchTerms);
+
+        if ($this->bookCollection->count() == 0) {
+            throw new BookNotFoundException('Your search matched no results');
         }
 
-        return $this->bookCollection->findByKeyword($searchTerms);
+        return $this->bookCollection;
     }
 }
