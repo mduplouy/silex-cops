@@ -27,6 +27,32 @@
             {% if thumbnail %}
                 <img class="img-responsive" src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
             {% endif %}
+
+            <p><a id="book_preview" class="btn btn-link">{{ "Preview"|trans }}</a></p>
+
+            <div class="modal" id="book_preview_modal">
+                <div class="modal-dialog modal-lg" style="height:90%; max-height:700px;">
+                    <div class="modal-content" style="height:90%;">
+                        <div class="modal-body" style="height:90%;">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+                            <div class="row" style="height:100%;">
+                                <div class="col-sm-12 col-lg-6 col-lg-offset-3" id="book_preview_container" style="height:100%;"></div>
+                            </div>
+
+                            <div class="row" style="padding-top:2em;">
+                                <div class="col-sm-6 col-lg-3 col-lg-offset-3 text-right">
+                                    <button id="book_preview_prev" class="btn btn-sm btn-primary">&laquo;</button>
+                                </div>
+                                <div class="col-sm-6 col-lg-3 text-left">
+                                    <button id="book_preview_next" class="btn btn-sm btn-primary">&raquo;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="col-xs-10 col-md-10">
@@ -40,7 +66,6 @@
             <div class="row">
 
                 <div class="col-xs-7">
-
 
                     {% if serie.getId() %}
                     <p>{{"Serie:"|trans}}
@@ -212,6 +237,32 @@
     {% endif %}
 
     jQuery(document).ready(function() {
+
+        var opened = false;
+
+        jQuery("#book_preview").on("click", function(e) {
+            e.preventDefault();
+
+            if (!opened) {
+                var book = ePub("{{ path("book_preview", {"id": book.getId()}) }}", {
+                    spreads: true,
+                    fixedLayout : true
+                });
+
+                jQuery("#book_preview_next").on("click", function() {
+                    book.nextPage();
+                });
+
+                jQuery("#book_preview_prev").on("click", function() {
+                    book.prevPage();
+                });
+
+                book.renderTo("book_preview_container");
+                opened = true;
+            }
+
+            jQuery("#book_preview_modal").modal();
+        });
 
     {% if is_granted('ROLE_USER_ACTIONS') %}
         jQuery('#user_actions input:checked').next('label').addClass('disabled')

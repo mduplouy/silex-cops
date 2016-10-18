@@ -36,6 +36,11 @@ class BookController implements ControllerProviderInterface
             ->assert('id', '\d+')
             ->bind('book_download');
 
+        $controller->get('/download/{format}/{id}.epub', __CLASS__.'::downloadAction')
+            ->assert('id', '\d+')
+            ->value('format', 'EPUB')
+            ->bind('book_preview');
+
         $controller->get('/by-date/{page}', __CLASS__.'::listByDateAction')
             ->assert('page', '\d+')
             ->value('page', 1)

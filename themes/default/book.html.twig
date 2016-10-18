@@ -12,7 +12,23 @@
         {% if thumbnail %}
             <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
         {% endif %}
+
+        <p class="center"><a href="#" id="book_preview" class="book_link">{{ "Preview"|trans }}</a></p>
+
     </div>
+
+        <div class="" id="book_preview_modal" style="display:none;">
+
+            <div class="row" style="height:90%;">
+                <div id="book_preview_container" style="height:100%;"></div>
+            </div>
+
+            <div class="paginator center" style="padding-top:1em;">
+                <a href="#" id="book_preview_prev" class="inline-block ui-corner-all ui-icon ui-icon-triangle-1-w">&laquo;</a>
+                <a href="#" id="book_preview_next" class="inline-block ui-corner-all ui-icon ui-icon-triangle-1-e">&raquo;</a>
+            </div>
+
+        </div>
 
     <div id="infos">
 
@@ -155,6 +171,37 @@
     {% endif %}
 
     jQuery(document).ready(function() {
+
+        var opened = false;
+
+        jQuery("#book_preview").on("click", function(e) {
+            e.preventDefault();
+
+            if (!opened) {
+                jQuery("#book_preview_modal").dialog({
+                    width: 440,
+                    height: 680
+                });
+
+                var book = ePub("{{ path("book_preview", {"id": book.getId()}) }}", {spreads: true, fixedLayout : true});
+
+                book.setStyle("font-size", "10px");
+                book.renderTo("book_preview_container");
+
+                jQuery("#book_preview_next").on("click", function() {
+                    book.nextPage();
+                });
+
+                jQuery("#book_preview_prev").on("click", function() {
+                    book.prevPage();
+                });
+
+                opened = true;
+            }
+
+            jQuery("#book_preview_modal").modal();
+
+        });
 
     {% if is_granted('ROLE_USER_ACTIONS') %}
         jQuery('#user_actions input:checked').next('label').addClass('disabled')
