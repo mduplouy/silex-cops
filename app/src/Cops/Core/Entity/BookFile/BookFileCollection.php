@@ -24,7 +24,7 @@ class BookFileCollection extends AbstractCollection
     /**
      * Default file format
      */
-    const DEFAULT_FILE_FORMAT = 'epub';
+    const DEFAULT_FILE_FORMAT = 'EPUB';
 
     /**
      * Format mapping
@@ -168,5 +168,21 @@ class BookFileCollection extends AbstractCollection
         return $this->setDataFromArray(
             $this->getRepository()->findByTagId($tagId)
         );
+    }
+
+    /**
+     * Has epub format ?
+     *
+     * @return bool
+     */
+    public function hasEpubFormat()
+    {
+        foreach ($this as $file) {
+            if ($file->getFormat() === self::DEFAULT_FILE_FORMAT) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -13,9 +13,8 @@
             <img src="{{ app.request.basepath }}{{ thumbnail }}" alt="{{ book.getTitle()|escape }}" />
         {% endif %}
 
+        {% if book.getFiles().hasEpubFormat() %}
         <p class="center"><a href="#" id="book_preview" class="book_link">{{ "Preview"|trans }}</a></p>
-
-    </div>
 
         <div class="" id="book_preview_modal" style="display:none;">
 
@@ -29,6 +28,9 @@
             </div>
 
         </div>
+        {% endif %}
+
+    </div>
 
     <div id="infos">
 
