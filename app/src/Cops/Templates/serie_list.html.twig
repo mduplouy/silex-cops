@@ -2,7 +2,7 @@
 
 {% block mainContent %}
     {% for serie in series %}
-        <div style="width:24%; float:left;">
+        <div class="col-xs-6 col-md-3">
             <a href="{{ path('serie_detail', {'id': serie.getId()}) }}" title="{{ serie.getName() }}">{{ serie.getName() }} ({{ serie.getBookCount() }})</a><br />
         </div>
     {% endfor %}
