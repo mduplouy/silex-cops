@@ -39,6 +39,7 @@ Anyone comfortable with Twig can create a theme or modify the default one.
 * Edit your books information while browsing
 * Basic user & permissions management
 * Algolia search adapter
+* In browser preview for epub books
 * 2 responsive bootstrap themes available
 
 ## Requirements
