@@ -6,7 +6,7 @@
 ;\----------------------------------------------------/
 
 [database]
-db_engine        = sqlite             ; sqlite|mysql
+db_engine        = sqlite             ; sqlite|mysql||pgsql
 db_host          = localhost          ; DB Host (ignored for sqlite)
 db_user          = user               ; DB user (ignored for sqlite)
 db_password      = password           ; DB password (ignored for sqlite)

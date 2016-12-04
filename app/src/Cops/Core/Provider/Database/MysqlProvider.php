@@ -14,7 +14,7 @@ namespace Cops\Core\Provider\Database;
  * MySQL database service provider
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class MysqlProvider extends AbstractDoctrineProvider implements
+class MysqlProvider extends AbstractDoctrineProvider
 {
     /**
      * @inheritDoc

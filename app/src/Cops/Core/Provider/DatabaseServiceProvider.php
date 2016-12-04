@@ -27,6 +27,7 @@ class DatabaseServiceProvider implements ServiceProviderInterface
     private $adapterMapping = array(
         'sqlite' => '\Cops\Core\Provider\Database\SqliteProvider',
         'mysql'  => '\Cops\Core\Provider\Database\MysqlProvider',
+        'pgsql'  => '\Cops\Core\Provider\Database\PostgresProvider',
     );
 
 
