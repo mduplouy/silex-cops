@@ -11,16 +11,16 @@
 namespace Cops\Core\Provider\Database;
 
 /**
- * MySQL database service provider
+ * Postgres database service provider
  * @author Mathieu Duplouy <mathieu.duplouy@gmail.com>
  */
-class MysqlProvider extends AbstractDoctrineProvider implements
+class PostgresProvider extends AbstractDoctrineProvider
 {
     /**
      * @inheritDoc
      */
     public function __construct()
     {
-        parent::__construct('pdo_mysql');
+        parent::__construct('pdo_pgsql');
     }
 }
