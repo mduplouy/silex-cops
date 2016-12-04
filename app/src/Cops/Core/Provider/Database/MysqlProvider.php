@@ -14,7 +14,6 @@ use Silex\Application;
 use Cops\Core\Application as CopsApplication;
 use Silex\ServiceProviderInterface;
 use Silex\Provider\DoctrineServiceProvider;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * MySQL database service provider
