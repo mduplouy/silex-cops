@@ -10,7 +10,7 @@
         {% endblock %}
 
         {% block selectdb %}
-            {% set databases = app.config.getValue('data_dir') %}
+            {% set databases = app.config.getValue('db_name') %}
             {% if databases|length > 1 %}
             <span>
                 <label for="js-select-db">| {{ "Switch database:"|trans }}</label>

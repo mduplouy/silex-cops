@@ -57,7 +57,7 @@ class InitDatabase extends Command
 
         $config = $this->app['config'];
 
-        $targetDb = getcwd().DS.$config->getValue('internal_db');
+        $targetDb = getcwd().DS.$config->getValue('db_internal');
         $output->writeLn(sprintf('<fg=green>Target file : %s </fg=green>', $targetDb));
 
         $helper = $this->getHelperSet()->get('question');

@@ -175,7 +175,7 @@ class UserControllerTest extends AbstractTestCase
         $form = $client->getCrawler()->selectButton('user_save')->form();
 
         // Delete temporary database
-        unlink($this->app['config']->getValue('internal_db'));
+        unlink($this->app['config']->getValue('db_internal'));
 
         $values = array(
             'user[username]'                   => 'dummy-user',

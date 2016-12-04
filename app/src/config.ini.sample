@@ -5,6 +5,30 @@
 ;|                                                    |
 ;\----------------------------------------------------/
 
+[database]
+db_engine        = sqlite             ; sqlite|mysql
+db_host          = localhost          ; DB Host (ignored for sqlite)
+db_user          = user               ; DB user (ignored for sqlite)
+db_password      = password           ; DB password (ignored for sqlite)
+
+; Sqlite setup (standard Calibre database) :
+;     Add the name as key & path (relative or absolute) as value for each database you want to use in the value
+; db_name[default] = /my/folder
+; db_name[friend_of_mine] = /myfriend/folder
+;
+; Other database engine setup (custom dabase based on calibre schema) :
+;     Add the name as key & database name as the value, your user must have access to any configured database
+; db_name[default] = my_mysql_database
+; db_name[friend_of_mine] = my_friend_database
+;
+; In both cases you can use as many DB as needed
+;
+
+db_name[default] = database            ; Just like the data_dir, use as many lines as needed but your DB user must have access to the db
+db_name[test]    = test
+
+db_internal       = data/silexCops     ; Internal database file or db name , just like for books - needs write access
+                                       ; Can be the same as book storage database, the tables will be added inside the database library
 [common]
 last_added        = 15                 ; Number of last added books
 by_date_page_size = 25                 ; Number of books per page when sorted by date
@@ -32,11 +56,6 @@ mobile_theme      = mobile             ; The subdir for mobile template
 
 [path]
 public_dir        = web                ; Public apache root directory
-data_dir[default] = data               ; Directories where calibre data are stored - First is default one
-data_dir[test]    = tests/data         ; You can add as many lines as needed
-                                       ; Path can be absolute or relative
-
-internal_db       = data/silexCops     ; Internal database file name - needs write access
 
 [email]
 sender            = "sendmail"         ; Email sender (sendmail | php | smtp)

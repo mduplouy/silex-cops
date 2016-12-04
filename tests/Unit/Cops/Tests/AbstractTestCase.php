@@ -15,16 +15,17 @@ abstract class AbstractTestCase extends WebTestCase
         );
 
         $override = array(
-            'data_dir'    => array(
+            'db_engine'  => 'sqlite',
+            'db_name'    => array(
                 'test'    => __DIR__.'/../../../data/',
                 'default' => __DIR__.'/../../../data/',
             ),
-            'internal_db' => __DIR__.'/../../../data/silexCops',
+            'db_internal' => __DIR__.'/../../../data/silexCops',
         );
 
         $app = new \Cops\Core\Application($params, $override);
 
-        $internalDb = $app['config']->getValue('internal_db');
+        $internalDb = $app['config']->getValue('db_internal');
 
         // Create internal DB & tables
         $app['repository.user']->getConnection()->getSchemaManager()->createDatabase($internalDb);

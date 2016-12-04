@@ -44,6 +44,7 @@ class DatabaseControllerTest extends AbstractTestCase
         $client->getCookieJar()->set($cookie);
 
         $client->request('GET', '/admin/fr/test/database/triggers');
+
         $this->assertTrue($client->getResponse()->isOk());
 
         // Remove DB triggers

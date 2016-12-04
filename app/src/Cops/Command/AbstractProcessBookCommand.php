@@ -76,7 +76,7 @@ abstract class AbstractProcessBookCommand extends Command
     {
         $selectedDb = $input->getOption('database');
 
-        $allDbs = $this->app['config']->getValue('data_dir');
+        $allDbs = $this->app['config']->getValue('db_name');
         unset($allDbs[Application::INTERNAL_DB_KEY]);
 
         if ($selectedDb == self::OPTION_ALL_DB) {

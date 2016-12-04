@@ -28,6 +28,15 @@ class Config
         // Language
         'default_lang'             => 'fr',
 
+        // database
+        'db_engine'   => 'sqlite',
+        'db_host'     => 'localhost',
+        'db_port'     => 3306,
+        'db_user'     => 'root',
+        'db_password' => '',
+        'db_name'     => array('default' => 'data'),
+        'db_internal' => 'silexCops',
+
         // Page size
         'last_added'               => 15,
         'by_date_page_size'        => 25,
@@ -41,8 +50,6 @@ class Config
         'theme'                    => 'default',
         'mobile_theme'             => 'mobile',
         'public_dir'               => 'web',
-        'data_dir'                 => array('default' => 'data'),
-        'internal_db'              => 'data/silexCops',
 
         // Email
         'sender'                   => 'php',
@@ -111,8 +118,8 @@ class Config
 
         $this->readParams($configFilePath, $override);
 
-        if (!is_array($this->configValues['data_dir'])) {
-            $this->configValues['data_dir'] = array('default' => $this->configValues['data_dir']);
+        if (!is_array($this->configValues['db_name'])) {
+            $this->configValues['db_name'] = array('default' => $this->configValues['db_name']);
         }
 
         $this->initDatabases();
@@ -145,13 +152,13 @@ class Config
     {
         // Sanitize db key to use it in url
         $databases = array();
-        foreach ($this->configValues['data_dir'] as $key => $path) {
+        foreach ($this->configValues['db_name'] as $key => $path) {
             $databases[$this->utils->urlSafe($key)] = $path;
         }
 
-        $this->configValues['data_dir'] = $databases;
+        $this->configValues['db_name'] = $databases;
 
-        $this->configValues['default_database_key'] = key($this->configValues['data_dir']);
+        $this->configValues['default_database_key'] = key($this->configValues['db_name']);
         $this->configValues['current_database_key'] = $this->configValues['default_database_key'];
     }
 
@@ -167,7 +174,7 @@ class Config
     public function getValue($confKey)
     {
         if (!array_key_exists($confKey, $this->configValues)) {
-            throw new \InvalidArgumentException(sprintf("Config value %s doest not exist", $confKey));
+            throw new \InvalidArgumentException(sprintf("Config value %s does not exist", $confKey));
         }
 
         return $this->configValues[$confKey];
@@ -186,7 +193,7 @@ class Config
             $dbKey = $this->configValues['current_database_key'];
         }
 
-        return $this->preprendBaseDir($this->configValues['data_dir'][$dbKey]);
+        return $this->preprendBaseDir($this->configValues['db_name'][$dbKey]);
     }
 
     /**
@@ -196,7 +203,7 @@ class Config
      */
     public function getInternalDatabasePath()
     {
-        return $this->preprendBaseDir($this->configValues['internal_db']);
+        return $this->preprendBaseDir($this->configValues['db_internal']);
     }
 
     /**
@@ -233,26 +240,6 @@ class Config
     }
 
     /**
-     * Set data dir
-     *
-     * @param  mixed $dataDir
-     *
-     * @return $this
-     */
-    public function setDataDir($dataDir)
-    {
-        if (!is_array($dataDir)) {
-            $dataDir = array('default' => $dataDir);
-        }
-
-        $this->configValues['data_dir'] = $dataDir;
-
-        $this->initDatabases();
-
-        return $this;
-    }
-
-    /**
      * Set database key in use
      *
      * @param Application $app
@@ -268,7 +255,7 @@ class Config
             $dbKey = $this->getValue('default_database_key');
         }
 
-        if (!array_key_exists($dbKey, $this->getValue('data_dir'))) {
+        if (!array_key_exists($dbKey, $this->getValue('db_name'))) {
             throw new \InvalidArgumentException('Database does not exist');
         }
 

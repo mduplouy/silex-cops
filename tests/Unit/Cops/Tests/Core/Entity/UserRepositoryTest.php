@@ -8,7 +8,7 @@ class UserRepositoryTest extends AbstractTestCase
 {
     public function testInitTable()
     {
-        $internalDb = $this->app['config']->getValue('internal_db');
+        $internalDb = $this->app['config']->getValue('db_internal');
 
         $this->app['repository.user']->getConnection()->getSchemaManager()->dropDatabase($internalDb);
 
