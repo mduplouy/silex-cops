@@ -131,7 +131,7 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     public function countAll()
     {
         return (int) $this->getQueryBuilder()
-            ->select('count()')
+            ->select('count(*)')
             ->from('books', 'main')
             ->execute()
             ->fetchColumn(0);
