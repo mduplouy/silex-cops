@@ -119,7 +119,6 @@ class OpdsController implements ControllerProviderInterface
      * Get all books from author
      *
      * @param Application $app
-     * @param int         $Id
      *
      * @return string
      */
