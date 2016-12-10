@@ -248,7 +248,7 @@ class TagRepository extends AbstractRepository implements TagRepositoryInterface
     public function countAll()
     {
         return (int) $this->getQueryBuilder()
-            ->select('count()')
+            ->select('count(*)')
             ->from('tags', 'main')
             ->execute()
             ->fetchColumn(0);

@@ -85,7 +85,7 @@ class BookFileRepository extends AbstractRepository
     {
         return $this->getBaseSelect()
             ->addSelect('books.path as directory')
-            ->where('book_id IN (:book_id)')
+            ->where('main.book IN (:book_id)')
             ->innerJoin('main', 'books', '', 'books.id = main.book')
             ->setParameter('book_id', $books->getAllIds(), Connection::PARAM_INT_ARRAY)
             ->execute()
