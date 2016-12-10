@@ -129,14 +129,15 @@ class BookCollection extends AbstractCollection
      * Find by keyword
      *
      * @param  array $keyword
+     * @param  array $translatedKeywords
      *
      * @return $this
      *
      * @throws BookNotFoundException
      */
-    public function findByKeyword(array $keyword)
+    public function findByKeyword(array $keyword, array $translatedKeywords = array())
     {
-        $result = $this->getRepository()->findByKeyword($keyword);
+        $result = $this->getRepository()->findByKeyword($keyword, $translatedKeywords);
 
         if (empty($result)) {
             throw new BookNotFoundException(sprintf('No book found matching "%s"', implode(', ', $keyword)));

@@ -27,6 +27,8 @@ class Config
     private $configValues = array(
         // Language
         'default_lang'             => 'fr',
+        'convert_nonlatin_chars'   => false,
+        'convert_latin_to'         => '',
 
         // database
         'db_engine'   => 'sqlite',
@@ -106,6 +108,12 @@ class Config
     protected $utils;
 
     /**
+     * Was initialized ?
+     * @var bool
+     */
+    private $initialized = false;
+
+    /**
      * Constructor
      *
      * @param string       $configFilePath
@@ -121,8 +129,6 @@ class Config
         if (!is_array($this->configValues['db_name'])) {
             $this->configValues['db_name'] = array('default' => $this->configValues['db_name']);
         }
-
-        $this->initDatabases();
     }
 
     /**
@@ -148,18 +154,22 @@ class Config
      *
      * @return void
      */
-    protected function initDatabases()
+    public function initDatabases()
     {
-        // Sanitize db key to use it in url
-        $databases = array();
-        foreach ($this->configValues['db_name'] as $key => $path) {
-            $databases[$this->utils->urlSafe($key)] = $path;
+        if (!$this->initialized) {
+            // Sanitize db key to use it in url
+            $databases = array();
+            foreach ($this->configValues['db_name'] as $key => $path) {
+                $databases[$this->utils->urlSafe($key)] = $path;
+            }
+
+            $this->configValues['db_name'] = $databases;
+
+            $this->configValues['default_database_key'] = key($this->configValues['db_name']);
+            $this->configValues['current_database_key'] = $this->configValues['default_database_key'];
+
+            $this->initialized = true;
         }
-
-        $this->configValues['db_name'] = $databases;
-
-        $this->configValues['default_database_key'] = key($this->configValues['db_name']);
-        $this->configValues['current_database_key'] = $this->configValues['default_database_key'];
     }
 
     /**
