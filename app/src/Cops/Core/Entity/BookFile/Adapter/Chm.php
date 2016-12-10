@@ -26,6 +26,6 @@ class Chm extends AbstractAdapter implements AdapterInterface
      */
     public function getContentTypeHeader()
     {
-        return 'application/octet-stream';
+        return 'application/x-chemdraw';
     }
 }

@@ -26,6 +26,6 @@ class Ps extends AbstractAdapter implements AdapterInterface
      */
     public function getContentTypeHeader()
     {
-        return 'application/octet-stream';
+        return 'application/postscript';
     }
 }

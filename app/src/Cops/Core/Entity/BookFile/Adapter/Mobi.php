@@ -26,6 +26,6 @@ class Mobi extends AbstractAdapter implements AdapterInterface
      */
     public function getContentTypeHeader()
     {
-        return 'application/octet-stream';
+        return 'application/x-mobipocket-ebook';
     }
 }

@@ -26,6 +26,6 @@ class Html extends AbstractAdapter implements AdapterInterface
      */
     public function getContentTypeHeader()
     {
-        return 'application/octet-stream';
+        return 'text/html';
     }
 }

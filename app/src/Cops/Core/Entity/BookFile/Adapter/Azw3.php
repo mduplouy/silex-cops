@@ -26,6 +26,6 @@ class Azw3 extends AbstractAdapter implements AdapterInterface
      */
     public function getContentTypeHeader()
     {
-        return 'application/octet-stream';
+        return 'application/x-mobi8-ebook';
     }
 }

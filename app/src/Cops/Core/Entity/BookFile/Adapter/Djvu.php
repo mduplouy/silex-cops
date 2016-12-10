@@ -26,6 +26,6 @@ class Djvu extends AbstractAdapter implements AdapterInterface
      */
     public function getContentTypeHeader()
     {
-        return 'application/octet-stream';
+        return 'image/vnd.djvu';
     }
 }

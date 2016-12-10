@@ -26,6 +26,6 @@ class Dvi extends AbstractAdapter implements AdapterInterface
      */
     public function getContentTypeHeader()
     {
-        return 'application/octet-stream';
+        return 'application/x-dvi';
     }
 }

@@ -26,6 +26,6 @@ class Rar extends AbstractAdapter implements AdapterInterface
      */
     public function getContentTypeHeader()
     {
-        return 'application/octet-stream';
+        return 'application/x-rar-compressed';
     }
 }
