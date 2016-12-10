@@ -247,6 +247,30 @@ class Application extends BaseApplication
                 'azw3' => function () {
                     return new \Cops\Core\Entity\BookFile\Adapter\Azw3;
                 },
+                'chm' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Chm;
+                },
+                'djvu' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Djvu;
+                },
+                'dvi' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Dvi;
+                },
+                'html' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Html;
+                },
+                'ps' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Ps;
+                },
+                'rar' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Rar;
+                },
+                'txt' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Txt;
+                },
+                'zip' => function () {
+                    return new \Cops\Core\Entity\BookFile\Adapter\Zip;
+                },
             ));
 
             return $factory->setTranslator($c['translator'])
