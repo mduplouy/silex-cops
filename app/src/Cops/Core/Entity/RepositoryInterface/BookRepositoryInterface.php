@@ -78,10 +78,11 @@ interface BookRepositoryInterface extends RepositoryInterface
      * Find by keyword
      *
      * @param  array  $keywords
+     * @param  array  $translatedKeywords
      *
      * @return array
      */
-    public function findByKeyword(array $keywords);
+    public function findByKeyword(array $keywords, array $translatedKeywords = array());
 
     /**
      * Define excluded book id

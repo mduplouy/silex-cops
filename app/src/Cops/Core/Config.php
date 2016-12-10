@@ -27,6 +27,8 @@ class Config
     private $configValues = array(
         // Language
         'default_lang'             => 'fr',
+        'convert_nonlatin_chars'   => false,
+        'convert_latin_to'         => '',
 
         // Page size
         'last_added'               => 15,
@@ -86,6 +88,12 @@ class Config
     );
 
     /**
+     * Was initialized ?
+     * @var bool
+     */
+    private $initialized = false;
+
+    /**
      * Template prefix used for mobile rendering
      *
      * @var string
@@ -114,8 +122,6 @@ class Config
         if (!is_array($this->configValues['data_dir'])) {
             $this->configValues['data_dir'] = array('default' => $this->configValues['data_dir']);
         }
-
-        $this->initDatabases();
     }
 
     /**
@@ -141,18 +147,22 @@ class Config
      *
      * @return void
      */
-    protected function initDatabases()
+    public function initDatabases()
     {
-        // Sanitize db key to use it in url
-        $databases = array();
-        foreach ($this->configValues['data_dir'] as $key => $path) {
-            $databases[$this->utils->urlSafe($key)] = $path;
+        if (!$this->initialized) {
+            // Sanitize db key to use it in url
+            $databases = array();
+            foreach ($this->configValues['data_dir'] as $key => $path) {
+                $databases[$this->utils->urlSafe($key, $this->configValues['convert_nonlatin_chars'])] = $path;
+            }
+
+            $this->configValues['data_dir'] = $databases;
+
+            $this->configValues['default_database_key'] = key($this->configValues['data_dir']);
+            $this->configValues['current_database_key'] = $this->configValues['default_database_key'];
+
+            $this->initialized = true;
         }
-
-        $this->configValues['data_dir'] = $databases;
-
-        $this->configValues['default_database_key'] = key($this->configValues['data_dir']);
-        $this->configValues['current_database_key'] = $this->configValues['default_database_key'];
     }
 
     /**

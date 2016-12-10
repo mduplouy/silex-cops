@@ -45,14 +45,21 @@ class Application extends BaseApplication
     {
         parent::__construct($values);
 
-        $this['string-utils'] = $this->share(function () {
-            return new \Cops\Core\StringUtils;
+        $this['string-utils'] = $this->share(function ($c) {
+            return new \Cops\Core\StringUtils();
         });
 
         // Load & set configuration
         $this['config'] = $this->share(function ($c) use ($overrideConfig) {
             return new \Cops\Core\Config($c['config-file'], $c['string-utils'], $overrideConfig);
         });
+
+        if ($useTransliterate = $this['config']->getValue('convert_nonlatin_chars')) {
+            $this['string-utils']->setUseTransliterate($useTransliterate)
+                ->setTransliterateTo($this['config']->getValue('convert_latin_to'));
+        }
+
+        $this['config']->initDatabases();
 
         $this['debug'] = (bool) $this['config']->getValue('debug');
 
@@ -304,7 +311,7 @@ class Application extends BaseApplication
         $this['factory.search'] = $this->share(function ($c) {
             return new \Cops\Core\Search\SearchFactory(array(
                 'sqlite' => function () use ($c) {
-                    return new \Cops\Core\Search\Adapter\Sqlite($c['collection.book']);
+                    return new \Cops\Core\Search\Adapter\Sqlite($c['collection.book'], $c['string-utils']);
                 },
                 'algolia' => function() use ($c) {
                     return new \Cops\Core\Search\Adapter\Algolia($c['collection.book'], $c['algolia']);

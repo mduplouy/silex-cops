@@ -6,9 +6,12 @@
 ;\----------------------------------------------------/
 
 [common]
-last_added        = 15                 ; Number of last added books
-by_date_page_size = 25                 ; Number of books per page when sorted by date
-default_lang      = fr                 ; Default language (en|fr)
+default_lang           = fr            ; Default language (en|fr)
+convert_nonlatin_chars = false         ; Set to true if you use non latin books
+convert_latin_to       =               ; Any transliterator string listed in transliterator_list_ids()
+                                       ; For cyrillic, use 'Any-Cyrillic'
+last_added             = 15            ; Number of last added books
+by_date_page_size      = 25            ; Number of books per page when sorted by date
 
 [author]
 author_page_size  = 25

@@ -215,11 +215,12 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     /**
      * Find by keyword
      *
-     * @param  array  $keywords
+     * @param  array $keywords
+     * @param  array $translatedKeywords
      *
      * @return array
      */
-    public function findByKeyword(array $keywords)
+    public function findByKeyword(array $keywords, array $translatedKeywords = array())
     {
         $qb = $this->getBaseSelect()
             ->addSelect('main.id')
@@ -229,24 +230,45 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
             ->groupBy('main.id')
             ->resetQueryParts(array('where'));
 
+        $this->buildPathAndSerieQueryPart($qb, $keywords);
+
+        if (count($translatedKeywords)) {
+            $this->buildPathAndSerieQueryPart($qb, $translatedKeywords);
+        }
+
+        return $this->paginate($qb)
+            ->execute()
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Create the search clause with provided keywords
+     *
+     * @param QueryBuilder $qb
+     * @param array        $keywords
+     *
+     * @return QueryBuilder
+     */
+    private function buildPathAndSerieQueryPart(QueryBuilder $qb, array $keywords)
+    {
+        $con = $this->getConnection();
+
         // Build the where clause - path includes author name so it's not added
         $andPath  = $qb->expr()->andX();
         $andSerie = $qb->expr()->andX();
 
         foreach ($keywords as $keyword) {
             $andPath->add(
-                $qb->expr()->like('main.path', $this->getConnection()->quote('%'.$keyword.'%'))
+                $qb->expr()->like('main.path', $con->quote('%'.$keyword.'%'))
             );
             $andSerie->add(
-                $qb->expr()->like('serie.sort', $this->getConnection()->quote('%'.$keyword.'%'))
+                $qb->expr()->like('serie.sort', $con->quote('%'.$keyword.'%'))
             );
         }
 
         $qb->orWhere($andPath, $andSerie);
 
-         return $this->paginate($qb)
-            ->execute()
-            ->fetchAll(PDO::FETCH_ASSOC);
+        return $qb;
     }
 
     /**

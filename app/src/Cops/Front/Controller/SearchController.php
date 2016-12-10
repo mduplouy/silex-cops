@@ -62,7 +62,7 @@ class SearchController implements \Silex\ControllerProviderInterface
 
         return $app->redirect(
             $app['url_generator']->generate('search_results',
-                array('keywords' => $keywords)
+                array('keywords' => strtolower($keywords))
             )
         );
     }
