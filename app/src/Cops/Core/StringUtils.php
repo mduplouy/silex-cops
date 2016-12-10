@@ -190,7 +190,7 @@ class StringUtils
      *
      * @return string
      */
-    public function urlSafe($string, $transliterate = false)
+    public function urlSafe($string)
     {
         if ($this->useTransliterate) {
             $string = $this->getTransliterator()->transliterate($string);
