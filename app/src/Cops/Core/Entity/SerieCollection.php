@@ -10,6 +10,7 @@
 namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractCollection;
+use Cops\Core\Application;
 
 /**
  * Serie collection
@@ -22,12 +23,12 @@ class SerieCollection extends AbstractCollection
      *
      * @return array
      */
-    public function countGroupedByFirstLetter()
+    public function countGroupedByFirstLetter(\Silex\Application $app)
     {
         $series = array();
         foreach ($this->getRepository()->countGroupedByFirstLetter() as $serie) {
             // Force non alpha to #
-            if (!preg_match('/[A-Z]/', $serie['first_letter'])) {
+            if (!preg_match('/[A-Z'.($app['config']->getValue('add_cap_letters')).']/', $serie['first_letter'])) {
                 $serie['first_letter'] = '#';
             }
             if (!array_key_exists($serie['first_letter'], $series)) {

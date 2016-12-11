@@ -154,10 +154,10 @@ class StringUtils
      */
     public function getLetters()
     {
-        return array(
+        return array_merge(array(
             'A','B','C','D','E','F','G','H','I','J','K','L','M',
             'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-        );
+        ), str_split($app['config']->getValue('add_cap_letters')));
     }
 
     /**

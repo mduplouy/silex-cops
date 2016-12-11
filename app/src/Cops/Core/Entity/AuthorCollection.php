@@ -10,6 +10,7 @@
 namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractCollection;
+use Cops\Core\Application;
 
 /**
  * Author collection
@@ -92,12 +93,12 @@ class AuthorCollection extends AbstractCollection
      *
      * @return array
      */
-    public function countGroupedByFirstLetter()
+    public function countGroupedByFirstLetter(\Silex\Application $app)
     {
         $output = array();
         foreach ($this->getRepository()->countGroupedByFirstLetter() as $author) {
             // Force non alpha to #
-            if (!preg_match('/[A-Z]/', $author['first_letter'])) {
+            if (!preg_match('/[A-Z'.($app['config']->getValue('add_cap_letters')).']/', $author['first_letter'])) {
                 $author['first_letter'] = '#';
             }
             if (!array_key_exists($author['first_letter'], $output)) {

@@ -34,7 +34,7 @@ class OpdsController implements ControllerProviderInterface
         $controller->get('/authors', __CLASS__.'::authorsAction')
             ->bind('opds_authors');
         $controller->get('/authors/{letter}', __CLASS__.'::authorsAlphaAction')
-            ->assert('letter', '\w+|0')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($app['config']->getValue('add_cap_letters')).']')
             ->bind('opds_authors_alpha');
         $controller->get('/author/{id}', __CLASS__.'::authorDetailAction')
             ->assert('id', '\d+')
@@ -44,7 +44,7 @@ class OpdsController implements ControllerProviderInterface
         $controller->get('/series', __CLASS__.'::seriesAction')
             ->bind('opds_series');
         $controller->get('/series/{letter}', __CLASS__.'::seriesAlphaAction')
-            ->assert('letter', '\w+|0')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($app['config']->getValue('add_cap_letters')).']')
             ->bind('opds_series_alpha');
         $controller->get('/serie/{id}', __CLASS__.'::serieDetailAction')
             ->assert('id', '\d+')

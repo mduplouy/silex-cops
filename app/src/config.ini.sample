@@ -10,6 +10,8 @@ default_lang           = fr            ; Default language (en|fr)
 convert_nonlatin_chars = false         ; Set to true if you use non latin books
 convert_latin_to       =               ; Any transliterator string listed in transliterator_list_ids()
                                        ; For cyrillic, use 'Any-Cyrillic'
+add_cap_letters        = ""            ; Additional capital letters for grouping authors and serie on
+                                       ; the homepage and via opds. A string of any utf8 characters
 last_added             = 15            ; Number of last added books
 by_date_page_size      = 25            ; Number of books per page when sorted by date
 

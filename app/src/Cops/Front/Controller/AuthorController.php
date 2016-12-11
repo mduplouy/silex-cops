@@ -34,7 +34,7 @@ class AuthorController implements ControllerProviderInterface
             ->bind('author_download');
 
         $controller->get('/list/{letter}/{page}', __CLASS__.'::listAction')
-            ->assert('letter', '\w+|0')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($app['config']->getValue('add_cap_letters')).']')
             ->value('page', 1)
             ->bind('author_list');
 

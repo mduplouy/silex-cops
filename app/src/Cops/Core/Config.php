@@ -29,6 +29,7 @@ class Config
         'default_lang'             => 'fr',
         'convert_nonlatin_chars'   => false,
         'convert_latin_to'         => '',
+        'add_cap_letters'          => '',
 
         // Page size
         'last_added'               => 15,
