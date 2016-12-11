@@ -10,7 +10,6 @@
 namespace Cops\Core\Entity;
 
 use Cops\Core\AbstractCollection;
-use Cops\Core\Application;
 
 /**
  * Author collection
@@ -25,10 +24,10 @@ class AuthorCollection extends AbstractCollection
      *
      * @return $this
      */
-    public function findByFirstLetter($letter, Application $app)
+    public function findByFirstLetter($letter, $addletters)
     {
         return $this->setDataFromArray(
-            $this->getRepository()->findByFirstLetter($letter, $app)
+            $this->getRepository()->findByFirstLetter($letter, $addletters)
         );
     }
 
@@ -93,12 +92,12 @@ class AuthorCollection extends AbstractCollection
      *
      * @return array
      */
-    public function countGroupedByFirstLetter(Application $app)
+    public function countGroupedByFirstLetter($addletters)
     {
         $output = array();
         foreach ($this->getRepository()->countGroupedByFirstLetter() as $author) {
             // Force non alpha to #
-            if (!preg_match('/[A-Z'.($app['config']->getValue('add_cap_letters')).']/', $author['first_letter'])) {
+            if (!preg_match('/[A-Z'.(implode($addletters)).']/', $author['first_letter'])) {
                 $author['first_letter'] = '#';
             }
             if (!array_key_exists($author['first_letter'], $output)) {

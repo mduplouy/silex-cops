@@ -12,7 +12,6 @@ namespace Cops\Core\Entity\RepositoryInterface;
 use Cops\Core\RepositoryInterface;
 use Cops\Core\Entity\Serie;
 use Cops\Core\Entity\Book;
-use Cops\Core\Application;
 
 
 /**
@@ -60,7 +59,7 @@ interface SerieRepositoryInterface extends RepositoryInterface
      *
      * @return array
      */
-    public function findByFirstLetter($letter, Application $app);
+    public function findByFirstLetter($letter, $addletters);
 
     /**
      * Insert new serie into database

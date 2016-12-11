@@ -25,6 +25,8 @@ class OpdsController implements ControllerProviderInterface
      */
     public function connect(\Silex\Application $app)
     {
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         $controller = $app['controllers_factory'];
 
         $controller->get('/', __CLASS__.'::indexAction')
@@ -34,7 +36,7 @@ class OpdsController implements ControllerProviderInterface
         $controller->get('/authors', __CLASS__.'::authorsAction')
             ->bind('opds_authors');
         $controller->get('/authors/{letter}', __CLASS__.'::authorsAlphaAction')
-            ->assert('html_entity_decode(letter)', '\w+|0|['.($app['config']->getValue('add_cap_letters')).']')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($addlettersstr).']')
             ->bind('opds_authors_alpha');
         $controller->get('/author/{id}', __CLASS__.'::authorDetailAction')
             ->assert('id', '\d+')
@@ -44,7 +46,7 @@ class OpdsController implements ControllerProviderInterface
         $controller->get('/series', __CLASS__.'::seriesAction')
             ->bind('opds_series');
         $controller->get('/series/{letter}', __CLASS__.'::seriesAlphaAction')
-            ->assert('html_entity_decode(letter)', '\w+|0|['.($app['config']->getValue('add_cap_letters')).']')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($addlettersstr).']')
             ->bind('opds_series_alpha');
         $controller->get('/serie/{id}', __CLASS__.'::serieDetailAction')
             ->assert('id', '\d+')
@@ -105,7 +107,10 @@ class OpdsController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $authors = $app['collection.author']->findByFirstLetter($letter, $app);
+        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                 null, PREG_SPLIT_NO_EMPTY);
+
+        $authors = $app['collection.author']->findByFirstLetter($letter, $addletters);
 
         $xml =  $app['twig']->render('opds/authors_alpha.xml.twig', array(
             'updated' => date('Y-m-d\TH:i:sP'),
@@ -177,7 +182,10 @@ class OpdsController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $series = $app['collection.serie']->findByFirstLetter($letter, $app);
+        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                 null, PREG_SPLIT_NO_EMPTY);
+
+        $series = $app['collection.serie']->findByFirstLetter($letter, $addletters);
 
         $xml =  $app['twig']->render('opds/series_alpha.xml.twig', array(
             'updated' => date('Y-m-d\TH:i:sP'),

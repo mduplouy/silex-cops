@@ -27,6 +27,8 @@ class AuthorController implements ControllerProviderInterface
      */
     public function connect(\Silex\Application $app)
     {
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         $controller = $app['controllers_factory'];
 
         $controller->get('/{id}/download/{format}', __CLASS__.'::downloadAction')
@@ -34,7 +36,7 @@ class AuthorController implements ControllerProviderInterface
             ->bind('author_download');
 
         $controller->get('/list/{letter}/{page}', __CLASS__.'::listAction')
-            ->assert('html_entity_decode(letter)', '\w+|0|['.($app['config']->getValue('add_cap_letters')).']')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($addlettersstr).']')
             ->value('page', 1)
             ->bind('author_list');
 
@@ -93,7 +95,10 @@ class AuthorController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $authors = $app['collection.author']->findByFirstLetter($letter, $app);
+        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                 null, PREG_SPLIT_NO_EMPTY);
+
+        $authors = $app['collection.author']->findByFirstLetter($letter, $addletters);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author_list.html.twig', array(
             'letter' => $letter,
