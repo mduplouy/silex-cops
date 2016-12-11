@@ -24,10 +24,10 @@ class AuthorCollection extends AbstractCollection
      *
      * @return $this
      */
-    public function findByFirstLetter($letter)
+    public function findByFirstLetter($letter, $addletters)
     {
         return $this->setDataFromArray(
-            $this->getRepository()->findByFirstLetter($letter)
+            $this->getRepository()->findByFirstLetter($letter, $addletters)
         );
     }
 
@@ -92,12 +92,12 @@ class AuthorCollection extends AbstractCollection
      *
      * @return array
      */
-    public function countGroupedByFirstLetter()
+    public function countGroupedByFirstLetter($addletters)
     {
         $output = array();
         foreach ($this->getRepository()->countGroupedByFirstLetter() as $author) {
             // Force non alpha to #
-            if (!preg_match('/[A-Z]/', $author['first_letter'])) {
+            if (!preg_match('/[A-Z'.(implode($addletters)).']/', $author['first_letter'])) {
                 $author['first_letter'] = '#';
             }
             if (!array_key_exists($author['first_letter'], $output)) {

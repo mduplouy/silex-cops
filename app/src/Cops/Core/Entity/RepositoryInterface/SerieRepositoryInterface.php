@@ -59,7 +59,7 @@ interface SerieRepositoryInterface extends RepositoryInterface
      *
      * @return array
      */
-    public function findByFirstLetter($letter);
+    public function findByFirstLetter($letter, $addletters);
 
     /**
      * Insert new serie into database

@@ -27,6 +27,8 @@ class SerieController implements ControllerProviderInterface
      */
     public function connect(\Silex\Application $app)
     {
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         $controller = $app['controllers_factory'];
 
         $controller->get('/{id}/download/{format}', __CLASS__.'::downloadAction')
@@ -34,7 +36,7 @@ class SerieController implements ControllerProviderInterface
             ->bind('serie_download');
 
         $controller->get('/list/{letter}/{page}', __CLASS__.'::listAction')
-            ->assert('letter', '\w+|0')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($addlettersstr).']')
             ->value('page', 1)
             ->bind('serie_list');
 
@@ -59,12 +61,17 @@ class SerieController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $series = $app['collection.serie']->findByFirstLetter($letter);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
+        $addletters = preg_split('//u', $addlettersstr, null, PREG_SPLIT_NO_EMPTY);
+
+        $series = $app['collection.serie']->findByFirstLetter($letter, $addletters);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'serie_list.html.twig', array(
-            'letter'    => $letter,
-            'series'    => $series,
-            'pageTitle' => sprintf($app['translator']->trans('Series beginning by %s'), $letter),
+            'letter'        => $letter,
+            'addlettersstr' => $addlettersstr,
+            'series'        => $series,
+            'pageTitle'     => sprintf($app['translator']->trans('Series beginning by %s'), $letter),
         ));
     }
 
@@ -85,10 +92,13 @@ class SerieController implements ControllerProviderInterface
 
             $template = $app['config']->getTemplatePrefix().'serie.html.twig';
 
+            $addlettersstr = $app['config']->getValue('add_cap_letters');
+
             $app['response'] =  $app['twig']->render($template, array(
-                'serie'     => $serie,
-                'books'     => $books,
-                'pageTitle' => $serie->getName(),
+                'serie'         => $serie,
+                'addlettersstr' => $addlettersstr,
+                'books'         => $books,
+                'pageTitle'     => $serie->getName(),
             ));
         }
 

@@ -91,12 +91,15 @@ class SearchController implements \Silex\ControllerProviderInterface
 
         $totalRows = $books->getRepository()->getTotalRows();
 
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         return $app['twig']->render($app['config']->getTemplatePrefix().'search_results.html.twig', array(
-            'pageTitle'   => $app['translator']->trans('Search results'),
-            'books'       => $books,
-            'totalRows'   => $totalRows,
-            'pageNum'     => $page,
-            'pageCount'   => ceil($totalRows / $itemsPerPage),
+            'pageTitle'      => $app['translator']->trans('Search results'),
+            'addlettersstr'  => $addlettersstr,
+            'books'          => $books,
+            'totalRows'      => $totalRows,
+            'pageNum'        => $page,
+            'pageCount'      => ceil($totalRows / $itemsPerPage),
         ));
     }
 
@@ -109,8 +112,11 @@ class SearchController implements \Silex\ControllerProviderInterface
      */
     public function noResultAction(Application $app)
     {
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         return $app['twig']->render($app['config']->getTemplatePrefix().'search_no_result.html.twig', array(
-            'pageTitle'   => $app['translator']->trans('Search results'),
+            'addlettersstr' => $addlettersstr,
+            'pageTitle'     => $app['translator']->trans('Search results'),
         ));
     }
 

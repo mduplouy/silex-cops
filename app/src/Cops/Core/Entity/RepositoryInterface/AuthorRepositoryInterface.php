@@ -85,7 +85,7 @@ interface AuthorRepositoryInterface extends RepositoryInterface
      *
      * @return array
      */
-    public function findByFirstLetter($letter);
+    public function findByFirstLetter($letter, $addletters);
 
     /**
      * Load by bookId

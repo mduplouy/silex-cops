@@ -22,12 +22,12 @@ class SerieCollection extends AbstractCollection
      *
      * @return array
      */
-    public function countGroupedByFirstLetter()
+    public function countGroupedByFirstLetter($addletters)
     {
         $series = array();
         foreach ($this->getRepository()->countGroupedByFirstLetter() as $serie) {
             // Force non alpha to #
-            if (!preg_match('/[A-Z]/', $serie['first_letter'])) {
+            if (!preg_match('/[A-Z'.(implode($addletters)).']/', $serie['first_letter'])) {
                 $serie['first_letter'] = '#';
             }
             if (!array_key_exists($serie['first_letter'], $series)) {
@@ -46,10 +46,10 @@ class SerieCollection extends AbstractCollection
      *
      * @return $this
      */
-    public function findByFirstLetter($letter)
+    public function findByFirstLetter($letter, $addletters)
     {
         return $this->setDataFromArray(
-            $this->getRepository()->findByFirstLetter($letter)
+            $this->getRepository()->findByFirstLetter($letter, $addletters)
         );
     }
 

@@ -34,7 +34,7 @@ class SerieCollectionTest extends AbstractTestCase
 
         $serieCount = $this->getCollection()
             ->setRepository($mock)
-            ->countGroupedByFirstLetter();
+            ->countGroupedByFirstLetter(array());
 
         $this->assertEquals($serieCount, array(
             '#' => 3,
@@ -47,12 +47,12 @@ class SerieCollectionTest extends AbstractTestCase
         $mock = $this->getMockRepository();
         $mock->expects($this->once())
             ->method('findByFirstLetter')
-            ->with('A')
+            ->with('A',array())
             ->will($this->returnValue(array()));
 
         $this->getCollection()
             ->setRepository($mock)
-            ->findByFirstLetter('A');
+            ->findByFirstLetter('A',array());
     }
 
     public function testCountAll()

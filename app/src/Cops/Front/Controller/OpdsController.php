@@ -25,6 +25,8 @@ class OpdsController implements ControllerProviderInterface
      */
     public function connect(\Silex\Application $app)
     {
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         $controller = $app['controllers_factory'];
 
         $controller->get('/', __CLASS__.'::indexAction')
@@ -34,7 +36,7 @@ class OpdsController implements ControllerProviderInterface
         $controller->get('/authors', __CLASS__.'::authorsAction')
             ->bind('opds_authors');
         $controller->get('/authors/{letter}', __CLASS__.'::authorsAlphaAction')
-            ->assert('letter', '\w+|0')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($addlettersstr).']')
             ->bind('opds_authors_alpha');
         $controller->get('/author/{id}', __CLASS__.'::authorDetailAction')
             ->assert('id', '\d+')
@@ -44,7 +46,7 @@ class OpdsController implements ControllerProviderInterface
         $controller->get('/series', __CLASS__.'::seriesAction')
             ->bind('opds_series');
         $controller->get('/series/{letter}', __CLASS__.'::seriesAlphaAction')
-            ->assert('letter', '\w+|0')
+            ->assert('html_entity_decode(letter)', '\w+|0|['.($addlettersstr).']')
             ->bind('opds_series_alpha');
         $controller->get('/serie/{id}', __CLASS__.'::serieDetailAction')
             ->assert('id', '\d+')
@@ -66,9 +68,12 @@ class OpdsController implements ControllerProviderInterface
      */
     public function indexAction(Application $app)
     {
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         $xml =  $app['twig']->render('opds/home.xml.twig', array(
-            'updated'     => date('Y-m-d\TH:i:sP'),
-            'nbLastAdded' => $app['config']->getValue('last_added')
+            'addlettersstr' => $addlettersstr,
+            'updated'       => date('Y-m-d\TH:i:sP'),
+            'nbLastAdded'   => $app['config']->getValue('last_added')
         ));
 
         return $this->checkXml($xml);
@@ -83,7 +88,10 @@ class OpdsController implements ControllerProviderInterface
      */
     public function authorsAction(Application $app)
     {
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         $xml =  $app['twig']->render('opds/authors.xml.twig', array(
+            'addlettersstr'     => $addlettersstr,
             'updated'           => date('Y-m-d\TH:i:sP'),
             'authorsAggregated' => $app['collection.author']->countGroupedByFirstLetter(),
         ));
@@ -105,11 +113,16 @@ class OpdsController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $authors = $app['collection.author']->findByFirstLetter($letter);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
+        $addletters = preg_split('//u', $addlettersstr, null, PREG_SPLIT_NO_EMPTY);
+
+        $authors = $app['collection.author']->findByFirstLetter($letter, $addletters);
 
         $xml =  $app['twig']->render('opds/authors_alpha.xml.twig', array(
-            'updated' => date('Y-m-d\TH:i:sP'),
-            'authors' => $authors,
+            'addlettersstr' => $addlettersstr,
+            'updated'       => date('Y-m-d\TH:i:sP'),
+            'authors'       => $authors,
         ));
 
         return $this->checkXml($xml);
@@ -131,10 +144,13 @@ class OpdsController implements ControllerProviderInterface
                 ->findByAuthorId($id)
                 ->addBookFiles($app['collection.bookfile']);
 
+            $addlettersstr = $app['config']->getValue('add_cap_letters');
+
             $xml =  $app['twig']->render('opds/author_detail.xml.twig', array(
-                'updated' => date('Y-m-d\TH:i:sP'),
-                'author'  => $author,
-                'books'   => $books,
+                'addlettersstr' => $addlettersstr,
+                'updated'       => date('Y-m-d\TH:i:sP'),
+                'author'        => $author,
+                'books'         => $books,
             ));
 
             $app['reponse'] = $this->checkXml($xml);
@@ -155,7 +171,10 @@ class OpdsController implements ControllerProviderInterface
      */
     public function seriesAction(Application $app)
     {
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         $xml =  $app['twig']->render('opds/series.xml.twig', array(
+            'addlettersstr'    => $addlettersstr,
             'updated'          => date('Y-m-d\TH:i:sP'),
             'seriesAggregated' => $app['collection.serie']->countGroupedByFirstLetter(),
         ));
@@ -177,11 +196,16 @@ class OpdsController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $series = $app['collection.serie']->findByFirstLetter($letter);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
+        $addletters = preg_split('//u', $addlettersstr, null, PREG_SPLIT_NO_EMPTY);
+
+        $series = $app['collection.serie']->findByFirstLetter($letter, $addletters);
 
         $xml =  $app['twig']->render('opds/series_alpha.xml.twig', array(
-            'updated' => date('Y-m-d\TH:i:sP'),
-            'series'  => $series,
+            'addlettersstr' => $addlettersstr,
+            'updated'       => date('Y-m-d\TH:i:sP'),
+            'series'        => $series,
         ));
 
         return $this->checkXml($xml);
@@ -202,10 +226,13 @@ class OpdsController implements ControllerProviderInterface
                 ->findBySerieId($id)
                 ->addBookFiles($app['collection.bookfile']);
 
+            $addlettersstr = $app['config']->getValue('add_cap_letters');
+
             $xml = $app['twig']->render('opds/serie_detail.xml.twig', array(
-                'updated' => date('Y-m-d\TH:i:sP'),
-                'serie'   => $serie,
-                'books'   => $books,
+                'addlettersstr' => $addlettersstr,
+                'updated'      => date('Y-m-d\TH:i:sP'),
+                'serie'        => $serie,
+                'books'        => $books,
             ));
 
             $app['response'] = $this->checkXml($xml);
