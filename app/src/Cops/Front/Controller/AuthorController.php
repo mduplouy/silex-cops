@@ -131,15 +131,18 @@ class AuthorController implements ControllerProviderInterface
 
             $totalBooks = $books->getRepository()->getTotalRows();
 
+            $addlettersstr = $app['config']->getValue('add_cap_letters');
+
             $app['response'] = $app['twig']->render(
                 $app['config']->getTemplatePrefix().'author.html.twig',
                  array(
-                    'author'     => $author,
-                    'books'      => $books,
-                    'pageTitle'  => $author->getSort(),
-                    'pageNum'    => $page,
-                    'totalRows'  => $totalBooks,
-                    'pageCount'  => ceil($totalBooks / $app['config']->getValue('author_page_size')),
+                    'author'        => $author,
+                    'addlettersstr' => $addlettersstr,
+                    'books'         => $books,
+                    'pageTitle'     => $author->getSort(),
+                    'pageNum'       => $page,
+                    'totalRows'     => $totalBooks,
+                    'pageCount'     => ceil($totalBooks / $app['config']->getValue('author_page_size')),
                 )
             );
         }

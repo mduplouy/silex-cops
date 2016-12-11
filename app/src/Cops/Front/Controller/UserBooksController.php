@@ -139,15 +139,18 @@ class UserBooksController implements ControllerProviderInterface
 
         $totalBooks = $books->getRepository()->getTotalRows();
 
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         return $app['twig']->render(
             sprintf('%suser_books_%s.html.twig', $app['config']->getTemplatePrefix(), $action),
             array(
-                'books'      => $books,
-                'totalBooks' => $totalBooks,
-                'pageTitle'  => $pageTitle,
-                'pageNum'    => $page,
-                'totalRows'  => $totalBooks,
-                'pageCount'  => ceil($totalBooks / $itemsPerPage),
+                'books'         => $books,
+                'addlettersstr' => $addlettersstr,
+                'totalBooks'    => $totalBooks,
+                'pageTitle'     => $pageTitle,
+                'pageNum'       => $page,
+                'totalRows'     => $totalBooks,
+                'pageCount'     => ceil($totalBooks / $itemsPerPage),
             )
         );
     }

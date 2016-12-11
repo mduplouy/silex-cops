@@ -128,13 +128,16 @@ class BookController implements ControllerProviderInterface
 
         $totalBooks = $app['collection.book']->countAll();
 
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
         return $app['twig']->render($app['config']->getTemplatePrefix().'books_by_date.html.twig', array(
-            'books'      => $books,
-            'totalBooks' => $totalBooks,
-            'pageTitle'  => $app['translator']->trans('All books sorted by add date'),
-            'pageNum'    => $page,
-            'totalRows'  => $totalBooks,
-            'pageCount'  => ceil($totalBooks / $itemPerPage),
+            'books'         => $books,
+            'addlettersstr' => $addlettersstr,
+            'totalBooks'    => $totalBooks,
+            'pageTitle'     => $app['translator']->trans('All books sorted by add date'),
+            'pageNum'       => $page,
+            'totalRows'     => $totalBooks,
+            'pageCount'     => ceil($totalBooks / $itemPerPage),
         ));
     }
 
