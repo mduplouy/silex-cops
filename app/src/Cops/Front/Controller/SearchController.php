@@ -91,16 +91,15 @@ class SearchController implements \Silex\ControllerProviderInterface
 
         $totalRows = $books->getRepository()->getTotalRows();
 
-        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
-                                 null, PREG_SPLIT_NO_EMPTY);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'search_results.html.twig', array(
-            'pageTitle'   => $app['translator']->trans('Search results'),
-            'addletters'  => $addletters,
-            'books'       => $books,
-            'totalRows'   => $totalRows,
-            'pageNum'     => $page,
-            'pageCount'   => ceil($totalRows / $itemsPerPage),
+            'pageTitle'      => $app['translator']->trans('Search results'),
+            'addlettersstr'  => $addlettersstr,
+            'books'          => $books,
+            'totalRows'      => $totalRows,
+            'pageNum'        => $page,
+            'pageCount'      => ceil($totalRows / $itemsPerPage),
         ));
     }
 
@@ -113,12 +112,11 @@ class SearchController implements \Silex\ControllerProviderInterface
      */
     public function noResultAction(Application $app)
     {
-        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
-                                 null, PREG_SPLIT_NO_EMPTY);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'search_no_result.html.twig', array(
-            'addletters'  => $addletters,
-            'pageTitle'   => $app['translator']->trans('Search results'),
+            'addlettersstr' => $addlettersstr,
+            'pageTitle'     => $app['translator']->trans('Search results'),
         ));
     }
 

@@ -95,16 +95,17 @@ class AuthorController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
-                                 null, PREG_SPLIT_NO_EMPTY);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
+        $addletters = preg_split('//u', $addlettersstr, null, PREG_SPLIT_NO_EMPTY);
 
         $authors = $app['collection.author']->findByFirstLetter($letter, $addletters);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author_list.html.twig', array(
-            'letter'     => $letter,
-            'authors'    => $authors,
-            'addletters' => $addletters,
-            'pageTitle'  => sprintf($app['translator']->trans('Authors beginning by %s'), $letter),
+            'letter'        => $letter,
+            'authors'       => $authors,
+            'addlettersstr' => $addlettersstr,
+            'pageTitle'     => sprintf($app['translator']->trans('Authors beginning by %s'), $letter),
         ));
     }
 

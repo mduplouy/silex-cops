@@ -61,16 +61,17 @@ class SerieController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
-                                 null, PREG_SPLIT_NO_EMPTY);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
+        $addletters = preg_split('//u', $addlettersstr, null, PREG_SPLIT_NO_EMPTY);
 
         $series = $app['collection.serie']->findByFirstLetter($letter, $addletters);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'serie_list.html.twig', array(
-            'letter'     => $letter,
-            'addletters' => $addletters,
-            'series'     => $series,
-            'pageTitle'  => sprintf($app['translator']->trans('Series beginning by %s'), $letter),
+            'letter'        => $letter,
+            'addlettersstr' => $addlettersstr,
+            'series'        => $series,
+            'pageTitle'     => sprintf($app['translator']->trans('Series beginning by %s'), $letter),
         ));
     }
 
@@ -91,14 +92,13 @@ class SerieController implements ControllerProviderInterface
 
             $template = $app['config']->getTemplatePrefix().'serie.html.twig';
 
-            $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
-                                     null, PREG_SPLIT_NO_EMPTY);
+            $addlettersstr = $app['config']->getValue('add_cap_letters');
 
             $app['response'] =  $app['twig']->render($template, array(
-                'serie'      => $serie,
-                'addletters' => $addletters,
-                'books'      => $books,
-                'pageTitle'  => $serie->getName(),
+                'serie'         => $serie,
+                'addlettersstr' => $addlettersstr,
+                'books'         => $books,
+                'pageTitle'     => $serie->getName(),
             ));
         }
 

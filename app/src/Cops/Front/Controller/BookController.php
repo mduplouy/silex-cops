@@ -65,18 +65,17 @@ class BookController implements ControllerProviderInterface
             return $app->redirect($app['url_generator']->generate('homepage'));
         }
 
-        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
-                                 null, PREG_SPLIT_NO_EMPTY);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
 
         return $app['twig']->render(
             $app['config']->getTemplatePrefix().'book.html.twig',
             array(
-                'pageTitle'   => $book->getTitle(),
-                'addletters'  => $addletters,
-                'book'        => $book,
-                'serieBooks'  => $app['collection.book']->findOthersFromSameSerie($book),
-                'authorBooks' => $app['collection.book']->findOthersFromSameAuthor($book),
-                'tags'        => $app['collection.tag']->findByBookId($book->getId())
+                'pageTitle'     => $book->getTitle(),
+                'addlettersstr' => $addlettersstr,
+                'book'          => $book,
+                'serieBooks'    => $app['collection.book']->findOthersFromSameSerie($book),
+                'authorBooks'   => $app['collection.book']->findOthersFromSameAuthor($book),
+                'tags'          => $app['collection.tag']->findByBookId($book->getId())
             )
         );
     }

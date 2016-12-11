@@ -55,14 +55,15 @@ class IndexController implements ControllerProviderInterface
 
         $authors = $app['collection.author'];
 
-        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
-                                 null, PREG_SPLIT_NO_EMPTY);
+        $addlettersstr = $app['config']->getValue('add_cap_letters');
+
+        $addletters = preg_split('//u', $addlettersstr, null, PREG_SPLIT_NO_EMPTY);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'homepage.html.twig', array(
             'pageTitle'          => $app['translator']->trans('Homepage'),
             'latestBooks'        => $latestBooks,
             'displayShowAlllink' => $latestBooks->count() < $countAll,
-            'addletters'         => $addletters,
+            'addlettersstr'      => $addlettersstr,
             'seriesAggregated'   => $series->countGroupedByFirstLetter($addletters),
             'countSeries'        => $series->countAll(),
             'authorsAggregated'  => $authors->countGroupedByFirstLetter($addletters),
