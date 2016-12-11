@@ -9,6 +9,7 @@
  */
 
 namespace Cops\Core;
+use Cops\Core\Application;
 
 /**
  * String utilities
@@ -152,12 +153,12 @@ class StringUtils
      *
      * @return array
      */
-    public function getLetters()
+    public function getLetters(Application $app)
     {
         return array_merge(array(
             'A','B','C','D','E','F','G','H','I','J','K','L','M',
             'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-        ), str_split($app['config']->getValue('add_cap_letters')));
+        ), preg_split('//u', $app['config']->getValue('add_cap_letters'), null, PREG_SPLIT_NO_EMPTY));
     }
 
     /**

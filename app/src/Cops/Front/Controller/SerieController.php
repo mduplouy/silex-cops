@@ -59,7 +59,7 @@ class SerieController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $series = $app['collection.serie']->findByFirstLetter($letter);
+        $series = $app['collection.serie']->findByFirstLetter($letter, $app);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'serie_list.html.twig', array(
             'letter'    => $letter,

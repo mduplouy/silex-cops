@@ -16,6 +16,7 @@ use PDO;
 use Doctrine\DBAL\Connection;
 use Cops\Core\Entity\Book;
 use Cops\Core\Entity\Serie;
+use Cops\Core\Application;
 
 /**
  * Serie repository
@@ -135,7 +136,7 @@ class SerieRepository extends AbstractRepository implements SerieRepositoryInter
      *
      * @return array
      */
-    public function findByFirstLetter($letter)
+    public function findByFirstLetter($letter, Application $app)
     {
         $qb = $this->getQueryBuilder()
             ->select('main.*', 'COUNT(bsl.series) AS book_count')
@@ -148,7 +149,7 @@ class SerieRepository extends AbstractRepository implements SerieRepositoryInter
                 ->setParameter(1, $letter, PDO::PARAM_STR);
         } else {
             $qb->where('UPPER(SUBSTR(sort, 1, 1)) NOT IN (:letters)')
-                ->setParameter('letters', $this->stringUtils->getLetters(), Connection::PARAM_STR_ARRAY);
+                ->setParameter('letters', $this->stringUtils->getLetters($app), Connection::PARAM_STR_ARRAY);
         }
 
         return $qb->groupBy('main.id')

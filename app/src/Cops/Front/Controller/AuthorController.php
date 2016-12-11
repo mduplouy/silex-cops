@@ -93,7 +93,7 @@ class AuthorController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $authors = $app['collection.author']->findByFirstLetter($letter);
+        $authors = $app['collection.author']->findByFirstLetter($letter, $app);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author_list.html.twig', array(
             'letter' => $letter,

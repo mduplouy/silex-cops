@@ -105,7 +105,7 @@ class OpdsController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $authors = $app['collection.author']->findByFirstLetter($letter);
+        $authors = $app['collection.author']->findByFirstLetter($letter, $app);
 
         $xml =  $app['twig']->render('opds/authors_alpha.xml.twig', array(
             'updated' => date('Y-m-d\TH:i:sP'),
@@ -177,7 +177,7 @@ class OpdsController implements ControllerProviderInterface
             $letter = '#';
         }
 
-        $series = $app['collection.serie']->findByFirstLetter($letter);
+        $series = $app['collection.serie']->findByFirstLetter($letter, $app);
 
         $xml =  $app['twig']->render('opds/series_alpha.xml.twig', array(
             'updated' => date('Y-m-d\TH:i:sP'),

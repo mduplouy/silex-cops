@@ -23,7 +23,7 @@ class SerieCollection extends AbstractCollection
      *
      * @return array
      */
-    public function countGroupedByFirstLetter(\Silex\Application $app)
+    public function countGroupedByFirstLetter(Application $app)
     {
         $series = array();
         foreach ($this->getRepository()->countGroupedByFirstLetter() as $serie) {
@@ -47,10 +47,10 @@ class SerieCollection extends AbstractCollection
      *
      * @return $this
      */
-    public function findByFirstLetter($letter)
+    public function findByFirstLetter($letter, Application $app)
     {
         return $this->setDataFromArray(
-            $this->getRepository()->findByFirstLetter($letter)
+            $this->getRepository()->findByFirstLetter($letter, $app)
         );
     }
 

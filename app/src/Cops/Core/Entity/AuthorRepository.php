@@ -16,6 +16,7 @@ use Doctrine\DBAL\Connection;
 use PDO;
 use Cops\Core\Entity\Author;
 use Cops\Core\Entity\BookCollection;
+use Cops\Core\Application;
 
 /**
  * Author repository
@@ -201,7 +202,7 @@ class AuthorRepository extends AbstractRepository implements AuthorRepositoryInt
      *
      * @return array
      */
-    public function findByFirstLetter($letter)
+    public function findByFirstLetter($letter, Application $app)
     {
         $qb = $this->getQueryBuilder()
             ->select('main.*', 'COUNT(bal.book) as book_count')
@@ -213,7 +214,7 @@ class AuthorRepository extends AbstractRepository implements AuthorRepositoryInt
                 ->setParameter(1, $letter, PDO::PARAM_STR);
         } else {
             $qb->where('UPPER(SUBSTR(sort, 1, 1)) NOT IN (:letters)')
-                ->setParameter('letters', $this->stringUtils->getLetters(), Connection::PARAM_STR_ARRAY);
+                ->setParameter('letters', $this->stringUtils->getLetters($app), Connection::PARAM_STR_ARRAY);
         }
 
         return $qb->groupBy('main.id')

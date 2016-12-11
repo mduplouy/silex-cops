@@ -12,6 +12,7 @@ namespace Cops\Core\Entity\RepositoryInterface;
 use Cops\Core\RepositoryInterface;
 use Cops\Core\Entity\Author;
 use Cops\Core\Entity\BookCollection;
+use Cops\Core\Application;
 
 /**
  * Author repository interface
@@ -85,7 +86,7 @@ interface AuthorRepositoryInterface extends RepositoryInterface
      *
      * @return array
      */
-    public function findByFirstLetter($letter);
+    public function findByFirstLetter($letter, Application $app);
 
     /**
      * Load by bookId
