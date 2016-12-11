@@ -91,8 +91,12 @@ class SearchController implements \Silex\ControllerProviderInterface
 
         $totalRows = $books->getRepository()->getTotalRows();
 
+        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                 null, PREG_SPLIT_NO_EMPTY);
+
         return $app['twig']->render($app['config']->getTemplatePrefix().'search_results.html.twig', array(
             'pageTitle'   => $app['translator']->trans('Search results'),
+            'addletters'  => $addletters,
             'books'       => $books,
             'totalRows'   => $totalRows,
             'pageNum'     => $page,
@@ -109,7 +113,11 @@ class SearchController implements \Silex\ControllerProviderInterface
      */
     public function noResultAction(Application $app)
     {
+        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                 null, PREG_SPLIT_NO_EMPTY);
+
         return $app['twig']->render($app['config']->getTemplatePrefix().'search_no_result.html.twig', array(
+            'addletters'  => $addletters,
             'pageTitle'   => $app['translator']->trans('Search results'),
         ));
     }

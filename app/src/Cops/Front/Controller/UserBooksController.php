@@ -99,10 +99,14 @@ class UserBooksController implements ControllerProviderInterface
         $actions = $app['entity.user-book']->getAvailableLists();
         $pageTitle = $app['translator']->trans($actions[$action]);
 
+            $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                     null, PREG_SPLIT_NO_EMPTY);
+
         if (!$userBooks->count()) {
             return $app['twig']->render(
                 sprintf('%suser_books_empty.html.twig', $app['config']->getTemplatePrefix()),
                 array(
+                    'addletters' => $addletters,
                     'pageTitle'  => $pageTitle,
                 )
             );

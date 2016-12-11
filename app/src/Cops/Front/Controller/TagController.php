@@ -67,10 +67,14 @@ class TagController implements ControllerProviderInterface
 
             $totalBooks = $books->getRepository()->getTotalRows();
 
+            $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                     null, PREG_SPLIT_NO_EMPTY);
+
             $app['response'] = $app['twig']->render(
                 $app['config']->getTemplatePrefix().'tag.html.twig',
                 array(
                     'tag'        => $tag,
+                    'addletters' => $addletters,
                     'books'      => $books,
                     'pageTitle'  => $tag->getName(),
                     'pageNum'    => $page,

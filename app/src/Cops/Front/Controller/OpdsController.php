@@ -68,7 +68,11 @@ class OpdsController implements ControllerProviderInterface
      */
     public function indexAction(Application $app)
     {
+        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                 null, PREG_SPLIT_NO_EMPTY);
+
         $xml =  $app['twig']->render('opds/home.xml.twig', array(
+            'addletters'  => $addletters,
             'updated'     => date('Y-m-d\TH:i:sP'),
             'nbLastAdded' => $app['config']->getValue('last_added')
         ));
@@ -85,7 +89,11 @@ class OpdsController implements ControllerProviderInterface
      */
     public function authorsAction(Application $app)
     {
+        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                 null, PREG_SPLIT_NO_EMPTY);
+
         $xml =  $app['twig']->render('opds/authors.xml.twig', array(
+            'addletters'        => $addletters,
             'updated'           => date('Y-m-d\TH:i:sP'),
             'authorsAggregated' => $app['collection.author']->countGroupedByFirstLetter(),
         ));
@@ -113,8 +121,9 @@ class OpdsController implements ControllerProviderInterface
         $authors = $app['collection.author']->findByFirstLetter($letter, $addletters);
 
         $xml =  $app['twig']->render('opds/authors_alpha.xml.twig', array(
-            'updated' => date('Y-m-d\TH:i:sP'),
-            'authors' => $authors,
+            'addletters' => $addletters,
+            'updated'    => date('Y-m-d\TH:i:sP'),
+            'authors'    => $authors,
         ));
 
         return $this->checkXml($xml);
@@ -136,10 +145,14 @@ class OpdsController implements ControllerProviderInterface
                 ->findByAuthorId($id)
                 ->addBookFiles($app['collection.bookfile']);
 
+            $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                     null, PREG_SPLIT_NO_EMPTY);
+
             $xml =  $app['twig']->render('opds/author_detail.xml.twig', array(
-                'updated' => date('Y-m-d\TH:i:sP'),
-                'author'  => $author,
-                'books'   => $books,
+                'addletters' => $addletters,
+                'updated'    => date('Y-m-d\TH:i:sP'),
+                'author'     => $author,
+                'books'      => $books,
             ));
 
             $app['reponse'] = $this->checkXml($xml);
@@ -160,7 +173,11 @@ class OpdsController implements ControllerProviderInterface
      */
     public function seriesAction(Application $app)
     {
+        $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                 null, PREG_SPLIT_NO_EMPTY);
+
         $xml =  $app['twig']->render('opds/series.xml.twig', array(
+            'addletters'       => $addletters,
             'updated'          => date('Y-m-d\TH:i:sP'),
             'seriesAggregated' => $app['collection.serie']->countGroupedByFirstLetter(),
         ));
@@ -188,8 +205,9 @@ class OpdsController implements ControllerProviderInterface
         $series = $app['collection.serie']->findByFirstLetter($letter, $addletters);
 
         $xml =  $app['twig']->render('opds/series_alpha.xml.twig', array(
-            'updated' => date('Y-m-d\TH:i:sP'),
-            'series'  => $series,
+            'addletters' => $addletters,
+            'updated'    => date('Y-m-d\TH:i:sP'),
+            'series'     => $series,
         ));
 
         return $this->checkXml($xml);
@@ -210,10 +228,14 @@ class OpdsController implements ControllerProviderInterface
                 ->findBySerieId($id)
                 ->addBookFiles($app['collection.bookfile']);
 
+            $addletters = preg_split('//u', $app['config']->getValue('add_cap_letters'),
+                                     null, PREG_SPLIT_NO_EMPTY);
+
             $xml = $app['twig']->render('opds/serie_detail.xml.twig', array(
-                'updated' => date('Y-m-d\TH:i:sP'),
-                'serie'   => $serie,
-                'books'   => $books,
+                'addletters' => $addletters,
+                'updated'    => date('Y-m-d\TH:i:sP'),
+                'serie'      => $serie,
+                'books'      => $books,
             ));
 
             $app['response'] = $this->checkXml($xml);

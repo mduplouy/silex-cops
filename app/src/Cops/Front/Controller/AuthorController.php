@@ -101,9 +101,10 @@ class AuthorController implements ControllerProviderInterface
         $authors = $app['collection.author']->findByFirstLetter($letter, $addletters);
 
         return $app['twig']->render($app['config']->getTemplatePrefix().'author_list.html.twig', array(
-            'letter' => $letter,
-            'authors' => $authors,
-            'pageTitle' => sprintf($app['translator']->trans('Authors beginning by %s'), $letter),
+            'letter'     => $letter,
+            'authors'    => $authors,
+            'addletters' => $addletters,
+            'pageTitle'  => sprintf($app['translator']->trans('Authors beginning by %s'), $letter),
         ));
     }
 
