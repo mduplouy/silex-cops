@@ -182,37 +182,35 @@ class UserBooksController implements ControllerProviderInterface
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|void
      *
      * @throws EmptySelectionException
-     *
      */
     protected function handleSelection(Application $app, $userId, $action)
     {
+        // Get books within current action for user
         $userBooks = $app['collection.user-book']
             ->findFromUserIdAndAction($userId, $action);
 
         $modifiedBooks = $app['collection.user-book'];
 
+        // Check asked books are present in the user collection
         foreach ($app['request']->get('book_id', array()) as $bookId) {
-            // Check book is in the loaded collection
             if ($modifiedBook = $userBooks->getBook($userId, $bookId, $action)) {
                 $modifiedBooks->add($modifiedBook);
             }
         }
 
-        switch (true) {
-
-            case $modifiedBooks->count() == 0:
-                throw new EmptySelectionException('No books selected');
-
-            case preg_match('/download_(\w+)/', $app['request']->getContent(), $match) > 0:
-                return $this->downloadSelection($app, $userBooks, $match[1]);
-
-            case $app['request']->get('remove', false):
-                $modifiedBooks->delete();
-                // Do not break to redirect after deletion
-
-            default:
-                throw new EmptySelectionException('Nothing to do');
+        if ($modifiedBooks->count() == 0) {
+            throw new EmptySelectionException('No books selected');
         }
+
+        if ($downloadType = $app['request']->get('download', false)) {
+            return $this->downloadSelection($app, $userBooks, $downloadType);
+        }
+
+        if ($app['request']->get('remove', false)) {
+            $modifiedBooks->delete();
+        }
+
+        throw new EmptySelectionException('Nothing to do');
     }
 
     /**

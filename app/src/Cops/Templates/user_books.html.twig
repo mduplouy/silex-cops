@@ -40,7 +40,7 @@
                 </button>
 
                 {% for archive in app["factory.archive"].getAdapterkeys() %}
-                <button type="submit" name="download_{{ archive }}" class="btn btn-sm btn-info" id="js-submit-download">
+                <button type="submit" name="download" value="{{ archive }}" disabled="disabled" class="btn btn-sm btn-info" id="js-submit-download">
                     {{ "Download as %s"|trans|format(archive) }}
                 </button>
                 {% endfor %}
@@ -48,7 +48,6 @@
             </div>
 
         </div>
-
 
         <div id="user-books">
             {% include "user_books_listing.html.twig" with {"books": books} %}

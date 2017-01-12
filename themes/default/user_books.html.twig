@@ -23,7 +23,9 @@
             <input name="remove" type="submit" class="ui-button" style="margin-left:85px; margin-bottom:8px; padding:1px 1px 0 1px;" id="js-submit-multi" value="{{ "Remove selection"|trans }}" />
 
             {% for archive in app["factory.archive"].getAdapterkeys() %}
-            <input type="submit" name="download_{{ archive }}" class="ui-button" style="margin-bottom:8px; padding:1px 1px 0 1px;" id="js-submit-download" value="{{ "Download as %s"|trans|format(archive) }}" />
+            <button type="submit" name="download" value="{{ archive }}" class="ui-button" style="margin-bottom:8px; padding:1px 1px 0 1px;" id="js-submit-download">
+                {{ "Download as %s"|trans|format(archive) }}
+            </button>
             {% endfor %}
 
         </div>
