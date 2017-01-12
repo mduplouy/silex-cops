@@ -29,7 +29,6 @@ class InlineEditControllerTest extends AbstractTestCase
     public function testUpdateAuthorKoWhenUser()
     {
         $client = $this->createClient();
-        //$client->getCookieJar()->clear();
 
         $client->request(
             'POST',
