@@ -276,4 +276,41 @@ class TagRepository extends AbstractRepository implements TagRepositoryInterface
             ->execute()
             ->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Find tag by name part
+     *
+     * @param string name
+     *
+     * @return array
+     */
+    public function findByNamePartWithBookCount($name)
+    {
+        $qb = $this->getQueryBuilder();
+
+        $stmt = $qb
+            ->select(
+                'main.id',
+                'main.name',
+                'COUNT(btl.book) AS book_count'
+            )
+            ->from('tags', 'main')
+            ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.tag')
+            ->where($qb->expr()->like('main.name', ':name'))
+            ->groupBy('main.id')
+            ->setParameter(':name', $name.'%', PDO::PARAM_STR)
+            ->execute();
+
+        $rows = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $rows[] = array(
+                'id'         => $row['id'],
+                'name'       => str_replace($name, '', $row['name']),
+                'book_count' => $row['book_count'],
+            );
+        }
+
+        return $rows;
+    }
 }

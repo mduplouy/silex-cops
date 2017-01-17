@@ -55,12 +55,17 @@ class TagController implements ControllerProviderInterface
     {
         if (null !== $tag = $this->loadTagOrRedirect($app, $id)) {
 
+            $subTags = $app['collection.tag']->findChildren($tag);
+            $subTags = $subTags->createSubTagsCollection($app['collection.tag']);
+
+            $tagIds = array_merge(array((int) $id), $subTags->getAllIds());
+
             $itemsPerPage = $app['config']->getValue('tag_page_size');
 
             $books = $app['collection.book']
                 ->setFirstResult(($page - 1) * $itemsPerPage)
                 ->setMaxResults($itemsPerPage)
-                ->findByTagId($id)
+                ->findByTagId($tagIds)
                 ->addAuthors($app['collection.author'])
                 ->addBookFiles($app['collection.bookfile'])
                 ->addTags($app['collection.tag']);
@@ -71,6 +76,7 @@ class TagController implements ControllerProviderInterface
                 $app['config']->getTemplatePrefix().'tag.html.twig',
                 array(
                     'tag'        => $tag,
+                    'subTags'    => $subTags,
                     'books'      => $books,
                     'pageTitle'  => $tag->getName(),
                     'pageNum'    => $page,

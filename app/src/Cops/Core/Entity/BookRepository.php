@@ -191,21 +191,22 @@ class BookRepository extends AbstractRepository implements ApplicationAwareInter
     /**
      * Find by tag id
      *
-     * @param int    $tagId
+     * @param array  $tagId
      *
      * @return array
      */
-    public function findByTagId($tagId)
+    public function findByTagId(array $tagId)
     {
-        $qb = $this->getBaseSelect()
-            ->addSelect('main.id')
+        $qb = $this->getBaseSelect();
+
+        $qb->addSelect('main.id')
             ->innerJoin('main', 'books_tags_link', 'btl', 'main.id = btl.book')
             ->innerJoin('main', 'tags'           , 'tag', 'tag.id  = btl.tag')
-            ->andWhere('tag.id = :tagid')
+            ->andWhere($qb->expr()->in('tag.id', ':tagid'))
             ->orderBy('serie.name')
             ->addOrderBy('series_index')
             ->addOrderBy('title')
-            ->setParameter('tagid', $tagId, PDO::PARAM_INT);
+            ->setParameter(':tagid', $tagId, Connection::PARAM_INT_ARRAY);
 
         return $this->paginate($qb)
             ->execute()

@@ -5,6 +5,14 @@
 
     <h3 class="center">{{ "%s books associated to tag \"%s\""|trans|format(totalRows, tag.getName()) }}</h3>
 
+    {% if subTags.count() %}
+    <ul class="nav nav-pills">
+        {% for subTag in subTags %}
+        <li><a href="{{ path('tag_book_list', {'id': subTag.getId()}) }}">{{ subTag.getName() }} <span class="badge">{{ subTag.getBookCount() }}</span></a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     {% set paginator %}
         {% include 'paginator.html.twig' with {
             "routeName": "tag_book_list",

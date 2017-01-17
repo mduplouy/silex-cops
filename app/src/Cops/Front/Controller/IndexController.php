@@ -48,10 +48,11 @@ class IndexController implements ControllerProviderInterface
 
         $series = $app['collection.serie'];
 
-        $tags = $app['collection.tag'];
-
-        $tags->setMaxResults($app['config']->getValue('homepage_tags'))
+        $tags = $app['collection.tag']
+            ->setMaxResults($app['config']->getValue('homepage_tags'))
             ->findAllWithBookCount();
+
+        $subTags = $tags->createSubTagsCollection($app['collection.tag']);
 
         $authors = $app['collection.author'];
 
@@ -63,8 +64,8 @@ class IndexController implements ControllerProviderInterface
             'countSeries'        => $series->countAll(),
             'authorsAggregated'  => $authors->countGroupedByFirstLetter(),
             'countAuthors'       => $authors->countAll(),
-            'tags'               => $tags,
-            'countTags'          => $tags->countAll(),
+            'tags'               => $subTags,
+            'countTags'          => $subTags->count(),
         ));
     }
 }

@@ -114,7 +114,7 @@ class BookCollection extends AbstractCollection
     /**
      * Find by tag id
      *
-     * @param  int $tagId
+     * @param  int|array $tagId
      *
      * @return $this
      */

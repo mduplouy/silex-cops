@@ -107,12 +107,12 @@ class BookCollectionTest extends AbstractTestCase
 
         $repoMock->expects($this->once())
             ->method('findByTagId')
-            ->with(5)
+            ->with(array(5))
             ->will($this->returnValue(array()));
 
         $this->getCollection()
             ->setRepository($repoMock)
-            ->findByTagId(5);
+            ->findByTagId(array(5));
     }
 
     /**

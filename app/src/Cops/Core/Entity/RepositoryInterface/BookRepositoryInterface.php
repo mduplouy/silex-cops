@@ -68,11 +68,11 @@ interface BookRepositoryInterface extends RepositoryInterface
     /**
      * Find by tag id
      *
-     * @param int    $tagId
+     * @param array  $tagId
      *
      * @return array
      */
-    public function findByTagId($tagId);
+    public function findByTagId(array $tagId);
 
     /**
      * Find by keyword
