@@ -6,8 +6,6 @@ use Cops\Tests\AbstractTestCase;
 
 /**
  * Author
- *
- * @require PHP 5.3
  */
 class AuthorTest extends AbstractTestCase
 {

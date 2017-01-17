@@ -335,7 +335,7 @@ class User extends AbstractEntity implements CollectionableInterface, UserInterf
      *
      * @return string
      */
-     public function getUserACtionsRole()
+     public function getUserActionsRole()
      {
          return self::ROLE_USER_ACTIONS;
      }
