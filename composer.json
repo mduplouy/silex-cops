@@ -12,24 +12,24 @@
         }
     ],
     "require": {
-        "silex/silex"  : "1.3.4",
-        "doctrine/dbal": "2.5.0",
+        "silex/silex"  : "1.3.*",
+        "doctrine/dbal": "2.5.*",
         "twig/twig": ">=1.8,<2.0-dev",
-        "symfony/twig-bridge": "2.6.12",
+        "symfony/twig-bridge": "2.6.*",
         "mobiledetect/mobiledetectlib": "~2",
-        "symfony/translation": "2.6.12",
-        "symfony/config": "2.6.12",
-        "symfony/yaml": "2.6.12",
-        "symfony/security": "2.6.13",
-        "symfony/form": "2.6.12",
-        "symfony/validator": "2.6.12",
-        "lexpress/console-service-provider": "1.0.0",
+        "symfony/translation": "2.6.*",
+        "symfony/config": "2.6.*",
+        "symfony/yaml": "2.6.*",
+        "symfony/security": "2.6.*",
+        "symfony/form": "2.6.*",
+        "symfony/validator": "2.6.*",
+        "lexpress/console-service-provider": "1.0.*",
         "../web/assets/select2": "3.5.2",
         "algolia/algoliasearch-client-php": "^1.9"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.8.18",
-        "symfony/browser-kit": "2.3.0"
+        "phpunit/phpunit": "4.8.*",
+        "symfony/browser-kit": "2.3.*"
     },
     "repositories": [
         {
@@ -38,7 +38,7 @@
                 "name": "../web/assets/select2",
                 "version": "3.5.2",
                  "dist": {
-                    "url": "https://github.com/select2/select2/archive/3.5.2.zip",
+                    "url": "https://codeload.github.com/select2/select2/zip/3.5.2",
                     "type": "zip"
                 }
             }
